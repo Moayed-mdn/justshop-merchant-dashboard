@@ -1,0 +1,119 @@
+import { serverFetch } from '@/lib/api/server';
+import { ApiResponse, PaginatedResponse } from '@/types/api';
+import {
+  MarketingPage,
+  BlogPost,
+  DocumentationPage,
+  DocumentationSidebar,
+  SitemapEntry,
+} from '@/types/cms';
+
+/**
+ * CMS Service (Platform-level)
+ * Handles all CMS-related API calls.
+ */
+export const cmsService = {
+  /**
+   * Fetch a marketing page by slug
+   */
+  async getPage(slug: string): Promise<MarketingPage> {
+    const response = await serverFetch<ApiResponse<MarketingPage>>(
+      `/api/v1/public/cms/pages/${slug}`,
+      {
+        cache: 'force-cache',
+        tags: [`cms-page-${slug}`],
+      }
+    );
+    return response.data;
+  },
+
+  /**
+   * Fetch blog posts (paginated)
+   */
+  async getBlogPosts(params: { page?: number; per_page?: number } = {}): Promise<PaginatedResponse<BlogPost>> {
+    const searchParams = new URLSearchParams();
+    if (params.page) searchParams.set('page', String(params.page));
+    if (params.per_page) searchParams.set('per_page', String(params.per_page));
+
+    const query = searchParams.toString();
+    const endpoint = `/api/v1/public/cms/blog${query ? `?${query}` : ''}`;
+
+    const response = await serverFetch<ApiResponse<PaginatedResponse<BlogPost>>>(endpoint, {
+      cache: 'force-cache',
+      tags: ['cms-blog-posts'],
+    });
+    return response.data;
+  },
+
+  /**
+   * Fetch a single blog post by slug
+   */
+  async getBlogPost(slug: string): Promise<BlogPost> {
+    const response = await serverFetch<ApiResponse<BlogPost>>(
+      `/api/v1/public/cms/blog/${slug}`,
+      {
+        cache: 'force-cache',
+        tags: [`cms-blog-post-${slug}`],
+      }
+    );
+    return response.data;
+  },
+
+  /**
+   * Fetch documentation sidebar
+   */
+  async getDocsSidebar(): Promise<DocumentationSidebar> {
+    const response = await serverFetch<ApiResponse<DocumentationSidebar>>(
+      '/api/v1/public/cms/docs/sidebar',
+      {
+        cache: 'force-cache',
+        tags: ['cms-docs-sidebar'],
+      }
+    );
+    return response.data;
+  },
+
+  /**
+   * Fetch a documentation page by slug path
+   */
+  async getDocsPage(slugPath: string): Promise<DocumentationPage> {
+    const response = await serverFetch<ApiResponse<DocumentationPage>>(
+      `/api/v1/public/cms/docs/${slugPath}`,
+      {
+        cache: 'force-cache',
+        tags: [`cms-docs-page-${slugPath}`],
+      }
+    );
+    return response.data;
+  },
+
+  /**
+   * Fetch sitemap for a domain
+   */
+  async getSitemap(domain: string): Promise<SitemapEntry[]> {
+    const response = await serverFetch<ApiResponse<SitemapEntry[]>>(
+      `/api/v1/public/cms/seo/sitemap/${domain}`,
+      {
+        cache: 'no-store', // Sitemap should be relatively fresh
+      }
+    );
+    return response.data;
+  },
+
+  /**
+   * Fetch robots.txt content
+   */
+  async getRobots(): Promise<string> {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/cms/seo/robots.txt`, {
+        next: { tags: ['cms-seo-robots'] },
+        cache: 'force-cache',
+      });
+      if (!response.ok) return 'User-agent: *\nDisallow: /';
+      return response.text();
+    } catch (error) {
+      console.error('Failed to fetch robots.txt', error);
+      return 'User-agent: *\nDisallow: /';
+    }
+  },
+};

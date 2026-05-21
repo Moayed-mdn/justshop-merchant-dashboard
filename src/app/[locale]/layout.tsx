@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { headers } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
@@ -8,24 +8,52 @@ import { Toaster } from '@/components/ui/sonner';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import '../globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
+function isLocalHostname(hostname: string): boolean {
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname.endsWith('.local') ||
+    hostname.endsWith('.localhost')
+  );
+}
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+function resolveMetadataBaseHost(headerList: Headers): URL {
+  const envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (envSiteUrl) {
+    return new URL(envSiteUrl);
+  }
+
+  const forwardedHost = headerList.get('x-forwarded-host');
+  const host = forwardedHost ?? headerList.get('host');
+  if (host) {
+    const hostname = host.split(':')[0]?.toLowerCase() ?? '';
+    const protocol = headerList.get('x-forwarded-proto') ?? (isLocalHostname(hostname) ? 'http' : 'https');
+    return new URL(`${protocol}://${host}`);
+  }
+
+  const fallbackHost =
+    process.env.NODE_ENV === 'development'
+      ? `${process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'localhost'}:3000`
+      : 'localhost:3000';
+  const fallbackHostname = fallbackHost.split(':')[0]?.toLowerCase() ?? '';
+  const fallbackProtocol = isLocalHostname(fallbackHostname) ? 'http' : 'https';
+
+  return new URL(`${fallbackProtocol}://${fallbackHost}`);
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export const metadata: Metadata = {
-  title: 'LaraTenant Commerce',
-  description: 'Multi-tenant e-commerce platform',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const headerList = await headers();
+
+  return {
+    metadataBase: resolveMetadataBaseHost(headerList),
+    title: 'LaraTenant Commerce',
+    description: 'Multi-tenant e-commerce platform',
+  };
+}
 
 interface RootLayoutProps {
   children: React.ReactNode;

@@ -63,7 +63,7 @@ export function VariantMediaDialog({
         id:       nextNegativeId(images),
         url,
         alt:      null,
-        position: images.length,
+        position: images.length + 1,
       },
     ]);
     setUrlDraft('');
@@ -75,7 +75,7 @@ export function VariantMediaDialog({
     onChange(
       images
         .filter((img) => img.id !== id)
-        .map((img, idx) => ({ ...img, position: idx }))
+        .map((img, idx) => ({ ...img, position: idx + 1 }))
     );
 
   // ── Alt text ──────────────────────────────────────────────────
@@ -90,7 +90,7 @@ export function VariantMediaDialog({
     const next = [...images];
     const [item] = next.splice(from, 1);
     next.splice(to, 0, item);
-    onChange(next.map((img, idx) => ({ ...img, position: idx })));
+    onChange(next.map((img, idx) => ({ ...img, position: idx + 1 })));
   };
 
   return (

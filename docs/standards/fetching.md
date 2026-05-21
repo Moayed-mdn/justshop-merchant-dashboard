@@ -1,30 +1,40 @@
 # Fetching Standards
 
-- use Server Components + `serverFetch` for initial and detail reads.
-- use TanStack Query hooks for interactive lists, filters, and mutations.
-- parse URL query state with schemas and keep URL as source of truth.
-- debounce text filters before query execution when needed.
-- keep query keys stable and parameterized by locale/tenant/filter context.
+## Core Rules
 
-## SSR vs CSR Request Flow
+- Use Server Components plus `serverFetch` for initial reads, detail reads, and route metadata.
+- Use `clientFetch` and feature hooks for interactive browser-side lists, filters, and mutations.
+- Keep public CMS reads in `src/services/cms/cms.service.ts`.
+- Parse URL query state with schemas where that pattern already exists and keep the URL as source of truth.
+- Keep query keys and cache tags stable and centralized.
 
-- SSR/RSC flow:
-  - Server Components and server actions call `serverFetch` directly to Laravel.
-  - `serverFetch` forwards session cookies and throws normalized `ApiError` on non-2xx responses.
-- CSR/interactive flow:
-  - hooks and client modules call `clientFetch`.
-  - `clientFetch` always sends browser traffic to `/api/proxy`.
-  - `/api/proxy` is responsible for browser-to-upstream forwarding concerns (cookies, XSRF, locale header handoff).
+## Server Fetch Usage
+
+- `serverFetch` is the canonical server transport.
+- It forwards cookies from `next/headers`.
+- It resolves locale from cookies and sends it upstream in `Accept-Language`.
+- It throws normalized `ApiError` on non-2xx responses.
+- Default cache mode is `no-store`; callers must opt into cache behavior explicitly.
+
+## CMS Fetching Rules
+
+- CMS routes must not call `fetch` directly from page files.
+- Use `cmsService` methods such as `getPage()`, `getBlogPosts()`, `getBlogPost()`, `getDocsSidebar()`, and `getDocsPage()`.
+- Public CMS reads should use `force-cache` plus stable tags in the service layer.
+- Keep cache tags in the service layer, not duplicated in route components.
+- Use `no-store` only when freshness requirements differ, such as sitemap retrieval.
+
+## SSR and App Router Flow
+
+- `generateMetadata()` is a server read and follows the same canonical fetch boundaries.
+- Do not fetch public CMS metadata client-side.
+- Do not move public content reads into effects to simulate SSR.
+- Keep route pages as server orchestrators and pass data into client leaves only when interactivity is required.
 
 ## Proxy Responsibility Rules
 
-- keep `/api/proxy` as a bridge for browser requests in cookie-session architecture.
-- do not use `/api/proxy` for server runtime calls that should use `serverFetch`.
-- avoid duplicating parsing/normalization logic in feature-level modules; use canonical fetch wrappers.
+- `/api/proxy` is for browser-originated requests only.
+- Do not route server CMS reads through `/api/proxy`.
+- Do not duplicate cookie, XSRF, or locale forwarding outside canonical fetch utilities.
+- Avoid introducing runtime-ambiguous helpers that may run on either server or client without clear boundaries.
 
-## Extension Rules
-
-- if you add a new API module, consume `clientApi`/`clientFetch` (browser) or `serverFetch` (server).
-- keep query keys, hook signatures, and response shapes stable when refactoring transport internals.
-- for auth/session-related browser helpers, centralize internal route calls in auth API modules, not components.
-- avoid introducing runtime-mixed helpers that can run in both browser and server implicitly.

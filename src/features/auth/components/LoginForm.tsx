@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { ApiError } from '@/types/api';
 import { logger } from '@/lib/logger';
+import { isSafeRedirectPath, stripLocale } from '@/lib/auth/redirects';
 
 export function LoginForm() {
   const t = useTranslations('login');
@@ -59,12 +60,15 @@ export function LoginForm() {
         toast.success(t('success.loggedIn'));
 
         const redirectParam = searchParams.get('redirect');
-        const destination =
-          redirectParam && redirectParam.startsWith(`/${locale}`)
-            ? redirectParam.slice(`/${locale}`.length)
-            : '/';
-
-        router.push(destination);
+        
+        // If redirect param exists and is safe, use it. 
+         // next-intl router.push handles locale automatically, so we strip it if present.
+         let destination = '/';
+         if (redirectParam && isSafeRedirectPath(redirectParam)) {
+           destination = stripLocale(redirectParam);
+         }
+  
+         router.push(destination);
       } catch (error) {
         const apiError = error as ApiError;
         if (apiError.errors?.email?.[0]) {

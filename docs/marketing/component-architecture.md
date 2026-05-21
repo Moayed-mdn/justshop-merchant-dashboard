@@ -1,343 +1,52 @@
-# Marketing Component Architecture 
+# Marketing Component Architecture
 
-## Purpose 
+## Current Shape
 
-Marketing pages must remain: 
-- composable 
-- reusable 
-- SEO-friendly 
-- performant 
-- visually consistent 
+- Public marketing routes live in `src/app/[locale]/(marketing)`.
+- Marketing pages are server-first route components.
+- Route files own `generateMetadata()`, CMS page fetches, and top-level section composition.
+- Reusable section and layout primitives live in `src/features/marketing/*`.
+- Shared CMS renderers live in `src/components/cms/*` and CMS-specific UI in `src/features/cms/*`.
 
-Avoid creating one-off landing page structures with duplicated sections and styling. 
+## Content Architecture
 
---- 
+- The public site is no longer a static JSON-only marketing system.
+- CMS page payloads now provide route-level SEO, structured data, and optional rich HTML content.
+- Typed frontend content modules still provide section props for the parts of marketing pages that remain code-composed.
+- Blog posts and docs pages render primary content directly from CMS.
 
-# Folder Structure 
+## Responsibility Boundaries
 
-Preferred structure: 
+- Route files:
+  - fetch CMS payloads
+  - generate metadata
+  - inject JSON-LD
+  - compose page-level sections
+- `features/marketing/sections/*`:
+  - render reusable visual sections from typed props
+- `components/cms/*`:
+  - render CMS HTML and JSON-LD consistently
+- `features/cms/*`:
+  - render blog lists, docs sidebar, and docs TOC behaviors
 
-```text 
-src/features/marketing/ 
-├── components/ 
-├── sections/ 
-├── layouts/ 
-├── data/ 
-├── constants/ 
-├── hooks/ 
-└── types/ 
-``` 
+## Server and Client Rules
 
---- 
+- Marketing routes stay as Server Components by default.
+- Use Client Components only for local interaction or browser observers.
+- Keep CMS data fetching in the route or service layer, never in presentation leaves.
+- Keep metadata and structured data at the route level.
 
-# Responsibility Boundaries 
+## Docs and Blog Architecture
 
-## sections/ 
+- Blog index is a server route that combines CMS page SEO with paginated CMS post data.
+- Blog detail is a server route that renders CMS post content, image, author, and category information.
+- Docs layout fetches recursive sidebar data server-side and passes it into a client sidebar renderer.
+- Docs pages process CMS HTML headings server-side and hand the derived TOC to a client observer component.
 
-Large reusable marketing blocks. 
+## Reuse Rules
 
-Examples: 
+- Reuse existing sections and layouts before introducing new public page variants.
+- Reuse `CmsContent` for CMS HTML rendering instead of route-specific wrappers.
+- Reuse `JsonLd` for structured data instead of inline bespoke script generation when consuming CMS payloads.
+- Keep hybrid marketing routes explicit rather than hiding CMS behavior inside generic sections.
 
-```text 
-HeroSection 
-FeatureGridSection 
-TestimonialsSection 
-PricingSection 
-FAQSection 
-CTASection 
-LogoCloudSection 
-``` 
-
-Sections compose pages. 
-
---- 
-
-# components/ 
-
-Smaller reusable UI pieces. 
-
-Examples: 
-
-```text 
-SectionHeading 
-FeatureCard 
-PricingCard 
-TestimonialCard 
-GradientBadge 
-DashboardPreview 
-``` 
-
-Components should remain presentation-focused. 
-
---- 
-
-# layouts/ 
-
-Shared page structures. 
-
-Examples: 
-
-```text 
-MarketingLayout 
-SectionContainer 
-SplitLayout 
-CenteredLayout 
-``` 
-
---- 
-
-# data/ 
-
-Static marketing content. 
-
-Examples: 
-
-```text 
-features.ts 
-pricing.ts 
-faqs.ts 
-testimonials.ts 
-``` 
-
-Avoid hardcoding large content arrays inside components. 
-
---- 
-
-# constants/ 
-
-Shared marketing constants. 
-
-Examples: 
-
-```text 
-cta-links.ts 
-social-links.ts 
-brand-messages.ts 
-``` 
-
---- 
-
-# Component Philosophy 
-
-## Preferred 
-
-* small composable components 
-* reusable sections 
-* prop-driven configuration 
-* server-rendered by default 
-
-## Avoid 
-
-* giant monolithic landing pages 
-* deeply nested JSX 
-* duplicated layouts 
-* inline hardcoded content everywhere 
-
---- 
-
-# Section Standards 
-
-Every major section should support: 
-
-* localized content 
-* responsive layout 
-* dark mode 
-* semantic HTML 
-* spacing consistency 
-
---- 
-
-# Section Container Rules 
-
-Use shared container/layout primitives. 
-
-Avoid: 
-
-```tsx 
-<div className="max-w-[1172px] px-[17px]"> 
-``` 
-
-Prefer centralized container patterns. 
-
---- 
-
-# Marketing Page Composition 
-
-Preferred page composition: 
-
-```tsx 
-<MarketingLayout> 
-  <HeroSection /> 
-  <LogoCloudSection /> 
-  <FeatureGridSection /> 
-  <DashboardShowcaseSection /> 
-  <TestimonialsSection /> 
-  <PricingSection /> 
-  <FAQSection /> 
-  <CTASection /> 
-</MarketingLayout> 
-``` 
-
---- 
-
-# Server vs Client Components 
-
-## Preferred 
-
-Marketing components should be Server Components by default. 
-
-Use Client Components only for: 
-
-* sliders/carousels 
-* interactive pricing toggles 
-* animations requiring browser APIs 
-* highly interactive demos 
-
---- 
-
-# Animation Rules 
-
-## Preferred 
-
-* subtle motion 
-* fade/slide transitions 
-* viewport-triggered reveals 
-* lightweight animations 
-
-## Avoid 
-
-* excessive parallax 
-* constant motion 
-* distracting hover systems 
-* heavy animation dependencies everywhere 
-
---- 
-
-# Responsive Rules 
-
-All marketing sections must support: 
-
-* mobile 
-* tablet 
-* desktop 
-* RTL layouts 
-
-## Mobile Priority 
-
-Design mobile-first. 
-
-Avoid desktop-only compositions that collapse poorly. 
-
---- 
-
-# Accessibility Rules 
-
-Marketing pages must: 
-
-* use semantic headings 
-* preserve contrast ratios 
-* support keyboard navigation 
-* avoid inaccessible motion 
-* use meaningful button labels 
-
---- 
-
-# Content Separation 
-
-## Rules 
-
-* content should live outside JSX where practical 
-* avoid embedding huge strings inside components 
-* avoid mixing layout and business messaging 
-
---- 
-
-# Reusability Rules 
-
-Before creating a new section: 
-
-1. check existing sections 
-2. check existing layouts 
-3. check shared marketing components 
-
-Avoid near-duplicate sections with slightly different styling. 
-
---- 
-
-# Screenshot & Visual Components 
-
-## Rules 
-
-* use shared showcase components 
-* standardize browser/mockup frames 
-* optimize screenshots 
-* avoid inconsistent shadow/border systems 
-
---- 
-
-# CTA Architecture 
-
-CTA sections should be reusable and configurable. 
-
-Preferred: 
-
-```tsx 
-<CTASection 
-  title="" 
-  description="" 
-  primaryAction="" 
-  secondaryAction="" 
-/> 
-``` 
-
-Avoid hardcoded CTA blocks per page. 
-
---- 
-
-# SEO & Rendering Rules 
-
-## Rules 
-
-* avoid client-rendering entire pages 
-* keep metadata at route level 
-* use semantic HTML 
-* support static rendering where possible 
-
---- 
-
-# Performance Rules 
-
-## Avoid 
-
-* shipping large animation libraries globally 
-* massive unoptimized images 
-* unnecessary hydration 
-* oversized component trees 
-
-## Prefer 
-
-* code splitting 
-* next/image 
-* lightweight motion 
-* shared section primitives 
-
---- 
-
-# AI Guardrails 
-
-## Never Generate 
-
-* duplicated marketing sections 
-* inconsistent spacing systems 
-* multiple competing hero sections 
-* random gradients/colors 
-* deeply nested component trees 
-* giant single-file landing pages 
-
-## Prefer 
-
-* reusable architecture 
-* composable sections 
-* consistent layouts 
-* centralized content 
-* scalable design systems 

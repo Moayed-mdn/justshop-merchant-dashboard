@@ -58,6 +58,7 @@ export default function HeroSection({
           )}
         >
           <SectionHeading
+            id="hero-heading"
             as="h1"
             heading={headline}
             eyebrow={badge}

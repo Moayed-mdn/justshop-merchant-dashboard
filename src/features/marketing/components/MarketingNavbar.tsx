@@ -23,7 +23,15 @@ import { cn } from '@/lib/utils'
 import { PRIMARY_NAV_LINKS } from '@/features/marketing/constants/nav-links'
 import { CTA_LOGIN, CTA_GET_STARTED } from '@/features/marketing/constants/cta-links'
 
-export default function MarketingNavbar() {
+interface MarketingNavbarProps {
+  isAuthenticated?: boolean
+  storeId?: string | null
+}
+
+export default function MarketingNavbar({ 
+  isAuthenticated = false, 
+  storeId = null 
+}: MarketingNavbarProps) {
   const t = useTranslations('marketing')
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -95,26 +103,41 @@ export default function MarketingNavbar() {
 
         {/* Desktop CTAs */}
         <div className="hidden items-center gap-3 md:flex">
-          <Link
-            href={CTA_LOGIN.href}
-            className={cn(
-              'rounded-md px-4 py-2 text-sm font-medium text-muted-foreground',
-              'transition-colors duration-150 hover:text-foreground',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            )}
-          >
-            {t(CTA_LOGIN.label)}
-          </Link>
-          <Link
-            href={CTA_GET_STARTED.href}
-            className={cn(
-              'rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground',
-              'transition-colors duration-150 hover:bg-primary/90',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-            )}
-          >
-            {t(CTA_GET_STARTED.label)}
-          </Link>
+          {isAuthenticated ? (
+            <Link
+              href={storeId ? `/stores/${storeId}/dashboard` : '/onboarding'}
+              className={cn(
+                'rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground',
+                'transition-colors duration-150 hover:bg-primary/90',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+              )}
+            >
+              {t('nav.cta.dashboard')}
+            </Link>
+          ) : (
+            <>
+              <Link
+                href={CTA_LOGIN.href}
+                className={cn(
+                  'rounded-md px-4 py-2 text-sm font-medium text-muted-foreground',
+                  'transition-colors duration-150 hover:text-foreground',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                )}
+              >
+                {t(CTA_LOGIN.label)}
+              </Link>
+              <Link
+                href={CTA_GET_STARTED.href}
+                className={cn(
+                  'rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground',
+                  'transition-colors duration-150 hover:bg-primary/90',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                )}
+              >
+                {t(CTA_GET_STARTED.label)}
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile menu toggle */}
@@ -189,28 +212,44 @@ export default function MarketingNavbar() {
 
           {/* Mobile CTAs */}
           <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4">
-            <Link
-              href={CTA_LOGIN.href}
-              className={cn(
-                'block rounded-lg border border-border px-4 py-2.5 text-center',
-                'text-sm font-medium text-foreground',
-                'transition-colors duration-150 hover:bg-muted',
-              )}
-              onClick={closeMenu}
-            >
-              {t(CTA_LOGIN.label)}
-            </Link>
-            <Link
-              href={CTA_GET_STARTED.href}
-              className={cn(
-                'block rounded-lg bg-primary px-4 py-2.5 text-center',
-                'text-sm font-semibold text-primary-foreground',
-                'transition-colors duration-150 hover:bg-primary/90',
-              )}
-              onClick={closeMenu}
-            >
-              {t(CTA_GET_STARTED.label)}
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href={storeId ? `/stores/${storeId}/dashboard` : '/onboarding'}
+                className={cn(
+                  'block rounded-lg bg-primary px-4 py-2.5 text-center',
+                  'text-sm font-semibold text-primary-foreground',
+                  'transition-colors duration-150 hover:bg-primary/90',
+                )}
+                onClick={closeMenu}
+              >
+                {t('nav.cta.dashboard')}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href={CTA_LOGIN.href}
+                  className={cn(
+                    'block rounded-lg border border-border px-4 py-2.5 text-center',
+                    'text-sm font-medium text-foreground',
+                    'transition-colors duration-150 hover:bg-muted',
+                  )}
+                  onClick={closeMenu}
+                >
+                  {t(CTA_LOGIN.label)}
+                </Link>
+                <Link
+                  href={CTA_GET_STARTED.href}
+                  className={cn(
+                    'block rounded-lg bg-primary px-4 py-2.5 text-center',
+                    'text-sm font-semibold text-primary-foreground',
+                    'transition-colors duration-150 hover:bg-primary/90',
+                  )}
+                  onClick={closeMenu}
+                >
+                  {t(CTA_GET_STARTED.label)}
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

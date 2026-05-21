@@ -16,11 +16,10 @@ import type { FAQItem, MarketingPageMeta } from '@/features/marketing/types'
 // -----------------------------------------------------------------------------
 
 const SITE_NAME = 'LaraTenant Commerce'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://laratenant.com'
-const DEFAULT_OG_IMAGE = '/og/default.png'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
+const DEFAULT_OG_IMAGE = '/next.svg'
 
 const SUPPORTED_LOCALES = ['en', 'ar'] as const
-type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
 
 // -----------------------------------------------------------------------------
 // Internal Helpers
@@ -29,7 +28,7 @@ type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
 function buildCanonicalUrl(locale: string, path: string): string {
   const cleanPath = path.startsWith('/') ? path : `/${path}`
   const localePath = cleanPath === '/' ? '' : cleanPath
-  return `${SITE_URL}/${locale}${localePath}`
+  return `/${locale}${localePath}`
 }
 
 function buildLocaleAlternates(
@@ -39,7 +38,7 @@ function buildLocaleAlternates(
   const localePath = cleanPath === '/' ? '' : cleanPath
 
   return SUPPORTED_LOCALES.reduce<Record<string, string>>((acc, locale) => {
-    acc[locale] = `${SITE_URL}/${locale}${localePath}`
+    acc[locale] = `/${locale}${localePath}`
     return acc
   }, {})
 }
@@ -151,8 +150,7 @@ export function buildOrgJsonLd(): string {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
-    url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
+    ...(SITE_URL ? { url: SITE_URL, logo: `${SITE_URL}/next.svg` } : {}),
   }
 
   return JSON.stringify(schema)
@@ -172,7 +170,7 @@ export function buildSoftwareJsonLd(): string {
     name: SITE_NAME,
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
-    url: SITE_URL,
+    ...(SITE_URL ? { url: SITE_URL } : {}),
     offers: {
       '@type': 'Offer',
       price: '0',

@@ -17,7 +17,13 @@
 import { getTranslations, getLocale } from 'next-intl/server'
 import type { Metadata } from 'next'
 
-import { buildPageMetadata, buildFAQJsonLd, buildSoftwareJsonLd } from '@/features/marketing/lib/seo'
+import { buildMetadataFromSeo } from '@/lib/seo/cms-seo'
+import { cmsService } from '@/services/cms/cms.service'
+import { CmsContent } from '@/components/cms/CmsContent'
+import { JsonLd } from '@/components/cms/JsonLd'
+import SectionContainer from '@/features/marketing/layouts/SectionContainer'
+
+import { buildSoftwareJsonLd, buildFAQJsonLd } from '@/features/marketing/lib/seo'
 
 import { getHeroContent }       from '@/features/marketing/content/homepage/hero'
 import { getFeatureItems }      from '@/features/marketing/content/homepage/features'
@@ -42,15 +48,17 @@ import CTASection                from '@/features/marketing/sections/CTASection'
 // -----------------------------------------------------------------------------
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('marketing')
   const locale = await getLocale()
-
-  return buildPageMetadata({
-    locale,
-    title: t('meta.home.title'),
-    description: t('meta.home.description'),
-    path: '',
-  })
+  try {
+    const page = await cmsService.getPage('home')
+    return buildMetadataFromSeo(page.seo, locale)
+  } catch (error) {
+    const t = await getTranslations('marketing')
+    return {
+      title: t('meta.home.title'),
+      description: t('meta.home.description'),
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -59,6 +67,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const t = await getTranslations('marketing')
+  const locale = await getLocale()
+
+  let cmsPage = null
+  try {
+    cmsPage = await cmsService.getPage('home')
+  } catch (error) {
+    console.error('Failed to fetch home page from CMS', error)
+    // Home page should probably not call notFound() if CMS fails, 
+    // it should fall back to static sections.
+  }
 
   // Wire content resolvers — each accepts translator, returns typed content.
   // To integrate a CMS: replace these calls with CMS resolver calls.
@@ -74,6 +92,9 @@ export default async function HomePage() {
 
   return (
     <>
+      {cmsPage?.seo?.structured_data && (
+        <JsonLd data={cmsPage.seo.structured_data} />
+      )}
       {/* Structured data — server-rendered, zero JS cost */}
       <script
         type="application/ld+json"
@@ -88,6 +109,12 @@ export default async function HomePage() {
       <HeroSection
         {...hero}
       />
+
+      {cmsPage?.content && (
+        <SectionContainer className="py-12">
+          <CmsContent content={cmsPage.content} />
+        </SectionContainer>
+      )}
 
       <LogoCloudSection
         items={logos}

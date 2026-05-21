@@ -39,6 +39,7 @@ export default function FeatureGridSection({
       <SectionContainer>
         {/* Section heading */}
         <SectionHeading
+          id="features-heading"
           as="h2"
           heading={heading}
           eyebrow={eyebrow}

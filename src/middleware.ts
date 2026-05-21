@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
-import { resolveTenant } from '@/lib/tenant/resolver';
+import { resolveTenant, TENANT_CONFIG } from '@/lib/tenant/resolver';
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -38,12 +38,18 @@ export default function middleware(request: NextRequest): NextResponse {
   const tenantContext = resolveTenant(hostname);
   const { appType, tenantSlug } = tenantContext;
 
-  // 3. Handle Locale via next-intl
+  // 3. Storefront Deprecation: Redirect storefront domains to marketing for now
+  // This app will no longer handle storefront rendering long-term
+  if (appType === 'storefront') {
+    const marketingUrl = new URL(request.nextUrl.clone());
+    marketingUrl.hostname = TENANT_CONFIG.baseDomain;
+    return NextResponse.redirect(marketingUrl);
+  }
+
+  // 4. Handle Locale via next-intl
   const response = intlMiddleware(request);
 
-  // 4. Inject Tenant Context into headers for Server Components & API
-  // This allows the app to know which "layer" it's rendering
-  response.headers.set('x-app-type', appType);
+  // 5. Inject Tenant Context into headers for Server Components & API
   if (tenantSlug) {
     response.headers.set('x-tenant-slug', tenantSlug);
   }
@@ -63,25 +69,15 @@ export default function middleware(request: NextRequest): NextResponse {
   // Dashboard Layer Protection
   // Note: For now we assume anything under /stores is dashboard.
   const isDashboardRoute = strippedPath.startsWith('/stores');
-  const AUTH_ROUTES = ['/login', '/register', '/signup', '/onboarding', '/create-store'];
-  const isAuthRoute = AUTH_ROUTES.includes(strippedPath);
 
   if (isDashboardRoute && !hasSessionCookie) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = `/${locale}/login`;
-    loginUrl.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // Redirect authenticated users away from login
-  // But allow them to access onboarding/create-store if they are logged in but don't have a store yet
-  if (isAuthRoute && hasSessionCookie) {
-    const isOnboarding = strippedPath === '/onboarding' || strippedPath === '/create-store';
-    if (!isOnboarding) {
-      const url = request.nextUrl.clone();
-      url.pathname = `/${locale}`;
-      return NextResponse.redirect(url);
+    // Only set redirect if it's a safe internal path
+    if (pathname && !pathname.includes(':')) {
+      loginUrl.searchParams.set('redirect', pathname);
     }
+    return NextResponse.redirect(loginUrl);
   }
 
   return response;

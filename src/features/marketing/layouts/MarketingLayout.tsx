@@ -12,14 +12,19 @@
 import MarketingNavbar from '@/features/marketing/components/MarketingNavbar'
 import MarketingFooter from '@/features/marketing/components/MarketingFooter'
 import { buildOrgJsonLd } from '@/features/marketing/lib/seo'
+import { getMe } from '@/lib/actions/auth.actions'
 
 interface MarketingLayoutProps {
   children: React.ReactNode
 }
 
-export default function MarketingLayout({
+export default async function MarketingLayout({
   children,
 }: MarketingLayoutProps) {
+  const user = await getMe()
+  const isAuthenticated = !!user
+  const storeId = user?.stores?.[0]?.id || null
+
   return (
     <>
       {/* Organization structured data — injected once per marketing page */}
@@ -43,7 +48,10 @@ export default function MarketingLayout({
       </a>
 
       <div className="flex min-h-screen flex-col bg-background text-foreground">
-        <MarketingNavbar />
+        <MarketingNavbar 
+          isAuthenticated={isAuthenticated} 
+          storeId={storeId ? String(storeId) : null} 
+        />
 
         <main
           id="main-content"

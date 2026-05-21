@@ -10,7 +10,6 @@
 
 import { create } from 'zustand';
 import type { Store } from '@/types/store';
-import { AppType } from '@/lib/tenant/types';
 
 export interface StoreState {
   // Current active store metadata
@@ -18,7 +17,6 @@ export interface StoreState {
   
   // Tenant context
   tenantSlug: string | null;
-  appType: AppType | null;
   
   // UI State
   isLoading: boolean;
@@ -31,7 +29,7 @@ export interface StoreState {
 export interface StoreActions {
   setCurrentStore: (store: Store) => void;
   clearCurrentStore: () => void;
-  setTenantContext: (slug: string | null, type: AppType) => void;
+  setTenantContext: (slug: string | null) => void;
   setLoading: (loading: boolean) => void;
   setMemberships: (memberships: unknown[]) => void;
   setPermissions: (permissions: string[]) => void;
@@ -42,14 +40,13 @@ export type StoreStore = StoreState & StoreActions;
 export const useStoreStore = create<StoreStore>((set) => ({
   currentStore: null,
   tenantSlug: null,
-  appType: null,
   isLoading: false,
   memberships: [],
   permissions: [],
 
   setCurrentStore: (currentStore) => set({ currentStore }),
   clearCurrentStore: () => set({ currentStore: null }),
-  setTenantContext: (tenantSlug, appType) => set({ tenantSlug, appType }),
+  setTenantContext: (tenantSlug) => set({ tenantSlug }),
   setLoading: (isLoading) => set({ isLoading }),
   setMemberships: (memberships) => set({ memberships }),
   setPermissions: (permissions) => set({ permissions }),
@@ -67,7 +64,6 @@ export const selectCurrentStoreCurrency = (state: StoreStore): string => {
 export const selectIsStoreLoading = (state: StoreStore): boolean => state.isLoading;
 export const selectTenantContext = (state: StoreStore) => ({
   slug: state.tenantSlug,
-  appType: state.appType,
 });
 export const selectMemberships = (state: StoreStore) => state.memberships;
 export const selectPermissions = (state: StoreStore) => state.permissions;

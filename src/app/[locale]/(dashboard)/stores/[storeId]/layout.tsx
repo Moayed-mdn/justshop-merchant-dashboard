@@ -14,24 +14,21 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { getMe } from '@/lib/actions/auth.actions';
-import type { User } from '@/types/auth';
 import { DashboardShell } from '@/features/dashboard/shell/DashboardShell';
 import { AuthInitializer } from '@/features/dashboard/shell/AuthInitializer';
 import { TenantInitializer } from '@/features/dashboard/shell/TenantInitializer';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
-import { getTranslations } from 'next-intl/server';
-import { AppType } from '@/lib/tenant/types';
+import { getLoginUrl, getPostLoginRedirect } from '@/lib/auth/redirects';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: string; storeId: string }>;
 }
 
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
-  const { locale } = await params;
+  const { locale, storeId } = await params;
   const headerList = await headers();
-  const appType = (headerList.get('x-app-type') as AppType) || 'dashboard';
   const tenantSlug = headerList.get('x-tenant-slug');
 
   // Get current user using Bearer token from cookie
@@ -39,15 +36,22 @@ export default async function DashboardLayout({ children, params }: DashboardLay
 
   if (!user) {
     logger.warn('Dashboard layout: unauthenticated, redirecting to login');
-    const redirectUrl = new URL(`/login`, 'http://localhost:3000');
-    // Preserve the current pathname as redirect target
-    // The locale is already in the params from the route
-    redirectUrl.searchParams.set('redirect', `/${locale}`);
-    redirect(`/${locale}/login${redirectUrl.search}`);
+    redirect(getLoginUrl(locale, `/stores/${storeId}`));
+  }
+
+  // Multi-tenant Security: Verify user has access to this store
+  const userHasAccess = user.stores?.some(s => String(s.id) === storeId);
+  
+  if (!userHasAccess) {
+    logger.error(`[Security] Unauthorized store access attempt by user ${user.id} to store ${storeId}`);
+    // Redirect intelligently based on user state
+    redirect(getPostLoginRedirect(user, locale));
   }
 
   // Map User (auth type) to AdminUser (admin store type)
-  // User has stores[] — AdminUser expects store_id and role
+  // User has stores[] — AdminUser expects store_id and role for the CURRENT store
+  const currentStore = user.stores?.find(s => String(s.id) === storeId);
+  
   const adminUser: import('@/types/user').AdminUser | null = user
     ? {
         id: user.id,
@@ -58,8 +62,8 @@ export default async function DashboardLayout({ children, params }: DashboardLay
         email_verified_at: user.email_verified_at,
         has_password: user.has_password,
         has_google_linked: user.has_google_linked,
-        store_id: user.stores?.[0]?.id ?? null,
-        role: user.stores?.[0]?.role as import('@/types/user').UserRole | undefined,
+        store_id: currentStore?.id ?? null,
+        role: currentStore?.role as import('@/types/user').UserRole | undefined,
         created_at: user.created_at,
         updated_at: user.updated_at,
       }
@@ -68,7 +72,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   return (
     <AuthProvider initialUser={user}>
       <AuthInitializer user={adminUser}>
-        <TenantInitializer appType={appType} tenantSlug={tenantSlug} />
+        <TenantInitializer tenantSlug={tenantSlug} />
         <DashboardShell>{children}</DashboardShell>
       </AuthInitializer>
     </AuthProvider>

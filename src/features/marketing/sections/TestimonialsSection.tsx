@@ -37,6 +37,7 @@ export default function TestimonialsSection({
       <SectionContainer>
         {/* Section heading */}
         <SectionHeading
+          id="testimonials-heading"
           as="h2"
           heading={heading}
           eyebrow={eyebrow}

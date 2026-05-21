@@ -49,7 +49,7 @@ export function normalizeProductOptions(
     const id = typeof option.id === 'number' ? option.id : null;
     acc.push({ id, name, position, values });
     return acc;
-  }, []);
+  }, []).sort((a, b) => a.position - b.position);
 }
 
 // ── Variant normalization ─────────────────────────────────────────────────
@@ -67,7 +67,8 @@ function normalizeVariant(raw: AdminProductVariant): ProductVariant {
       url:      img.url,
       alt:      img.alt ?? null,
       position: typeof img.position === 'number' ? img.position : 0,
-    }));
+    }))
+    .sort((a, b) => a.position - b.position);
 
   return {
     id:                  raw.id,
@@ -174,7 +175,7 @@ export function mapProductDetail(raw: AdminProduct): ProductDetailView {
     status:         raw.status,
     isFeatured:     raw.is_featured ?? false,
     tags:           (raw.tags ?? []).map((t) => t.id),
-    media:          raw.media ?? [],
+    media:          (raw.media ?? []).sort((a, b) => a.position - b.position),
     createdAt:      formatDate(raw.created_at),
     updatedAt:      formatDate(raw.updated_at),
     variants,

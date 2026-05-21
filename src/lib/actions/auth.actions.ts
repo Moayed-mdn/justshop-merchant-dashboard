@@ -52,11 +52,11 @@ export async function login(formData: FormData): Promise<{ success: true; user: 
 /**
  * Logout user.
  */
-export async function logout(): Promise<void> {
+export async function logout(locale: string = 'en'): Promise<void> {
   await serverFetch<void>(API_ROUTES.auth.logout(), {
     method: 'POST',
   }).catch(() => null);
-  redirect('/login');
+  redirect(`/${locale}/login`);
 }
 
 /**

@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
-import { useRouter } from '@/lib/navigation';
+import { useRouter, Link } from '@/lib/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ROUTES } from '@/config/routes';
@@ -54,12 +54,12 @@ function StorePickerContent() {
           <p className="text-muted-foreground">
             {t('noStores')}
           </p>
-          <a
+          <Link
             href={ROUTES.stores.new()}
             className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-white font-medium hover:bg-primary/90"
           >
             {t('createFirst')}
-          </a>
+          </Link>
         </div>
       </div>
     );

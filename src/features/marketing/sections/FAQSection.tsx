@@ -42,6 +42,7 @@ export default function FAQSection({
         >
           {/* Section heading */}
           <SectionHeading
+            id="faq-heading"
             as="h2"
             heading={heading}
             eyebrow={eyebrow}

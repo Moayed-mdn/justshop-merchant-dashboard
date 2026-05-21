@@ -17,6 +17,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import type { User } from '@/types/auth';
 import { getSessionMe, logoutSession } from '@/lib/api/auth';
 import { logger } from '@/lib/logger';
+import { getLoginUrl } from '@/lib/auth/redirects';
 
 interface AuthContextType {
   user: User | null;
@@ -48,12 +49,7 @@ function buildLoginRedirectUrl(): string {
   // Preserve the full path including querystring
   const redirectTarget = window.location.pathname + window.location.search;
   
-  // Build URL with locale prefix and redirect param
-  const url = new URL(`/login`, window.location.origin);
-  url.searchParams.set('redirect', redirectTarget);
-  
-  // Prepend locale to pathname
-  return `/${currentLocale}${url.pathname}${url.search}`;
+  return getLoginUrl(currentLocale, redirectTarget);
 }
 
 /**

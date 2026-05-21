@@ -24,10 +24,10 @@ export function getLogoItems(): LogoItem[] {
   // Replace with real partner/customer logo assets before launch.
   // Placeholder entries intentionally have generic names.
   return [
-    { name: 'Brand One',   src: '/logos/brand-one.svg',   width: 120, height: 32 },
-    { name: 'Brand Two',   src: '/logos/brand-two.svg',   width: 100, height: 32 },
-    { name: 'Brand Three', src: '/logos/brand-three.svg', width: 130, height: 32 },
-    { name: 'Brand Four',  src: '/logos/brand-four.svg',  width: 110, height: 32 },
-    { name: 'Brand Five',  src: '/logos/brand-five.svg',  width: 120, height: 32 },
+    { name: 'Brand One',   src: '/next.svg',   width: 110, height: 32 },
+    { name: 'Brand Two',   src: '/vercel.svg', width: 100, height: 32 },
+    { name: 'Brand Three', src: '/globe.svg',  width: 32,  height: 32 },
+    { name: 'Brand Four',  src: '/window.svg', width: 32,  height: 32 },
+    { name: 'Brand Five',  src: '/file.svg',   width: 32,  height: 32 },
   ]
 }

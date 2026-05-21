@@ -76,6 +76,75 @@ export interface FeatureItem {
   description: string
 }
 
+export interface StatItem {
+  id: string
+  value: string
+  label: string
+  description: string
+}
+
+export interface HighlightItem {
+  id: string
+  eyebrow?: string
+  title: string
+  description: string
+  points?: string[]
+}
+
+export interface WorkflowStep {
+  id: string
+  title: string
+  description: string
+}
+
+export interface ActionCardItem {
+  id: string
+  icon: string
+  title: string
+  description: string
+  href: string
+  ctaLabel: string
+  eyebrow?: string
+}
+
+export interface FormShellField {
+  id: string
+  label: string
+  placeholder: string
+  type: 'text' | 'email' | 'textarea'
+}
+
+export interface FormShellContent {
+  heading: string
+  eyebrow?: string
+  subtitle: string
+  note: string
+  fields: FormShellField[]
+  formCtaLabel: string
+  formHelper: string
+  primaryCta?: CTALink
+  secondaryCta?: CTALink
+}
+
+export interface ResourceShellItem {
+  id: string
+  title: string
+  description: string
+  meta: string
+}
+
+export interface ResourceShellContent {
+  heading: string
+  eyebrow?: string
+  subtitle: string
+  searchLabel: string
+  searchPlaceholder: string
+  sidebarTitle: string
+  sidebarItems: string[]
+  cards: ResourceShellItem[]
+  note: string
+}
+
 // -----------------------------------------------------------------------------
 // Showcase / Split Section
 // -----------------------------------------------------------------------------

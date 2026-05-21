@@ -17,6 +17,7 @@ import GradientBadge from './GradientBadge'
 import type { HeadingAlign, HeadingLevel } from '@/features/marketing/types'
 
 interface SectionHeadingProps {
+  id?: string
   heading: string
   as?: HeadingLevel
   eyebrow?: string
@@ -26,6 +27,7 @@ interface SectionHeadingProps {
 }
 
 export default function SectionHeading({
+  id,
   heading,
   as: Tag = 'h2',
   eyebrow,
@@ -46,6 +48,7 @@ export default function SectionHeading({
       {eyebrow && <GradientBadge label={eyebrow} />}
 
       <Tag
+        id={id}
         className={cn(
           'font-bold tracking-tight text-foreground',
           Tag === 'h1'

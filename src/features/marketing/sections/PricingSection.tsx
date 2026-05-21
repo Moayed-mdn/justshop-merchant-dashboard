@@ -49,6 +49,7 @@ export default function PricingSection({
       <SectionContainer>
         {/* Section heading */}
         <SectionHeading
+          id="pricing-heading"
           as="h2"
           heading={heading}
           eyebrow={eyebrow}

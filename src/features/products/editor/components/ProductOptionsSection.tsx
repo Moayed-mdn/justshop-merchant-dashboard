@@ -28,6 +28,14 @@ interface Props {
 export function ProductOptionsSection({ options, onChange }: Props) {
   const t = useTranslations('products');
 
+  // ── Helpers ─────────────────────────────────────────────────────────────
+
+  const normalizePositions = (nextOptions: ProductOption[]) =>
+    nextOptions.map((opt, idx) => ({
+      ...opt,
+      position: idx + 1,
+    }));
+
   // ── ID generators ────────────────────────────────────────────────────────
 
   const nextOptionId = () => {
@@ -62,18 +70,25 @@ export function ProductOptionsSection({ options, onChange }: Props) {
   };
 
   const addOption = () => {
-    const nextPos = options.length + 1;
     const newOption: ProductOption = {
       id: nextOptionId(),
       name: '',
-      position: nextPos,
+      position: options.length + 1,
       values: [{ id: nextGlobalValueId(), value: '' }],
     };
-    onChange([...options, newOption]);
+    onChange(normalizePositions([...options, newOption]));
   };
 
   const removeOption = (index: number) => {
-    onChange(options.filter((_, i) => i !== index));
+    onChange(normalizePositions(options.filter((_, i) => i !== index)));
+  };
+
+  const moveOption = (from: number, to: number) => {
+    if (to < 0 || to >= options.length) return;
+    const next = [...options];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    onChange(normalizePositions(next));
   };
 
   // ── Value mutations ──────────────────────────────────────────────────────
@@ -105,6 +120,19 @@ export function ProductOptionsSection({ options, onChange }: Props) {
         vi === valueIndex ? { ...v, value } : v
       ),
     });
+  };
+
+  const moveValue = (
+    optionIndex: number,
+    from: number,
+    to: number
+  ) => {
+    const values = options[optionIndex].values;
+    if (to < 0 || to >= values.length) return;
+    const next = [...values];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    updateOption(optionIndex, { values: next });
   };
 
   // ── Empty state ──────────────────────────────────────────────────────────
@@ -146,14 +174,36 @@ export function ProductOptionsSection({ options, onChange }: Props) {
                   : t('variantEditor.options.noValues')}
               </p>
             </div>
-            <Button
-              type="button"
-              size="sm"
-              variant="destructive"
-              onClick={() => removeOption(optIdx)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <div className="flex gap-1">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => moveOption(optIdx, optIdx - 1)}
+                  disabled={optIdx === 0}
+                >
+                  {t('editor.media.moveUp')}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => moveOption(optIdx, optIdx + 1)}
+                  disabled={optIdx === options.length - 1}
+                >
+                  {t('editor.media.moveDown')}
+                </Button>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="destructive"
+                onClick={() => removeOption(optIdx)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Option name input */}
@@ -194,13 +244,31 @@ export function ProductOptionsSection({ options, onChange }: Props) {
                   }
                   placeholder={t('variantEditor.options.addValue')}
                 />
-                <button
-                  type="button"
-                  onClick={() => removeValue(optIdx, valIdx)}
-                  className="rounded-full p-1 transition-colors hover:bg-muted"
-                >
-                  <X className="h-3 w-3" />
-                </button>
+                <div className="flex gap-0.5">
+                  <button
+                    type="button"
+                    onClick={() => moveValue(optIdx, valIdx, valIdx - 1)}
+                    disabled={valIdx === 0}
+                    className="rounded-full p-1 transition-colors hover:bg-muted disabled:opacity-30"
+                  >
+                    <X className="h-3 w-3 rotate-45" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveValue(optIdx, valIdx, valIdx + 1)}
+                    disabled={valIdx === option.values.length - 1}
+                    className="rounded-full p-1 transition-colors hover:bg-muted disabled:opacity-30"
+                  >
+                    <X className="h-3 w-3 -rotate-[135deg]" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeValue(optIdx, valIdx)}
+                    className="rounded-full p-1 transition-colors hover:bg-muted"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>

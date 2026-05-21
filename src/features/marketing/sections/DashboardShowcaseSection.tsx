@@ -39,6 +39,7 @@ export default function DashboardShowcaseSection({
         left={
           <div className="flex flex-col gap-8">
             <SectionHeading
+              id="showcase-heading"
               as="h2"
               heading={heading}
               subtext={subtext}

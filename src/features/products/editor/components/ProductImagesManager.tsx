@@ -40,7 +40,7 @@ export function ProductImagesManager({ images, onChange }: Props) {
       id:       getNextNegativeImageId(images),
       url,
       alt:      null,
-      position: images.length,
+      position: images.length + 1,
     };
 
     onChange([...images, newImage]);
@@ -60,7 +60,7 @@ export function ProductImagesManager({ images, onChange }: Props) {
     onChange(
       images
         .filter((img) => img.id !== id)
-        .map((img, idx) => ({ ...img, position: idx }))
+        .map((img, idx) => ({ ...img, position: idx + 1 }))
     );
   };
 
@@ -71,7 +71,7 @@ export function ProductImagesManager({ images, onChange }: Props) {
     const next = [...images];
     const [item] = next.splice(from, 1);
     next.splice(to, 0, item);
-    onChange(next.map((img, idx) => ({ ...img, position: idx })));
+    onChange(next.map((img, idx) => ({ ...img, position: idx + 1 })));
   };
 
   // ── Alt text ──────────────────────────────────────────────────────────────
