@@ -1,64 +1,52 @@
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
-import { buildPageMetadata } from '@/features/marketing/lib/seo'
-import {
-  getContactCTAContent,
-  getContactFormShellContent,
-  getContactHeroContent,
-  getContactMethodCards,
-  getContactResourceShellContent,
-  getContactStats,
-} from '@/features/marketing/content/contact/page-content'
-
-import HeroSection from '@/features/marketing/sections/HeroSection'
-import StatsSection from '@/features/marketing/sections/StatsSection'
-import ActionCardSection from '@/features/marketing/sections/ActionCardSection'
-import FormShellSection from '@/features/marketing/sections/FormShellSection'
-import ResourceShellSection from '@/features/marketing/sections/ResourceShellSection'
-import CTASection from '@/features/marketing/sections/CTASection'
+import { buildMetadataFromSeo } from '@/lib/seo/cms-seo'
+import { cmsService } from '@/services/cms/cms.service'
+import { CmsContent } from '@/components/cms/CmsContent'
+import { JsonLd } from '@/components/cms/JsonLd'
+import { CmsSectionRenderer } from '@/components/cms/CmsSectionRenderer'
+import SectionContainer from '@/features/marketing/layouts/SectionContainer'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('marketing')
   const locale = await getLocale()
-
-  return buildPageMetadata({
-    locale,
-    title: t('meta.contact.title'),
-    description: t('meta.contact.description'),
-    path: '/contact',
-  })
+  try {
+    const page = await cmsService.getPage('contact')
+    return buildMetadataFromSeo(page.seo, locale)
+  } catch (error) {
+    return {
+      title: 'Contact Us | LaraTenant Commerce',
+      description: 'Get in touch with our team for support or sales inquiries',
+    }
+  }
 }
 
 export default async function ContactPage() {
-  const t = await getTranslations('marketing')
+  const locale = await getLocale()
 
-  const hero = getContactHeroContent(t)
-  const stats = getContactStats(t)
-  const methods = getContactMethodCards(t)
-  const form = getContactFormShellContent(t)
-  const shortcuts = getContactResourceShellContent(t)
-  const cta = getContactCTAContent(t)
+  let cmsPage = null
+  try {
+    cmsPage = await cmsService.getPage('contact')
+  } catch (error) {
+    console.error('Failed to fetch contact page from CMS', error)
+    notFound()
+  }
 
   return (
     <>
-      <HeroSection {...hero} />
+      {cmsPage?.seo?.structured_data && (
+        <JsonLd data={cmsPage.seo.structured_data} />
+      )}
+      
+      {/* Fully CMS-driven sections rendering */}
+      <CmsSectionRenderer sections={cmsPage?.sections} />
 
-      <StatsSection items={stats} />
-
-      <ActionCardSection
-        heading={t('contactPage.methods.heading')}
-        eyebrow={t('contactPage.methods.eyebrow')}
-        subtitle={t('contactPage.methods.subtitle')}
-        items={methods}
-        columns={3}
-      />
-
-      <FormShellSection content={form} className="bg-muted/20" />
-
-      <ResourceShellSection content={shortcuts} />
-
-      <CTASection {...cta} />
+      {cmsPage?.content && (
+        <SectionContainer className="py-12">
+          <CmsContent content={cmsPage.content} />
+        </SectionContainer>
+      )}
     </>
   )
 }

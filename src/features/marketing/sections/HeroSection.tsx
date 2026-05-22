@@ -29,6 +29,7 @@ export default function HeroSection({
   primaryCta,
   secondaryCta,
   previewAlt,
+  previewSrc,
 }: HeroSectionProps) {
   return (
     <section
@@ -67,43 +68,47 @@ export default function HeroSection({
           />
 
           {/* CTA group */}
-          <div
-            className={cn(
-              'mt-10 flex flex-wrap items-center justify-center gap-4',
-            )}
-          >
-            <Link
-              href={primaryCta.href}
+          {(primaryCta || secondaryCta) && (
+            <div
               className={cn(
-                'inline-flex items-center justify-center rounded-lg',
-                'bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground',
-                'transition-colors duration-150 hover:bg-primary/90',
-                'focus-visible:outline-none focus-visible:ring-2',
-                'focus-visible:ring-ring focus-visible:ring-offset-2',
+                'mt-10 flex flex-wrap items-center justify-center gap-4',
               )}
             >
-              {primaryCta.label}
-            </Link>
+              {primaryCta && (
+                <Link
+                  href={primaryCta.href}
+                  className={cn(
+                    'inline-flex items-center justify-center rounded-lg',
+                    'bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground',
+                    'transition-colors duration-150 hover:bg-primary/90',
+                    'focus-visible:outline-none focus-visible:ring-2',
+                    'focus-visible:ring-ring focus-visible:ring-offset-2',
+                  )}
+                >
+                  {primaryCta.label}
+                </Link>
+              )}
 
-            {secondaryCta && (
-              <Link
-                href={secondaryCta.href}
-                className={cn(
-                  'inline-flex items-center justify-center rounded-lg',
-                  'border border-border bg-background px-6 py-3',
-                  'text-sm font-semibold text-foreground',
-                  'transition-colors duration-150 hover:bg-muted',
-                  'focus-visible:outline-none focus-visible:ring-2',
-                  'focus-visible:ring-ring focus-visible:ring-offset-2',
-                )}
-              >
-                {secondaryCta.label}
-              </Link>
-            )}
-          </div>
+              {secondaryCta && (
+                <Link
+                  href={secondaryCta.href}
+                  className={cn(
+                    'inline-flex items-center justify-center rounded-lg',
+                    'border border-border bg-background px-6 py-3',
+                    'text-sm font-semibold text-foreground',
+                    'transition-colors duration-150 hover:bg-muted',
+                    'focus-visible:outline-none focus-visible:ring-2',
+                    'focus-visible:ring-ring focus-visible:ring-offset-2',
+                  )}
+                >
+                  {secondaryCta.label}
+                </Link>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Dashboard preview */}
+        {/* Dashboard preview or CMS Image */}
         <div
           className={cn(
             'relative mx-auto mt-16 w-full max-w-5xl',
@@ -121,7 +126,17 @@ export default function HeroSection({
             )}
           />
 
-          <DashboardPreview alt={previewAlt} />
+          {previewSrc ? (
+            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
+              <img
+                src={previewSrc}
+                alt={previewAlt}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+          ) : (
+            <DashboardPreview alt={previewAlt} />
+          )}
         </div>
       </SectionContainer>
     </section>

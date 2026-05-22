@@ -1,71 +1,52 @@
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
-import { buildPageMetadata } from '@/features/marketing/lib/seo'
-import {
-  getDemoCTAContent,
-  getDemoHeroContent,
-  getDemoRequestCards,
-  getDemoShowcaseContent,
-  getDemoStats,
-  getDemoWalkthroughHighlights,
-} from '@/features/marketing/content/demo/page-content'
-
-import HeroSection from '@/features/marketing/sections/HeroSection'
-import StatsSection from '@/features/marketing/sections/StatsSection'
-import DashboardShowcaseSection from '@/features/marketing/sections/DashboardShowcaseSection'
-import DetailGridSection from '@/features/marketing/sections/DetailGridSection'
-import ActionCardSection from '@/features/marketing/sections/ActionCardSection'
-import CTASection from '@/features/marketing/sections/CTASection'
+import { buildMetadataFromSeo } from '@/lib/seo/cms-seo'
+import { cmsService } from '@/services/cms/cms.service'
+import { CmsContent } from '@/components/cms/CmsContent'
+import { JsonLd } from '@/components/cms/JsonLd'
+import { CmsSectionRenderer } from '@/components/cms/CmsSectionRenderer'
+import SectionContainer from '@/features/marketing/layouts/SectionContainer'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('marketing')
   const locale = await getLocale()
-
-  return buildPageMetadata({
-    locale,
-    title: t('meta.demo.title'),
-    description: t('meta.demo.description'),
-    path: '/demo',
-  })
+  try {
+    const page = await cmsService.getPage('demo')
+    return buildMetadataFromSeo(page.seo, locale)
+  } catch (error) {
+    return {
+      title: 'Demo | LaraTenant Commerce',
+      description: 'See LaraTenant Commerce in action',
+    }
+  }
 }
 
 export default async function DemoPage() {
-  const t = await getTranslations('marketing')
+  const locale = await getLocale()
 
-  const hero = getDemoHeroContent(t)
-  const stats = getDemoStats(t)
-  const showcase = getDemoShowcaseContent(t)
-  const walkthrough = getDemoWalkthroughHighlights(t)
-  const requestCards = getDemoRequestCards(t)
-  const cta = getDemoCTAContent(t)
+  let cmsPage = null
+  try {
+    cmsPage = await cmsService.getPage('demo')
+  } catch (error) {
+    console.error('Failed to fetch demo page from CMS', error)
+    notFound()
+  }
 
   return (
     <>
-      <HeroSection {...hero} />
+      {cmsPage?.seo?.structured_data && (
+        <JsonLd data={cmsPage.seo.structured_data} />
+      )}
+      
+      {/* Fully CMS-driven sections rendering */}
+      <CmsSectionRenderer sections={cmsPage?.sections} />
 
-      <StatsSection items={stats} />
-
-      <DashboardShowcaseSection {...showcase} />
-
-      <DetailGridSection
-        heading={t('demoPage.walkthrough.heading')}
-        eyebrow={t('demoPage.walkthrough.eyebrow')}
-        subtitle={t('demoPage.walkthrough.subtitle')}
-        items={walkthrough}
-        columns={2}
-      />
-
-      <ActionCardSection
-        heading={t('demoPage.request.heading')}
-        eyebrow={t('demoPage.request.eyebrow')}
-        subtitle={t('demoPage.request.subtitle')}
-        items={requestCards}
-        columns={3}
-        className="bg-muted/20"
-      />
-
-      <CTASection {...cta} />
+      {cmsPage?.content && (
+        <SectionContainer className="py-12">
+          <CmsContent content={cmsPage.content} />
+        </SectionContainer>
+      )}
     </>
   )
 }

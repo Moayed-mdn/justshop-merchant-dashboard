@@ -48,9 +48,11 @@ export interface HeroContent {
   badge?: string
   headline: string
   subtext: string
-  primaryCta: CTALink
+  primaryCta?: CTALink
   secondaryCta?: CTALink
   previewAlt: string
+  /** Path relative to /public or absolute URL from CMS */
+  previewSrc?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -212,10 +214,56 @@ export interface FAQItem {
 // -----------------------------------------------------------------------------
 
 export interface CTAContent {
-  title: string
-  description: string
-  primaryCta: CTALink
-  secondaryCta?: CTALink
+  title: string;
+  description: string;
+  primaryCta: CTALink;
+  secondaryCta?: CTALink;
+}
+
+// -----------------------------------------------------------------------------
+// New CMS Sections (Demo & Templates)
+// -----------------------------------------------------------------------------
+
+export interface ProductWalkthroughStep {
+  title: string;
+  description: string;
+  image: string;
+}
+
+export interface ProductWalkthroughContent {
+  heading: string;
+  steps: ProductWalkthroughStep[];
+}
+
+export interface TemplateItem {
+  id: string;
+  name: string;
+  thumbnail: string;
+  demo_url: string;
+  category: string;
+}
+
+export interface TemplateShowcaseContent {
+  heading: string;
+  subtitle: string;
+  templates: TemplateItem[];
+}
+
+export interface IndustryUseCaseItem {
+  industry: string;
+  description: string;
+  icon: string;
+}
+
+export interface PerformanceMetricItem {
+  label: string;
+  value: string;
+  subtext: string;
+}
+
+export interface PerformanceMetricsContent {
+  heading: string;
+  metrics: PerformanceMetricItem[];
 }
 
 // -----------------------------------------------------------------------------

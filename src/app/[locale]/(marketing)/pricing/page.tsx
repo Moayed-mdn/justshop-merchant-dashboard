@@ -1,97 +1,52 @@
-// =============================================================================
-// Pricing Page — Marketing Route
-//
-// Dedicated pricing page. Owns its own metadata, content wiring,
-// and section composition. Reuses PricingSection and FAQSection.
-//
-// Rules:
-//   - thin orchestrator — no business logic
-//   - pricing FAQs are separate from homepage FAQs (different questions)
-//   - JSON-LD FAQPage schema scoped to pricing FAQs only
-//   - CTA section is reusable with pricing-specific copy
-// =============================================================================
-
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
-import { buildPageMetadata, buildFAQJsonLd } from '@/features/marketing/lib/seo'
-
-import { getPricingPlans } from '@/features/marketing/content/pricing/plans'
-import { getPricingFAQs }  from '@/features/marketing/content/pricing/faqs'
-
-import PricingSection from '@/features/marketing/sections/PricingSection'
-import FAQSection     from '@/features/marketing/sections/FAQSection'
-import CTASection     from '@/features/marketing/sections/CTASection'
-
-import {
-  CTA_START_SELLING,
-  CTA_CONTACT_SALES,
-} from '@/features/marketing/constants/cta-links'
-
-// -----------------------------------------------------------------------------
-// Metadata
-// -----------------------------------------------------------------------------
+import { buildMetadataFromSeo } from '@/lib/seo/cms-seo'
+import { cmsService } from '@/services/cms/cms.service'
+import { CmsContent } from '@/components/cms/CmsContent'
+import { JsonLd } from '@/components/cms/JsonLd'
+import { CmsSectionRenderer } from '@/components/cms/CmsSectionRenderer'
+import SectionContainer from '@/features/marketing/layouts/SectionContainer'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('marketing')
   const locale = await getLocale()
-
-  return buildPageMetadata({
-    locale,
-    title: t('meta.pricing.title'),
-    description: t('meta.pricing.description'),
-    path: '/pricing',
-  })
+  try {
+    const page = await cmsService.getPage('pricing')
+    return buildMetadataFromSeo(page.seo, locale)
+  } catch (error) {
+    return {
+      title: 'Pricing Plans | LaraTenant Commerce',
+      description: 'Choose the right plan for your commerce operations',
+    }
+  }
 }
 
-// -----------------------------------------------------------------------------
-// Page
-// -----------------------------------------------------------------------------
-
 export default async function PricingPage() {
-  const t = await getTranslations('marketing')
+  const locale = await getLocale()
 
-  const plans = getPricingPlans(t)
-  const faqs  = getPricingFAQs(t)
+  let cmsPage = null
+  try {
+    cmsPage = await cmsService.getPage('pricing')
+  } catch (error) {
+    console.error('Failed to fetch pricing page from CMS', error)
+    notFound()
+  }
 
   return (
     <>
-      {/* Pricing-scoped FAQ structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: buildFAQJsonLd(faqs) }}
-      />
+      {cmsPage?.seo?.structured_data && (
+        <JsonLd data={cmsPage.seo.structured_data} />
+      )}
+      
+      {/* Fully CMS-driven sections rendering */}
+      <CmsSectionRenderer sections={cmsPage?.sections} />
 
-      <PricingSection
-        heading={t('pricing.heading')}
-        eyebrow={t('pricing.eyebrow')}
-        subtitle={t('pricing.subtitle')}
-        plans={plans}
-        toggleLabel={{
-          monthly: t('pricing.toggle.monthly'),
-          annual:  t('pricing.toggle.annual'),
-          badge:   t('pricing.toggle.badge'),
-        }}
-      />
-
-      <FAQSection
-        heading={t('pricing.faq.heading')}
-        eyebrow={t('pricing.faq.eyebrow')}
-        items={faqs}
-      />
-
-      <CTASection
-        title={t('pricing.cta.title')}
-        description={t('pricing.cta.description')}
-        primaryCta={{
-          label: t('pricing.cta.primaryCta'),
-          href: CTA_START_SELLING.href,
-        }}
-        secondaryCta={{
-          label: t('pricing.cta.secondaryCta'),
-          href: CTA_CONTACT_SALES.href,
-        }}
-      />
+      {cmsPage?.content && (
+        <SectionContainer className="py-12">
+          <CmsContent content={cmsPage.content} />
+        </SectionContainer>
+      )}
     </>
   )
 }

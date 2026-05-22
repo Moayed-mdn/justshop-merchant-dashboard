@@ -24,6 +24,8 @@ interface SectionHeadingProps {
   subtext?: string
   align?: HeadingAlign
   className?: string
+  headingClassName?: string
+  subtextClassName?: string
 }
 
 export default function SectionHeading({
@@ -34,6 +36,8 @@ export default function SectionHeading({
   subtext,
   align = 'center',
   className,
+  headingClassName,
+  subtextClassName,
 }: SectionHeadingProps) {
   const isCenter = align === 'center'
 
@@ -54,6 +58,7 @@ export default function SectionHeading({
           Tag === 'h1'
             ? 'text-4xl sm:text-5xl lg:text-6xl'
             : 'text-3xl sm:text-4xl',
+          headingClassName
         )}
       >
         {heading}
@@ -64,6 +69,7 @@ export default function SectionHeading({
           className={cn(
             'max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg',
             isCenter && 'mx-auto',
+            subtextClassName
           )}
         >
           {subtext}

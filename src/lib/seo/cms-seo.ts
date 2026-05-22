@@ -56,3 +56,44 @@ export function buildRobotsMetadata(seo: SeoPayload) {
     },
   };
 }
+
+/**
+ * Generates Organization structured data.
+ */
+export function buildOrgJsonLd(): string {
+  const SITE_NAME = 'LaraTenant Commerce';
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+  
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    ...(SITE_URL ? { url: SITE_URL, logo: `${SITE_URL}/next.svg` } : {}),
+  };
+
+  return JSON.stringify(schema);
+}
+
+/**
+ * Generates SoftwareApplication structured data.
+ */
+export function buildSoftwareJsonLd(): string {
+  const SITE_NAME = 'LaraTenant Commerce';
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: SITE_NAME,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    ...(SITE_URL ? { url: SITE_URL } : {}),
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  };
+
+  return JSON.stringify(schema);
+}

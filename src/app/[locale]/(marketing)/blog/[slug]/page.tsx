@@ -48,9 +48,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <Badge variant="outline" className="px-3 py-1">
                   {post.category.name}
                 </Badge>
-                <time className="text-sm text-muted-foreground" dateTime={post.published_at}>
-                  {formatDate(post.published_at)}
-                </time>
+                {post.published_at && (
+                  <time className="text-sm text-muted-foreground" dateTime={post.published_at}>
+                    {formatDate(post.published_at)}
+                  </time>
+                )}
               </div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8">
                 {post.title}
@@ -86,7 +88,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         <SectionContainer>
           <div className="max-w-3xl mx-auto">
-            <CmsContent content={post.content} />
+            <CmsContent content={post.content || ''} />
           </div>
         </SectionContainer>
       </article>

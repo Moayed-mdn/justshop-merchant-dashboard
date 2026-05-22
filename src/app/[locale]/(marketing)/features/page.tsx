@@ -1,96 +1,53 @@
-// =============================================================================
-// Features Page — Marketing Route
-//
-// Dedicated product marketing page for merchant-facing capabilities.
-// Owns metadata and composes reusable marketing sections with localized content.
-// =============================================================================
-
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
-import { buildPageMetadata } from '@/features/marketing/lib/seo'
+import { notFound } from 'next/navigation'
 
-import { getExtendedFeatures } from '@/features/marketing/content/features/feature-list'
-import {
-  getArchitectureHighlights,
-  getFeaturePageStats,
-  getFeaturesCTAContent,
-  getFeaturesHeroContent,
-  getFeaturesShowcaseContent,
-  getFeatureWorkflowSteps,
-  getReliabilityHighlights,
-} from '@/features/marketing/content/features/page-content'
-
-import HeroSection from '@/features/marketing/sections/HeroSection'
-import StatsSection from '@/features/marketing/sections/StatsSection'
-import FeatureGridSection from '@/features/marketing/sections/FeatureGridSection'
-import DashboardShowcaseSection from '@/features/marketing/sections/DashboardShowcaseSection'
-import WorkflowSection from '@/features/marketing/sections/WorkflowSection'
-import DetailGridSection from '@/features/marketing/sections/DetailGridSection'
-import CTASection from '@/features/marketing/sections/CTASection'
+import { buildMetadataFromSeo } from '@/lib/seo/cms-seo'
+import { cmsService } from '@/services/cms/cms.service'
+import { CmsContent } from '@/components/cms/CmsContent'
+import { JsonLd } from '@/components/cms/JsonLd'
+import { CmsSectionRenderer } from '@/components/cms/CmsSectionRenderer'
+import SectionContainer from '@/features/marketing/layouts/SectionContainer'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('marketing')
   const locale = await getLocale()
-  return buildPageMetadata({
-    locale,
-    title: t('meta.features.title'),
-    description: t('meta.features.description'),
-    path: '/features',
-  })
+  const t = await getTranslations('marketing.meta.features')
+  try {
+    const page = await cmsService.getPage('features')
+    return buildMetadataFromSeo(page.seo, locale)
+  } catch (error) {
+    return {
+      title: `${t('title')} | LaraTenant Commerce`,
+      description: t('description'),
+    }
+  }
 }
 
 export default async function FeaturesPage() {
-  const t = await getTranslations('marketing')
+  const locale = await getLocale()
 
-  const hero = getFeaturesHeroContent(t)
-  const stats = getFeaturePageStats(t)
-  const features = getExtendedFeatures(t)
-  const showcase = getFeaturesShowcaseContent(t)
-  const workflow = getFeatureWorkflowSteps(t)
-  const architecture = getArchitectureHighlights(t)
-  const reliability = getReliabilityHighlights(t)
-  const cta = getFeaturesCTAContent(t)
+  let cmsPage = null
+  try {
+    cmsPage = await cmsService.getPage('features')
+  } catch (error) {
+    console.error('Failed to fetch features page from CMS', error)
+    notFound()
+  }
 
   return (
     <>
-      <HeroSection {...hero} />
+      {cmsPage?.seo?.structured_data && (
+        <JsonLd data={cmsPage.seo.structured_data} />
+      )}
+      
+      {/* Fully CMS-driven sections rendering */}
+      <CmsSectionRenderer sections={cmsPage?.sections} />
 
-      <StatsSection items={stats} />
-
-      <FeatureGridSection
-        heading={t('featuresPage.grid.heading')}
-        eyebrow={t('featuresPage.grid.eyebrow')}
-        subtitle={t('featuresPage.grid.subtitle')}
-        items={features}
-      />
-
-      <DashboardShowcaseSection {...showcase} />
-
-      <WorkflowSection
-        heading={t('featuresPage.workflow.heading')}
-        eyebrow={t('featuresPage.workflow.eyebrow')}
-        subtitle={t('featuresPage.workflow.subtitle')}
-        steps={workflow}
-      />
-
-      <DetailGridSection
-        heading={t('featuresPage.architecture.heading')}
-        eyebrow={t('featuresPage.architecture.eyebrow')}
-        subtitle={t('featuresPage.architecture.subtitle')}
-        items={architecture}
-        columns={2}
-      />
-
-      <DetailGridSection
-        heading={t('featuresPage.reliability.heading')}
-        eyebrow={t('featuresPage.reliability.eyebrow')}
-        subtitle={t('featuresPage.reliability.subtitle')}
-        items={reliability}
-        columns={2}
-        className="bg-muted/20"
-      />
-
-      <CTASection {...cta} />
+      {cmsPage?.content && (
+        <SectionContainer className="py-12">
+          <CmsContent content={cmsPage.content} />
+        </SectionContainer>
+      )}
     </>
   )
 }

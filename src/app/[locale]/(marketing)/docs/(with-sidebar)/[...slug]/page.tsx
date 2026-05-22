@@ -38,7 +38,7 @@ export default async function DocsPage({ params }: DocsPageProps) {
 
   try {
     const page = await cmsService.getDocsPage(slugPath);
-    const { content, headings } = processContentHeadings(page.content);
+    const { content, headings } = processContentHeadings(page.content || '');
 
     return (
       <div className="flex flex-col lg:flex-row gap-12">

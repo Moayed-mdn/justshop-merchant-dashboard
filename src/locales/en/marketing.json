@@ -22,6 +22,50 @@
     }
   },
 
+  "sections": {
+    "categories": {
+      "documentation_heading": "Documentation Categories",
+      "blog_heading": "Blog Categories"
+    },
+    "blog": {
+      "latest_posts_heading": "Latest Posts",
+      "latest_posts_subtext": "Explore our recent articles and platform news."
+    },
+    "enterprise": {
+      "capabilities_heading": "Enterprise-grade Capabilities",
+      "success_stories_heading": "Enterprise Success Stories"
+    },
+    "pricing": {
+      "plans_heading": "Plans for Every Stage of Growth",
+      "compare_plans_heading": "Compare our plans"
+    },
+    "faq": {
+      "heading": "Frequently Asked Questions"
+    },
+    "testimonials": {
+      "heading": "What our customers say"
+    },
+    "features": {
+      "heading": "Platform Features"
+    },
+    "integrations": {
+      "heading": "Seamless Integrations",
+      "subtext": "Connect your favorite tools to LaraTenant Commerce."
+    },
+    "templates": {
+      "categories_heading": "Browse Templates by Category",
+      "use_cases_heading": "Industry Use Cases"
+    },
+    "contact": {
+      "methods_heading": "Get in Touch",
+      "methods_subtext": "Direct lines to our specialist teams.",
+      "offices_heading": "Our Offices",
+      "offices_subtext": "Visit us at our global headquarters.",
+      "hours_heading": "Support Hours",
+      "hours_subtext": "When you can expect to hear from us."
+    }
+  },
+
   "home": {
     "hero": {
       "badge": "Multi-Tenant Commerce Platform",
@@ -245,442 +289,6 @@
           "answer": "Yes. Enterprise plans are tailored to your requirements. Contact our team to discuss store limits, order volumes, SLAs, and custom integrations."
         }
       }
-    },
-
-    "cta": {
-      "title": "Start Selling Today",
-      "description": "Create your store and start managing products, orders, and growth from a unified platform.",
-      "primaryCta": "Create Your Store",
-      "secondaryCta": "Talk to Sales"
-    }
-  },
-
-  "featuresPage": {
-    "hero": {
-      "badge": "Merchant Capabilities",
-      "headline": "Tools That Keep Commerce Operations Moving",
-      "subtext": "Manage products, inventory, orders, localization, and growth from a commerce platform designed for structured daily execution.",
-      "primaryCta": "Start Selling",
-      "secondaryCta": "View Pricing",
-      "previewAlt": "Commerce dashboard showing catalog management, order activity, and performance trends"
-    },
-    "stats": {
-      "items": {
-        "unified-operations": {
-          "value": "One dashboard",
-          "label": "Unified operations",
-          "description": "Keep product work, merchandising decisions, order handling, and reporting inside one consistent workspace."
-        },
-        "store-isolation": {
-          "value": "Store-level",
-          "label": "Tenant isolation",
-          "description": "Separate catalogs, settings, and activity by store without losing the operational visibility your team needs."
-        },
-        "localized-commerce": {
-          "value": "Localized",
-          "label": "Market-ready commerce",
-          "description": "Support multilingual storefronts and locale-aware experiences without bolting on parallel workflows."
-        },
-        "ssr-foundation": {
-          "value": "SSR-first",
-          "label": "Predictable delivery",
-          "description": "Lean server-rendered pages and shared primitives help keep the experience fast, stable, and easy to scale."
-        }
-      }
-    },
-    "grid": {
-      "eyebrow": "Core Features",
-      "heading": "Everything merchants need to run day-to-day commerce",
-      "subtitle": "Purpose-built capabilities for catalog teams, operators, and growing brands that need structure without extra complexity.",
-      "items": {
-        "product-management": {
-          "title": "Product Management",
-          "description": "Maintain structured catalogs with clear product data, publishing status, and merchandising control."
-        },
-        "inventory": {
-          "title": "Inventory",
-          "description": "Track stock changes, availability, and operational updates without losing visibility across stores."
-        },
-        "variants": {
-          "title": "Variants",
-          "description": "Organize options such as size, color, and configuration with tooling that stays manageable as assortments grow."
-        },
-        "multilingual-commerce": {
-          "title": "Multilingual Commerce",
-          "description": "Manage translated content and locale-aware storefront experiences from the same product workflow."
-        },
-        "analytics": {
-          "title": "Analytics",
-          "description": "Review store performance, order trends, and product activity through dashboards built for quick decisions."
-        },
-        "orders": {
-          "title": "Orders",
-          "description": "Process order activity with clear status visibility so teams can move from capture to fulfillment with confidence."
-        },
-        "customer-management": {
-          "title": "Customer Management",
-          "description": "Keep customer context connected to orders and storefront activity so support and operations stay aligned."
-        },
-        "payments": {
-          "title": "Payments",
-          "description": "Handle payment workflows as part of the broader commerce operation instead of isolated back-office steps."
-        },
-        "seo": {
-          "title": "SEO Controls",
-          "description": "Publish searchable storefront content with structured metadata and merchant-friendly optimization touchpoints."
-        },
-        "storefront-customization": {
-          "title": "Storefront Customization",
-          "description": "Shape merchandising presentation and brand expression without disrupting the platform's shared operational model."
-        },
-        "media-management": {
-          "title": "Media Management",
-          "description": "Organize product imagery and visual assets in the same workflow your team already uses to ship storefront updates."
-        },
-        "permissions": {
-          "title": "Permissions & Roles",
-          "description": "Control who can edit content, manage operations, and review reporting with role-based team boundaries."
-        }
-      }
-    },
-    "showcase": {
-      "heading": "A workflow built for teams that ship commerce changes every day",
-      "subtext": "Catalog updates, storefront preparation, and operational review happen in one coordinated flow so merchants spend less time stitching tools together.",
-      "cta": "Start Selling",
-      "previewAlt": "Merchant dashboard preview with products, recent orders, and analytics modules"
-    },
-    "workflow": {
-      "eyebrow": "Merchant Workflow",
-      "heading": "Move from setup to storefront launch without friction",
-      "subtitle": "The platform is organized around the work merchants actually do, from catalog preparation to performance review.",
-      "items": {
-        "create-products": {
-          "title": "Create products",
-          "description": "Add structured product information, media, translations, and publishing details in one clear authoring flow."
-        },
-        "manage-inventory": {
-          "title": "Manage inventory",
-          "description": "Adjust stock, monitor availability, and keep product readiness visible before each launch or promotion."
-        },
-        "launch-storefront": {
-          "title": "Launch storefront",
-          "description": "Push content and merchandising updates with confidence once your catalog and store settings are ready."
-        },
-        "track-analytics": {
-          "title": "Track analytics",
-          "description": "Review the impact of storefront changes through accessible dashboards that support faster follow-up decisions."
-        }
-      }
-    },
-    "architecture": {
-      "eyebrow": "Multi-Tenant Architecture",
-      "heading": "Designed to scale without blurring store boundaries",
-      "subtitle": "The platform keeps merchant operations organized across stores, teams, and locales while preserving a single product foundation.",
-      "items": {
-        "tenant-isolation": {
-          "eyebrow": "Isolation",
-          "title": "Store data stays scoped to the right tenant",
-          "description": "Each store keeps its own operational boundary so teams can work confidently without cross-store leakage.",
-          "pointOne": "Separate catalog and order context per store.",
-          "pointTwo": "Shared platform experience without shared merchant data."
-        },
-        "scalable-operations": {
-          "eyebrow": "Scalability",
-          "title": "Expand operations without rebuilding workflows",
-          "description": "Structured patterns make it easier to add stores, products, and markets while keeping day-to-day work familiar.",
-          "pointOne": "Repeatable workflows for growing merchant teams.",
-          "pointTwo": "Consistent operating model as commerce volume increases."
-        },
-        "admin-tooling": {
-          "eyebrow": "Control",
-          "title": "Admin tooling supports oversight without clutter",
-          "description": "Operators can review activity, manage access, and keep store operations aligned from a central workspace.",
-          "pointOne": "Role-aware management surfaces the right controls to the right teams.",
-          "pointTwo": "Operational visibility remains clear as ownership expands."
-        },
-        "localization-ready": {
-          "eyebrow": "Localization",
-          "title": "Locale-aware experiences fit naturally into the platform",
-          "description": "Localization is treated as part of the core product model, not as a disconnected add-on.",
-          "pointOne": "Supports translated content and locale-first routing patterns.",
-          "pointTwo": "Keeps expansion into new markets operationally consistent."
-        }
-      }
-    },
-    "reliability": {
-      "eyebrow": "Performance & Reliability",
-      "heading": "Built for dependable commerce execution",
-      "subtitle": "The experience stays grounded in server rendering, secure access boundaries, and composable architecture choices that reduce operational drag.",
-      "items": {
-        "server-rendering": {
-          "eyebrow": "Rendering",
-          "title": "SSR-first delivery keeps pages stable and indexable",
-          "description": "Marketing routes and product-facing experiences are built to render predictably without unnecessary client-only logic.",
-          "pointOne": "Supports strong SEO foundations and reliable initial loads.",
-          "pointTwo": "Reduces hydration risk across content-heavy marketing surfaces."
-        },
-        "fast-dashboards": {
-          "eyebrow": "Responsiveness",
-          "title": "Fast dashboards support operational pace",
-          "description": "Lean component structure and shared UI primitives keep the interface easy to navigate as merchant activity grows.",
-          "pointOne": "Optimized section composition avoids excessive page weight.",
-          "pointTwo": "Consistent interaction patterns reduce operator friction."
-        },
-        "secure-auth": {
-          "eyebrow": "Security",
-          "title": "Secure authentication respects team boundaries",
-          "description": "Session-based access and role-aware workflows help keep operational controls in the right hands.",
-          "pointOne": "Permission-aware access reduces accidental exposure.",
-          "pointTwo": "Shared auth patterns keep the platform consistent across routes."
-        },
-        "modern-stack": {
-          "eyebrow": "Foundation",
-          "title": "Modern architecture stays flexible as needs evolve",
-          "description": "Composable sections, shared types, and server-first patterns make the platform easier to extend without drift.",
-          "pointOne": "Reusable marketing primitives prevent one-off page implementations.",
-          "pointTwo": "Structured content layers keep future updates maintainable."
-        }
-      }
-    },
-    "cta": {
-      "title": "Launch a commerce workflow your team can actually maintain",
-      "description": "Bring products, inventory, storefront updates, and reporting into one platform built for growing merchants.",
-      "primaryCta": "Create Your Store",
-      "secondaryCta": "Explore Enterprise"
-    }
-  },
-
-  "enterprisePage": {
-    "hero": {
-      "badge": "Enterprise Commerce",
-      "headline": "Commerce infrastructure for teams operating across stores, brands, and markets",
-      "subtext": "Give enterprise teams structured control over catalog operations, permissions, localization, and reporting from one scalable platform foundation.",
-      "primaryCta": "Start Your Rollout",
-      "secondaryCta": "Explore Features",
-      "previewAlt": "Enterprise commerce dashboard preview showing centralized oversight, permissions, and localized operations"
-    },
-    "stats": {
-      "items": {
-        "centralized-oversight": {
-          "value": "Centralized",
-          "label": "Operational oversight",
-          "description": "Monitor multiple stores, teams, and workflows from a single system instead of stitching visibility together manually."
-        },
-        "isolated-tenants": {
-          "value": "Isolated",
-          "label": "Tenant boundaries",
-          "description": "Keep enterprise operations structured with clear separation between stores while preserving shared governance."
-        },
-        "localized-readiness": {
-          "value": "Locale-ready",
-          "label": "Global expansion",
-          "description": "Support multilingual experiences and locale-aware routing patterns as your organization grows into new markets."
-        },
-        "structured-collaboration": {
-          "value": "Role-based",
-          "label": "Team collaboration",
-          "description": "Assign operational responsibility with explicit permissions so every team works with the right amount of control."
-        }
-      }
-    },
-    "capabilities": {
-      "eyebrow": "Enterprise Capabilities",
-      "heading": "A platform model that supports larger commerce organizations",
-      "subtitle": "Built for multi-brand operators, complex teams, and businesses that need tighter control as commerce operations expand.",
-      "items": {
-        "multi-store-operations": {
-          "eyebrow": "Operations",
-          "title": "Coordinate multi-store activity from one operational layer",
-          "description": "Keep catalogs, orders, and merchandising work organized across stores without introducing separate operating systems per brand.",
-          "pointOne": "Supports centralized oversight for distributed storefront activity.",
-          "pointTwo": "Preserves store-specific context where teams need it."
-        },
-        "advanced-permissions": {
-          "eyebrow": "Permissions",
-          "title": "Control access with role-aware workflows",
-          "description": "Enterprise teams can assign responsibilities clearly so merchandising, support, and leadership each see the controls they need.",
-          "pointOne": "Permissions scale with team complexity.",
-          "pointTwo": "Operational boundaries stay explicit as ownership grows."
-        },
-        "localized-commerce": {
-          "eyebrow": "Localization",
-          "title": "Support multilingual and regional commerce models",
-          "description": "Keep translated content, locale-aware routes, and market-specific execution inside one product framework.",
-          "pointOne": "Avoids fragmented localization workflows across teams.",
-          "pointTwo": "Supports consistent rollout across multiple locales."
-        },
-        "centralized-management": {
-          "eyebrow": "Management",
-          "title": "Give leadership a consistent view of commerce operations",
-          "description": "Centralized controls help enterprise operators review activity, align execution, and maintain process discipline across brands.",
-          "pointOne": "Shared operational patterns reduce process drift.",
-          "pointTwo": "Clear oversight supports higher-confidence decision making."
-        },
-        "integration-ready": {
-          "eyebrow": "Adaptability",
-          "title": "Fit into broader enterprise workflows",
-          "description": "A structured platform foundation makes it easier to align commerce execution with the systems and processes surrounding it.",
-          "pointOne": "Built for extension without reworking the entire product model.",
-          "pointTwo": "Keeps enterprise rollout decisions grounded in a shared architecture."
-        },
-        "analytics-visibility": {
-          "eyebrow": "Visibility",
-          "title": "Surface reporting that supports operational follow-through",
-          "description": "Give teams access to the performance context they need so changes in product, inventory, and storefront strategy stay measurable.",
-          "pointOne": "Supports faster review cycles for cross-functional teams.",
-          "pointTwo": "Keeps analytics connected to day-to-day execution."
-        }
-      }
-    },
-    "showcase": {
-      "heading": "Centralize commerce control without slowing teams down",
-      "subtext": "Enterprise operators need consistent oversight, but the people shipping catalog and storefront work still need speed. The platform balances both.",
-      "cta": "View Pricing",
-      "previewAlt": "Enterprise dashboard preview showing cross-store oversight and team operations"
-    },
-    "security": {
-      "eyebrow": "Security & Reliability",
-      "heading": "Enterprise-ready foundations for secure, dependable delivery",
-      "subtitle": "The platform emphasizes server rendering, secure access patterns, and tenant-aware structure so operational growth does not compromise clarity.",
-      "items": {
-        "ssr-delivery": {
-          "eyebrow": "SSR-first",
-          "title": "Server-rendered delivery supports consistency at scale",
-          "description": "A server-first model helps keep high-value marketing and operational experiences predictable across devices and locales.",
-          "pointOne": "Stable initial rendering across content-heavy routes.",
-          "pointTwo": "Supports performance and discoverability without extra client overhead."
-        },
-        "secure-authentication": {
-          "eyebrow": "Authentication",
-          "title": "Secure access patterns reinforce operational trust",
-          "description": "Role-aware access, session-driven authentication, and permission boundaries help teams work safely inside shared systems.",
-          "pointOne": "Keeps administrative actions scoped to authorized users.",
-          "pointTwo": "Supports cleaner governance for larger internal teams."
-        },
-        "tenant-isolation": {
-          "eyebrow": "Isolation",
-          "title": "Tenant-aware architecture protects store boundaries",
-          "description": "Each store remains isolated at the operational level while enterprise teams maintain the centralized visibility they need.",
-          "pointOne": "Prevents cross-store ambiguity in data and workflows.",
-          "pointTwo": "Supports multi-brand governance without duplicated systems."
-        },
-        "scalable-infrastructure": {
-          "eyebrow": "Scalability",
-          "title": "Composable architecture keeps expansion manageable",
-          "description": "Shared components, centralized content patterns, and server-first rendering make new marketing and product surfaces easier to extend.",
-          "pointOne": "Supports predictable growth without parallel implementations.",
-          "pointTwo": "Reduces architectural drift as enterprise requirements evolve."
-        }
-      }
-    },
-    "collaboration": {
-      "eyebrow": "Team Collaboration",
-      "heading": "Give every team a clear role in the operating model",
-      "subtitle": "Enterprise commerce execution works best when platform permissions and workflows mirror how teams already collaborate.",
-      "items": {
-        "assign-roles": {
-          "title": "Assign roles",
-          "description": "Define who owns merchandising, operations, analytics, and approvals so work moves with less back-and-forth."
-        },
-        "standardize-workflows": {
-          "title": "Standardize workflows",
-          "description": "Create a shared rhythm for catalog updates, storefront launches, and operational review across brands or regions."
-        },
-        "launch-regions": {
-          "title": "Launch regions",
-          "description": "Expand into new locales with structured content and routing patterns that do not require a separate platform model."
-        },
-        "review-performance": {
-          "title": "Review performance",
-          "description": "Keep decision-makers close to current store activity so enterprise teams can respond quickly and stay aligned."
-        }
-      }
-    },
-    "global": {
-      "eyebrow": "Global Commerce",
-      "heading": "Prepared for organizations selling across languages and markets",
-      "subtitle": "Localization support is built into the experience so international growth does not require a second system or fragmented process.",
-      "items": {
-        "locale-first-routing": {
-          "eyebrow": "Routing",
-          "title": "Locale-first journeys stay consistent across public routes",
-          "description": "Marketing and commerce experiences follow a locale-aware structure that keeps expansion into new regions predictable.",
-          "pointOne": "Supports clearer routing for multilingual storefront experiences.",
-          "pointTwo": "Keeps international pages aligned with the same architectural model."
-        },
-        "multilingual-storefronts": {
-          "eyebrow": "Content",
-          "title": "Translated storefront content stays part of one workflow",
-          "description": "Teams can manage multilingual commerce content without creating disconnected publishing systems per market.",
-          "pointOne": "Keeps localized product presentation easier to govern.",
-          "pointTwo": "Supports consistent brand expression across regions."
-        },
-        "regional-operations": {
-          "eyebrow": "Operations",
-          "title": "Regional teams can work within shared enterprise standards",
-          "description": "Store-specific context remains available while the broader operating model stays centralized and easier to maintain.",
-          "pointOne": "Balances local execution with centralized oversight.",
-          "pointTwo": "Reduces process sprawl across expanding teams."
-        },
-        "market-expansion": {
-          "eyebrow": "Expansion",
-          "title": "Scale into new markets without rewriting the platform story",
-          "description": "A consistent architectural foundation helps enterprises grow storefront reach while keeping operations grounded in one system.",
-          "pointOne": "Supports phased rollout into additional locales.",
-          "pointTwo": "Keeps platform decisions aligned with long-term operational scale."
-        }
-      }
-    },
-    "cta": {
-      "title": "Give your commerce teams a platform that scales with structure",
-      "description": "Unify stores, permissions, localization, and reporting in a system built for larger operational footprints.",
-      "primaryCta": "Start Planning",
-      "secondaryCta": "Review Pricing"
-    }
-  },
-
-  "blogPage": {
-    "hero": {
-      "badge": "LaraTenant Blog",
-      "headline": "Commerce Insights & Platform Updates",
-      "subtext": "Expert perspectives on multi-tenant architecture, merchant operations, and the future of commerce scale.",
-      "primaryCta": "Contact Us",
-      "secondaryCta": "Documentation",
-      "previewAlt": "LaraTenant Commerce blog hero showing latest articles and platform updates"
-    },
-    "stats": {
-      "items": {
-        "editorial-plan": {
-          "value": "Weekly",
-          "label": "Editorial updates",
-          "description": "Regular insights into commerce engineering, merchant strategy, and product updates."
-        },
-        "commerce-topics": {
-          "value": "12+",
-          "label": "Commerce topics",
-          "description": "Deep dives into multi-tenancy, localization, order management, and more."
-        },
-        "future-slugs": {
-          "value": "Scalable",
-          "label": "Content structure",
-          "description": "Organized content that grows alongside our platform and community."
-        },
-        "cms-ready": {
-          "value": "CMS-driven",
-          "label": "Dynamic content",
-          "description": "All blog content is managed through our integrated CMS for real-time updates."
-        }
-      }
-    },
-    "latestPosts": {
-      "heading": "Latest from the Blog",
-      "subtitle": "Explore our recent articles and platform news."
-    },
-    "cta": {
-      "title": "Stay Updated with Commerce Scale",
-      "description": "Join our community of merchants and developers building the future of multi-tenant commerce.",
-      "primaryCta": "Get in Touch",
-      "secondaryCta": "View Features"
     }
   },
 
@@ -689,15 +297,13 @@
     "pricing": "Pricing",
     "enterprise": "Enterprise",
     "templates": "Templates",
+    "demo": "Demo",
     "blog": "Blog",
-    "docs": "Docs",
-    "cta": {
-      "dashboard": "Go to Dashboard"
-    }
+    "docs": "Docs"
   },
 
   "footer": {
-    "description": "Modern multi-tenant ecommerce infrastructure for growing brands and merchants.",
+    "description": "Launch and manage your ecommerce business with a scalable multi-tenant commerce platform built for modern brands and merchants.",
     "copyright": "All rights reserved.",
     "groups": {
       "product": "Product",
@@ -708,6 +314,7 @@
       "features": "Features",
       "pricing": "Pricing",
       "templates": "Templates",
+      "demo": "Demo",
       "enterprise": "Enterprise",
       "docs": "Documentation",
       "blog": "Blog",

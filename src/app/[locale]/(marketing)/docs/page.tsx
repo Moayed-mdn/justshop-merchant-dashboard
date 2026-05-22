@@ -1,25 +1,45 @@
-import { getLocale } from 'next-intl/server';
-import { redirect } from 'next/navigation';
-import { cmsService } from '@/services/cms/cms.service';
+import { getLocale } from 'next-intl/server'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+
+import { buildMetadataFromSeo } from '@/lib/seo/cms-seo'
+import { cmsService } from '@/services/cms/cms.service'
+import { JsonLd } from '@/components/cms/JsonLd'
+import { CmsSectionRenderer } from '@/components/cms/CmsSectionRenderer'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale()
+  try {
+    const page = await cmsService.getPage('docs')
+    return buildMetadataFromSeo(page.seo, locale)
+  } catch (error) {
+    return {
+      title: 'Documentation | LaraTenant Commerce',
+      description: 'Platform documentation and guides',
+    }
+  }
+}
 
 export default async function DocsRootPage() {
-  const locale = await getLocale();
-  
+  let cmsPage = null
   try {
-    const sidebar = await cmsService.getDocsSidebar();
-    if (sidebar.items.length > 0) {
-      const firstPage = sidebar.items[0];
-      redirect(`/${locale}/docs/${firstPage.slug_path}`);
-    }
+    cmsPage = await cmsService.getPage('docs')
   } catch (error) {
-    console.error('Failed to load docs sidebar', error);
+    console.error('Failed to fetch docs page from CMS', error)
+    notFound()
   }
 
-  // Fallback if no docs found
   return (
-    <div className="py-20 text-center">
-      <h1 className="text-2xl font-bold">Documentation</h1>
-      <p className="text-muted-foreground mt-2">No documentation found.</p>
-    </div>
-  );
+    <>
+      {cmsPage?.seo?.structured_data && (
+        <JsonLd data={cmsPage.seo.structured_data} />
+      )}
+      
+      {/* CMS sections for Hero, Categories, etc. (Excluding CTA which goes to bottom) */}
+      <CmsSectionRenderer sections={cmsPage?.sections} exclude={['cta']} />
+      
+      {/* Final CTA from CMS at the bottom */}
+      <CmsSectionRenderer sections={cmsPage?.sections} includeOnly={['cta']} />
+    </>
+  )
 }

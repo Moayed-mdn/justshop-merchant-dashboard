@@ -17,6 +17,7 @@ export const PRIMARY_NAV_LINKS: NavLink[] = [
   { label: 'nav.pricing', href: '/pricing' },
   { label: 'nav.enterprise', href: '/enterprise' },
   { label: 'nav.templates', href: '/templates' },
+  { label: 'nav.demo', href: '/demo' },
   { label: 'nav.blog', href: '/blog' },
   { label: 'nav.docs', href: '/docs' },
 ]
@@ -32,6 +33,7 @@ export const FOOTER_NAV_GROUPS: NavGroup[] = [
       { label: 'footer.links.features', href: '/features' },
       { label: 'footer.links.pricing', href: '/pricing' },
       { label: 'footer.links.templates', href: '/templates' },
+      { label: 'footer.links.demo', href: '/demo' },
       { label: 'footer.links.enterprise', href: '/enterprise' },
     ],
   },

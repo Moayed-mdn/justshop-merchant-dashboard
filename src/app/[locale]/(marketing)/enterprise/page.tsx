@@ -1,98 +1,52 @@
-// =============================================================================
-// Enterprise Page — Marketing Route
-//
-// Dedicated enterprise marketing page for larger operators and multi-brand
-// commerce teams. Owns metadata and composes reusable localized sections.
-// =============================================================================
-
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 import type { Metadata } from 'next'
-import { buildPageMetadata } from '@/features/marketing/lib/seo'
+import { notFound } from 'next/navigation'
 
-import {
-  getEnterpriseCapabilities,
-  getEnterpriseGlobalHighlights,
-  getEnterpriseSecurityHighlights,
-} from '@/features/marketing/content/enterprise/highlights'
-import {
-  getEnterpriseCTAContent,
-  getEnterpriseCollaborationSteps,
-  getEnterpriseHeroContent,
-  getEnterpriseShowcaseContent,
-  getEnterpriseStats,
-} from '@/features/marketing/content/enterprise/page-content'
-
-import HeroSection from '@/features/marketing/sections/HeroSection'
-import StatsSection from '@/features/marketing/sections/StatsSection'
-import DetailGridSection from '@/features/marketing/sections/DetailGridSection'
-import DashboardShowcaseSection from '@/features/marketing/sections/DashboardShowcaseSection'
-import WorkflowSection from '@/features/marketing/sections/WorkflowSection'
-import CTASection from '@/features/marketing/sections/CTASection'
+import { buildMetadataFromSeo } from '@/lib/seo/cms-seo'
+import { cmsService } from '@/services/cms/cms.service'
+import { CmsContent } from '@/components/cms/CmsContent'
+import { JsonLd } from '@/components/cms/JsonLd'
+import { CmsSectionRenderer } from '@/components/cms/CmsSectionRenderer'
+import SectionContainer from '@/features/marketing/layouts/SectionContainer'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('marketing')
   const locale = await getLocale()
-  return buildPageMetadata({
-    locale,
-    title: t('meta.enterprise.title'),
-    description: t('meta.enterprise.description'),
-    path: '/enterprise',
-  })
+  try {
+    const page = await cmsService.getPage('enterprise')
+    return buildMetadataFromSeo(page.seo, locale)
+  } catch (error) {
+    return {
+      title: 'Enterprise Commerce | LaraTenant Commerce',
+      description: 'Scalable multi-tenant commerce infrastructure for enterprise operators',
+    }
+  }
 }
 
 export default async function EnterprisePage() {
-  const t = await getTranslations('marketing')
+  const locale = await getLocale()
 
-  const hero = getEnterpriseHeroContent(t)
-  const stats = getEnterpriseStats(t)
-  const capabilities = getEnterpriseCapabilities(t)
-  const showcase = getEnterpriseShowcaseContent(t)
-  const security = getEnterpriseSecurityHighlights(t)
-  const collaboration = getEnterpriseCollaborationSteps(t)
-  const globalCommerce = getEnterpriseGlobalHighlights(t)
-  const cta = getEnterpriseCTAContent(t)
+  let cmsPage = null
+  try {
+    cmsPage = await cmsService.getPage('enterprise')
+  } catch (error) {
+    console.error('Failed to fetch enterprise page from CMS', error)
+    notFound()
+  }
 
   return (
     <>
-      <HeroSection {...hero} />
+      {cmsPage?.seo?.structured_data && (
+        <JsonLd data={cmsPage.seo.structured_data} />
+      )}
+      
+      {/* Fully CMS-driven sections rendering */}
+      <CmsSectionRenderer sections={cmsPage?.sections} />
 
-      <StatsSection items={stats} />
-
-      <DetailGridSection
-        heading={t('enterprisePage.capabilities.heading')}
-        eyebrow={t('enterprisePage.capabilities.eyebrow')}
-        subtitle={t('enterprisePage.capabilities.subtitle')}
-        items={capabilities}
-        columns={3}
-      />
-
-      <DashboardShowcaseSection {...showcase} />
-
-      <DetailGridSection
-        heading={t('enterprisePage.security.heading')}
-        eyebrow={t('enterprisePage.security.eyebrow')}
-        subtitle={t('enterprisePage.security.subtitle')}
-        items={security}
-        columns={2}
-      />
-
-      <WorkflowSection
-        heading={t('enterprisePage.collaboration.heading')}
-        eyebrow={t('enterprisePage.collaboration.eyebrow')}
-        subtitle={t('enterprisePage.collaboration.subtitle')}
-        steps={collaboration}
-        className="bg-muted/20"
-      />
-
-      <DetailGridSection
-        heading={t('enterprisePage.global.heading')}
-        eyebrow={t('enterprisePage.global.eyebrow')}
-        subtitle={t('enterprisePage.global.subtitle')}
-        items={globalCommerce}
-        columns={2}
-      />
-
-      <CTASection {...cta} />
+      {cmsPage?.content && (
+        <SectionContainer className="py-12">
+          <CmsContent content={cmsPage.content} />
+        </SectionContainer>
+      )}
     </>
   )
 }

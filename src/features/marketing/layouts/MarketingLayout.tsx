@@ -11,7 +11,7 @@
 
 import MarketingNavbar from '@/features/marketing/components/MarketingNavbar'
 import MarketingFooter from '@/features/marketing/components/MarketingFooter'
-import { buildOrgJsonLd } from '@/features/marketing/lib/seo'
+import { buildOrgJsonLd } from '@/lib/seo/cms-seo'
 import { getMe } from '@/lib/actions/auth.actions'
 
 interface MarketingLayoutProps {
