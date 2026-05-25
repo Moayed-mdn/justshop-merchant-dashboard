@@ -7,9 +7,8 @@
  * Reason for 'use client': needs Zustand state for collapse/expand.
  */
 
-import { useParams } from 'next/navigation';
 import { useUiStore, selectSidebarCollapsed } from '@/stores/uiStore';
-import { useAuthStore, selectUser } from '@/stores/authStore';
+import { useBootstrapStore, selectUser } from '@/stores/bootstrapStore';
 import { SidebarNav } from './SidebarNav';
 import { Button } from '@/components/ui/button';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
@@ -20,12 +19,10 @@ import { cn } from '@/lib/utils';
  * Main sidebar component with navigation and user info.
  */
 export function Sidebar() {
-  const params = useParams();
-  const storeId = params.storeId as string | undefined;
-
   const isCollapsed = useUiStore(selectSidebarCollapsed);
   const toggleSidebar = useUiStore((state) => state.toggleSidebar);
-  const user = useAuthStore(selectUser);
+  const user = useBootstrapStore(selectUser);
+  const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('nav');
 
   // Get user initials for avatar
@@ -50,7 +47,12 @@ export function Sidebar() {
       {/* Header section */}
       <div className="flex h-14 items-center justify-between border-b border-sidebar-border px-3">
         {!isCollapsed && (
-          <span className="text-sm font-semibold">{t('appName')}</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold">{t('appName')}</span>
+            {activeStore ? (
+              <span className="truncate text-xs text-sidebar-muted">{activeStore.name}</span>
+            ) : null}
+          </div>
         )}
         {isCollapsed && (
           <span className="text-lg font-bold">{t('appName').charAt(0)}</span>
@@ -72,7 +74,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      {storeId && <SidebarNav storeId={storeId} />}
+      {activeStore ? <SidebarNav storeId={String(activeStore.id)} /> : null}
 
       {/* Footer section with user info */}
       <div className="mt-auto border-t border-sidebar-border p-3">
@@ -89,7 +91,7 @@ export function Sidebar() {
             <div className="flex flex-col overflow-hidden">
               <span className="truncate text-sm font-medium">{user.name}</span>
               <span className="truncate text-xs text-sidebar-muted">
-                {user.role?.replace('_', ' ') ?? 'User'}
+                {t('user')}
               </span>
             </div>
           )}

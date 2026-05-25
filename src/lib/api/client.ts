@@ -45,6 +45,7 @@ export async function clientFetch<T>(
 
   if (!response.ok) {
     if (response.status === 401 && typeof window !== 'undefined') {
+      // BootstrapProvider owns logout routing and session recovery.
       window.dispatchEvent(new Event('auth:unauthorized'));
     }
 

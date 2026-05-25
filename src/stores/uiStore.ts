@@ -30,7 +30,7 @@ export type UiStore = UiState & UiActions;
 
 export const useUiStore = create<UiStore>((set) => ({
   // Initial state
-  sidebarOpen: true,
+  sidebarOpen: false,
   sidebarCollapsed: false,
   theme: 'light',
   direction: 'ltr',

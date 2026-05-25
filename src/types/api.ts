@@ -1,17 +1,22 @@
 /**
  * Base API types used across the entire application.
+ *
+ * The dashboard auth/bootstrap contract is canonical and uses `success`.
+ * Some older surfaces still expose `status`, so the shared types stay
+ * backward-compatible while new code should prefer `success`.
  */
 
-/** Wraps all single-resource API responses */
-export interface ApiResponse<T> {
-  status: boolean;
+export interface ApiResponse<T, TMeta = Record<string, never>> {
+  success?: boolean;
+  status?: boolean;
   data: T;
   message: string;
+  meta?: TMeta;
 }
 
-/** Wraps all paginated list responses */
 export interface PaginatedResponse<T> {
-  status: boolean;
+  success?: boolean;
+  status?: boolean;
   message: string;
   data: T[];
   meta: {
@@ -19,22 +24,16 @@ export interface PaginatedResponse<T> {
   };
 }
 
-/** Pagination metadata */
 export interface PaginationMeta {
   total: number;
   count: number;
   per_page: number;
   current_page: number;
   total_pages: number;
-  // Computed client-side (optional)
   from?: number;
   to?: number;
 }
 
-
-
-
-/** Pagination links */
 export interface PaginationLinks {
   first: string | null;
   last: string | null;
@@ -42,13 +41,12 @@ export interface PaginationLinks {
   next: string | null;
 }
 
-/** Normalized error shape used everywhere in the app */
 export interface ApiError {
   message: string;
   errors: Record<string, string[]>;
   status: number;
   code: string;
+  redirect?: string;
 }
 
-/** HTTP methods supported by the API */
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';

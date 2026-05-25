@@ -5,10 +5,11 @@
 
 export const queryKeys = {
   // ── Auth ──────────────────────────────────────────────────────
-  me: () => ['me'] as const,
+  me: () => ['bootstrap', 'me'] as const,
 
   auth: {
-    me: () => ['me'] as const,
+    me: () => ['bootstrap', 'me'] as const,
+    provisioning: (storeId: number | string) => ['provisioning-status', String(storeId)] as const,
   },
 
   // ── Products ──────────────────────────────────────────────────

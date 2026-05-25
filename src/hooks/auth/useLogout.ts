@@ -9,13 +9,13 @@
  * - retry: 0 (mutations never retry)
  */
 
-import { useMutation } from '@tanstack/react-query';
-import { logout } from '@/lib/api/auth';
-import queryClient from '@/lib/queryClient';
-import { queryKeys } from '@/lib/queryKeys';
-import { useAuthStore } from '@/stores/authStore';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { logger } from '@/lib/logger';
 import type { ApiError } from '@/types/api';
+import { postAuthChannelMessage } from '@/lib/auth/channel';
+import { queryKeys } from '@/lib/queryKeys';
+import { clearDashboardClientStorage } from '@/lib/auth/storage';
 
 export interface UseLogoutOptions {
   onSuccess?: () => void;
@@ -25,19 +25,34 @@ export interface UseLogoutOptions {
 /**
  * Hook to handle user logout.
  * Clears auth state and query cache on success.
- * 
- * @param options - Optional callbacks for success/error
- * @returns TanStack Query mutation object
  */
 export function useLogout(options?: UseLogoutOptions) {
-  const { clearUser } = useAuthStore();
+  const logout = useBootstrapStore((state) => state.logout);
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: logout,
-    retry: 0, // Hard rule: mutations never retry
-    onSuccess: () => {
-      clearUser();
-      queryClient.clear(); // Clear all cached data
+    mutationFn: async () => {
+      try {
+        await logout();
+      } catch (error) {
+        const apiError = error as ApiError;
+        if (apiError.status === 401) {
+          return;
+        }
+
+        throw apiError;
+      }
+    },
+    retry: 0,
+    onSuccess: async () => {
+      await queryClient.cancelQueries();
+      clearDashboardClientStorage();
+      queryClient.clear();
+      queryClient.setQueryData(queryKeys.auth.me(), null);
+      
+      // Notify other tabs
+      postAuthChannelMessage('logout');
+
       logger.info('User logged out');
       options?.onSuccess?.();
     },

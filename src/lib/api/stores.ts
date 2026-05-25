@@ -1,28 +1,43 @@
 /**
  * API functions for store-related endpoints.
- * Client-side only — uses apiClient.
- * 
- * Note: There is no GET /stores/{id} endpoint for regular users.
- * Store data comes from dashboard stats or user's store_id property.
- * This file is a placeholder for future store context functionality.
+ * Client-side store lifecycle API helpers.
  */
 
-import type { Store } from '@/types/store';
+import { clientApi } from '@/lib/api/client';
+import type { ApiResponse } from '@/types/api';
+import type { Store, ProvisioningStatus, CreateStorePayload } from '@/types/store';
+import { API_ROUTES } from '@/config/routes';
+
+interface RequestOptions {
+  signal?: AbortSignal;
+}
 
 /**
- * Get store context by storeId.
- * 
- * TODO: Implement when dashboard is built (F.5).
- * The backend does not have a dedicated /stores/{id} endpoint.
- * Store info will be derived from dashboard stats response or user data.
- * 
- * @param storeId - The store ID from URL params
- * @returns Promise resolving to Store data
+ * Create a new store.
  */
-export async function getStoreContext(storeId: string): Promise<Store> {
-  // Placeholder implementation
-  // Will be implemented in F.5 when dashboard stats endpoint is called
-  throw new Error(
-    `getStoreContext not yet implemented. Store data will come from dashboard stats endpoint for store: ${storeId}`
-  );
+export async function createStore(
+  payload: CreateStorePayload,
+  options: RequestOptions = {}
+): Promise<ApiResponse<Store>> {
+  return clientApi.post(API_ROUTES.store('').create(), payload, { signal: options.signal });
+}
+
+/**
+ * Check if a store slug is available.
+ */
+export async function checkSlugAvailability(
+  slug: string,
+  options: RequestOptions = {}
+): Promise<ApiResponse<{ available: boolean }>> {
+  return clientApi.get(API_ROUTES.store('').slugCheck(slug), { signal: options.signal });
+}
+
+/**
+ * Get provisioning status for a store.
+ */
+export async function getProvisioningStatus(
+  storeId: string,
+  options: RequestOptions = {}
+): Promise<ApiResponse<ProvisioningStatus>> {
+  return clientApi.get(API_ROUTES.store(storeId).provisioningStatus(), { signal: options.signal });
 }

@@ -45,12 +45,41 @@
     "tags": "Tags",
     "mainNav": "Main navigation",
     "toggleSidebar": "Toggle sidebar",
-    "toggleMenu": "Toggle menu"
+    "toggleMenu": "Toggle menu",
+    "user": "User"
   },
   "auth": {
     "logout": "Sign out",
     "loggingOut": "Signing out...",
     "loggedOut": "You have been signed out"
+  },
+  "signup": {
+    "pageTitle": "Sign Up — Admin Dashboard",
+    "pageDescription": "Create your admin account",
+    "appName": "Admin Dashboard",
+    "title": "Create an account",
+    "subtitle": "Enter your details below to create your account",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginLink": "Login",
+    "nameLabel": "Name",
+    "namePlaceholder": "Enter your name",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "passwordConfirmationLabel": "Confirm Password",
+    "passwordConfirmationPlaceholder": "Confirm your password",
+    "submitButton": "Sign Up",
+    "signingUp": "Signing up...",
+    "errors": {
+      "nameTooShort": "Name must be at least 2 characters",
+      "invalidEmail": "Please enter a valid email address",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "passwordsDoNotMatch": "Passwords do not match"
+    },
+    "success": {
+      "registered": "Registration successful! Please check your email to verify your account."
+    }
   },
   "theme": {
     "toggle": "Toggle theme",
@@ -698,5 +727,20 @@
     "detail": {
       "error": "Failed to load tag"
     }
+  },
+  "verifyEmail": {
+    "title": "Email Verification",
+    "loading": "Verifying your email...",
+    "success": "Email verified successfully!",
+    "redirecting": "Redirecting you to the success page...",
+    "error": "Verification Failed",
+    "backToLogin": "Back to Login",
+    "errors": {
+      "invalidLink": "The verification link is invalid or has expired.",
+      "verificationFailed": "We couldn't verify your email. Please try again or request a new link."
+    },
+    "successTitle": "Verification Successful",
+    "successDescription": "Your email has been verified. You can now access your dashboard.",
+    "goToDashboard": "Go to Dashboard"
   }
 }

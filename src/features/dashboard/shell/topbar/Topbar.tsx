@@ -7,9 +7,9 @@
  * Reason for 'use client': needs Zustand state for sidebar toggle.
  */
 
-import { useParams } from 'next/navigation';
 import { useUiStore } from '@/stores/uiStore';
 import { UserMenu } from './UserMenu';
+import { StoreSwitcher } from './StoreSwitcher';
 import { ThemeToggle } from './ThemeToggle';
 import { LocaleToggle } from './LocaleToggle';
 import { Button } from '@/components/ui/button';
@@ -22,11 +22,6 @@ import { FEATURES } from '@/config/features';
  * Top header bar component.
  */
 export function Topbar() {
-  const params = useParams();
-  // storeId available but not used in topbar directly
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const storeId = params.storeId as string | undefined;
-
   const toggleSidebar = useUiStore((state) => state.toggleSidebar);
   const t = useTranslations('nav');
 
@@ -49,6 +44,7 @@ export function Topbar() {
 
       {/* Right side controls */}
       <div className="flex items-center gap-2">
+        <StoreSwitcher />
         {FEATURES.enableDarkMode && <ThemeToggle />}
         {FEATURES.enableRTL && <LocaleToggle />}
         <Separator orientation="vertical" className="h-6" />

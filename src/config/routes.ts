@@ -15,6 +15,9 @@ export const ROUTES = {
     pricing: () => '/pricing' as const,
     features: () => '/features' as const,
   },
+  dashboard: {
+    home: () => '/dashboard' as const,
+  },
   auth: {
     login:  () => '/login' as const,
     logout: () => '/logout' as const,
@@ -76,14 +79,23 @@ export const API_ROUTES = {
   home: () => '/' as const,
 
   auth: {
-    csrfCookie: () => '/sanctum/csrf-cookie',
+    csrfCookie: () => '/api/sanctum/csrf-cookie',
     login:      () => '/api/v1/users/auth/login',
     logout:     () => '/api/v1/users/auth/logout',
-    me:         () => '/api/v1/users/auth/me',
+    me:         () => '/api/v1/me', // Correct bootstrap endpoint from backend-routes
     register:   () => '/api/v1/users/auth/register',
+    forgotPassword: () => '/api/v1/users/auth/password/forgot',
+    resetPassword: () => '/api/v1/users/auth/password/reset',
+    resendVerification: () => '/api/v1/users/auth/email/resend',
+    verifyEmail: (id: string, hash: string) => `/api/v1/users/auth/email/verify/${id}/${hash}`,
+    sessions: () => '/api/v1/users/sessions',
+    switchStore: () => '/api/v1/users/auth/active-store',
   },
 
   store: (storeId: string) => ({
+    provisioningStatus: () => `/api/v1/stores/${storeId}/provisioning-status`,
+    slugCheck: (slug: string) => `/api/v1/store-slug/check?slug=${slug}`,
+    create: () => '/api/v1/stores',
 
     dashboard: () => ({
       stats:        () => `/api/v1/admin/stores/${storeId}/dashboard/stats`,

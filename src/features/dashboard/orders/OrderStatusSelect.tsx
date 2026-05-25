@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useCan } from '@/stores/authStore';
+import { useCan } from '@/stores/bootstrapStore';
 import { useUpdateOrderStatus } from '@/hooks/orders/useUpdateOrderStatus';
 import { toast } from 'sonner';
 import {

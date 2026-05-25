@@ -7,7 +7,7 @@
  * Reason for 'use client': interactive dropdown with auth state.
  */
 
-import { useAuthStore, selectUser } from '@/stores/authStore';
+import { selectUser, useBootstrapStore } from '@/stores/bootstrapStore';
 import { useLogout } from '@/hooks/auth/useLogout';
 import { useRouter } from '@/lib/navigation';
 import { useTranslations } from 'next-intl';
@@ -23,14 +23,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { LogOut } from 'lucide-react';
+import { LogOut, Loader2 } from 'lucide-react';
 import { logger } from '@/lib/logger';
 
 /**
  * User menu dropdown with logout functionality.
  */
 export function UserMenu() {
-  const user = useAuthStore(selectUser);
+  const user = useBootstrapStore(selectUser);
   const router = useRouter();
   const t = useTranslations('auth');
 
@@ -57,6 +57,7 @@ export function UserMenu() {
   };
 
   const handleLogout = () => {
+    logger.debug('Logout initiated from UserMenu');
     logout();
   };
 
@@ -65,6 +66,7 @@ export function UserMenu() {
       <DropdownMenuTrigger
         className="relative h-8 w-8 rounded-full flex items-center justify-center hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={user?.name ?? 'User menu'}
+        data-testid="user-menu-trigger"
       >
         <Avatar className="h-8 w-8">
           <AvatarFallback>{getInitials(user?.name ?? null)}</AvatarFallback>
@@ -77,8 +79,20 @@ export function UserMenu() {
             <div className="text-xs text-muted-foreground">{user?.email}</div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={handleLogout} disabled={isPending}>
-            <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+          <DropdownMenuItem 
+            onClick={(e) => {
+              e.preventDefault();
+              handleLogout();
+            }} 
+            disabled={isPending}
+            className="text-destructive focus:text-destructive cursor-pointer"
+            data-testid="logout-action"
+          >
+            {isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+            )}
             <span>{isPending ? t('loggingOut') : t('logout')}</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>

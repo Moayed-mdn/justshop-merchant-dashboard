@@ -4,6 +4,7 @@ interface ApiErrorPayload {
   message?: string;
   code?: string;
   errors?: Record<string, string[]>;
+  redirect?: string;
 }
 
 export const DEFAULT_JSON_HEADERS: HeadersInit = {
@@ -68,5 +69,6 @@ export async function toApiError(
     errors: payload.errors ?? {},
     status: response.status,
     code: payload.code ?? String(response.status),
+    redirect: payload.redirect,
   };
 }

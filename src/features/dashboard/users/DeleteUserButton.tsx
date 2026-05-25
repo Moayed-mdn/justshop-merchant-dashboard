@@ -20,7 +20,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useDeleteUser } from '@/hooks/users/useDeleteUser';
-import { useCan } from '@/stores/authStore';
+import { useCan } from '@/stores/bootstrapStore';
 import { ROUTES } from '@/config/routes';
 
 interface Props {

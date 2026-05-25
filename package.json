@@ -9,12 +9,15 @@
     "start": "next start",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
+    "e2e:mock-backend": "tsx tests/e2e/mock-backend/server.ts",
+    "test:e2e": "playwright test",
     "check-translations": "tsx scripts/check-translations.ts",
     "validate": "npm run type-check && npm run lint && npm run check-translations"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
     "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-progress": "^1.1.8",
     "@tanstack/react-query": "^5.100.7",
     "@tanstack/react-query-devtools": "^5.100.7",
     "axios": "^1.15.2",
@@ -41,6 +44,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/dompurify": "^3.0.5",
     "@types/jest": "^30.0.0",

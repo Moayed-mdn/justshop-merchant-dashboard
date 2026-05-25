@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { LoginForm } from './LoginForm';
+import { Link } from '@/lib/navigation';
 
 export function LoginCard() {
   const t = useTranslations('login');
@@ -31,8 +32,14 @@ export function LoginCard() {
             {t('subtitle')}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <LoginForm />
+          <div className="text-center text-sm text-muted-foreground">
+            Need an account?{' '}
+            <Link href="/signup" className="text-primary hover:underline">
+              Create one
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>

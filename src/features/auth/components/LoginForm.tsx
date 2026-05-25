@@ -1,37 +1,41 @@
 'use client';
 
 /**
- * Login form component with validation and submission handling.
- * Uses server action for Bearer token auth with HttpOnly cookie.
+ * Login form component with bootstrap-first auth recovery.
  */
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/lib/navigation';
 import { useSearchParams } from 'next/navigation';
-import { useState, useMemo, useTransition } from 'react';
+import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 
-import { login } from '@/lib/api/auth';
-import { useAuthStore } from '@/stores/authStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { ApiError } from '@/types/api';
 import { logger } from '@/lib/logger';
 import { isSafeRedirectPath, stripLocale } from '@/lib/auth/redirects';
+import { postAuthChannelMessage } from '@/lib/auth/channel';
+import { resolvePostBootstrapPath } from '@/lib/auth/bootstrap-routing';
 
 export function LoginForm() {
   const t = useTranslations('login');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const locale = useLocale();
-  const setUser = useAuthStore((state) => state.setUser);
+  const queryClient = useQueryClient();
+  const login = useBootstrapStore((state) => state.login);
   const [showPassword, setShowPassword] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [isRequestPending, setIsRequestPending] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const sessionExpired = searchParams.get('expired') === '1';
 
   // Build schema with translated error messages - memoized to prevent recreation
   const LoginSchema = useMemo(() => z.object({
@@ -52,38 +56,64 @@ export function LoginForm() {
 
   const onSubmit = handleSubmit(async (data) => {
     logger.debug('Submitting login form');
-    startTransition(async () => {
-      try {
-        const result = await login({ email: data.email, password: data.password });
-        const user = result.user;
-        setUser(user);
-        toast.success(t('success.loggedIn'));
+    setFormError(null);
+    setIsRequestPending(true);
 
-        const redirectParam = searchParams.get('redirect');
-        
-        // If redirect param exists and is safe, use it. 
-         // next-intl router.push handles locale automatically, so we strip it if present.
-         let destination = '/';
-         if (redirectParam && isSafeRedirectPath(redirectParam)) {
-           destination = stripLocale(redirectParam);
-         }
-  
-         router.push(destination);
-      } catch (error) {
-        const apiError = error as ApiError;
-        if (apiError.errors?.email?.[0]) {
-          setError('email', { message: apiError.errors.email[0] });
-        }
-        if (apiError.errors?.password?.[0]) {
-          setError('password', { message: apiError.errors.password[0] });
-        }
-        toast.error(apiError.message || t('errors.genericError'));
+    try {
+      const bootstrap = await login({ email: data.email, password: data.password });
+      queryClient.setQueryData(queryKeys.auth.me(), bootstrap);
+      postAuthChannelMessage('login');
+
+      toast.success(t('success.loggedIn'));
+
+      const redirectParam = searchParams.get('redirect');
+      let destination = bootstrap ? resolvePostBootstrapPath(bootstrap) : '/';
+      if (redirectParam && isSafeRedirectPath(redirectParam)) {
+        destination = stripLocale(redirectParam);
       }
-    });
+
+      router.push(destination);
+    } catch (error) {
+      const apiError = error as ApiError;
+      if (apiError.errors?.email?.[0]) {
+        setError('email', { message: apiError.errors.email[0] });
+      }
+      if (apiError.errors?.password?.[0]) {
+        setError('password', { message: apiError.errors.password[0] });
+      }
+
+      if (apiError.code === 'AUTH_001') {
+        setFormError(apiError.message || 'The email or password is incorrect.');
+      } else if (apiError.code === 'AUTH_008') {
+        setFormError(apiError.message || 'Too many attempts. Please wait before trying again.');
+      } else if (apiError.status === 403) {
+        setFormError(apiError.message || 'This account cannot access the dashboard right now.');
+      } else if (Object.keys(apiError.errors ?? {}).length === 0) {
+        setFormError(apiError.message || 'Unable to sign in right now. Please try again.');
+      }
+
+      toast.error(apiError.message || t('errors.genericError'));
+    } finally {
+      setIsRequestPending(false);
+    }
   });
 
   return (
     <form onSubmit={onSubmit} className="w-full space-y-4">
+      {sessionExpired ? (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-900 dark:text-amber-200">
+          Your session expired. Sign in again to restore your dashboard.
+        </div>
+      ) : null}
+      {formError ? (
+        <div
+          className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          data-testid="login-form-error"
+          aria-live="polite"
+        >
+          {formError}
+        </div>
+      ) : null}
       {/* Email field */}
       <div className="space-y-2">
         <Label htmlFor="email">{t('emailLabel')}</Label>
@@ -92,7 +122,8 @@ export function LoginForm() {
           type="email"
           autoComplete="email"
           placeholder={t('emailPlaceholder')}
-          disabled={isPending || isSubmitting}
+          data-testid="login-email"
+          disabled={isRequestPending || isSubmitting}
           {...register('email')}
         />
         {errors.email && (
@@ -109,7 +140,8 @@ export function LoginForm() {
             type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
             placeholder={t('passwordPlaceholder')}
-            disabled={isPending || isSubmitting}
+            data-testid="login-password"
+            disabled={isRequestPending || isSubmitting}
             {...register('password')}
           />
           <Button
@@ -119,7 +151,7 @@ export function LoginForm() {
             className="absolute inset-e-0 px-3 top-0 h-full  hover:bg-transparent"
             onClick={() => setShowPassword(!showPassword)}
             aria-label={t('togglePassword')}
-            disabled={isPending || isSubmitting}
+            disabled={isRequestPending || isSubmitting}
           >
             {showPassword ? (
               <EyeOff className="h-4 w-4" />
@@ -137,9 +169,10 @@ export function LoginForm() {
       <Button
         type="submit"
         className="w-full"
-        disabled={isPending || isSubmitting}
+        data-testid="login-submit"
+        disabled={isRequestPending || isSubmitting}
       >
-        {isPending ? t('signingIn') : t('submitButton')}
+        {isRequestPending ? t('signingIn') : t('submitButton')}
       </Button>
     </form>
   );

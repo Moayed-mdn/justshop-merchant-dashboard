@@ -299,7 +299,10 @@
     "templates": "Templates",
     "demo": "Demo",
     "blog": "Blog",
-    "docs": "Docs"
+    "docs": "Docs",
+    "cta": {
+      "dashboard": "Dashboard"
+    }
   },
 
   "footer": {

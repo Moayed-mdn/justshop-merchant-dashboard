@@ -1,5 +1,4 @@
 import { ROUTES } from '@/config/routes';
-import type { User } from '@/types/auth';
 
 /**
  * Validates if a redirect path is internal and safe to redirect to.
@@ -52,8 +51,11 @@ export function getLoginUrl(locale: string, redirectPath?: string): string {
 /**
  * Determine the correct post-login destination based on user state.
  */
-export function getPostLoginRedirect(user: User, locale: string): string {
-  const firstStoreId = user.stores?.[0]?.id;
+export function getPostLoginRedirect(
+  user: { stores?: Array<{ id: number | string }> } | null,
+  locale: string
+): string {
+  const firstStoreId = user?.stores?.[0]?.id;
   
   if (firstStoreId) {
     return `/${locale}${ROUTES.store(String(firstStoreId)).dashboard()}`;

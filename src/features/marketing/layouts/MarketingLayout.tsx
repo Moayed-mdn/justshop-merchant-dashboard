@@ -23,7 +23,10 @@ export default async function MarketingLayout({
 }: MarketingLayoutProps) {
   const user = await getMe()
   const isAuthenticated = !!user
-  const storeId = user?.stores?.[0]?.id || null
+  const storeId =
+    user && 'stores' in user && Array.isArray(user.stores)
+      ? (user.stores[0] as { id?: number | string } | undefined)?.id ?? null
+      : null
 
   return (
     <>

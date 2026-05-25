@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { useDeleteProduct } from '@/hooks/products/useDeleteProduct';
-import { useCan }           from '@/stores/authStore';
+import { useCan }           from '@/stores/bootstrapStore';
 import { ROUTES }           from '@/config/routes';
 
 interface Props {

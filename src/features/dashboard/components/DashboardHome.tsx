@@ -3,13 +3,14 @@
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { useRouter, Link } from '@/lib/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { AuthProvider } from '@/contexts/AuthContext';
 import { ROUTES } from '@/config/routes';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 
 function StorePickerContent() {
   const t = useTranslations('stores');
-  const { user, isLoading } = useAuth();
+  const user = useBootstrapStore((state) => state.user);
+  const stores = useBootstrapStore((state) => state.stores);
+  const isLoading = useBootstrapStore((state) => state.isBootstrapping);
   const router = useRouter();
 
   useEffect(() => {
@@ -19,8 +20,6 @@ function StorePickerContent() {
       router.replace('/login');
       return;
     }
-
-    const stores = user.stores ?? [];
 
     if (stores.length === 0) {
       router.replace(ROUTES.stores.new());
@@ -33,7 +32,7 @@ function StorePickerContent() {
       );
       return;
     }
-  }, [user, isLoading, router]);
+  }, [isLoading, router, stores, user]);
 
   if (isLoading) {
     return (
@@ -46,7 +45,7 @@ function StorePickerContent() {
     );
   }
 
-  if (!user || user.stores.length === 0) {
+  if (!user || stores.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center space-y-4">
@@ -65,7 +64,7 @@ function StorePickerContent() {
     );
   }
 
-  if (user.stores.length === 1) {
+  if (stores.length === 1) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -84,7 +83,7 @@ function StorePickerContent() {
         </div>
 
         <div className="space-y-3">
-          {user.stores.map((store) => (
+          {stores.map((store) => (
             <button
               key={store.id}
               onClick={() =>
@@ -115,9 +114,5 @@ function StorePickerContent() {
 }
 
 export function DashboardHome() {
-  return (
-    <AuthProvider>
-      <StorePickerContent />
-    </AuthProvider>
-  );
+  return <StorePickerContent />;
 }

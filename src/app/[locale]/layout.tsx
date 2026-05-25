@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { QueryProvider } from '@/components/providers/QueryProvider';
+import { BootstrapProvider } from '@/components/providers/BootstrapProvider';
 import { Toaster } from '@/components/ui/sonner';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import '../globals.css';
@@ -76,7 +77,9 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
       <NuqsAdapter>
         <QueryProvider>
           <NextIntlClientProvider messages={messages}>
-            {children}
+            <BootstrapProvider>
+              {children}
+            </BootstrapProvider>
             <Toaster />
           </NextIntlClientProvider>
         </QueryProvider>
