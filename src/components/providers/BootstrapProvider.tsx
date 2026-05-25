@@ -62,10 +62,14 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     strippedPath.startsWith('/forgot-password') ||
     strippedPath.startsWith('/reset-password');
 
-  const isOnboardingRoute =
+  // /setup is the canonical setup route; /onboarding and /create-store redirect to it
+  const isSetupRoute =
+    strippedPath === ROUTES.setup() ||
     strippedPath === ROUTES.onboarding.home() ||
     strippedPath === ROUTES.onboarding.createStore();
-  const isCreateStoreRoute = strippedPath === ROUTES.onboarding.createStore();
+
+  // Legacy alias — kept for guard logic parity
+  const isOnboardingRoute = isSetupRoute;
 
   const isProtectedRoute =
     strippedPath === ROUTES.dashboard.home() ||
@@ -95,15 +99,15 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
 
     if (isOnboardingRoute) {
       if (accessState.kind === 'pending_verification') {
-        return isCreateStoreRoute ? ROUTES.onboarding.home() : null;
+        return null; // stay on /setup, VerifyEmailStep will render
       }
 
       if (accessState.kind === 'create_store') {
-        return null;
+        return null; // stay on /setup, CreateStoreStep will render
       }
 
       if (accessState.kind === 'provisioning') {
-        return isCreateStoreRoute ? ROUTES.onboarding.home() : null;
+        return null; // stay on /setup, ProvisioningStep will render
       }
 
       return accessState.redirectPath;
@@ -130,7 +134,6 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     accessState,
     bootstrapResolved,
     isAuthenticated,
-    isCreateStoreRoute,
     isGuestRoute,
     isOnboardingRoute,
     isProtectedRoute,

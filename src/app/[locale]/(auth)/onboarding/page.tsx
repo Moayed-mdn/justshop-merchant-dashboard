@@ -1,5 +1,11 @@
-import { OnboardingPageContent } from '@/features/onboarding/components/OnboardingPageContent';
+/**
+ * Legacy route — redirects to the canonical /setup route.
+ * Kept for bookmark and link compatibility.
+ */
+import { redirect } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
 
-export default function OnboardingPage() {
-  return <OnboardingPageContent />;
+export default async function OnboardingRedirectPage() {
+  const locale = await getLocale();
+  redirect(`/${locale}/setup`);
 }

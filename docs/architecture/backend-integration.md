@@ -6,6 +6,19 @@
 - Server Components call Laravel directly through `serverFetch` in `src/lib/api/server.ts`.
 - Browser-side interactive requests go through the internal Next.js proxy route at `src/app/api/proxy/route.ts`.
 - Public CMS content is a platform-level Laravel concern exposed under `/api/v1/public/cms/*`.
+- The backend API is organized into explicit application contexts: `merchant`, `platform`, `storefront`, and `customer`.
+
+## API Context Structure
+
+| Context | Prefix | Purpose |
+| :--- | :--- | :--- |
+| Merchant | `/api/v1/merchant/` | Auth, profile, store management for merchant users |
+| Platform | `/api/v1/platform/` | Super-admin / platform-level operations |
+| Storefront | `/api/v1/storefront/stores/{store}/` | Public-facing storefront product/cart/order reads |
+| Customer | `/api/v1/customer/` | Customer account operations |
+| Public CMS | `/api/v1/public/cms/` | Unauthenticated CMS content |
+
+Legacy routes under `/api/v1/admin/stores/{store}/` and `/api/v1/users/auth/` remain available for backward compatibility but are deprecated and will be removed in v2.
 
 ## Public CMS Boundary
 

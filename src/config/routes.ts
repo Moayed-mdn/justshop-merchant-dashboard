@@ -23,12 +23,21 @@ export const ROUTES = {
     logout: () => '/logout' as const,
     signup: () => '/signup' as const,
   },
+  /**
+   * Canonical merchant setup route.
+   * All onboarding steps are rendered inside /setup as an internal state machine.
+   */
+  setup: () => '/setup' as const,
+  /**
+   * Legacy aliases — kept for redirect compatibility only.
+   * Do not use these for new navigation. Use ROUTES.setup() instead.
+   */
   onboarding: {
     home: () => '/onboarding' as const,
     createStore: () => '/create-store' as const,
   },
   stores: {
-    new: () => '/create-store' as const, // Aliased to the onboarding route
+    new: () => '/setup' as const,
   },
   store: (storeId: string) => ({
     dashboard: () => `/stores/${storeId}/dashboard` as const,
@@ -82,7 +91,7 @@ export const API_ROUTES = {
     csrfCookie: () => '/api/sanctum/csrf-cookie',
     login:      () => '/api/v1/users/auth/login',
     logout:     () => '/api/v1/users/auth/logout',
-    me:         () => '/api/v1/me', // Correct bootstrap endpoint from backend-routes
+    me:         () => '/api/v1/me',
     register:   () => '/api/v1/users/auth/register',
     forgotPassword: () => '/api/v1/users/auth/password/forgot',
     resetPassword: () => '/api/v1/users/auth/password/reset',
@@ -92,84 +101,99 @@ export const API_ROUTES = {
     switchStore: () => '/api/v1/users/auth/active-store',
   },
 
+  /**
+   * Context-aware merchant store API routes.
+   * Use these instead of API_ROUTES.store('').create() etc.
+   */
+  merchant: {
+    stores: {
+      create: () => '/api/v1/stores' as const,
+      slugCheck: (slug: string) => `/api/v1/store-slug/check?slug=${slug}` as const,
+      provisioningStatus: (storeId: string) => `/api/v1/stores/${storeId}/provisioning-status` as const,
+    },
+  },
+
   store: (storeId: string) => ({
+    /** @deprecated Use API_ROUTES.merchant.stores.provisioningStatus(storeId) */
     provisioningStatus: () => `/api/v1/stores/${storeId}/provisioning-status`,
+    /** @deprecated Use API_ROUTES.merchant.stores.slugCheck(slug) */
     slugCheck: (slug: string) => `/api/v1/store-slug/check?slug=${slug}`,
+    /** @deprecated Use API_ROUTES.merchant.stores.create() */
     create: () => '/api/v1/stores',
 
     dashboard: () => ({
-      stats:        () => `/api/v1/admin/stores/${storeId}/dashboard/stats`,
-      recentOrders: () => `/api/v1/admin/stores/${storeId}/dashboard/recent-orders`,
-      topProducts:  () => `/api/v1/admin/stores/${storeId}/dashboard/top-products`,
+      stats:        () => `/api/v1/merchant/stores/${storeId}/dashboard/stats`,
+      recentOrders: () => `/api/v1/merchant/stores/${storeId}/dashboard/recent-orders`,
+      topProducts:  () => `/api/v1/merchant/stores/${storeId}/dashboard/top-products`,
     }),
 
     users: () => ({
-      list:    () => `/api/v1/admin/stores/${storeId}/users`,
+      list:    () => `/api/v1/merchant/stores/${storeId}/users`,
       detail:  (userId: string) =>
-        `/api/v1/admin/stores/${storeId}/users/${userId}`,
+        `/api/v1/merchant/stores/${storeId}/users/${userId}`,
       block:   (userId: string) =>
-        `/api/v1/admin/stores/${storeId}/users/${userId}/block`,
+        `/api/v1/merchant/stores/${storeId}/users/${userId}/block`,
       unblock: (userId: string) =>
-        `/api/v1/admin/stores/${storeId}/users/${userId}/unblock`,
+        `/api/v1/merchant/stores/${storeId}/users/${userId}/unblock`,
       restore: (userId: string) =>
-        `/api/v1/admin/stores/${storeId}/users/${userId}/restore`,
+        `/api/v1/merchant/stores/${storeId}/users/${userId}/restore`,
     }),
 
     products: () => ({
-      list:    () => `/api/v1/admin/stores/${storeId}/products`,
+      list:    () => `/api/v1/merchant/stores/${storeId}/products`,
       detail:  (productId: string) =>
-        `/api/v1/admin/stores/${storeId}/products/${productId}`,
+        `/api/v1/merchant/stores/${storeId}/products/${productId}`,
       restore: (productId: string) =>
-        `/api/v1/admin/stores/${storeId}/products/${productId}/restore`,
+        `/api/v1/merchant/stores/${storeId}/products/${productId}/restore`,
     }),
 
     categories: () => ({
-      list:    () => `/api/v1/admin/stores/${storeId}/categories`,
+      list:    () => `/api/v1/merchant/stores/${storeId}/categories`,
       detail:  (categoryId: string) =>
-        `/api/v1/admin/stores/${storeId}/categories/${categoryId}`,
-      create:  () => `/api/v1/admin/stores/${storeId}/categories`,
+        `/api/v1/merchant/stores/${storeId}/categories/${categoryId}`,
+      create:  () => `/api/v1/merchant/stores/${storeId}/categories`,
       update:  (categoryId: string) =>
-        `/api/v1/admin/stores/${storeId}/categories/${categoryId}`,
+        `/api/v1/merchant/stores/${storeId}/categories/${categoryId}`,
       delete:  (categoryId: string) =>
-        `/api/v1/admin/stores/${storeId}/categories/${categoryId}`,
+        `/api/v1/merchant/stores/${storeId}/categories/${categoryId}`,
       restore: (categoryId: string) =>
-        `/api/v1/admin/stores/${storeId}/categories/${categoryId}/restore`,
+        `/api/v1/merchant/stores/${storeId}/categories/${categoryId}/restore`,
     }),
 
     brands: () => ({
-      list:    () => `/api/v1/admin/stores/${storeId}/brands`,
+      list:    () => `/api/v1/merchant/stores/${storeId}/brands`,
       detail:  (brandId: string) =>
-        `/api/v1/admin/stores/${storeId}/brands/${brandId}`,
-      create:  () => `/api/v1/admin/stores/${storeId}/brands`,
+        `/api/v1/merchant/stores/${storeId}/brands/${brandId}`,
+      create:  () => `/api/v1/merchant/stores/${storeId}/brands`,
       update:  (brandId: string) =>
-        `/api/v1/admin/stores/${storeId}/brands/${brandId}`,
+        `/api/v1/merchant/stores/${storeId}/brands/${brandId}`,
       delete:  (brandId: string) =>
-        `/api/v1/admin/stores/${storeId}/brands/${brandId}`,
+        `/api/v1/merchant/stores/${storeId}/brands/${brandId}`,
       restore: (brandId: string) =>
-        `/api/v1/admin/stores/${storeId}/brands/${brandId}/restore`,
+        `/api/v1/merchant/stores/${storeId}/brands/${brandId}/restore`,
     }),
 
     tags: () => ({
-      list:   () => `/api/v1/admin/stores/${storeId}/tags`,
+      list:   () => `/api/v1/merchant/stores/${storeId}/tags`,
       detail: (tagId: string) =>
-        `/api/v1/admin/stores/${storeId}/tags/${tagId}`,
-      create: () => `/api/v1/admin/stores/${storeId}/tags`,
+        `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
+      create: () => `/api/v1/merchant/stores/${storeId}/tags`,
       update: (tagId: string) =>
-        `/api/v1/admin/stores/${storeId}/tags/${tagId}`,
+        `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
       delete: (tagId: string) =>
-        `/api/v1/admin/stores/${storeId}/tags/${tagId}`,
+        `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
     }),
 
     orders: () => ({
-      list:         () => `/api/v1/admin/stores/${storeId}/orders`,
+      list:         () => `/api/v1/merchant/stores/${storeId}/orders`,
       detail:       (orderId: string) =>
-        `/api/v1/admin/stores/${storeId}/orders/${orderId}`,
+        `/api/v1/merchant/stores/${storeId}/orders/${orderId}`,
       updateStatus: (orderId: string) =>
-        `/api/v1/admin/stores/${storeId}/orders/${orderId}/status`,
+        `/api/v1/merchant/stores/${storeId}/orders/${orderId}/status`,
       cancel:       (orderId: string) =>
-        `/api/v1/admin/stores/${storeId}/orders/${orderId}/cancel`,
+        `/api/v1/merchant/stores/${storeId}/orders/${orderId}/cancel`,
       refund:       (orderId: string) =>
-        `/api/v1/admin/stores/${storeId}/orders/${orderId}/refund`,
+        `/api/v1/merchant/stores/${storeId}/orders/${orderId}/refund`,
     }),
   }),
 } as const;

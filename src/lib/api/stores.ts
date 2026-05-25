@@ -19,7 +19,7 @@ export async function createStore(
   payload: CreateStorePayload,
   options: RequestOptions = {}
 ): Promise<ApiResponse<Store>> {
-  return clientApi.post(API_ROUTES.store('').create(), payload, { signal: options.signal });
+  return clientApi.post(API_ROUTES.merchant.stores.create(), payload, { signal: options.signal });
 }
 
 /**
@@ -29,7 +29,7 @@ export async function checkSlugAvailability(
   slug: string,
   options: RequestOptions = {}
 ): Promise<ApiResponse<{ available: boolean }>> {
-  return clientApi.get(API_ROUTES.store('').slugCheck(slug), { signal: options.signal });
+  return clientApi.get(API_ROUTES.merchant.stores.slugCheck(slug), { signal: options.signal });
 }
 
 /**
@@ -39,5 +39,5 @@ export async function getProvisioningStatus(
   storeId: string,
   options: RequestOptions = {}
 ): Promise<ApiResponse<ProvisioningStatus>> {
-  return clientApi.get(API_ROUTES.store(storeId).provisioningStatus(), { signal: options.signal });
+  return clientApi.get(API_ROUTES.merchant.stores.provisioningStatus(storeId), { signal: options.signal });
 }

@@ -128,7 +128,7 @@ export function resolveBootstrapAccessState(
   if (step === 'pending_verification') {
     return {
       kind: 'pending_verification',
-      redirectPath: ROUTES.onboarding.home(),
+      redirectPath: ROUTES.setup(),
       activeStoreId: null,
     };
   }
@@ -136,7 +136,7 @@ export function resolveBootstrapAccessState(
   if (step === 'create_store') {
     return {
       kind: 'create_store',
-      redirectPath: ROUTES.onboarding.home(),
+      redirectPath: ROUTES.setup(),
       activeStoreId: null,
     };
   }
@@ -145,7 +145,7 @@ export function resolveBootstrapAccessState(
     const provisioningStoreId = resolveProvisioningStoreId(bootstrap);
     return {
       kind: 'provisioning',
-      redirectPath: ROUTES.onboarding.home(),
+      redirectPath: ROUTES.setup(),
       activeStoreId: provisioningStoreId ? String(provisioningStoreId) : null,
     };
   }

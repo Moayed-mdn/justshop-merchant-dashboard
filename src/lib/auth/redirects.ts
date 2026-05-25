@@ -61,8 +61,8 @@ export function getPostLoginRedirect(
     return `/${locale}${ROUTES.store(String(firstStoreId)).dashboard()}`;
   }
   
-  // Fallback to onboarding if no stores exist
-  return `/${locale}${ROUTES.onboarding.home()}`;
+  // Fallback to setup if no stores exist
+  return `/${locale}${ROUTES.setup()}`;
 }
 
 /**
