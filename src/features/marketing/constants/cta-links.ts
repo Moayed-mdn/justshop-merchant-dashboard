@@ -9,7 +9,7 @@ import type { CTALink } from '@/features/marketing/types'
 
 export const CTA_START_SELLING: CTALink = {
   label: 'cta.startSelling',
-  href: '/register',
+  href: '/signup',
 }
 
 export const CTA_VIEW_DEMO: CTALink = {
@@ -39,5 +39,5 @@ export const CTA_LOGIN: CTALink = {
 
 export const CTA_GET_STARTED: CTALink = {
   label: 'cta.getStarted',
-  href: '/register',
+  href: '/signup',
 }

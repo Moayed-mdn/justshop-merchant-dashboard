@@ -36,6 +36,13 @@ interface CmsSectionRendererProps {
 }
 
 /**
+ * Normalizes a CMS-supplied URL, replacing legacy /register with /signup.
+ */
+function normalizeCmsUrl(url: string): string {
+  return url.replace(/^\/register(\?|$)/, '/signup$1');
+}
+
+/**
  * Renders marketing sections based on the Laravel CMS 'sections' contract.
  * Maps CMS payload fields to frontend component props exactly.
  */
@@ -62,12 +69,12 @@ export function CmsSectionRenderer({ sections, includeOnly, exclude }: CmsSectio
           primaryCta={sections.hero.cta_primary ? (
             typeof sections.hero.cta_primary === 'string' 
               ? { label: sections.hero.cta_primary, href: '/signup' }
-              : { label: sections.hero.cta_primary.label, href: sections.hero.cta_primary.url }
+              : { label: sections.hero.cta_primary.label, href: normalizeCmsUrl(sections.hero.cta_primary.url) }
           ) : undefined}
           secondaryCta={sections.hero.cta_secondary ? (
             typeof sections.hero.cta_secondary === 'string'
               ? { label: sections.hero.cta_secondary, href: '/demo' }
-              : { label: sections.hero.cta_secondary.label, href: sections.hero.cta_secondary.url }
+              : { label: sections.hero.cta_secondary.label, href: normalizeCmsUrl(sections.hero.cta_secondary.url) }
           ) : undefined}
           previewAlt={sections.hero.title}
           previewSrc={sections.hero.image || undefined}
@@ -265,7 +272,7 @@ export function CmsSectionRenderer({ sections, includeOnly, exclude }: CmsSectio
           cta={sections.showcase.cta ? (
             typeof sections.showcase.cta === 'string'
               ? { label: sections.showcase.cta, href: '/signup' }
-              : { label: sections.showcase.cta.label, href: sections.showcase.cta.url }
+              : { label: sections.showcase.cta.label, href: normalizeCmsUrl(sections.showcase.cta.url) }
           ) : undefined}
         />
       )}
@@ -330,11 +337,11 @@ export function CmsSectionRenderer({ sections, includeOnly, exclude }: CmsSectio
           description={sections.cta.subtitle}
           primaryCta={{ 
             label: sections.cta.primary_label, 
-            href: sections.cta.primary_url 
+            href: normalizeCmsUrl(sections.cta.primary_url) 
           }}
           secondaryCta={{ 
             label: sections.cta.secondary_label, 
-            href: sections.cta.secondary_url 
+            href: normalizeCmsUrl(sections.cta.secondary_url) 
           }}
         />
       )}
@@ -371,7 +378,7 @@ export function CmsSectionRenderer({ sections, includeOnly, exclude }: CmsSectio
             icon: item.icon,
             title: item.title,
             description: item.description,
-            href: item.url,
+            href: normalizeCmsUrl(item.url),
             ctaLabel: item.cta_label
           }))}
         />
