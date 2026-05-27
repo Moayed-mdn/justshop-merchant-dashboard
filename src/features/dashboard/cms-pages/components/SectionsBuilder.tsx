@@ -214,6 +214,9 @@ export function SectionsBuilder() {
             {/* Section fields (collapsible) */}
             {!isCollapsed && (
               <CardContent className="pt-0 space-y-4">
+                {/* Hidden registration for type to ensure it's tracked by react-hook-form */}
+                <input type="hidden" {...register(`sections.${index}.type`)} />
+
                 {/* Type */}
                 <div className="space-y-2">
                   <Label>{t('sections.fields.type')}</Label>

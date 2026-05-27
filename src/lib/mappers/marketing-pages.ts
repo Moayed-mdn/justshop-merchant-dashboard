@@ -76,7 +76,14 @@ export function mapMarketingPageDetail(
     publishedAt: raw.published_at,
     sortOrder:   raw.sort_order,
     seo:         raw.seo ?? defaultSeo(),
-    sections:    raw.sections ?? [],
+    sections:    (raw.sections ?? []).map((s: any) => {
+      const type = s.type || s.section_type || '';
+      return {
+        ...s,
+        type,
+        section_type: type,
+      };
+    }),
     createdAt:   formatDate(raw.created_at),
     updatedAt:   formatDate(raw.updated_at),
   };

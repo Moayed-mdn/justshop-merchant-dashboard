@@ -5,9 +5,11 @@
  * Multi-tab layout: General | Content Builder | SEO
  */
 
+import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 import { MarketingPageFormSchema, type MarketingPageFormValues, type MarketingPageFormInput } from '@/schemas/marketing-pages';
 import type { MarketingPageDetailView, MarketingPageTemplate, MarketingPageStatus } from '@/types/marketing-page';import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,74 +30,54 @@ import { DeleteMarketingPageDialog } from './components/DeleteMarketingPageDialo
 
 // ── Default values ────────────────────────────────────────────────────────
 
-const DEFAULT_VALUES: MarketingPageFormValues = {
-  title:        { en: 'Summer Sale 2026', ar: 'تخفيضات الصيف 2026' },
-  slug:         { en: 'summer-sale-2026', ar: 'تخفيضات-الصيف-2026' },
-  excerpt:      {
-    en: 'Discover our biggest summer deals — up to 50% off on selected items.',
-    ar: 'اكتشف أكبر عروض الصيف — خصم يصل إلى 50% على منتجات مختارة.',
-  },
-  template:     'campaign',
-  status:       'draft',
-  published_at: null,
-  sort_order:   1,
-  seo: {
-    meta_title:       {
-      en: 'Summer Sale 2026 | Best Deals & Discounts',
-      ar: 'تخفيضات الصيف 2026 | أفضل العروض والخصومات',
-    },
-    meta_description: {
-      en: 'Shop the Summer Sale 2026 and save up to 50% on top products. Limited time offers available now.',
-      ar: 'تسوق في تخفيضات الصيف 2026 ووفر حتى 50% على أفضل المنتجات. عروض محدودة متاحة الآن.',
-    },
-    canonical_url: 'https://example.com/summer-sale-2026',
-    robots:        'index, follow',
-    og_image:      'https://placehold.co/1200x630/FF6B35/FFFFFF?text=Summer+Sale+2026',
-  },
-  sections: [
-    {
-      type:       'hero',
-      identifier: 'hero-main',
-      title:      { en: 'Summer Sale 2026', ar: 'تخفيضات الصيف 2026' },
-      subtitle:   { en: 'Up to 50% off — limited time only', ar: 'خصم يصل إلى 50% — لفترة محدودة فقط' },
-      content:    {
-        cta_label: 'Shop Now',
-        cta_url:   '/products',
-        image_url: 'https://placehold.co/1440x600/FF6B35/FFFFFF?text=Hero+Banner',
-      },
-      settings:  { full_width: true, overlay_opacity: 0.4 },
-      is_active: true,
-    },
-    {
-      type:       'features',
-      identifier: 'features-highlights',
-      title:      { en: 'Why Shop With Us', ar: 'لماذا تتسوق معنا' },
-      subtitle:   { en: 'Fast shipping, easy returns, and great prices', ar: 'شحن سريع، إرجاع سهل، وأسعار رائعة' },
-      content:    {
-        items: [
-          { icon: 'truck',  label: 'Free Shipping',   description: 'On orders over $50' },
-          { icon: 'shield', label: 'Secure Payment',  description: '100% protected checkout' },
-          { icon: 'refresh', label: 'Easy Returns',   description: '30-day return policy' },
-        ],
-      },
-      settings:  { columns: 3 },
-      is_active: true,
-    },
-  ],
-};
-
 function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormValues {
-  if (!page) return DEFAULT_VALUES;
+  if (page) {
+    return {
+      title:        page.title,
+      slug:         page.slug,
+      excerpt:      page.excerpt,
+      template:     page.template,
+      status:       page.status,
+      published_at: page.publishedAt,
+      sort_order:   page.sortOrder,
+      seo:          page.seo,
+      sections:     page.sections,
+    };
+  }
+
+  // Generate short random values for new pages
+  const randomId = Math.floor(Math.random() * 9000 + 1000);
+  const slug     = `page-${randomId}`;
+
   return {
-    title:        page.title,
-    slug:         page.slug,
-    excerpt:      page.excerpt,
-    template:     page.template,
-    status:       page.status,
-    published_at: page.publishedAt,
-    sort_order:   page.sortOrder,
-    seo:          page.seo,
-    sections:     page.sections,
+    title:        { en: `Page ${randomId}`, ar: `صفحة ${randomId}` },
+    slug:         { en: slug, ar: slug },
+    excerpt:      { en: 'Short page description.', ar: 'وصف قصير للصفحة.' },
+    template:     'generic',
+    status:       'draft',
+    published_at: null,
+    sort_order:   0,
+    seo: {
+      meta_title:       { en: `Meta ${randomId}`, ar: `عنوان ميتا ${randomId}` },
+      meta_description: { en: `SEO description for ${randomId}`, ar: `وصف سيو ${randomId}` },
+      canonical_url:    `https://example.com/${slug}`,
+      robots:           'index, follow',
+      og_image:         `https://placehold.co/1200x630/4F46E5/FFFFFF?text=${slug}`,
+    },
+    sections: [
+      {
+        type:       'hero',
+        identifier: `hero-${randomId}`,
+        title:      { en: `Welcome to ${randomId}`, ar: `أهلاً بك في ${randomId}` },
+        subtitle:   { en: 'Valid random subtitle', ar: 'عنوان فرعي عشوائي' },
+        content:    {
+          cta_label: 'Explore',
+          cta_url:   '/',
+        },
+        settings:  { full_width: true },
+        is_active: true,
+      },
+    ],
   };
 }
 
@@ -124,19 +106,38 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors, isSubmitting, isDirty },
   } = form;
+
+  // Sync form state with page data when it loads
+  useEffect(() => {
+    if (page) {
+      reset(buildDefaultValues(page));
+    }
+  }, [page, reset]);
 
   const status      = watch('status');
   const isScheduled = status === 'scheduled';
 
   const handleFormSubmit = async (values: MarketingPageFormValues) => {
-    await onSubmit(values);
+    try {
+      await onSubmit(values);
+    } catch (error) {
+      console.error('Form submission error:', error);
+      // Mutation errors are usually handled by useMutation onError,
+      // but we catch here to ensure isSubmitting is reset correctly.
+    }
+  };
+
+  const onInvalid = (errors: any) => {
+    console.warn('Form validation errors:', errors);
+    toast.error(t('form.errors.validationFailed'));
   };
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(handleFormSubmit, onInvalid)} className="space-y-6">
         {/* Page header */}
         <div className="flex items-center justify-between">
           <div>
@@ -157,7 +158,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
             )}
             <Button
               type="submit"
-              disabled={isSubmitting || isLoading || (isEdit && !isDirty)}
+              disabled={isSubmitting || isLoading}
             >
               {isSubmitting || isLoading
                 ? t('form.saving')

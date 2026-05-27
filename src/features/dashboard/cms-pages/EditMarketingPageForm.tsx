@@ -15,16 +15,25 @@ export default function EditMarketingPageForm({ storeId, pageId, page }: Props) 
   const update = useUpdateMarketingPage(storeId, pageId);
 
   const handleSubmit = async (values: MarketingPageFormValues) => {
+    // Normalize published_at: empty string should be null for the backend
+    const publishedAt = values.published_at && values.published_at.trim() !== '' 
+      ? values.published_at 
+      : null;
+
     await update.mutateAsync({
       title:        values.title,
       slug:         values.slug,
       excerpt:      values.excerpt,
       template:     values.template,
       status:       values.status,
-      published_at: values.published_at,
+      published_at: publishedAt,
       sort_order:   values.sort_order,
       seo:          values.seo,
-      sections:     values.sections,
+      sections:     values.sections.map(s => ({
+        ...s,
+        // Ensure both 'type' and 'section_type' are present for backend compatibility
+        section_type: s.type,
+      })),
     });
   };
 
