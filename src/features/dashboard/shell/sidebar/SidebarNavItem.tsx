@@ -37,14 +37,21 @@ export function SidebarNavItem({
         aria-current={isActive ? 'page' : undefined}
         title={isCollapsed ? label : undefined}
         className={cn(
-          'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors text-sidebar-accent-foreground',
+          'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 ease-in-out text-sidebar-accent-foreground overflow-hidden whitespace-nowrap',
           'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
           isActive && 'bg-sidebar-accent text-sidebar-accent-foreground',
           isCollapsed && 'justify-center px-2'
         )}
       >
         <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
-        {!isCollapsed && <span>{label}</span>}
+        <span
+          className={cn(
+            'transition-all duration-300 ease-in-out truncate',
+            isCollapsed ? 'w-0 opacity-0' : 'w-full opacity-100'
+          )}
+        >
+          {label}
+        </span>
       </Link>
     </li>
   );

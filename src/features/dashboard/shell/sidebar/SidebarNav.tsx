@@ -21,6 +21,7 @@ import {
   LayoutGrid,
   Bookmark,
   Tag,
+  Store,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -34,12 +35,13 @@ interface NavItem {
 
 interface SidebarNavProps {
   storeId: string;
+  isCollapsed?: boolean;
 }
 
 /**
  * Navigation list component with permission-based item filtering.
  */
-export function SidebarNav({ storeId }: SidebarNavProps) {
+export function SidebarNav({ storeId, isCollapsed: isCollapsedProp }: SidebarNavProps) {
   const pathname = usePathname();
   const canManageUsers = useCan('canManageUsers');
   const canManageProducts = useCan('canManageProducts');
@@ -48,7 +50,8 @@ export function SidebarNav({ storeId }: SidebarNavProps) {
   const canManageBrands = useCan('canManageBrands');
   const canManageTags = useCan('canManageTags');
   const canViewDashboard = useCan('canViewDashboard');
-  const isCollapsed = useUiStore(selectSidebarCollapsed);
+  const isCollapsedFromStore = useUiStore(selectSidebarCollapsed);
+  const isCollapsed = isCollapsedProp !== undefined ? isCollapsedProp : isCollapsedFromStore;
   const t = useTranslations('nav');
 
   const navItems: NavItem[] = [
@@ -58,6 +61,12 @@ export function SidebarNav({ storeId }: SidebarNavProps) {
       icon: LayoutDashboard,
       show: canViewDashboard,
       exact: true,
+    },
+    {
+      label: t('stores'),
+      href: ROUTES.merchant.stores.list(),
+      icon: Store,
+      show: true,
     },
     {
       label: t('users'),

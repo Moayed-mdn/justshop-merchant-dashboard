@@ -68,12 +68,14 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     strippedPath === ROUTES.onboarding.home() ||
     strippedPath === ROUTES.onboarding.createStore();
 
-  // Legacy alias — kept for guard logic parity
   const isOnboardingRoute = isSetupRoute;
+
+  const isMerchantRoute = strippedPath.startsWith('/merchant');
 
   const isProtectedRoute =
     strippedPath === ROUTES.dashboard.home() ||
-    strippedPath.startsWith('/stores/');
+    strippedPath.startsWith('/stores/') ||
+    isMerchantRoute;
 
   const redirectTarget = useMemo(() => {
     if (!bootstrapResolved) {
@@ -95,6 +97,28 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
 
     if (isGuestRoute) {
       return accessState.redirectPath;
+    }
+
+    if (isMerchantRoute) {
+      if (strippedPath === '/merchant' || strippedPath === '/merchant/') {
+        return accessState.kind === 'ready' ? ROUTES.merchant.dashboard() : accessState.redirectPath;
+      }
+
+      if (accessState.kind === 'ready') {
+        return null; // permit access
+      }
+
+      if (
+        accessState.kind === 'create_store' ||
+        accessState.kind === 'pending_verification' ||
+        accessState.kind === 'provisioning'
+      ) {
+        return ROUTES.setup();
+      }
+
+      if (accessState.kind === 'blocked') {
+        return ROUTES.dashboard.home();
+      }
     }
 
     if (isOnboardingRoute) {
@@ -169,7 +193,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
         clearDashboardClientStorage();
         clearSession();
         queryClient.clear();
-        queryClient.setQueryData(queryKeys.auth.me(), null);
+        queryClient.setQueryData(queryKeys.merchant.me(), null);
         return;
       }
 
@@ -226,7 +250,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     }
 
     const refreshBootstrap = () => {
-      const shouldRefresh = isAuthenticated || isProtectedRoute || isOnboardingRoute;
+      const shouldRefresh = isAuthenticated || isProtectedRoute || isOnboardingRoute || isMerchantRoute;
       if (!shouldRefresh) {
         return;
       }
@@ -272,7 +296,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
       clearDashboardClientStorage();
       clearSession();
       queryClient.clear();
-      queryClient.setQueryData(queryKeys.auth.me(), null);
+      queryClient.setQueryData(queryKeys.merchant.me(), null);
 
       if (isProtectedRoute || isOnboardingRoute) {
         const loginUrl = new URL(getLoginUrl(locale, pathname), window.location.origin);
@@ -299,7 +323,11 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     router.push(redirectTarget);
   }, [redirectTarget, router, strippedPath]);
 
-  if (!bootstrapResolved || isBootstrapping || redirectTarget) {
+  const isInitialBootstrapping = !bootstrapResolved && isBootstrapping;
+  const isRefreshingWithoutData = !bootstrap && isBootstrapping;
+  const shouldShowFullScreenLoader = isInitialBootstrapping || isRefreshingWithoutData || Boolean(redirectTarget);
+
+  if (shouldShowFullScreenLoader) {
     return (
       <div className="flex h-screen w-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">

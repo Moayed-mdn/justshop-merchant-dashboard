@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { makeLabelByValue, renderSelectValue, type SelectOption } from '@/lib/selectOptions';
+import CreateUserDialog from './CreateUserDialog';
 
 interface Props {
   users: UserListItemView[];
@@ -72,8 +73,19 @@ export default function UsersTable({
 
   if (users.length === 0) {
     return (
-      <div className="rounded-lg border bg-card p-8 text-center">
-        <p className="text-muted-foreground">{t('table.empty')}</p>
+      <div className="flex flex-col items-center justify-center rounded-lg border bg-card p-12 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+          <Avatar className="h-6 w-6 opacity-50">
+            <AvatarFallback>?</AvatarFallback>
+          </Avatar>
+        </div>
+        <h3 className="mt-4 text-lg font-semibold">{t('table.empty')}</h3>
+        <p className="mt-2 text-sm text-muted-foreground max-w-xs mx-auto">
+          {t('subtitle')}
+        </p>
+        <div className="mt-6">
+          <CreateUserDialog storeId={storeId} />
+        </div>
       </div>
     );
   }

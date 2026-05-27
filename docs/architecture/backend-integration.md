@@ -18,7 +18,7 @@
 | Customer | `/api/v1/customer/` | Customer account operations |
 | Public CMS | `/api/v1/public/cms/` | Unauthenticated CMS content |
 
-Legacy routes under `/api/v1/admin/stores/{store}/` and `/api/v1/users/auth/` remain available for backward compatibility but are deprecated and will be removed in v2.
+ALL legacy routes under `/api/v1/admin/`, `/api/v1/users/`, and `/api/v1/me` have been removed in favor of the canonical context architecture.
 
 ## Public CMS Boundary
 

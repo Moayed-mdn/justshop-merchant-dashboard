@@ -25,6 +25,37 @@ This document describes the current frontend integration for the platform CMS us
 - Sitemap: `/api/v1/public/cms/seo/sitemap/{domain}`
 - Robots source: `/api/v1/public/cms/seo/robots.txt`
 
+## Merchant Admin CMS Routes
+
+Store-scoped routes under `API_ROUTES.store(storeId).cmsPages()`:
+
+| Action    | Method | Endpoint                                                        |
+|-----------|--------|-----------------------------------------------------------------|
+| List      | GET    | `/api/v1/merchant/stores/{store}/cms/pages`                     |
+| Create    | POST   | `/api/v1/merchant/stores/{store}/cms/pages`                     |
+| Detail    | GET    | `/api/v1/merchant/stores/{store}/cms/pages/{id}`                |
+| Update    | PUT    | `/api/v1/merchant/stores/{store}/cms/pages/{id}`                |
+| Delete    | DELETE | `/api/v1/merchant/stores/{store}/cms/pages/{id}`                |
+| Publish   | POST   | `/api/v1/merchant/stores/{store}/cms/pages/{id}/publish`        |
+| Unpublish | POST   | `/api/v1/merchant/stores/{store}/cms/pages/{id}/unpublish`      |
+
+The `publish` and `unpublish` endpoints must be used instead of sending `status: "published"` through the update endpoint. They handle the publish timestamp, validate the transition, and check the `marketing.store.publish` permission separately from update.
+
+## Platform Admin CMS Routes
+
+Platform-scoped routes under `API_ROUTES.platform.cmsPages()`:
+
+| Action  | Method | Endpoint                                              |
+|---------|--------|-------------------------------------------------------|
+| List    | GET    | `/api/v1/platform/cms/pages/platform`                 |
+| Create  | POST   | `/api/v1/platform/cms/pages/platform`                 |
+| Detail  | GET    | `/api/v1/platform/cms/pages/platform/{id}`            |
+| Update  | PUT    | `/api/v1/platform/cms/pages/platform/{id}`            |
+| Delete  | DELETE | `/api/v1/platform/cms/pages/platform/{id}`            |
+| Publish | POST   | `/api/v1/platform/cms/pages/platform/{id}/publish`    |
+
+The legacy routes at `/api/v1/platform/cms/pages` (without the `/platform` suffix) are backed by the old `marketing_pages` table and must not be used.
+
 ## Service Layer Rules
 
 - All CMS reads go through `cmsService`.

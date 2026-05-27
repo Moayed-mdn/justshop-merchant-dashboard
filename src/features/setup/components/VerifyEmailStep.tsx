@@ -36,7 +36,7 @@ export function VerifyEmailStep() {
         <div className="flex flex-col gap-3">
           <Button
             type="button"
-            onClick={() => void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() })}
+            onClick={() => void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() })}
           >
             I have verified my email
           </Button>

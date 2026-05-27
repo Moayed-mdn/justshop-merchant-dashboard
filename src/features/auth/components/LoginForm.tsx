@@ -61,7 +61,7 @@ export function LoginForm() {
 
     try {
       const bootstrap = await login({ email: data.email, password: data.password });
-      queryClient.setQueryData(queryKeys.auth.me(), bootstrap);
+      queryClient.setQueryData(queryKeys.merchant.me(), bootstrap);
       postAuthChannelMessage('login');
 
       toast.success(t('success.loggedIn'));

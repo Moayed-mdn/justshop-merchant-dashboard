@@ -16,6 +16,7 @@ import { resolveProvisioningStoreId } from '@/lib/auth/bootstrap-routing';
 import {
   canViewBrandsFromPermissions,
   canViewCategoriesFromPermissions,
+  canViewCmsPagesFromPermissions,
   canViewDashboardFromPermissions,
   canViewOrdersFromPermissions,
   canViewProductsFromPermissions,
@@ -31,7 +32,8 @@ type UiPermissionKey =
   | 'canViewDashboard'
   | 'canManageCategories'
   | 'canManageBrands'
-  | 'canManageTags';
+  | 'canManageTags'
+  | 'canManageCmsPages';
 
 export interface BootstrapState {
   bootstrap: BootstrapData | null;
@@ -426,7 +428,11 @@ export const useBootstrapStore = create<BootstrapStore>((set, get) => ({
     } catch (error) {
       const apiError = error as ApiError;
 
-      if (apiError.status === 401) {
+      // Handle standard unauthorized and contamination errors
+      const message = apiError.message?.toLowerCase() ?? '';
+      const isContaminated = message.includes('session contamination') || message.includes('domain mismatch');
+
+      if (apiError.status === 401 || isContaminated) {
         get().clearSession();
         return null;
       }
@@ -513,6 +519,8 @@ export function useCan(permission: UiPermissionKey): boolean {
         return canViewBrandsFromPermissions(state.permissions);
       case 'canManageTags':
         return canViewTagsFromPermissions(state.permissions);
+      case 'canManageCmsPages':
+        return canViewCmsPagesFromPermissions(state.permissions);
       case 'canViewDashboard':
         return canViewDashboardFromPermissions(state.permissions);
       default:

@@ -65,11 +65,11 @@ Bootstrap is the single source of truth. The setup flow never manages its own ro
 
 ## API Integration
 
-| Action              | Endpoint                                          | Called from         |
-|---------------------|---------------------------------------------------|---------------------|
-| Slug availability   | `GET /api/v1/store-slug/check?slug=`              | `CreateStoreStep`   |
-| Create store        | `POST /api/v1/stores`                             | `CreateStoreStep`   |
-| Provisioning status | `GET /api/v1/stores/{store}/provisioning-status`  | `useProvisioningStatus` |
+| Action              | Endpoint                                                   | Called from         |
+|---------------------|------------------------------------------------------------|---------------------|
+| Slug availability   | `GET /api/v1/merchant/store-slug/check?slug=`              | `CreateStoreStep`   |
+| Create store        | `POST /api/v1/merchant/stores`                             | `CreateStoreStep`   |
+| Provisioning status | `GET /api/v1/merchant/stores/{store}/provisioning-status`  | `useProvisioningStatus` |
 
 All endpoints are accessed via `src/lib/api/stores.ts` using `API_ROUTES.merchant.stores.*`.
 

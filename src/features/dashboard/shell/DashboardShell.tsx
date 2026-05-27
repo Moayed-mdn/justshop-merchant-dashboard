@@ -7,7 +7,7 @@
  * Reason for 'use client': needs Zustand sidebar state.
  */
 
-import { useUiStore, selectSidebarCollapsed, selectIsRTL } from '@/stores/uiStore';
+import { useUiStore, selectIsRTL } from '@/stores/uiStore';
 import { useLocale } from 'next-intl';
 import { useEffect } from 'react';
 import { Sidebar } from './sidebar/Sidebar';
@@ -19,14 +19,15 @@ import { Loader2 } from 'lucide-react';
 
 interface DashboardShellProps {
   children: React.ReactNode;
+  nav?: React.ReactNode;
+  switcher?: React.ReactNode;
 }
 
 /**
  * Main layout shell for dashboard pages.
  * Includes sidebar, topbar, and content area.
  */
-export function DashboardShell({ children }: DashboardShellProps) {
-  const isCollapsed = useUiStore(selectSidebarCollapsed);
+export function DashboardShell({ children, nav, switcher }: DashboardShellProps) {
   const isRTL = useUiStore(selectIsRTL);
   const locale = useLocale();
   const setDirection = useUiStore((state) => state.setDirection);
@@ -39,7 +40,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
   return (
     <div className="relative flex h-screen overflow-hidden ">
       {/* Sidebar — hidden on mobile */}
-      <Sidebar />
+      <Sidebar nav={nav} />
 
       {/* Main area */}
       <div
@@ -48,7 +49,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
           isRTL ? 'mr-0' : 'ml-0'
         )}
       >
-        <Topbar />
+        <Topbar switcher={switcher} />
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
@@ -64,7 +65,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
       ) : null}
 
       {/* Mobile nav overlay */}
-      <MobileNav />
+      <MobileNav nav={nav} />
     </div>
   );
 }

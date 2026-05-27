@@ -58,7 +58,7 @@ export function SetupOrchestrator() {
             <Button
               type="button"
               onClick={() =>
-                void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() })
+                void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() })
               }
             >
               Retry
@@ -102,7 +102,7 @@ export function SetupOrchestrator() {
           <Button
             type="button"
             onClick={() =>
-              void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() })
+              void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() })
             }
           >
             Go to dashboard

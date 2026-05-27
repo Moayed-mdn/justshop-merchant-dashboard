@@ -5,26 +5,43 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useSwitchStore } from '@/hooks/auth/useSwitchStore';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useRouter } from '@/lib/navigation';
+import { ROUTES } from '@/config/routes';
 
 export function StoreSwitcher() {
+  const router = useRouter();
   const stores = useBootstrapStore((state) => state.stores);
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const switchStoreMutation = useSwitchStore();
 
-  const isDisabled = stores.length <= 1 || switchStoreMutation.isPending;
+  const isDisabled = switchStoreMutation.isPending;
   const selectValue = activeStore ? String(activeStore.id) : '';
 
   const selectableStores = useMemo(
     () => stores.filter((store) => store.status === 'active' && store.is_active),
     [stores]
   );
+
+  const handleValueChange = (value: string | null) => {
+    if (!value) return;
+
+    if (value === '__create_store__') {
+      router.push(ROUTES.merchant.stores.create());
+      return;
+    }
+
+    if (value && value !== selectValue && !switchStoreMutation.isPending) {
+      switchStoreMutation.mutate(value);
+    }
+  };
 
   if (stores.length === 0) {
     return null;
@@ -35,11 +52,7 @@ export function StoreSwitcher() {
       <Select
         value={selectValue}
         disabled={isDisabled}
-        onValueChange={(nextStoreId) => {
-          if (nextStoreId && nextStoreId !== selectValue && !switchStoreMutation.isPending) {
-            switchStoreMutation.mutate(nextStoreId);
-          }
-        }}
+        onValueChange={handleValueChange}
       >
         <SelectTrigger className="min-w-44" data-testid="store-switcher">
           <div className="flex w-full items-center gap-2">
@@ -55,6 +68,15 @@ export function StoreSwitcher() {
               {store.name}
             </SelectItem>
           ))}
+          
+          <SelectSeparator />
+          
+          <SelectItem value="__create_store__" className="text-primary focus:text-primary">
+            <div className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              <span>Add store</span>
+            </div>
+          </SelectItem>
         </SelectContent>
       </Select>
       {switchStoreMutation.isPending ? (

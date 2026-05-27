@@ -28,11 +28,11 @@ export async function login(formData: FormData): Promise<{ success: true; user: 
   }
 
   try {
-    await serverFetch<void>(API_ROUTES.auth.csrfCookie(), {
+    await serverFetch<void>(API_ROUTES.csrfCookie(), {
       method: 'GET',
     });
 
-    const response = await serverFetch<ApiSuccessResponse<LoginResponse>>(API_ROUTES.auth.login(), {
+    const response = await serverFetch<ApiSuccessResponse<LoginResponse>>(API_ROUTES.merchant.auth.login(), {
       method: 'POST',
       body: { email, password },
     });
@@ -53,7 +53,7 @@ export async function login(formData: FormData): Promise<{ success: true; user: 
  * Logout user.
  */
 export async function logout(locale: string = 'en'): Promise<void> {
-  await serverFetch<void>(API_ROUTES.auth.logout(), {
+  await serverFetch<void>(API_ROUTES.merchant.auth.logout(), {
     method: 'POST',
   }).catch(() => null);
   redirect(`/${locale}/login`);
@@ -64,7 +64,7 @@ export async function logout(locale: string = 'en'): Promise<void> {
  */
 export async function getMe(): Promise<User | null> {
   try {
-    const response = await serverFetch<ApiSuccessResponse<User>>(API_ROUTES.auth.me(), {
+    const response = await serverFetch<ApiSuccessResponse<User>>(API_ROUTES.merchant.auth.me(), {
       method: 'GET',
       cache: 'no-store',
     });

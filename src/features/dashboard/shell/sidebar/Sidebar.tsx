@@ -10,17 +10,19 @@
 import { useUiStore, selectSidebarCollapsed } from '@/stores/uiStore';
 import { useBootstrapStore, selectUser } from '@/stores/bootstrapStore';
 import { SidebarNav } from './SidebarNav';
-import { Button } from '@/components/ui/button';
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
+import React from 'react';
+
+interface SidebarProps {
+  nav?: React.ReactNode;
+}
 
 /**
  * Main sidebar component with navigation and user info.
  */
-export function Sidebar() {
+export function Sidebar({ nav }: SidebarProps) {
   const isCollapsed = useUiStore(selectSidebarCollapsed);
-  const toggleSidebar = useUiStore((state) => state.toggleSidebar);
   const user = useBootstrapStore(selectUser);
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('nav');
@@ -45,56 +47,57 @@ export function Sidebar() {
       )}
     >
       {/* Header section */}
-      <div className="flex h-14 items-center justify-between border-b border-sidebar-border px-3">
-        {!isCollapsed && (
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">{t('appName')}</span>
-            {activeStore ? (
-              <span className="truncate text-xs text-sidebar-muted">{activeStore.name}</span>
-            ) : null}
-          </div>
-        )}
-        {isCollapsed && (
-          <span className="text-lg font-bold">{t('appName').charAt(0)}</span>
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          type="button"
-          aria-label={t('toggleSidebar')}
-          onClick={toggleSidebar}
-          className="h-8 w-8 shrink-0"
-        >
-          {isCollapsed ? (
-            <PanelLeftOpen className="h-4 w-4" aria-hidden="true" />
-          ) : (
-            <PanelLeftClose className="h-4 w-4" aria-hidden="true" />
+      <div className="relative flex h-14 items-center px-3 border-b border-sidebar-border overflow-hidden">
+        <div
+          className={cn(
+            'flex flex-col transition-all duration-300 ease-in-out whitespace-nowrap',
+            isCollapsed ? 'opacity-0 translate-x-[-10px] pointer-events-none' : 'opacity-100 translate-x-0'
           )}
-        </Button>
+        >
+          <span className="text-sm font-semibold">{t('appName')}</span>
+          {activeStore ? (
+            <span className="truncate text-xs text-sidebar-muted">{activeStore.name}</span>
+          ) : null}
+        </div>
+        <div
+          className={cn(
+            'absolute inset-0 flex items-center justify-center transition-all duration-300 ease-in-out',
+            isCollapsed ? 'opacity-100 scale-100' : 'opacity-0 scale-50 pointer-events-none'
+          )}
+        >
+          <span className="text-lg font-bold">{t('appName').charAt(0)}</span>
+        </div>
       </div>
 
       {/* Navigation */}
-      {activeStore ? <SidebarNav storeId={String(activeStore.id)} /> : null}
+      {nav ? (
+        React.isValidElement(nav) ? React.cloneElement(nav, { isCollapsed } as any) : nav
+      ) : (
+        activeStore ? <SidebarNav storeId={String(activeStore.id)} isCollapsed={isCollapsed} /> : null
+      )}
 
       {/* Footer section with user info */}
-      <div className="mt-auto border-t border-sidebar-border p-3">
+      <div className="mt-auto border-t border-sidebar-border p-3 overflow-hidden">
         <div
           className={cn(
-            'flex items-center gap-3',
-            isCollapsed ? 'justify-center' : ''
+            'flex items-center gap-3 transition-all duration-300 ease-in-out',
+            isCollapsed ? 'justify-center' : 'justify-start'
           )}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-xs font-medium">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-xs font-medium">
             {getInitials(user?.name ?? null)}
           </div>
-          {!isCollapsed && user && (
-            <div className="flex flex-col overflow-hidden">
-              <span className="truncate text-sm font-medium">{user.name}</span>
-              <span className="truncate text-xs text-sidebar-muted">
-                {t('user')}
-              </span>
-            </div>
-          )}
+          <div
+            className={cn(
+              'flex flex-col overflow-hidden transition-all duration-300 ease-in-out whitespace-nowrap',
+              isCollapsed ? 'w-0 opacity-0' : 'w-full opacity-100'
+            )}
+          >
+            <span className="truncate text-sm font-medium">{user?.name}</span>
+            <span className="truncate text-xs text-sidebar-muted">
+              {t('user')}
+            </span>
+          </div>
         </div>
       </div>
     </aside>

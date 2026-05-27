@@ -67,8 +67,8 @@ export default function middleware(request: NextRequest): NextResponse {
     : pathname;
 
   // Dashboard Layer Protection
-  // Note: For now we assume anything under /stores is dashboard.
-  const isDashboardRoute = strippedPath.startsWith('/stores');
+  // Note: For now we assume anything under /stores or /merchant is dashboard.
+  const isDashboardRoute = strippedPath.startsWith('/stores') || strippedPath.startsWith('/merchant');
 
   if (isDashboardRoute && !hasSessionCookie) {
     const loginUrl = request.nextUrl.clone();

@@ -5,6 +5,9 @@
 /** User role union type */
 export type UserRole = 'super_admin' | 'store_admin' | 'staff';
 
+/** Merchant specific user roles */
+export type MerchantUserRole = 'store_admin' | 'staff';
+
 /** Admin user type */
 export interface AdminUser {
   id: number;
@@ -87,4 +90,18 @@ export interface UserFilters {
   status: 'all' | 'active' | 'inactive';
   page: number;
   perPage: number;
+}
+
+/** Payload for creating a merchant user */
+export interface CreateMerchantUserPayload {
+  name: string;
+  email: string;
+  password?: string;
+  password_confirmation?: string;
+  role: MerchantUserRole;
+}
+
+/** Response for creating a merchant user */
+export interface CreateMerchantUserResponse {
+  data: UserDetail;
 }

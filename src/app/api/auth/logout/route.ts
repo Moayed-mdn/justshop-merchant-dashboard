@@ -18,7 +18,7 @@ export async function POST(): Promise<NextResponse> {
   try {
     // 1. Notify backend to revoke session
     try {
-      await serverFetch<void>(API_ROUTES.auth.logout(), {
+      await serverFetch<void>(API_ROUTES.merchant.auth.logout(), {
         method: 'POST',
       });
     } catch (e) {

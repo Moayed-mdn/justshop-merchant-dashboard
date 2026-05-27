@@ -96,7 +96,7 @@ export function ProvisioningStep() {
   }, [error?.message, hardTimedOut, isError, isOnline, message, softTimedOut, status]);
 
   const refreshBootstrap = async () => {
-    await queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
   };
 
   // Trigger bootstrap refresh once when provisioning completes
@@ -123,7 +123,7 @@ export function ProvisioningStep() {
     ) {
       return;
     }
-    router.push(ROUTES.store(String(bootstrap.active_store.id)).dashboard());
+    router.push(ROUTES.merchant.dashboard());
   }, [bootstrap?.active_store, router, status]);
 
   return (

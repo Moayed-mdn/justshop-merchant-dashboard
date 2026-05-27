@@ -14,6 +14,7 @@ interface RolePermissions {
   canManageCategories: boolean;
   canManageBrands: boolean;
   canManageTags: boolean;
+  canManageCmsPages: boolean;
 }
 
 export const PERMISSIONS: Record<UserRole, RolePermissions> = {
@@ -27,6 +28,7 @@ export const PERMISSIONS: Record<UserRole, RolePermissions> = {
     canManageCategories:   true,
     canManageBrands:       true,
     canManageTags:         true,
+    canManageCmsPages:     true,
   },
   staff: {
     canManageUsers:        false,
@@ -38,6 +40,7 @@ export const PERMISSIONS: Record<UserRole, RolePermissions> = {
     canManageCategories:   false,
     canManageBrands:       false,
     canManageTags:         false,
+    canManageCmsPages:     false,
   },
   super_admin: {
     canManageUsers:        true,
@@ -49,6 +52,7 @@ export const PERMISSIONS: Record<UserRole, RolePermissions> = {
     canManageCategories:   true,
     canManageBrands:       true,
     canManageTags:         true,
+    canManageCmsPages:     true,
   },
 } as const;
 

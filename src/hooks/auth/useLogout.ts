@@ -48,7 +48,7 @@ export function useLogout(options?: UseLogoutOptions) {
       await queryClient.cancelQueries();
       clearDashboardClientStorage();
       queryClient.clear();
-      queryClient.setQueryData(queryKeys.auth.me(), null);
+      queryClient.setQueryData(queryKeys.merchant.me(), null);
       
       // Notify other tabs
       postAuthChannelMessage('logout');

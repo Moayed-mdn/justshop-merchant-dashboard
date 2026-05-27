@@ -112,7 +112,7 @@ export function useProvisioningStatus() {
 
   const query = useQuery({
     queryKey: trackedStoreId
-      ? queryKeys.auth.provisioning(trackedStoreId)
+      ? queryKeys.merchant.store(String(trackedStoreId)).provisioning()
       : ['provisioning-status', 'idle'],
     queryFn: ({ signal }) => getProvisioningStatus(String(trackedStoreId), { signal }),
     enabled: shouldPoll,
@@ -221,11 +221,11 @@ export function useProvisioningStatus() {
     if (payload.status === 'completed' && provisioning?.status !== 'completed') {
       void queryClient
         .fetchQuery({
-          queryKey: queryKeys.auth.me(),
+          queryKey: queryKeys.merchant.me(),
           queryFn: ({ signal }) => fetchBootstrap({ signal }),
         })
         .then(() => postAuthChannelMessage('bootstrap-refresh'))
-        .catch(() => void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() }));
+        .catch(() => void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() }));
     }
   }, [
     bootstrap?.active_store,
@@ -243,15 +243,28 @@ export function useProvisioningStatus() {
   useEffect(() => {
     if (!query.error) return;
     const apiError = query.error as unknown as ApiError;
+    const message = apiError.message?.toLowerCase() ?? '';
+    const isContaminated = message.includes('session contamination') || message.includes('domain mismatch');
+
+    if (apiError.status === 401 || isContaminated) {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
+      return;
+    }
 
     if (apiError.status === 403) {
-      void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
-      router.push(normalizeBackendRedirectPath(apiError.redirect) ?? ROUTES.dashboard.home());
+      void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
+      
+      // If the backend provided a specific redirect, follow it.
+      // Otherwise, do NOT redirect to /dashboard automatically as it causes infinite loops
+      // if the bootstrap state still requires provisioning.
+      if (apiError.redirect) {
+        router.push(normalizeBackendRedirectPath(apiError.redirect)!);
+      }
       return;
     }
 
     if (apiError.status === 404) {
-      void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
     }
   }, [query.error, queryClient, router]);
 

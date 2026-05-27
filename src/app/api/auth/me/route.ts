@@ -33,7 +33,7 @@ export async function GET(): Promise<NextResponse> {
   }
 
   try {
-    const data = await serverFetch<ApiResponse<User>>(API_ROUTES.auth.me(), {
+    const data = await serverFetch<ApiResponse<User>>(API_ROUTES.merchant.auth.me(), {
       method: 'GET',
       cache: 'no-store',
     });

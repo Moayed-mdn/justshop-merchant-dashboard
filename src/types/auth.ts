@@ -26,7 +26,7 @@ export interface AuthTransportUser {
 }
 
 /**
- * Canonical bootstrap user shape returned from GET /api/v1/me.
+ * Canonical bootstrap user shape returned from GET /api/v1/merchant/me.
  */
 export interface BootstrapUser {
   id: number;

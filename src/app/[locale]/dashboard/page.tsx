@@ -41,7 +41,7 @@ export default function DashboardEntryPage() {
             Current status: <span className="font-medium">{bootstrap.active_store.status}</span>
           </p>
           <div className="mt-6 flex items-center justify-center gap-3">
-            <Button type="button" onClick={() => void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() })}>
+            <Button type="button" onClick={() => void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() })}>
               Refresh session
             </Button>
           </div>
@@ -61,7 +61,7 @@ export default function DashboardEntryPage() {
           <Button type="button" onClick={() => router.push(accessState.redirectPath)}>
             Continue
           </Button>
-          <Button type="button" variant="outline" onClick={() => void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() })}>
+          <Button type="button" variant="outline" onClick={() => void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() })}>
             Refresh bootstrap
           </Button>
         </div>

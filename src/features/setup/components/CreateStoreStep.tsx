@@ -9,7 +9,7 @@ import { Loader2, CheckCircle2, XCircle, Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { checkSlugAvailability, createStore } from '@/lib/api/stores';
+import { checkStoreSlug, createStore } from '@/lib/api/stores';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { queryKeys } from '@/lib/queryKeys';
 import type { ApiError } from '@/types/api';
@@ -64,7 +64,7 @@ export function CreateStoreStep({ onSuccess }: Props) {
 
   const slugQuery = useQuery({
     queryKey: ['store-slug-check', debouncedSlug],
-    queryFn: ({ signal }) => checkSlugAvailability(debouncedSlug, { signal }),
+    queryFn: ({ signal }) => checkStoreSlug(debouncedSlug, { signal }),
     enabled: canCheckSlug,
     retry: false,
     staleTime: 0,
@@ -128,10 +128,12 @@ export function CreateStoreStep({ onSuccess }: Props) {
 
       try {
         const bootstrap = await fetchBootstrap();
-        queryClient.setQueryData(queryKeys.auth.me(), bootstrap);
+        queryClient.setQueryData(queryKeys.merchant.me(), bootstrap);
+        await queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
         postAuthChannelMessage('bootstrap-refresh');
       } catch {
-        queryClient.setQueryData(queryKeys.auth.me(), useBootstrapStore.getState().bootstrap);
+        queryClient.setQueryData(queryKeys.merchant.me(), useBootstrapStore.getState().bootstrap);
+        await queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
       }
 
       toast.success(response.message || 'Store creation has started.');
@@ -149,7 +151,7 @@ export function CreateStoreStep({ onSuccess }: Props) {
       const storeError = apiError.errors.store?.[0];
       if (storeError) {
         await queryClient.fetchQuery({
-          queryKey: queryKeys.auth.me(),
+          queryKey: queryKeys.merchant.me(),
           queryFn: ({ signal }) => fetchBootstrap({ signal }),
         });
         clearCreateStoreDraft();
@@ -160,7 +162,7 @@ export function CreateStoreStep({ onSuccess }: Props) {
       }
 
       if (apiError.status === 403) {
-        void queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
+        await queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
         setFormError(
           apiError.message || 'Store creation is currently blocked. Refresh the setup state to continue.'
         );

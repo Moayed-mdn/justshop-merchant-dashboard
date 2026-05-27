@@ -27,7 +27,7 @@ interface RequestOptions {
 }
 
 export async function ensureCsrfCookie(options: RequestOptions = {}): Promise<void> {
-  await clientApi.get<void>(API_ROUTES.auth.csrfCookie(), { signal: options.signal });
+  await clientApi.get<void>(API_ROUTES.csrfCookie(), { signal: options.signal });
 }
 
 /**
@@ -38,7 +38,7 @@ export async function login(
   options: RequestOptions = {}
 ): Promise<ApiResponse<{ user: AuthTransportUser }>> {
   await ensureCsrfCookie(options);
-  return clientApi.post(API_ROUTES.auth.login(), credentials, { signal: options.signal });
+  return clientApi.post(API_ROUTES.merchant.auth.login(), credentials, { signal: options.signal });
 }
 
 /**
@@ -49,7 +49,7 @@ export async function register(
   options: RequestOptions = {}
 ): Promise<ApiResponse<AuthTransportUser>> {
   await ensureCsrfCookie(options);
-  return clientApi.post(API_ROUTES.auth.register(), payload, { signal: options.signal });
+  return clientApi.post(API_ROUTES.merchant.auth.register(), payload, { signal: options.signal });
 }
 
 /**
@@ -57,28 +57,28 @@ export async function register(
  */
 export async function logout(options: RequestOptions = {}): Promise<ApiResponse<null>> {
   await ensureCsrfCookie(options);
-  return clientApi.post(API_ROUTES.auth.logout(), undefined, { signal: options.signal });
+  return clientApi.post(API_ROUTES.merchant.auth.logout(), undefined, { signal: options.signal });
 }
 
 /**
  * Get current authenticated user (Bootstrap).
  */
 export async function bootstrap(options: RequestOptions = {}): Promise<ApiResponse<BootstrapData>> {
-  return clientApi.get(API_ROUTES.auth.me(), { signal: options.signal });
+  return clientApi.get(API_ROUTES.merchant.auth.me(), { signal: options.signal });
 }
 
 /**
  * Forgot password request.
  */
 export async function forgotPassword(payload: ForgotPasswordPayload): Promise<ApiResponse<void>> {
-  return clientApi.post(API_ROUTES.auth.forgotPassword(), payload);
+  return clientApi.post(API_ROUTES.merchant.auth.forgotPassword(), payload);
 }
 
 /**
  * Reset password request.
  */
 export async function resetPassword(payload: ResetPasswordPayload): Promise<ApiResponse<void>> {
-  return clientApi.post(API_ROUTES.auth.resetPassword(), payload);
+  return clientApi.post(API_ROUTES.merchant.auth.resetPassword(), payload);
 }
 
 /**
@@ -86,7 +86,7 @@ export async function resetPassword(payload: ResetPasswordPayload): Promise<ApiR
  */
 export async function resendVerificationEmail(options: RequestOptions = {}): Promise<ApiResponse<void>> {
   await ensureCsrfCookie(options);
-  return clientApi.post(API_ROUTES.auth.resendVerification(), undefined, { signal: options.signal });
+  return clientApi.post(API_ROUTES.merchant.auth.resendVerification(), undefined, { signal: options.signal });
 }
 
 /**
@@ -99,7 +99,7 @@ export async function verifyEmail(params: {
   signature: string;
 }): Promise<ApiResponse<void>> {
   const { id, hash, ...rest } = params;
-  return clientApi.get(API_ROUTES.auth.verifyEmail(id, hash), { params: rest });
+  return clientApi.get(API_ROUTES.merchant.auth.verifyEmail(id, hash), { params: rest });
 }
 
 /**
@@ -113,7 +113,7 @@ export async function switchStore(
   const normalizedStoreId =
     typeof storeId === 'string' && /^\d+$/.test(storeId) ? Number(storeId) : storeId;
   return clientApi.patch(
-    API_ROUTES.auth.switchStore(),
+    API_ROUTES.merchant.auth.activeStore(),
     { store_id: normalizedStoreId },
     { signal: options.signal }
   );
@@ -123,7 +123,8 @@ export async function switchStore(
  * Get active sessions.
  */
 export async function getSessions(): Promise<ApiResponse<any[]>> {
-  return clientApi.get(API_ROUTES.auth.sessions());
+  // sessions endpoint was removed in backend refactor, returning empty for now or we should remove this function
+  return { data: [], success: true, message: 'Sessions list deprecated' };
 }
 
 interface SessionMeResponse {

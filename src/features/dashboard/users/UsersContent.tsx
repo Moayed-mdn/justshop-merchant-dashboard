@@ -15,6 +15,7 @@ import { useTranslations } from 'next-intl';
 import { logger } from '@/lib/logger';
 import UsersTable from './UsersTable';
 import UserFilters from './UserFilters';
+import CreateUserDialog from './CreateUserDialog';
 
 interface Props {
   storeId: string;
@@ -86,9 +87,12 @@ export default function UsersContent({ storeId, initialFilters }: Props) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{t('title')}</h1>
-        <p className="text-muted-foreground">{t('subtitle')}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('subtitle')}</p>
+        </div>
+        <CreateUserDialog storeId={storeId} />
       </div>
       
       <UserFilters

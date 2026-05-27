@@ -5,7 +5,7 @@
 import { clientApi } from '@/lib/api/client';
 import type { ApiResponse, PaginatedResponse } from '@/types/api';
 import { API_ROUTES } from '@/config/routes';
-import type { UserListItem, UserDetail } from '@/types/user';
+import type { UserListItem, UserDetail, CreateMerchantUserPayload } from '@/types/user';
 import type { UserFilters } from '@/schemas/users';
 
 /**
@@ -24,6 +24,20 @@ export async function getUsers(
   if (filters.perPage !== 10) params.per_page = filters.perPage;
 
   return clientApi.get<PaginatedResponse<UserListItem>>(API_ROUTES.store(storeId).users().list(), { params });
+}
+
+/**
+ * Create a new merchant user.
+ */
+export async function createMerchantUser(
+  storeId: string,
+  payload: CreateMerchantUserPayload
+): Promise<UserDetail> {
+  const response = await clientApi.post<ApiResponse<UserDetail>>(
+    API_ROUTES.store(storeId).users().create(),
+    payload
+  );
+  return response.data;
 }
 
 /**

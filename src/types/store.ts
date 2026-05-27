@@ -45,3 +45,7 @@ export interface CreateStorePayload {
   name: string;
   slug: string;
 }
+
+export interface UpdateStorePayload {
+  name: string;
+}

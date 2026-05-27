@@ -73,9 +73,9 @@ Recommended frontend rule:
 
 ### Bootstrap-First Architecture
 
-The Dashboard should be implemented around `GET /api/v1/me`.
+The Dashboard should be implemented around `GET /api/v1/merchant/me`.
 
-Why `GET /api/v1/me` is canonical:
+Why `GET /api/v1/merchant/me` is canonical:
 
 - It is the canonical Dashboard bootstrap route.
 - It returns all frontend-critical auth and dashboard state in one payload.
@@ -93,7 +93,7 @@ Why `GET /api/v1/me` is canonical:
 Frontend rule:
 
 - Login and register responses are transport responses.
-- `GET /api/v1/me` is the source of truth for app state.
+- `GET /api/v1/merchant/me` is the source of truth for app state.
 - After login, register, logout, provisioning completion, or auth recovery, resolve UI state from bootstrap.
 
 ### Active Store Concept
@@ -179,15 +179,15 @@ Some forbidden responses also include:
 
 | Method | URL | Auth | Purpose |
 | --- | --- | --- | --- |
-| `POST` | `/api/v1/users/auth/register` | Guest | Create merchant account and authenticated session |
-| `POST` | `/api/v1/users/auth/login` | Guest | Login and create merchant session |
-| `POST` | `/api/v1/users/auth/logout` | Authenticated | End current session |
-| `GET` | `/api/v1/me` | Authenticated | Canonical Dashboard bootstrap |
-| `POST` | `/api/v1/stores` | Authenticated + verified | Create first or additional store |
-| `GET` | `/api/v1/stores/{store}/provisioning-status` | Authenticated + verified + authorized | Poll provisioning progress |
-| `PATCH` | `/api/v1/users/auth/active-store` | Authenticated + verified | Switch active store and receive refreshed bootstrap |
+| `POST` | `/api/v1/merchant/auth/register` | Guest | Create merchant account and authenticated session |
+| `POST` | `/api/v1/merchant/auth/login` | Guest | Login and create merchant session |
+| `POST` | `/api/v1/merchant/auth/logout` | Authenticated | End current session |
+| `GET` | `/api/v1/merchant/me` | Authenticated | Canonical Dashboard bootstrap |
+| `POST` | `/api/v1/merchant/stores` | Authenticated + verified | Create first or additional store |
+| `GET` | `/api/v1/merchant/stores/{store}/provisioning-status` | Authenticated + verified + authorized | Poll provisioning progress |
+| `PATCH` | `/api/v1/merchant/auth/active-store` | Authenticated + verified | Switch active store and receive refreshed bootstrap |
 
-### `POST /api/v1/users/auth/register`
+### `POST /api/v1/merchant/auth/register`
 
 - Auth: guest
 - CSRF: yes for browser SPA
@@ -256,7 +256,7 @@ Frontend usage:
 
 - treat success as authenticated
 - do not unlock the dashboard from this response alone
-- immediately resolve canonical state via `GET /api/v1/me`
+- immediately resolve canonical state via `GET /api/v1/merchant/me`
 - expect bootstrap to report `pending_verification`
 
 Redirect behavior:
@@ -278,7 +278,7 @@ Caching recommendations:
 - do not cache mutation response as canonical app state
 - invalidate bootstrap query on success
 
-### `POST /api/v1/users/auth/login`
+### `POST /api/v1/merchant/auth/login`
 
 - Auth: guest
 - CSRF: yes for browser SPA
@@ -342,7 +342,7 @@ Error shape:
 Frontend usage:
 
 - treat success as session creation only
-- immediately fetch `GET /api/v1/me`
+- immediately fetch `GET /api/v1/merchant/me`
 - route from bootstrap, not from login response alone
 
 Redirect behavior:
@@ -364,7 +364,7 @@ Caching recommendations:
 
 - invalidate bootstrap query on success
 
-### `POST /api/v1/users/auth/logout`
+### `POST /api/v1/merchant/auth/logout`
 
 - Auth: authenticated
 - CSRF: yes for browser SPA
@@ -403,7 +403,7 @@ Success response example:
 
 Verified follow-up behavior:
 
-- after logout, `GET /api/v1/me` returns `401`
+- after logout, `GET /api/v1/merchant/me` returns `401`
 
 Frontend usage:
 
@@ -419,7 +419,7 @@ Redirect behavior:
 Retry behavior:
 
 - usually none needed
-- if uncertain whether logout completed, recover with `GET /api/v1/me`
+- if uncertain whether logout completed, recover with `GET /api/v1/merchant/me`
 
 Optimistic update rules:
 
@@ -429,7 +429,7 @@ Caching recommendations:
 
 - clear bootstrap and store-scoped queries on success
 
-### `GET /api/v1/me`
+### `GET /api/v1/merchant/me`
 
 - Auth: authenticated
 - Success status: `200`
@@ -472,7 +472,7 @@ Caching recommendations:
 - keep `staleTime` short or `0`
 - invalidate after auth or store-context mutations
 
-### `POST /api/v1/stores`
+### `POST /api/v1/merchant/stores`
 
 - Auth: authenticated and verified
 - Success status: `201`
@@ -554,7 +554,7 @@ Caching recommendations:
 - invalidate bootstrap on success
 - seed provisioning query from returned store id
 
-### `GET /api/v1/stores/{store}/provisioning-status`
+### `GET /api/v1/merchant/stores/{store}/provisioning-status`
 
 - Auth: authenticated, verified, and authorized for that store
 - Success status: `200`
@@ -620,7 +620,7 @@ Caching recommendations:
 - use a per-store query key, for example `['provisioning-status', storeId]`
 - prefer polling over stale cached reads
 
-### `PATCH /api/v1/users/auth/active-store`
+### `PATCH /api/v1/merchant/auth/active-store`
 
 - Auth: authenticated and verified
 - Success status: `200`
@@ -672,7 +672,7 @@ Redirect behavior:
 Retry behavior:
 
 - no automatic retry
-- if the result is uncertain, recover via `GET /api/v1/me`
+- if the result is uncertain, recover via `GET /api/v1/merchant/me`
 
 Optimistic update rules:
 

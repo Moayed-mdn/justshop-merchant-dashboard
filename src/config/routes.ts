@@ -39,6 +39,22 @@ export const ROUTES = {
   stores: {
     new: () => '/setup' as const,
   },
+  merchant: {
+    dashboard:  () => '/merchant/dashboard' as const,
+    orders:     () => '/merchant/orders' as const,
+    products:   () => '/merchant/products' as const,
+    categories: () => '/merchant/categories' as const,
+    brands:     () => '/merchant/brands' as const,
+    tags:       () => '/merchant/tags' as const,
+    customers:  () => '/merchant/customers' as const,
+    cmsPages:   () => '/merchant/cms/pages' as const,
+    stores: {
+      list:     () => '/merchant/stores' as const,
+      create:   () => '/merchant/stores/create' as const,
+      settings: (storeId: string) => `/merchant/stores/${storeId}/settings` as const,
+    },
+    settings:   () => '/merchant/settings' as const,
+  },
   store: (storeId: string) => ({
     dashboard: () => `/stores/${storeId}/dashboard` as const,
 
@@ -85,60 +101,92 @@ export const ROUTES = {
 } as const;
 
 export const API_ROUTES = {
-  home: () => '/' as const,
+  // ── AUTH & IDENTITY ──────────────────────────────────────────
+  // Shared identity endpoints
+  csrfCookie: () => '/api/sanctum/csrf-cookie',
 
-  auth: {
-    csrfCookie: () => '/api/sanctum/csrf-cookie',
-    login:      () => '/api/v1/users/auth/login',
-    logout:     () => '/api/v1/users/auth/logout',
-    me:         () => '/api/v1/me',
-    register:   () => '/api/v1/users/auth/register',
-    forgotPassword: () => '/api/v1/users/auth/password/forgot',
-    resetPassword: () => '/api/v1/users/auth/password/reset',
-    resendVerification: () => '/api/v1/users/auth/email/resend',
-    verifyEmail: (id: string, hash: string) => `/api/v1/users/auth/email/verify/${id}/${hash}`,
-    sessions: () => '/api/v1/users/sessions',
-    switchStore: () => '/api/v1/users/auth/active-store',
-  },
-
-  /**
-   * Context-aware merchant store API routes.
-   * Use these instead of API_ROUTES.store('').create() etc.
-   */
+  // ── MERCHANT CONTEXT ──────────────────────────────────────────
   merchant: {
+    auth: {
+      login:              () => '/api/v1/merchant/auth/login',
+      logout:             () => '/api/v1/merchant/auth/logout',
+      register:           () => '/api/v1/merchant/auth/register',
+      me:                 () => '/api/v1/merchant/me',
+      activeStore:        () => '/api/v1/merchant/auth/active-store',
+      forgotPassword:     () => '/api/v1/merchant/auth/password/forgot',
+      resetPassword:      () => '/api/v1/merchant/auth/password/reset',
+      resendVerification: () => '/api/v1/merchant/auth/email/resend',
+      verifyEmail: (id: string, hash: string) =>
+        `/api/v1/merchant/auth/email/verify/${id}/${hash}`,
+    },
     stores: {
-      create: () => '/api/v1/stores' as const,
-      slugCheck: (slug: string) => `/api/v1/store-slug/check?slug=${slug}` as const,
-      provisioningStatus: (storeId: string) => `/api/v1/stores/${storeId}/provisioning-status` as const,
+      list:               () => '/api/v1/merchant/stores',
+      create:             () => '/api/v1/merchant/stores',
+      detail: (storeId: string) => `/api/v1/merchant/stores/${storeId}`,
+      update: (storeId: string) => `/api/v1/merchant/stores/${storeId}`,
+      slugCheck: (slug: string) => `/api/v1/merchant/stores/slug-check?slug=${slug}`,
+      provisioningStatus: (storeId: string) =>
+        `/api/v1/merchant/stores/${storeId}/provisioning-status`,
     },
   },
 
-  store: (storeId: string) => ({
-    /** @deprecated Use API_ROUTES.merchant.stores.provisioningStatus(storeId) */
-    provisioningStatus: () => `/api/v1/stores/${storeId}/provisioning-status`,
-    /** @deprecated Use API_ROUTES.merchant.stores.slugCheck(slug) */
-    slugCheck: (slug: string) => `/api/v1/store-slug/check?slug=${slug}`,
-    /** @deprecated Use API_ROUTES.merchant.stores.create() */
-    create: () => '/api/v1/stores',
+  // ── CUSTOMER CONTEXT ──────────────────────────────────────────
+  customer: {
+    bootstrap:            () => '/api/v1/customer/bootstrap',
+    me:                   () => '/api/v1/customer/me',
+    auth: {
+      login:              () => '/api/v1/customer/auth/login',
+      logout:             () => '/api/v1/customer/auth/logout',
+      register:           () => '/api/v1/customer/auth/register',
+    },
+  },
 
+  // ── PLATFORM CONTEXT ──────────────────────────────────────────
+  platform: {
+    dashboard:            () => '/api/v1/platform/dashboard',
+    analytics:            () => '/api/v1/platform/analytics',
+    stores:               () => '/api/v1/platform/stores',
+    users:                () => '/api/v1/platform/users',
+    cmsPages: () => ({
+      list:    () => '/api/v1/platform/cms/pages/platform',
+      create:  () => '/api/v1/platform/cms/pages/platform',
+      detail:  (pageId: string) => `/api/v1/platform/cms/pages/platform/${pageId}`,
+      update:  (pageId: string) => `/api/v1/platform/cms/pages/platform/${pageId}`,
+      delete:  (pageId: string) => `/api/v1/platform/cms/pages/platform/${pageId}`,
+      publish: (pageId: string) => `/api/v1/platform/cms/pages/platform/${pageId}/publish`,
+    }),
+  },
+
+  // ── STOREFRONT CONTEXT ────────────────────────────────────────
+  storefront: {
+    stores: (storeId: string) => ({
+      products:           () => `/api/v1/storefront/stores/${storeId}/products`,
+      cart:               () => `/api/v1/storefront/stores/${storeId}/cart`,
+      checkout:           () => `/api/v1/storefront/stores/${storeId}/checkout`,
+    }),
+  },
+
+  // ── PUBLIC CMS ───────────────────────────────────────────────
+  public: {
+    cms: {
+      pages: (slug: string) => `/api/v1/public/cms/pages/${slug}`,
+      blog:                 () => '/api/v1/public/cms/blog',
+      blogPost: (slug: string) => `/api/v1/public/cms/blog/${slug}`,
+      docs: (slugPath: string) => `/api/v1/public/cms/docs/${slugPath}`,
+      docsSidebar:          () => '/api/v1/public/cms/docs/sidebar',
+      sitemap: (domain: string) => `/api/v1/public/cms/seo/sitemap/${domain}`,
+      robots:               () => '/api/v1/public/cms/seo/robots.txt',
+    },
+  },
+
+  // ── MERCHANT OPERATIONAL (STORE-SCOPED) ───────────────────────
+  // These are for the merchant dashboard operating WITHIN a store context
+  store: (storeId: string) => ({
     dashboard: () => ({
       stats:        () => `/api/v1/merchant/stores/${storeId}/dashboard/stats`,
       recentOrders: () => `/api/v1/merchant/stores/${storeId}/dashboard/recent-orders`,
       topProducts:  () => `/api/v1/merchant/stores/${storeId}/dashboard/top-products`,
     }),
-
-    users: () => ({
-      list:    () => `/api/v1/merchant/stores/${storeId}/users`,
-      detail:  (userId: string) =>
-        `/api/v1/merchant/stores/${storeId}/users/${userId}`,
-      block:   (userId: string) =>
-        `/api/v1/merchant/stores/${storeId}/users/${userId}/block`,
-      unblock: (userId: string) =>
-        `/api/v1/merchant/stores/${storeId}/users/${userId}/unblock`,
-      restore: (userId: string) =>
-        `/api/v1/merchant/stores/${storeId}/users/${userId}/restore`,
-    }),
-
     products: () => ({
       list:    () => `/api/v1/merchant/stores/${storeId}/products`,
       detail:  (productId: string) =>
@@ -146,7 +194,13 @@ export const API_ROUTES = {
       restore: (productId: string) =>
         `/api/v1/merchant/stores/${storeId}/products/${productId}/restore`,
     }),
-
+    orders: () => ({
+      list:         () => `/api/v1/merchant/stores/${storeId}/orders`,
+      detail:       (orderId: string) =>
+        `/api/v1/merchant/stores/${storeId}/orders/${orderId}`,
+      updateStatus: (orderId: string) =>
+        `/api/v1/merchant/stores/${storeId}/orders/${orderId}/status`,
+    }),
     categories: () => ({
       list:    () => `/api/v1/merchant/stores/${storeId}/categories`,
       detail:  (categoryId: string) =>
@@ -159,7 +213,6 @@ export const API_ROUTES = {
       restore: (categoryId: string) =>
         `/api/v1/merchant/stores/${storeId}/categories/${categoryId}/restore`,
     }),
-
     brands: () => ({
       list:    () => `/api/v1/merchant/stores/${storeId}/brands`,
       detail:  (brandId: string) =>
@@ -172,28 +225,35 @@ export const API_ROUTES = {
       restore: (brandId: string) =>
         `/api/v1/merchant/stores/${storeId}/brands/${brandId}/restore`,
     }),
-
     tags: () => ({
-      list:   () => `/api/v1/merchant/stores/${storeId}/tags`,
-      detail: (tagId: string) =>
+      list:    () => `/api/v1/merchant/stores/${storeId}/tags`,
+      detail:  (tagId: string) =>
         `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
-      create: () => `/api/v1/merchant/stores/${storeId}/tags`,
-      update: (tagId: string) =>
+      create:  () => `/api/v1/merchant/stores/${storeId}/tags`,
+      update:  (tagId: string) =>
         `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
-      delete: (tagId: string) =>
+      delete:  (tagId: string) =>
         `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
     }),
-
-    orders: () => ({
-      list:         () => `/api/v1/merchant/stores/${storeId}/orders`,
-      detail:       (orderId: string) =>
-        `/api/v1/merchant/stores/${storeId}/orders/${orderId}`,
-      updateStatus: (orderId: string) =>
-        `/api/v1/merchant/stores/${storeId}/orders/${orderId}/status`,
-      cancel:       (orderId: string) =>
-        `/api/v1/merchant/stores/${storeId}/orders/${orderId}/cancel`,
-      refund:       (orderId: string) =>
-        `/api/v1/merchant/stores/${storeId}/orders/${orderId}/refund`,
+    users: () => ({
+      list:   () => `/api/v1/merchant/stores/${storeId}/users`,
+      create: () => `/api/v1/merchant/stores/${storeId}/users`,
+      detail: (userId: string) =>
+        `/api/v1/merchant/stores/${storeId}/users/${userId}`,
+    }),
+    cmsPages: () => ({
+      list:      () => `/api/v1/merchant/stores/${storeId}/cms/pages`,
+      detail:    (pageId: string) =>
+        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}`,
+      create:    () => `/api/v1/merchant/stores/${storeId}/cms/pages`,
+      update:    (pageId: string) =>
+        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}`,
+      delete:    (pageId: string) =>
+        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}`,
+      publish:   (pageId: string) =>
+        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}/publish`,
+      unpublish: (pageId: string) =>
+        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}/unpublish`,
     }),
   }),
 } as const;

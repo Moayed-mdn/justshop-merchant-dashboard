@@ -35,3 +35,9 @@ export function canViewBrandsFromPermissions(permissions: string[]): boolean {
 export function canViewTagsFromPermissions(permissions: string[]): boolean {
   return hasPermissionPrefix(permissions, ['tag.']);
 }
+
+export function canViewCmsPagesFromPermissions(permissions: string[]): boolean {
+  // Show to anyone with cms./page. permissions, or fall back to product-level access
+  // since CMS page management is a store content capability.
+  return hasPermissionPrefix(permissions, ['cms.', 'page.', 'product.']);
+}

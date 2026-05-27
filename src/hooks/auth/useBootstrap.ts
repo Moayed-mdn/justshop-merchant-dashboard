@@ -10,14 +10,18 @@ export function useBootstrap() {
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: queryKeys.auth.me(),
+    queryKey: queryKeys.merchant.me(),
     queryFn: ({ signal }) => fetchBootstrap({ signal }),
     staleTime: 0,
     gcTime: 1000 * 60,
     refetchOnWindowFocus: true,
     retry: (failureCount, error) => {
       const apiError = error as unknown as ApiError;
-      if (apiError.status === 401) {
+      const message = apiError.message?.toLowerCase() ?? '';
+      const isContaminated = message.includes('session contamination') || message.includes('domain mismatch');
+
+      if (apiError.status === 401 || isContaminated) {
+        queryClient.setQueryData(queryKeys.merchant.me(), null);
         return false;
       }
 
@@ -26,7 +30,7 @@ export function useBootstrap() {
   });
 
   const invalidate = () => {
-    return queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
+    return queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
   };
 
   return {

@@ -36,7 +36,7 @@ export const useUiStore = create<UiStore>((set) => ({
   direction: 'ltr',
 
   // Actions
-  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+  toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
   setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
   setTheme: (theme) => set({ theme }),

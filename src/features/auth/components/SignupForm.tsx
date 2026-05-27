@@ -84,7 +84,7 @@ export function SignupForm() {
 
     try {
       const bootstrap = await registerUser(data);
-      queryClient.setQueryData(queryKeys.auth.me(), bootstrap);
+      queryClient.setQueryData(queryKeys.merchant.me(), bootstrap);
       postAuthChannelMessage('login');
 
       toast.success(t('success.registered'));

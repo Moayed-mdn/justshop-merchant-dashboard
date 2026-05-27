@@ -1,5 +1,6 @@
 import { serverFetch } from '@/lib/api/server';
 import { ApiResponse, PaginatedResponse } from '@/types/api';
+import { API_ROUTES } from '@/config/routes';
 import {
   MarketingPage,
   BlogPost,
@@ -18,7 +19,7 @@ export const cmsService = {
    */
   async getPage(slug: string): Promise<MarketingPage> {
     const response = await serverFetch<ApiResponse<MarketingPage>>(
-      `/api/v1/public/cms/pages/${slug}`,
+      API_ROUTES.public.cms.pages(slug),
       {
         cache: 'force-cache',
         tags: [`cms-page-${slug}`],
@@ -36,7 +37,7 @@ export const cmsService = {
     if (params.per_page) searchParams.set('per_page', String(params.per_page));
 
     const query = searchParams.toString();
-    const endpoint = `/api/v1/public/cms/blog${query ? `?${query}` : ''}`;
+    const endpoint = `${API_ROUTES.public.cms.blog()}${query ? `?${query}` : ''}`;
 
     const response = await serverFetch<ApiResponse<PaginatedResponse<BlogPost>>>(endpoint, {
       cache: 'force-cache',
@@ -50,7 +51,7 @@ export const cmsService = {
    */
   async getBlogPost(slug: string): Promise<BlogPost> {
     const response = await serverFetch<ApiResponse<BlogPost>>(
-      `/api/v1/public/cms/blog/${slug}`,
+      API_ROUTES.public.cms.blogPost(slug),
       {
         cache: 'force-cache',
         tags: [`cms-blog-post-${slug}`],
@@ -64,7 +65,7 @@ export const cmsService = {
    */
   async getDocsSidebar(): Promise<DocumentationSidebar> {
     const response = await serverFetch<ApiResponse<DocumentationSidebar>>(
-      '/api/v1/public/cms/docs/sidebar',
+      API_ROUTES.public.cms.docsSidebar(),
       {
         cache: 'force-cache',
         tags: ['cms-docs-sidebar'],
@@ -78,7 +79,7 @@ export const cmsService = {
    */
   async getDocsPage(slugPath: string): Promise<DocumentationPage> {
     const response = await serverFetch<ApiResponse<DocumentationPage>>(
-      `/api/v1/public/cms/docs/${slugPath}`,
+      API_ROUTES.public.cms.docs(slugPath),
       {
         cache: 'force-cache',
         tags: [`cms-docs-page-${slugPath}`],
@@ -92,7 +93,7 @@ export const cmsService = {
    */
   async getSitemap(domain: string): Promise<SitemapEntry[]> {
     const response = await serverFetch<ApiResponse<SitemapEntry[]>>(
-      `/api/v1/public/cms/seo/sitemap/${domain}`,
+      API_ROUTES.public.cms.sitemap(domain),
       {
         cache: 'no-store', // Sitemap should be relatively fresh
       }
@@ -105,7 +106,7 @@ export const cmsService = {
    */
   async getRobots(): Promise<string> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/cms/seo/robots.txt`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API_ROUTES.public.cms.robots()}`, {
         next: { tags: ['cms-seo-robots'] },
         cache: 'force-cache',
       });

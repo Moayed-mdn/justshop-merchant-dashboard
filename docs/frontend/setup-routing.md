@@ -56,9 +56,9 @@ Always use `ROUTES.setup()` for any new navigation that points to the setup flow
 Store-related API routes are accessed via the `API_ROUTES.merchant.stores` namespace:
 
 ```ts
-API_ROUTES.merchant.stores.create()                    // POST /api/v1/stores
-API_ROUTES.merchant.stores.slugCheck(slug)             // GET  /api/v1/store-slug/check?slug=
-API_ROUTES.merchant.stores.provisioningStatus(storeId) // GET  /api/v1/stores/{id}/provisioning-status
+API_ROUTES.merchant.stores.create()                    // POST /api/v1/merchant/stores
+API_ROUTES.merchant.stores.slugCheck(slug)             // GET  /api/v1/merchant/stores/slug-check?slug=
+API_ROUTES.merchant.stores.provisioningStatus(storeId) // GET  /api/v1/merchant/stores/{id}/provisioning-status
 ```
 
-The legacy `API_ROUTES.store('').create()` pattern is deprecated and marked with JSDoc `@deprecated`. It still works but should not be used in new code.
+All legacy `admin` and `users` patterns have been removed. Use the context-aware `merchant` namespace exclusively for merchant operations.

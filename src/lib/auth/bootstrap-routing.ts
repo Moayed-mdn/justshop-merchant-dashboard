@@ -64,6 +64,13 @@ export function needsProvisioningFlow(
     return false;
   }
 
+  // If the active store is already ready, provisioning is complete — no flow needed.
+  // This short-circuits all tracking logic below and prevents spurious redirects to /setup
+  // when onboarding.store_id is still set on the bootstrap payload after a store is active.
+  if (bootstrap.active_store && isBootstrapStoreReady(bootstrap.active_store)) {
+    return false;
+  }
+
   // 1. Explicit backend steps always win
   if (PROVISIONING_ONBOARDING_STEPS.includes(bootstrap.onboarding.step)) {
     return true;
@@ -78,15 +85,10 @@ export function needsProvisioningFlow(
     return true;
   }
 
-  // 3. If we are tracking a store ID, we stay in provisioning KIND until both:
-  //    a) The polling says it's completed (or failed/timed out)
-  //    b) The bootstrap data confirms we have a ready store to go to
+  // 3. If we are tracking a store ID, we stay in provisioning KIND until:
+  //    a) The polling says it's completed AND bootstrap data confirms we have a ready store
+  //    b) OR it's failed/timed out, in which case we stay in the flow to show error/retry
   if (provisioning?.tracked_store_id) {
-    // If polling is still running/pending, we definitely need the flow
-    if (provisioning.status !== 'completed' && provisioning.status !== 'failed' && !provisioning.hard_timed_out) {
-      return true;
-    }
-
     // If polling is "completed", but bootstrap hasn't "caught up" yet (active_store is missing or not ready),
     // we stay in the provisioning KIND to prevent a redirect loop between /onboarding and /dashboard.
     if (provisioning.status === 'completed') {
@@ -94,7 +96,12 @@ export function needsProvisioningFlow(
       if (!hasReadyStore) {
         return true;
       }
+      return false; // Actually ready
     }
+
+    // For any other status (running, pending, failed, soft/hard timeout), we stay in the provisioning flow.
+    // This ensures ProvisioningStep can render its own error/retry states.
+    return true;
   }
 
   return false;
@@ -161,7 +168,7 @@ export function resolveBootstrapAccessState(
   if (bootstrap.active_store && isBootstrapStoreReady(bootstrap.active_store)) {
     return {
       kind: 'ready',
-      redirectPath: ROUTES.store(String(bootstrap.active_store.id)).dashboard(),
+      redirectPath: ROUTES.merchant.dashboard(),
       activeStoreId: String(bootstrap.active_store.id),
     };
   }
