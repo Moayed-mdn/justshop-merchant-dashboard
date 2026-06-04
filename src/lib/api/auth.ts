@@ -82,6 +82,16 @@ export async function resetPassword(payload: ResetPasswordPayload): Promise<ApiR
 }
 
 /**
+ * Check if the current user's email is verified.
+ * Returns a 422 ApiError when not verified yet.
+ */
+export async function checkEmailVerificationStatus(
+  options: RequestOptions = {}
+): Promise<ApiResponse<{ email_verified: boolean; email_verified_at: string | null }>> {
+  return clientApi.get(API_ROUTES.merchant.auth.emailStatus(), { signal: options.signal });
+}
+
+/**
  * Resend verification email.
  */
 export async function resendVerificationEmail(options: RequestOptions = {}): Promise<ApiResponse<void>> {

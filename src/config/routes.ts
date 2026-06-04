@@ -42,8 +42,14 @@ export const ROUTES = {
   merchant: {
     dashboard:  () => '/merchant/dashboard' as const,
     orders:     () => '/merchant/orders' as const,
-    products:   () => '/merchant/products' as const,
-    categories: () => '/merchant/categories' as const,
+    products: {
+      list: () => '/merchant/products' as const,
+      new:  () => '/merchant/products/new' as const,
+    },
+    categories: {
+      list: () => '/merchant/categories' as const,
+      new:  () => '/merchant/categories/new' as const,
+    },
     brands:     () => '/merchant/brands' as const,
     tags:       () => '/merchant/tags' as const,
     customers:  () => '/merchant/customers' as const,
@@ -116,6 +122,7 @@ export const API_ROUTES = {
       forgotPassword:     () => '/api/v1/merchant/auth/password/forgot',
       resetPassword:      () => '/api/v1/merchant/auth/password/reset',
       resendVerification: () => '/api/v1/merchant/auth/email/resend',
+      emailStatus:        () => '/api/v1/merchant/auth/email/status',
       verifyEmail: (id: string, hash: string) =>
         `/api/v1/merchant/auth/email/verify/${id}/${hash}`,
     },
@@ -255,6 +262,7 @@ export const API_ROUTES = {
       unpublish: (pageId: string) =>
         `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}/unpublish`,
     }),
+    sectionTypes: () => `/api/v1/merchant/stores/${storeId}/cms/section-types`,
   }),
 } as const;
 

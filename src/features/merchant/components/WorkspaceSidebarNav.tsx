@@ -65,13 +65,13 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
     },
     {
       label: t('products'),
-      href:  ROUTES.merchant.products(),
+      href:  ROUTES.merchant.products.list(),
       icon:  Package,
       show:  canManageProducts,
     },
     {
       label: t('categories'),
-      href:  ROUTES.merchant.categories(),
+      href:  ROUTES.merchant.categories.list(),
       icon:  LayoutGrid,
       show:  canManageCategories,
     },

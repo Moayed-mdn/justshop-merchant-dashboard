@@ -22,12 +22,20 @@ export function TranslationForm({ locale, value, onChange }: Props) {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>{t('editor.translation.fields.name')}</Label>
-        <Input value={value.name ?? ''} onChange={(e) => set('name', e.target.value)} />
+        <Input 
+          value={value.name ?? ''} 
+          onChange={(e) => set('name', e.target.value)} 
+          data-testid={`product-name-${locale}`}
+        />
       </div>
 
       <div className="space-y-2">
         <Label>{t('editor.translation.fields.slug')}</Label>
-        <Input value={value.slug ?? ''} onChange={(e) => set('slug', e.target.value)} />
+        <Input 
+          value={value.slug ?? ''} 
+          onChange={(e) => set('slug', e.target.value)} 
+          data-testid={`product-slug-${locale}`}
+        />
       </div>
 
       <div className="space-y-2">

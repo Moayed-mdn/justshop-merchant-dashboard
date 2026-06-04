@@ -45,7 +45,6 @@ export async function getCategories(
     API_ROUTES.store(storeId).categories().list(),
     { params },
   );
-  console.log('this is the response',response);
   return response;
 }
 

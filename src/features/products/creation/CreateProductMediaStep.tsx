@@ -22,7 +22,7 @@ export function CreateProductMediaStep({ media, onChange }: Props) {
   const t = useTranslations('products');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="wizard-step-media">
       <Card>
         <CardHeader>
           <CardTitle>{t('editor.tabs.media')}</CardTitle>

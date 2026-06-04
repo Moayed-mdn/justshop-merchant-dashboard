@@ -55,7 +55,7 @@ export function CreateProductStructureStep({ structure, onChange }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="wizard-step-structure">
 
       {/* Options editor */}
       <Card>

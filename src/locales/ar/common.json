@@ -873,16 +873,11 @@
       }
     },
     "sectionTypes": {
-      "": "غير معروف",
       "hero": "بطل",
       "features": "مميزات",
-      "pricing_table": "جدول الأسعار",
       "faq": "الأسئلة الشائعة",
-      "contact_form": "نموذج التواصل",
-      "rich_text": "نص منسق",
       "gallery": "معرض الصور",
-      "testimonials": "آراء العملاء",
-      "undefined": "غير معروف"
+      "testimonials": "آراء العملاء"
     },
     "detail": {
       "error": "فشل تحميل الصفحة التسويقية"

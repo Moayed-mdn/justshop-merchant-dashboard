@@ -67,7 +67,7 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
           <p className="text-muted-foreground">{t('subtitle')}</p>
         </div>
         <Link
-          href={ROUTES.store(storeId).categories.new()}
+          href={ROUTES.merchant.categories.new()}
           className="inline-flex h-10 items-center justify-center gap-1.5 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
         >
           <PlusCircle className="h-4 w-4" />

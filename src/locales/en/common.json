@@ -872,16 +872,11 @@
       }
     },
     "sectionTypes": {
-      "": "Unknown",
       "hero": "Hero",
       "features": "Features",
-      "pricing_table": "Pricing Table",
       "faq": "FAQ",
-      "contact_form": "Contact Form",
-      "rich_text": "Rich Text",
       "gallery": "Gallery",
-      "testimonials": "Testimonials",
-      "undefined": "Unknown"
+      "testimonials": "Testimonials"
     },
     "detail": {
       "error": "Failed to load marketing page"

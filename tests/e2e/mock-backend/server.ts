@@ -69,11 +69,35 @@ interface MockSession {
   createdAt: string;
 }
 
+interface MockProduct {
+  id: number;
+  storeId: number;
+  name: string;
+  slug: string;
+  price: number;
+  status: 'active' | 'draft';
+  quantity: number;
+  createdAt: string;
+}
+
+interface MockCategory {
+  id: number;
+  storeId: number;
+  name: string;
+  slug: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
 interface MockState {
   nextUserId: number;
   nextStoreId: number;
+  nextProductId: number;
+  nextCategoryId: number;
   users: Map<number, MockUser>;
   sessions: Map<string, MockSession>;
+  products: Map<number, MockProduct[]>;
+  categories: Map<number, MockCategory[]>;
   nextCreatedStoreProvisioningMode: ProvisioningMode | null;
 }
 
@@ -250,8 +274,20 @@ function createInitialState(): MockState {
   return {
     nextUserId: 10,
     nextStoreId: 201,
+    nextProductId: 301,
+    nextCategoryId: 401,
     users: seededUsers,
     sessions: new Map<string, MockSession>(),
+    products: new Map<number, MockProduct[]>([
+      [101, [
+        { id: 301, storeId: 101, name: 'Sample Product', slug: 'sample-product', price: 100, status: 'active', quantity: 50, createdAt: nowIso() }
+      ]]
+    ]),
+    categories: new Map<number, MockCategory[]>([
+      [101, [
+        { id: 401, storeId: 101, name: 'General', slug: 'general', isActive: true, createdAt: nowIso() }
+      ]]
+    ]),
     nextCreatedStoreProvisioningMode: null,
   };
 }
@@ -319,6 +355,18 @@ function setCookies(response: ServerResponse, values: string[]): void {
   if (values.length > 0) {
     response.setHeader('Set-Cookie', values);
   }
+}
+
+function buildPaginationMeta(total: number, perPage: number) {
+  return {
+    pagination: {
+      total,
+      count: total,
+      per_page: perPage,
+      current_page: 1,
+      total_pages: 1,
+    },
+  };
 }
 
 function createSession(userId: number): MockSession {
@@ -576,6 +624,18 @@ async function handleControlRoute(request: IncomingMessage, response: ServerResp
     currentStep?: string | null;
     message?: string | null;
     retryable?: boolean;
+    stores?: Array<{
+      id?: number;
+      name?: string;
+      slug?: string;
+      currency?: string;
+      timezone?: string;
+      role?: string;
+      status?: StoreStatus;
+      isActive?: boolean;
+      permissions?: string[];
+    }>;
+    activeStoreId?: number | null;
   }>(request)) ?? { action: undefined };
 
   switch (body.action) {
@@ -615,6 +675,37 @@ async function handleControlRoute(request: IncomingMessage, response: ServerResp
           session.expired = true;
         }
       }
+      sendJson(response, 200, { ok: true });
+      return;
+    }
+
+    case 'set-bootstrap-stores': {
+      const requestUser = resolveUserFromRequest(request);
+      if (!requestUser) {
+        sendJson(response, 401, { ok: false, message: 'No active session' });
+        return;
+      }
+
+      const rawStores = body.stores ?? [];
+      requestUser.stores = rawStores.map((s) =>
+        createStoreRecord({
+          id: s.id ?? state.nextStoreId++,
+          name: s.name ?? 'Test Store',
+          slug: s.slug ?? `test-store-${state.nextStoreId}`,
+          status: (s.status as StoreStatus) ?? 'active',
+          isActive: s.isActive ?? true,
+          permissions: s.permissions ?? ['dashboard.view'],
+        })
+      );
+
+      if (typeof body.activeStoreId === 'number') {
+        requestUser.activeStoreId = body.activeStoreId;
+        requestUser.lastActiveStoreId = body.activeStoreId;
+      } else if (body.activeStoreId === null) {
+        requestUser.activeStoreId = null;
+        requestUser.lastActiveStoreId = null;
+      }
+
       sendJson(response, 200, { ok: true });
       return;
     }
@@ -671,9 +762,148 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
   const pathname = url.pathname;
   const method = request.method ?? 'GET';
 
+  process.stdout.write(`[MOCK] ${method} ${pathname}\n`);
+
   if (pathname === '/__test/health') {
     sendJson(response, 200, { ok: true });
     return;
+  }
+
+  const productsMatch = pathname.match(/^\/api\/v1\/merchant\/stores\/(\d+)\/products\/?$/);
+  if (productsMatch) {
+    const user = ensureAuthenticated(request, response);
+    if (!user) return;
+
+    const storeId = Number(productsMatch[1]);
+    if (method === 'GET') {
+      const storeProducts = state.products.get(storeId) ?? [];
+      sendJson(response, 200, {
+        success: true,
+        message: 'Products loaded successfully.',
+        data: storeProducts.map(p => ({
+          id: p.id,
+          store_id: p.storeId,
+          name: p.name,
+          slug: p.slug,
+          price: p.price,
+          status: p.status,
+          quantity: p.quantity,
+          created_at: p.createdAt,
+          updated_at: p.createdAt,
+          media: [],
+          variants: [],
+        })),
+        meta: buildPaginationMeta(storeProducts.length, 50),
+      });
+      return;
+    }
+
+    if (method === 'POST') {
+      const body = await readJsonBody<any>(request);
+      const name = body.translations?.find((t: any) => t.locale === 'en')?.name ?? 'New Product';
+      const slug = body.translations?.find((t: any) => t.locale === 'en')?.slug ?? `product-${state.nextProductId}`;
+      
+      const newProduct: MockProduct = {
+        id: state.nextProductId++,
+        storeId,
+        name,
+        slug,
+        price: body.price ?? 0,
+        status: body.status ?? 'active',
+        quantity: body.quantity ?? 0,
+        createdAt: nowIso(),
+      };
+
+      if (!state.products.has(storeId)) {
+        state.products.set(storeId, []);
+      }
+      state.products.get(storeId)!.push(newProduct);
+
+      sendJson(response, 201, {
+        success: true,
+        data: {
+          id: newProduct.id,
+          store_id: newProduct.storeId,
+          name: newProduct.name,
+          slug: newProduct.slug,
+          price: newProduct.price,
+          status: newProduct.status,
+          quantity: newProduct.quantity,
+          created_at: newProduct.createdAt,
+          updated_at: newProduct.createdAt,
+          media: [],
+          variants: [],
+        }
+      });
+      return;
+    }
+  }
+
+  const categoriesMatch = pathname.match(/^\/api\/v1\/merchant\/stores\/(\d+)\/categories\/?$/);
+  if (categoriesMatch) {
+    const user = ensureAuthenticated(request, response);
+    if (!user) return;
+
+    const storeId = Number(categoriesMatch[1]);
+    if (method === 'GET') {
+      const storeCategories = state.categories.get(storeId) ?? [];
+      sendJson(response, 200, {
+        success: true,
+        message: 'Categories loaded successfully.',
+        data: storeCategories.map(c => ({
+          id: c.id,
+          store_id: c.storeId,
+          slug: c.slug,
+          is_active: c.isActive,
+          translation: { locale: 'en', name: c.name, slug: c.slug },
+          products_count: 0,
+          created_at: c.createdAt,
+          updated_at: c.createdAt,
+        })),
+        meta: buildPaginationMeta(storeCategories.length, 50),
+      });
+      return;
+    }
+
+    if (method === 'POST') {
+      const body = await readJsonBody<any>(request);
+      // Translations for categories are in an array
+      const enTranslation = Array.isArray(body.translations) 
+        ? body.translations.find((t: any) => t.locale === 'en')
+        : null;
+      
+      const name = enTranslation?.name ?? 'New Category';
+      const slug = enTranslation?.slug ?? `category-${state.nextCategoryId}`;
+
+      const newCategory: MockCategory = {
+        id: state.nextCategoryId++,
+        storeId,
+        name,
+        slug,
+        isActive: body.is_active ?? true,
+        createdAt: nowIso(),
+      };
+
+      if (!state.categories.has(storeId)) {
+        state.categories.set(storeId, []);
+      }
+      state.categories.get(storeId)!.push(newCategory);
+
+      sendJson(response, 201, {
+        success: true,
+        data: {
+          id: newCategory.id,
+          store_id: newCategory.storeId,
+          slug: newCategory.slug,
+          is_active: newCategory.isActive,
+          translation: { locale: 'en', name: newCategory.name, slug: newCategory.slug },
+          products_count: 0,
+          created_at: newCategory.createdAt,
+          updated_at: newCategory.createdAt,
+        }
+      });
+      return;
+    }
   }
 
   if (pathname === '/__test/command') {
@@ -687,7 +917,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  if (pathname === '/api/v1/users/auth/register' && method === 'POST') {
+  if ((pathname === '/api/v1/merchant/auth/register' || pathname === '/api/v1/users/auth/register') && method === 'POST') {
     const body = (await readJsonBody<{
       name?: string;
       email?: string;
@@ -755,7 +985,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  if (pathname === '/api/v1/users/auth/login' && method === 'POST') {
+  if ((pathname === '/api/v1/merchant/auth/login' || pathname === '/api/v1/users/auth/login') && method === 'POST') {
     const body = (await readJsonBody<{ email?: string; password?: string }>(request)) ?? {};
     const email = body.email?.toLowerCase() ?? '';
     const user = findUserByEmail(email);
@@ -798,7 +1028,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  if (pathname === '/api/v1/users/auth/logout' && method === 'POST') {
+  if ((pathname === '/api/v1/merchant/auth/logout' || pathname === '/api/v1/users/auth/logout') && method === 'POST') {
     const cookies = parseCookies(request);
     const sessionId = cookies[SESSION_COOKIE_NAME];
     if (sessionId) {
@@ -823,7 +1053,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  if (pathname === '/api/v1/me' && method === 'GET') {
+  if ((pathname === '/api/v1/merchant/me' || pathname === '/api/v1/me') && method === 'GET') {
     const session = resolveSession(request);
     const user = session ? state.users.get(session.userId) ?? null : null;
     if (!session || !user) {
@@ -840,7 +1070,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  if (pathname === '/api/v1/store-slug/check' && method === 'GET') {
+  if ((pathname === '/api/v1/merchant/stores/slug-check' || pathname === '/api/v1/store-slug/check') && method === 'GET') {
     const slug = url.searchParams.get('slug')?.toLowerCase() ?? '';
     const available = !Array.from(state.users.values()).some((user) =>
       user.stores.some((store) => store.slug === slug)
@@ -855,7 +1085,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  if (pathname === '/api/v1/stores' && method === 'POST') {
+  if ((pathname === '/api/v1/merchant/stores' || pathname === '/api/v1/stores') && method === 'POST') {
     const user = ensureAuthenticated(request, response);
     if (!user) {
       return;
@@ -937,7 +1167,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const provisioningMatch = pathname.match(/^\/api\/v1\/stores\/(\d+)\/provisioning-status$/);
+  const provisioningMatch = pathname.match(/^\/api\/v1\/(?:merchant\/)?stores\/(\d+)\/provisioning-status$/);
   if (provisioningMatch && method === 'GET') {
     const user = ensureAuthenticated(request, response);
     if (!user) {
@@ -972,7 +1202,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  if (pathname === '/api/v1/users/auth/active-store' && method === 'PATCH') {
+  if ((pathname === '/api/v1/merchant/auth/active-store' || pathname === '/api/v1/users/auth/active-store') && method === 'PATCH') {
     const requestUser = ensureAuthenticated(request, response);
     if (!requestUser) {
       return;
@@ -1011,7 +1241,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const dashboardStatsMatch = pathname.match(/^\/api\/v1\/admin\/stores\/(\d+)\/dashboard\/stats$/);
+  const dashboardStatsMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/(\d+)\/dashboard\/stats$/);
   if (dashboardStatsMatch && method === 'GET') {
     const user = ensureAuthenticated(request, response);
     if (!user) {
@@ -1047,7 +1277,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const recentOrdersMatch = pathname.match(/^\/api\/v1\/admin\/stores\/(\d+)\/dashboard\/recent-orders$/);
+  const recentOrdersMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/(\d+)\/dashboard\/recent-orders$/);
   if (recentOrdersMatch && method === 'GET') {
     const user = ensureAuthenticated(request, response);
     if (!user) {
@@ -1074,7 +1304,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const topProductsMatch = pathname.match(/^\/api\/v1\/admin\/stores\/(\d+)\/dashboard\/top-products$/);
+  const topProductsMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/(\d+)\/dashboard\/top-products$/);
   if (topProductsMatch && method === 'GET') {
     const user = ensureAuthenticated(request, response);
     if (!user) {

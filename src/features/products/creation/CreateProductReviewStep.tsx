@@ -46,7 +46,7 @@ export function CreateProductReviewStep({ state }: Props) {
   const variantOverflow = Math.max(0, variantCount - MAX_VARIANT_PREVIEW);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="wizard-step-review">
       <Card>
         <CardHeader>
           <CardTitle>{t('create.review.title')}</CardTitle>

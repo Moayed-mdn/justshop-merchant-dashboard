@@ -13,6 +13,7 @@
  * usages without this prop continue to work unchanged.
  */
 
+import { useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Label } from '@/components/ui/label';
 import {
@@ -23,6 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useBrands } from '@/hooks/brands/useBrands';
+import { useBrandDetail } from '@/hooks/brands/useBrandDetail';
 
 interface Props {
   storeId:  string;
@@ -37,6 +39,11 @@ export function BrandSelect({ storeId, value, onChange }: Props) {
 
   const { data, isLoading } = useBrands(storeId);
   const brands = data?.data ?? [];
+  const selectedBrand = brands.find((brand) => brand.id === value);
+  const { data: selectedBrandDetail } = useBrandDetail(
+    storeId,
+    value !== null && !selectedBrand ? String(value) : '',
+  );
 
   const handleChange = (raw: string | null) => {
     if (!raw || raw === NO_BRAND) {
@@ -50,7 +57,23 @@ export function BrandSelect({ storeId, value, onChange }: Props) {
   };
 
   const selectValue = value !== null ? String(value) : NO_BRAND;
-  const selectedBrandName = brands.find((b) => b.id === value)?.name;
+  const selectedBrandName = selectedBrand?.name ?? selectedBrandDetail?.name;
+  const renderSelectedValue = useCallback(
+    (currentValue: string | null) => {
+      if (currentValue === NO_BRAND) {
+        return t('form.fields.noBrandOption');
+      }
+
+      if (currentValue === null) {
+        return isLoading
+          ? t('form.fields.loading')
+          : t('form.fields.brandPlaceholder');
+      }
+
+      return selectedBrandName ?? t('form.fields.brandPlaceholder');
+    },
+    [isLoading, selectedBrandName, t],
+  );
 
   return (
     <div className="space-y-2">
@@ -68,7 +91,7 @@ export function BrandSelect({ storeId, value, onChange }: Props) {
                 : t('form.fields.brandPlaceholder')
             }
           >
-            {selectedBrandName}
+            {renderSelectedValue}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>

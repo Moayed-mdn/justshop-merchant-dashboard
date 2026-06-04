@@ -28,24 +28,21 @@ export interface MarketingPageSeo {
 
 // ── Section ───────────────────────────────────────────────────────────────
 
-export type MarketingPageSectionType =
-  | 'hero'
-  | 'features'
-  | 'pricing_table'
-  | 'faq'
-  | 'contact_form'
-  | 'rich_text'
-  | 'gallery'
-  | 'testimonials';
-
 export interface MarketingPageSection {
-  type:       MarketingPageSectionType | string;
+  type:       string;
   identifier: string;
   title:      LocalizedString;
   subtitle:   LocalizedString;
   content:    LocalizedString | Record<string, unknown>;
   settings:   Record<string, unknown>;
   is_active:  boolean;
+}
+
+// ── Section type option (from API) ────────────────────────────────────
+
+export interface SectionTypeOption {
+  value: string;
+  label: string;
 }
 
 // ── Raw API types ─────────────────────────────────────────────────────────

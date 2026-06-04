@@ -58,7 +58,7 @@ export function getPostLoginRedirect(
   const firstStoreId = user?.stores?.[0]?.id;
   
   if (firstStoreId) {
-    return `/${locale}${ROUTES.store(String(firstStoreId)).dashboard()}`;
+    return `/${locale}${ROUTES.merchant.dashboard()}`;
   }
   
   // Fallback to setup if no stores exist

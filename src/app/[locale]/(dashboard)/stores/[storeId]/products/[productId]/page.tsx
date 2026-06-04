@@ -1,13 +1,9 @@
 /**
- * Edit product page.
- * Server component with Suspense boundary.
+ * Edit product page (Legacy Redirector).
  */
 
-import { Suspense } from 'react';
-import { getTranslations } from 'next-intl/server';
-import { logger } from '@/lib/logger';
-import EditProductContent from '@/features/products/editor/components/EditProductContent';
-import { EditProductSkeleton } from '@/features/products/editor/components/EditProductSkeleton';
+import { LegacyRouteRedirector } from '@/features/merchant/components/LegacyRouteRedirector';
+import { ROUTES } from '@/config/routes';
 
 export async function generateMetadata({
   params,
@@ -15,11 +11,8 @@ export async function generateMetadata({
   params: Promise<{ productId: string }>;
 }) {
   const { productId } = await params;
-  const t = await getTranslations('products');
-
   return {
-    title: `${t('form.editTitle')} #${productId}`,
-    description: t('subtitle'),
+    title: `Product #${productId}`,
   };
 }
 
@@ -31,8 +24,10 @@ export default async function EditProductPage({
   const { storeId, productId } = await params;
 
   return (
-    <Suspense fallback={<EditProductSkeleton />}>
-      <EditProductContent storeId={storeId} productId={productId} />
-    </Suspense>
+    <LegacyRouteRedirector 
+      storeId={storeId} 
+      targetPath={`/merchant/products/${productId}/edit`}
+      originalRoute={`/stores/${storeId}/products/${productId}`}
+    />
   );
 }

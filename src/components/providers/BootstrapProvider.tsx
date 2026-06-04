@@ -96,6 +96,17 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     }
 
     if (isGuestRoute) {
+      // Users in mid-onboarding states should be allowed to visit /login freely
+      // (e.g. clicking "Back to login" from the verify-email screen).
+      // Without this exception the loop is: /login → isGuestRoute + pending_verification
+      // → redirect to /setup → user clicks back → /login again, forever.
+      if (
+        accessState.kind === 'pending_verification' ||
+        accessState.kind === 'create_store' ||
+        accessState.kind === 'provisioning'
+      ) {
+        return null;
+      }
       return accessState.redirectPath;
     }
 
@@ -299,9 +310,9 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
       queryClient.setQueryData(queryKeys.merchant.me(), null);
 
       if (isProtectedRoute || isOnboardingRoute) {
-        const loginUrl = new URL(getLoginUrl(locale, pathname), window.location.origin);
-        loginUrl.searchParams.set('expired', '1');
-        window.location.assign(`${loginUrl.pathname}${loginUrl.search}`);
+        const loginPath = ROUTES.auth.login();
+        const redirectParam = encodeURIComponent(pathname);
+        router.push(`${loginPath}?redirect=${redirectParam}&expired=1`);
       }
     };
 

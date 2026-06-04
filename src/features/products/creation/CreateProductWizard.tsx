@@ -99,12 +99,10 @@ interface Props {
 
 export function CreateProductWizard({
   storeId,
-  availableLocales = ['en'],
+  availableLocales = ['en'], // Default if not provided
   onSuccess,
 }: Props) {
-  const t = useTranslations('products');
-
-  const [step, setStep]           = useState<WizardStep>('content');
+  const t = useTranslations('products'); const [step, setStep]           = useState<WizardStep>('content');
   const [content, setContent]     = useState<CreateProductContentData>(
     () => buildDefaultContent(availableLocales)
   );
@@ -144,6 +142,7 @@ export function CreateProductWizard({
         isFeatured:   content.isFeatured,
         translations: content.translations,
       });
+
       if (!result.isValid) {
         // Surface first error as a toast; full list visible on review.
         toast.error(result.errors[0]?.message ?? t('form.validationError'));
@@ -282,7 +281,7 @@ export function CreateProductWizard({
         </div>
         <div>
           {!isLastStep ? (
-            <Button type="button" onClick={handleNext}>
+            <Button type="button" onClick={handleNext} data-testid="product-wizard-next">
               {t('create.next')}
             </Button>
           ) : (
@@ -290,6 +289,7 @@ export function CreateProductWizard({
               type="button"
               onClick={handleSubmit}
               disabled={mutation.isPending}
+              data-testid="product-wizard-submit"
             >
               {mutation.isPending
                 ? t('form.submit.creating')

@@ -1,6 +1,5 @@
 'use client';
 
-import { useCallback } from 'react';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { needsProvisioningFlow } from '@/lib/auth/bootstrap-routing';
 import { useQueryClient } from '@tanstack/react-query';
@@ -37,14 +36,6 @@ export function SetupOrchestrator() {
       ? 'create_store'
       : onboarding?.step;
 
-  // Called by CreateStoreStep after successful store creation.
-  // Bootstrap state will have been updated by then, so the orchestrator
-  // will re-render into the provisioning step automatically.
-  const handleStoreCreated = useCallback(() => {
-    // No-op: state update in CreateStoreStep triggers re-render here.
-    // Kept as an explicit callback for future extensibility (e.g. analytics).
-  }, []);
-
   // Bootstrap not yet resolved
   if (!bootstrap || !onboarding) {
     return (
@@ -75,6 +66,14 @@ export function SetupOrchestrator() {
     );
   }
 
+  // Step: provisioning is actively tracked — always show ProvisioningStep immediately,
+  // regardless of what onboarding.step says. This is the key transition point after
+  // CreateStoreStep calls setProvisioning() — the backend step may still say
+  // 'create_store' until fetchBootstrap is called by the polling loop.
+  if (provisioning?.tracked_store_id && provisioning?.status !== null) {
+    return <ProvisioningStep />;
+  }
+
   // Step: email verification required
   if (effectiveStep === 'pending_verification') {
     return <VerifyEmailStep />;
@@ -82,32 +81,26 @@ export function SetupOrchestrator() {
 
   // Step: create first store
   if (effectiveStep === 'create_store') {
-    return <CreateStoreStep onSuccess={handleStoreCreated} />;
+    return <CreateStoreStep onSuccess={() => { /* setProvisioning in CreateStoreStep triggers re-render */ }} />;
   }
 
-  // Step: provisioning in progress (or any other in-progress backend step)
+  // Step: provisioning in progress (bootstrap-driven, e.g. on page refresh)
   if (needsProvisioningFlow(bootstrap, provisioning)) {
     return <ProvisioningStep />;
   }
 
-  // Fallback: bootstrap resolved but step is unrecognised — show recovery
+  // Fallback: bootstrap resolved and onboarding complete.
+  // BootstrapProvider will handle the redirect to merchant dashboard.
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
       <div className="w-full max-w-md rounded-xl border bg-card p-8 text-center shadow-sm">
-        <h1 className="text-2xl font-bold">Setup complete</h1>
-        <p className="mt-3 text-muted-foreground">
-          Your store setup is complete. Redirecting you to the dashboard.
-        </p>
-        <div className="mt-6">
-          <Button
-            type="button"
-            onClick={() =>
-              void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() })
-            }
-          >
-            Go to dashboard
-          </Button>
+        <div className="flex justify-center mb-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         </div>
+        <h1 className="text-2xl font-bold">Store is ready</h1>
+        <p className="mt-3 text-muted-foreground">
+          Redirecting you to your dashboard...
+        </p>
       </div>
     </div>
   );

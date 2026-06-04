@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
@@ -14,7 +14,6 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { queryKeys } from '@/lib/queryKeys';
 import type { ApiError } from '@/types/api';
 import { toast } from 'sonner';
-import { postAuthChannelMessage } from '@/lib/auth/channel';
 import {
   clearCreateStoreDraft,
   loadCreateStoreDraft,
@@ -113,6 +112,11 @@ export function CreateStoreStep({ onSuccess }: Props) {
       const response = await createStore(data);
       clearCreateStoreDraft();
 
+      // Set provisioning state FIRST so SetupOrchestrator immediately renders
+      // ProvisioningStep. Do NOT call fetchBootstrap here — the bootstrap
+      // refresh could return before or after the job runs and would either
+      // wipe provisioning state or show a completed store prematurely.
+      // ProvisioningStep's polling loop owns the lifecycle from here.
       setProvisioning({
         tracked_store_id: response.data.id,
         status: 'pending',
@@ -125,16 +129,6 @@ export function CreateStoreStep({ onSuccess }: Props) {
         soft_timed_out: false,
         hard_timed_out: false,
       });
-
-      try {
-        const bootstrap = await fetchBootstrap();
-        queryClient.setQueryData(queryKeys.merchant.me(), bootstrap);
-        await queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
-        postAuthChannelMessage('bootstrap-refresh');
-      } catch {
-        queryClient.setQueryData(queryKeys.merchant.me(), useBootstrapStore.getState().bootstrap);
-        await queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
-      }
 
       toast.success(response.message || 'Store creation has started.');
       onSuccess();

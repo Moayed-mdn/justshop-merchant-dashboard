@@ -79,7 +79,7 @@ export default function ProductsContent({ storeId, initialFilters }: Props) {
           <h1 className="text-2xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground">{t('subtitle')}</p>
         </div>
-        <Link href={ROUTES.store(storeId).products.new()}>
+        <Link href={ROUTES.merchant.products.new()}>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             {t('new')}

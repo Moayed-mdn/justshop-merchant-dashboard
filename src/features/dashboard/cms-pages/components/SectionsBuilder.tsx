@@ -31,18 +31,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { LocalizedInput } from './LocalizedInput';
+import { useMarketingSectionTypes } from '@/hooks/marketing-pages/useMarketingSectionTypes';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
-
-const SECTION_TYPES = [
-  'hero',
-  'features',
-  'pricing_table',
-  'faq',
-  'contact_form',
-  'rich_text',
-  'gallery',
-  'testimonials',
-] as const;
+import type { SectionTypeOption } from '@/types/marketing-page';
 
 function generateIdentifier(type: string): string {
   return `${type}_${Date.now()}`;
@@ -60,7 +51,19 @@ function buildEmptySection(type: string) {
   };
 }
 
-export function SectionsBuilder() {
+function getOptionLabel(
+  type: string,
+  options: SectionTypeOption[],
+): string {
+  const option = options.find((o) => o.value === type);
+  return option?.label ?? type;
+}
+
+interface SectionsBuilderProps {
+  storeId: string;
+}
+
+export function SectionsBuilder({ storeId }: SectionsBuilderProps) {
   const t = useTranslations('cmsPages');
   const { control, register, watch, setValue, formState: { errors } } =
     useFormContext<MarketingPageFormValues>();
@@ -70,15 +73,18 @@ export function SectionsBuilder() {
     name: 'sections',
   });
 
+  const { data: sectionTypes = [], isLoading } = useMarketingSectionTypes(storeId);
+
   const [collapsed, setCollapsed] = useState<Record<number, boolean>>({});
-  const [newSectionType, setNewSectionType] = useState<string>('hero');
+  const [newSectionType, setNewSectionType] = useState<string>('');
 
   const toggleCollapse = (index: number) => {
     setCollapsed((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
   const handleAdd = () => {
-    append(buildEmptySection(newSectionType));
+    const type = newSectionType || sectionTypes[0]?.value || 'hero';
+    append(buildEmptySection(type));
   };
 
   const handleMoveUp = (index: number) => {
@@ -93,19 +99,22 @@ export function SectionsBuilder() {
     <div className="space-y-4">
       {/* Add section toolbar */}
       <div className="flex items-center gap-3">
-        <Select value={newSectionType} onValueChange={(v) => { if (v) setNewSectionType(v); }}>
+        <Select
+          value={newSectionType || sectionTypes[0]?.value || ''}
+          onValueChange={(v) => { if (v) setNewSectionType(v); }}
+        >
           <SelectTrigger className="w-[200px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {SECTION_TYPES.map((type) => (
-              <SelectItem key={type} value={type}>
-                {t(`sectionTypes.${type}`)}
+            {sectionTypes.map((st) => (
+              <SelectItem key={st.value} value={st.value}>
+                {st.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <Button type="button" variant="outline" size="sm" onClick={handleAdd}>
+        <Button type="button" variant="outline" size="sm" onClick={handleAdd} disabled={isLoading}>
           <Plus className="h-4 w-4 mr-1" />
           {t('sections.add')}
         </Button>
@@ -134,7 +143,7 @@ export function SectionsBuilder() {
 
                 {/* Type badge */}
                 <Badge variant="secondary" className="text-xs shrink-0">
-                  {t(`sectionTypes.${sectionType}`) || sectionType}
+                  {getOptionLabel(sectionType, sectionTypes)}
                 </Badge>
 
                 {/* Identifier */}
@@ -230,9 +239,9 @@ export function SectionsBuilder() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {SECTION_TYPES.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {t(`sectionTypes.${type}`)}
+                      {sectionTypes.map((st) => (
+                        <SelectItem key={st.value} value={st.value}>
+                          {st.label}
                         </SelectItem>
                       ))}
                     </SelectContent>

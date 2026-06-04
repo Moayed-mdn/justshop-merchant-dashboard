@@ -45,25 +45,24 @@ function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormVa
     };
   }
 
-  // Generate short random values for new pages
-  const randomId = Math.floor(Math.random() * 9000 + 1000);
-  const slug     = `page-${randomId}`;
+    const randomId = Math.floor(Math.random() * 9000 + 1000);
+    const slug     = `page-${randomId}`;
 
-  return {
-    title:        { en: `Page ${randomId}`, ar: `صفحة ${randomId}` },
-    slug:         { en: slug, ar: slug },
-    excerpt:      { en: 'Short page description.', ar: 'وصف قصير للصفحة.' },
-    template:     'generic',
-    status:       'draft',
-    published_at: null,
-    sort_order:   0,
-    seo: {
-      meta_title:       { en: `Meta ${randomId}`, ar: `عنوان ميتا ${randomId}` },
-      meta_description: { en: `SEO description for ${randomId}`, ar: `وصف سيو ${randomId}` },
-      canonical_url:    `https://example.com/${slug}`,
-      robots:           'index, follow',
-      og_image:         `https://placehold.co/1200x630/4F46E5/FFFFFF?text=${slug}`,
-    },
+    return {
+      title:        { en: `Page ${randomId}`, ar: `صفحة ${randomId}` },
+      slug:         { en: slug, ar: slug },
+      excerpt:      { en: 'Short page description.', ar: 'وصف قصير للصفحة.' },
+      template:     'generic',
+      status:       'draft',
+      published_at: '',
+      sort_order:   0,
+      seo: {
+        meta_title:       { en: `Meta ${randomId}`, ar: `عنوان ميتا ${randomId}` },
+        meta_description: { en: `SEO description for ${randomId}`, ar: `وصف سيو ${randomId}` },
+        canonical_url:    `https://example.com/${slug}`,
+        robots:           'index, follow',
+        og_image:         `https://placehold.co/1200x630/4F46E5/FFFFFF?text=${slug}`,
+      },
     sections: [
       {
         type:       'hero',
@@ -336,7 +335,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
 
           {/* ── TAB 2: Content Builder ── */}
           <TabsContent value="content" className="mt-6">
-            <SectionsBuilder />
+            <SectionsBuilder storeId={storeId} />
           </TabsContent>
 
           {/* ── TAB 3: SEO ── */}

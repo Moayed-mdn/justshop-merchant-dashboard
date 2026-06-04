@@ -10,27 +10,51 @@ const getTimestamp = (): string => new Date().toISOString();
 export const logger = {
   debug(message: string, data?: unknown): void {
     if (isProduction) return;
-    console.debug(`[DEBUG] [${getTimestamp()}] ${message}`, data ?? '');
+    if (data !== undefined) {
+      console.debug(`[DEBUG] [${getTimestamp()}] ${message}`, data);
+    } else {
+      console.debug(`[DEBUG] [${getTimestamp()}] ${message}`);
+    }
   },
 
   info(message: string, data?: unknown): void {
     if (isProduction) return;
-    console.info(`[INFO] [${getTimestamp()}] ${message}`, data ?? '');
+    if (data !== undefined) {
+      console.info(`[INFO] [${getTimestamp()}] ${message}`, data);
+    } else {
+      console.info(`[INFO] [${getTimestamp()}] ${message}`);
+    }
   },
 
   warn(message: string, data?: unknown): void {
     if (isProduction) {
-      console.warn(message, data ?? '');
+      if (data !== undefined) {
+        console.warn(message, data);
+      } else {
+        console.warn(message);
+      }
     } else {
-      console.warn(`[WARN] [${getTimestamp()}] ${message}`, data ?? '');
+      if (data !== undefined) {
+        console.warn(`[WARN] [${getTimestamp()}] ${message}`, data);
+      } else {
+        console.warn(`[WARN] [${getTimestamp()}] ${message}`);
+      }
     }
   },
 
   error(message: string, data?: unknown): void {
     if (isProduction) {
-      console.error(message, data ?? '');
+      if (data !== undefined) {
+        console.error(message, data);
+      } else {
+        console.error(message);
+      }
     } else {
-      console.error(`[ERROR] [${getTimestamp()}] ${message}`, data ?? '');
+      if (data !== undefined) {
+        console.error(`[ERROR] [${getTimestamp()}] ${message}`, data);
+      } else {
+        console.error(`[ERROR] [${getTimestamp()}] ${message}`);
+      }
     }
   },
 };

@@ -49,7 +49,7 @@ export function CreateProductContentStep({
   const t = useTranslations('products');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="wizard-step-content">
 
       {/* ── Status + Category + Brand + isFeatured + Tags ── */}
       <Card>

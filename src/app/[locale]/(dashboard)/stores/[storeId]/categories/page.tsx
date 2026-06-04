@@ -11,7 +11,7 @@ export default async function CategoriesPage({
   return (
     <LegacyRouteRedirector 
       storeId={storeId} 
-      targetPath={ROUTES.merchant.categories()} 
+      targetPath={ROUTES.merchant.categories.list()} 
       originalRoute={`/stores/${storeId}/categories`}
     />
   );

@@ -74,7 +74,7 @@ export default function CreateCategoryForm({ storeId }: Props) {
           <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
           <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
         </div>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting} data-testid="category-create-button">
           {isSubmitting ? t('form.creating') : t('form.create')}
         </Button>
       </div>
@@ -104,6 +104,7 @@ export default function CreateCategoryForm({ storeId }: Props) {
                         id={`translations.${index}.name`}
                         {...register(`translations.${index}.name`)}
                         placeholder={t('form.fields.namePlaceholder')}
+                        data-testid={`category-name-${field.locale}`}
                         dir={field.locale === 'ar' ? 'rtl' : 'ltr'}
                       />
                       {errors.translations?.[index]?.name && (
@@ -122,6 +123,7 @@ export default function CreateCategoryForm({ storeId }: Props) {
                         id={`translations.${index}.slug`}
                         {...register(`translations.${index}.slug`)}
                         placeholder={t('form.fields.slugPlaceholder')}
+                        data-testid={`category-slug-${field.locale}`}
                         className="font-mono"
                       />
                       {errors.translations?.[index]?.slug && (
@@ -151,6 +153,7 @@ export default function CreateCategoryForm({ storeId }: Props) {
                   id="slug"
                   {...register('slug')}
                   placeholder={t('form.fields.slugPlaceholder')}
+                  data-testid="category-slug"
                   className="font-mono"
                 />
                 {errors.slug && (

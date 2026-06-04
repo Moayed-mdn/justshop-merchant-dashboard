@@ -103,6 +103,11 @@ export const queryKeys = {
       ['merchant', storeId, 'cms-pages', 'detail', pageId] as const,
   }),
 
+  // ── CMS SECTION TYPES ─────────────────────────────────────────
+  marketingSectionTypes: (storeId: string) => ({
+    all: () => ['merchant', storeId, 'marketing-section-types'] as const,
+  }),
+
   // ── DASHBOARD ─────────────────────────────────────────────────
   dashboard: (storeId: string) => ({
     stats:        () => ['merchant', storeId, 'dashboard', 'stats'] as const,

@@ -301,6 +301,13 @@ function deriveProvisioningState(
     return null;
   }
 
+  // If provisioning was explicitly started (has a status), never wipe it via
+  // a bootstrap refresh — the polling loop and ProvisioningStep own the lifecycle.
+  // Only derive a fresh state when there is no existing tracked provisioning.
+  if (previous?.tracked_store_id && previous?.status !== null) {
+    return previous;
+  }
+
   const trackedStoreId = resolveProvisioningStoreId(bootstrap);
   if (!trackedStoreId) {
     return null;

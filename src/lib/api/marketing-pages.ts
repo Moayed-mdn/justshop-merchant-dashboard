@@ -13,6 +13,7 @@ import type {
   UpdateMarketingPagePayload,
 } from '@/types/marketing-page';
 import type { MarketingPageFilters } from '@/schemas/marketing-pages';
+import type { SectionTypeOption } from '@/types/marketing-page';
 
 /**
  * Fetch paginated marketing pages list.
@@ -115,6 +116,18 @@ export async function unpublishMarketingPage(
 ): Promise<MarketingPageDetail> {
   const response = await clientApi.post<ApiResponse<MarketingPageDetail>>(
     API_ROUTES.store(storeId).cmsPages().unpublish(pageId),
+  );
+  return response.data;
+}
+
+/**
+ * Fetch available marketing section types.
+ */
+export async function getMarketingSectionTypes(
+  storeId: string,
+): Promise<SectionTypeOption[]> {
+  const response = await clientApi.get<ApiResponse<SectionTypeOption[]>>(
+    API_ROUTES.store(storeId).sectionTypes(),
   );
   return response.data;
 }

@@ -13,6 +13,7 @@
  * don't need the name can omit this prop — it is purely additive.
  */
 
+import { useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Label } from '@/components/ui/label';
 import {
@@ -23,6 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCategories } from '@/hooks/categories/useCategories';
+import { useCategoryDetail } from '@/hooks/categories/useCategoryDetail';
 
 interface Props {
   storeId:  string;
@@ -37,6 +39,11 @@ export function CategorySelect({ storeId, value, onChange }: Props) {
 
   const { data, isLoading } = useCategories(storeId);
   const categories = data?.data ?? [];
+  const selectedCategory = categories.find((category) => category.id === value);
+  const { data: selectedCategoryDetail } = useCategoryDetail(
+    storeId,
+    value !== null && !selectedCategory ? String(value) : '',
+  );
 
   const handleChange = (raw: string | null) => {
     if (!raw || raw === NO_CATEGORY) {
@@ -50,7 +57,23 @@ export function CategorySelect({ storeId, value, onChange }: Props) {
   };
 
   const selectValue = value !== null ? String(value) : NO_CATEGORY;
-  const selectedCategoryName = categories.find((c) => c.id === value)?.name;
+  const selectedCategoryName = selectedCategory?.name ?? selectedCategoryDetail?.name;
+  const renderSelectedValue = useCallback(
+    (currentValue: string | null) => {
+      if (currentValue === NO_CATEGORY) {
+        return t('form.fields.noCategoryOption');
+      }
+
+      if (currentValue === null) {
+        return isLoading
+          ? t('form.fields.loading')
+          : t('form.fields.categoryPlaceholder');
+      }
+
+      return selectedCategoryName ?? t('form.fields.categoryPlaceholder');
+    },
+    [isLoading, selectedCategoryName, t],
+  );
 
   return (
     <div className="space-y-2">
@@ -68,7 +91,7 @@ export function CategorySelect({ storeId, value, onChange }: Props) {
                 : t('form.fields.categoryPlaceholder')
             }
           >
-            {selectedCategoryName}
+            {renderSelectedValue}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
