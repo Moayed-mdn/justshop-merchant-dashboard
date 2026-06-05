@@ -1,46 +1,25 @@
-/**
- * Edit category page.
- * Server component — thin wrapper with Suspense.
- */
+'use client';
 
-import { Suspense } from 'react';
-import { Link } from '@/lib/navigation';
+import { use } from 'react';
+import { LegacyRouteRedirector } from '@/features/merchant/components/LegacyRouteRedirector';
 import { ROUTES } from '@/config/routes';
-import EditCategoryContent from '@/features/dashboard/categories/EditCategoryContent';
-import { EditCategorySkeleton } from '@/features/dashboard/categories/EditCategorySkeleton';
 
-export async function generateMetadata({
+/**
+ * Legacy Route Redirect: /stores/[storeId]/categories/[categoryId]/edit
+ * Redirects to: /merchant/categories/[categoryId]/edit
+ */
+export default function LegacyCategoryEditPage({
   params,
 }: {
-  params: Promise<{ categoryId: string }>;
+  params: Promise<{ storeId: string; categoryId: string }>;
 }) {
-  const { categoryId } = await params;
-  return {
-    title:       `Edit Category ${categoryId}`,
-    description: 'Update category details',
-  };
-}
-
-export default async function EditCategoryPage({
-  params,
-}: {
-  params: Promise<{ storeId: string; categoryId: string; locale: string }>;
-}) {
-  const { storeId, categoryId } = await params;
-
+  const { storeId, categoryId } = use(params);
+  
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link
-          href={ROUTES.store(storeId).categories.list()}
-          className="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent hover:bg-muted hover:text-foreground h-7 gap-1 px-2.5 text-[0.8rem] font-medium transition-all"
-        >
-          &larr; Back to categories
-        </Link>
-      </div>
-      <Suspense fallback={<EditCategorySkeleton />}>
-        <EditCategoryContent storeId={storeId} categoryId={categoryId} />
-      </Suspense>
-    </div>
+    <LegacyRouteRedirector
+      storeId={storeId}
+      targetPath={ROUTES.merchant.categories.edit(categoryId)}
+      originalRoute={`/stores/${storeId}/categories/${categoryId}/edit`}
+    />
   );
 }

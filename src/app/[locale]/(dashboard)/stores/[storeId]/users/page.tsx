@@ -11,7 +11,7 @@ export default async function UsersPage({
   return (
     <LegacyRouteRedirector 
       storeId={storeId} 
-      targetPath={ROUTES.merchant.customers()} 
+      targetPath={ROUTES.merchant.customers.list()} 
       originalRoute={`/stores/${storeId}/users`}
     />
   );

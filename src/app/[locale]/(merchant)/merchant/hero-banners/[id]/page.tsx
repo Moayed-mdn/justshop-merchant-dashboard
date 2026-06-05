@@ -1,91 +1,38 @@
 'use client';
 
-import { use } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useBootstrapStore } from '@/stores/bootstrapStore';
-import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
-import EditHeroBannerForm from '@/features/dashboard/hero-banners/EditHeroBannerForm';
-import { getHeroBanner } from '@/lib/api/hero-banners';
-import { logger } from '@/lib/logger';
+import { use, useEffect } from 'react';
+import { useRouter } from '@/lib/navigation';
+import { ROUTES } from '@/config/routes';
+import { Loader2 } from 'lucide-react';
 
 /**
- * Merchant Workspace — Edit Hero Banner Page.
- * Canonical route: /merchant/hero-banners/[id]
+ * Legacy Route Redirect: /merchant/hero-banners/[id]
+ * Redirects to: /merchant/hero-banners/[id]/edit
+ * 
+ * This maintains backward compatibility for old bookmarks/links
+ * that used the combined detail/edit pattern.
  */
-export default function MerchantHeroBannerEditPage({
+export default function LegacyHeroBannerPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const activeStore = useBootstrapStore((state) => state.activeStore);
+  const router = useRouter();
 
-  const storeId = activeStore ? String(activeStore.id) : '';
-
-  // Fetch banner data
-  const { data: banner, isLoading, error } = useQuery({
-    queryKey: ['hero-banner', storeId, id],
-    queryFn: () => getHeroBanner(storeId, id),
-    enabled: !!storeId && !!id,
-  });
-
-  if (!activeStore) {
-    return (
-      <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold">Edit Hero Banner</h1>
-        </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to edit this hero banner."
-        />
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">Edit Hero Banner</h1>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    logger.error('Failed to load hero banner', { error, bannerId: id });
-    return (
-      <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold">Edit Hero Banner</h1>
-        </div>
-        <WorkspaceEmptyState
-          title="Failed to load banner"
-          message="Could not load the hero banner. Please try again."
-        />
-      </div>
-    );
-  }
-
-  if (!banner) {
-    return (
-      <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold">Edit Hero Banner</h1>
-        </div>
-        <WorkspaceEmptyState
-          title="Banner not found"
-          message="The requested hero banner could not be found."
-        />
-      </div>
-    );
-  }
+  useEffect(() => {
+    router.replace(ROUTES.merchant.heroBanners.edit(id));
+  }, [id, router]);
 
   return (
-    <div className="space-y-6">
-      <EditHeroBannerForm storeId={storeId} bannerId={id} banner={banner} />
+    <div className="flex h-[50vh] flex-col items-center justify-center gap-4 text-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="space-y-2">
+        <h2 className="text-xl font-semibold">Redirecting...</h2>
+        <p className="text-sm text-muted-foreground">
+          Taking you to the edit page...
+        </p>
+      </div>
     </div>
   );
 }

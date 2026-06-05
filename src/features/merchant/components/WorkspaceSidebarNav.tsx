@@ -61,7 +61,7 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
     },
     {
       label: t('orders'),
-      href:  ROUTES.merchant.orders(),
+      href:  ROUTES.merchant.orders.list(),
       icon:  ShoppingCart,
       show:  canManageOrders,
     },
@@ -79,13 +79,13 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
     },
     {
       label: t('brands'),
-      href:  ROUTES.merchant.brands(),
+      href:  ROUTES.merchant.brands.list(),
       icon:  Bookmark,
       show:  canManageBrands,
     },
     {
       label: t('tags'),
-      href:  ROUTES.merchant.tags(),
+      href:  ROUTES.merchant.tags.list(),
       icon:  Tag,
       show:  canManageTags,
     },
@@ -103,7 +103,7 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
     },
     {
       label: t('users'),
-      href:  ROUTES.merchant.customers(),
+      href:  ROUTES.merchant.customers.list(),
       icon:  Users,
       show:  canManageUsers,
     },

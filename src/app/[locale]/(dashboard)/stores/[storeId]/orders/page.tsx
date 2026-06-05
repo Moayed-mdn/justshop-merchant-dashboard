@@ -16,7 +16,7 @@ export default async function OrdersPage({ params }: PageProps) {
   return (
     <LegacyRouteRedirector 
       storeId={storeId} 
-      targetPath={ROUTES.merchant.orders()} 
+      targetPath={ROUTES.merchant.orders.list()} 
       originalRoute={`/stores/${storeId}/orders`}
     />
   );

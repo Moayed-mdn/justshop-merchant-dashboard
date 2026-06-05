@@ -11,7 +11,7 @@ export default async function TagsPage({
   return (
     <LegacyRouteRedirector 
       storeId={storeId} 
-      targetPath={ROUTES.merchant.tags()} 
+      targetPath={ROUTES.merchant.tags.list()} 
       originalRoute={`/stores/${storeId}/tags`}
     />
   );

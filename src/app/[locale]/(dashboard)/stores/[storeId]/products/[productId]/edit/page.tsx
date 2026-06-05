@@ -5,21 +5,21 @@ import { LegacyRouteRedirector } from '@/features/merchant/components/LegacyRout
 import { ROUTES } from '@/config/routes';
 
 /**
- * Legacy Route Redirect: /stores/[storeId]/products/[productId]
+ * Legacy Route Redirect: /stores/[storeId]/products/[productId]/edit
  * Redirects to: /merchant/products/[productId]/edit
  */
-export default function LegacyProductDetailPage({
+export default function LegacyProductEditPage({
   params,
 }: {
   params: Promise<{ storeId: string; productId: string }>;
 }) {
   const { storeId, productId } = use(params);
-
+  
   return (
-    <LegacyRouteRedirector 
-      storeId={storeId} 
+    <LegacyRouteRedirector
+      storeId={storeId}
       targetPath={ROUTES.merchant.products.edit(productId)}
-      originalRoute={`/stores/${storeId}/products/${productId}`}
+      originalRoute={`/stores/${storeId}/products/${productId}/edit`}
     />
   );
 }

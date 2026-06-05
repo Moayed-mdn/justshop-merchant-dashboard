@@ -41,23 +41,39 @@ export const ROUTES = {
   },
   merchant: {
     dashboard:  () => '/merchant/dashboard' as const,
-    orders:     () => '/merchant/orders' as const,
+    orders: {
+      list: () => '/merchant/orders' as const,
+      detail: (orderId: string) => `/merchant/orders/${orderId}` as const,
+    },
     products: {
       list: () => '/merchant/products' as const,
       new:  () => '/merchant/products/new' as const,
+      edit: (productId: string) => `/merchant/products/${productId}/edit` as const,
     },
     categories: {
       list: () => '/merchant/categories' as const,
       new:  () => '/merchant/categories/new' as const,
+      edit: (categoryId: string) => `/merchant/categories/${categoryId}/edit` as const,
     },
-    brands:     () => '/merchant/brands' as const,
-    tags:       () => '/merchant/tags' as const,
+    brands: {
+      list: () => '/merchant/brands' as const,
+      new:  () => '/merchant/brands/new' as const,
+      edit: (brandId: string) => `/merchant/brands/${brandId}/edit` as const,
+    },
+    tags: {
+      list: () => '/merchant/tags' as const,
+      new:  () => '/merchant/tags/new' as const,
+      edit: (tagId: string) => `/merchant/tags/${tagId}/edit` as const,
+    },
     heroBanners: {
       list: () => '/merchant/hero-banners' as const,
       new:  () => '/merchant/hero-banners/new' as const,
-      edit: (bannerId: string) => `/merchant/hero-banners/${bannerId}` as const,
+      edit: (bannerId: string) => `/merchant/hero-banners/${bannerId}/edit` as const,
     },
-    customers:  () => '/merchant/customers' as const,
+    customers: {
+      list: () => '/merchant/customers' as const,
+      detail: (customerId: string) => `/merchant/customers/${customerId}` as const,
+    },
     cmsPages:   () => '/merchant/cms/pages' as const,
     stores: {
       list:     () => '/merchant/stores' as const,

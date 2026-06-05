@@ -65,13 +65,16 @@ export function LegacyRouteRedirector({
           router.replace(targetPath);
         },
         onError: (error) => {
-          logger.error('Failed to hydrate legacy context', {
+          logger.error('Failed to hydrate legacy context. Redirecting to target anyway.', {
             error,
             storeId,
             originalRoute,
+            targetPath
           });
-          // Even on error, we might want to redirect to dashboard as a fallback
-          router.replace('/merchant/dashboard');
+          // Redirect to target path anyway - the target page will handle
+          // "no active store" state gracefully with WorkspaceEmptyState
+          hasRedirected.current = true;
+          router.replace(targetPath);
         }
       });
     }

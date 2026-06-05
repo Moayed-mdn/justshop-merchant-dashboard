@@ -1,38 +1,25 @@
-import { Suspense } from 'react';
-import { Link } from '@/lib/navigation';
+'use client';
+
+import { use } from 'react';
+import { LegacyRouteRedirector } from '@/features/merchant/components/LegacyRouteRedirector';
 import { ROUTES } from '@/config/routes';
-import EditTagContent from '@/features/dashboard/tags/EditTagContent';
-import { EditTagSkeleton } from '@/features/dashboard/tags/EditTagSkeleton';
 
-export async function generateMetadata({
+/**
+ * Legacy Route Redirect: /stores/[storeId]/tags/[tagId]/edit
+ * Redirects to: /merchant/tags/[tagId]/edit
+ */
+export default function LegacyTagEditPage({
   params,
 }: {
-  params: Promise<{ tagId: string }>;
+  params: Promise<{ storeId: string; tagId: string }>;
 }) {
-  const { tagId } = await params;
-  return { title: `Edit Tag ${tagId}`, description: 'Update tag details' };
-}
-
-export default async function EditTagPage({
-  params,
-}: {
-  params: Promise<{ storeId: string; tagId: string; locale: string }>;
-}) {
-  const { storeId, tagId } = await params;
-
+  const { storeId, tagId } = use(params);
+  
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link
-          href={ROUTES.store(storeId).tags.list()}
-          className="inline-flex h-9 shrink-0 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        >
-          &larr; Back to tags
-        </Link>
-      </div>
-      <Suspense fallback={<EditTagSkeleton />}>
-        <EditTagContent storeId={storeId} tagId={tagId} />
-      </Suspense>
-    </div>
+    <LegacyRouteRedirector
+      storeId={storeId}
+      targetPath={ROUTES.merchant.tags.edit(tagId)}
+      originalRoute={`/stores/${storeId}/tags/${tagId}/edit`}
+    />
   );
 }
