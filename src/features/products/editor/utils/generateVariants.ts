@@ -36,6 +36,10 @@ export function generateVariants(
   existingVariants: ProductVariant[]
 ): ProductVariant[] {
   const existing = existingVariants ?? [];
+  
+  // DEBUG: Log existing variants to see if media is present
+  console.log('[generateVariants] Input existing variants:', JSON.stringify(existing, null, 2));
+  
   const combos   = buildCombinations(options);
   if (combos.length === 0) return [];
 
@@ -63,33 +67,79 @@ export function generateVariants(
   const kept:           ProductVariant[] = [];
   const validSet        = new Set(validSignatures);
   const keptSignatures  = new Set<string>();
+  const keptIds         = new Set<number>();
 
+  // First pass: Keep variants that match by signature
   for (const v of existing) {
     const signature = buildVariantSignature(v.options);
     if (validSet.has(signature) && !keptSignatures.has(signature)) {
-      kept.push(v);
+      // Explicitly preserve all variant data including media
+      const keptVariant = {
+        ...v,
+        // Ensure media array is preserved (don't let it be undefined)
+        media: v.media ?? [],
+      };
+      
+      console.log('[generateVariants] Keeping variant by signature:', {
+        id: v.id,
+        signature,
+        inputMedia: v.media,
+        keptMedia: keptVariant.media,
+      });
+      
+      kept.push(keptVariant);
       keptSignatures.add(signature);
+      keptIds.add(v.id);
     }
   }
 
+  // Second pass: For variants that didn't match by signature,
+  // check if we can update their options instead of discarding them
   for (const signature of validSignatures) {
     if (keptSignatures.has(signature)) continue;
+    
     const variantOptions = signatureToOptions.get(signature);
     if (!variantOptions) continue;
 
-    kept.push({
-      id:               nextNewId,
-      sku:              null,
-      price:            defaultPrice,
-      quantity:         0,
-      is_active:        true,
-      options:          variantOptions,
-      media:            [],   // ✅ always initialise to empty array
-    });
-
+    // Check if there's an existing variant we can reuse
+    // (one that wasn't kept in first pass and hasn't been reused yet)
+    const existingToUpdate = existing.find(v => !keptIds.has(v.id));
+    
+    if (existingToUpdate) {
+      // Update existing variant's options but preserve everything else
+      const updatedVariant = {
+        ...existingToUpdate,
+        options: variantOptions,
+        media: existingToUpdate.media ?? [],  // Preserve media!
+      };
+      
+      console.log('[generateVariants] Updating variant options:', {
+        id: existingToUpdate.id,
+        oldOptions: existingToUpdate.options,
+        newOptions: variantOptions,
+        preservedMedia: updatedVariant.media,
+      });
+      
+      kept.push(updatedVariant);
+      keptIds.add(existingToUpdate.id);
+    } else {
+      // No existing variant to reuse, create new one
+      kept.push({
+        id:               nextNewId,
+        sku:              null,
+        price:            defaultPrice,
+        quantity:         0,
+        is_active:        true,
+        options:          variantOptions,
+        media:            [],
+      });
+      nextNewId -= 1;
+    }
+    
     keptSignatures.add(signature);
-    nextNewId -= 1;
   }
+
+  console.log('[generateVariants] Output kept variants:', JSON.stringify(kept, null, 2));
 
   return kept;
 }

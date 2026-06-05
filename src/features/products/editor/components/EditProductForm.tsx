@@ -197,7 +197,17 @@ export default function EditProductForm({ product, storeId }: Props) {
 
     // ── Structure tab ────────────────────────────────────────────
     if (tab === 'structure') {
+      console.log('[EditProductForm] Before buildNextStructureForSave:', {
+        options: structure.options,
+        variants: structure.variants,
+      });
+      
       const nextStructure = buildNextStructureForSave(structure);
+      
+      console.log('[EditProductForm] After buildNextStructureForSave:', {
+        nextStructure,
+      });
+      
       setStructure(nextStructure);
 
       const result = validateProductStructure(nextStructure);

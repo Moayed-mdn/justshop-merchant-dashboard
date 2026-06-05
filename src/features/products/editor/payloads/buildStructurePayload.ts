@@ -28,6 +28,11 @@ export function buildStructurePayload(
 ): ProductUpdatePayload & { sync_variants: true } {
   const { structure } = input;
 
+  console.log('[buildStructurePayload] Input structure:', {
+    options: structure.options,
+    variants: structure.variants,
+  });
+
   // ── Canonical options ──────────────────────────────────────────
   const options = (structure.options ?? [])
     .filter((o) => o.name.trim() !== '' && o.values.length > 0)
@@ -82,9 +87,13 @@ export function buildStructurePayload(
     };
   });
 
-  return {
+  const payload = {
     sync_variants: true,
     options,
     variants,
   };
+
+  console.log('[buildStructurePayload] Output payload:', JSON.stringify(payload, null, 2));
+
+  return payload;
 }

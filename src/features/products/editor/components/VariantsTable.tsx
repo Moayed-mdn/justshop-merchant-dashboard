@@ -38,8 +38,10 @@ export function VariantsTable({ variants, onChange, storeId }: Props) {
   const patch = (id: ProductVariant['id'], next: Partial<ProductVariant>) =>
     onChange(variants.map((v) => (v.id === id ? { ...v, ...next } : v)));
 
-  const patchMedia = (id: ProductVariant['id'], media: ProductImage[]) =>
+  const patchMedia = (id: ProductVariant['id'], media: ProductImage[]) => {
+    console.log('[VariantsTable] patchMedia called:', { variantId: id, media });
     patch(id, { media });
+  };
 
   const updateDraft = (key: string, value: string) =>
     setNumericDrafts((prev) => ({ ...prev, [key]: value }));
