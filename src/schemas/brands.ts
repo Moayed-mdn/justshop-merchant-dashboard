@@ -28,10 +28,8 @@ export const BrandFormSchema = z.object({
     ),
   description: z.string().max(5000).nullable().default(null),
   logo_url:    z
-    .union([
-      z.string().url('Must be a valid URL').max(2048),
-      z.literal(''),
-    ])
+    .string()
+    .max(2048)
     .nullable()
     .default(null)
     .transform((v) => (v === '' ? null : v)),

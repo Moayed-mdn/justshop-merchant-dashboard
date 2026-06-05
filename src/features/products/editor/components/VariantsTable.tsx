@@ -21,6 +21,7 @@ import type { ProductImage, ProductVariant } from '@/types/product';
 interface Props {
   variants: ProductVariant[];
   onChange: (next: ProductVariant[]) => void;
+  storeId: string;
 }
 
 function parseNumericInput(value: string): number {
@@ -30,7 +31,7 @@ function parseNumericInput(value: string): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-export function VariantsTable({ variants, onChange }: Props) {
+export function VariantsTable({ variants, onChange, storeId }: Props) {
   const t = useTranslations('products');
   const [numericDrafts, setNumericDrafts] = useState<Record<string, string>>({});
 
@@ -147,6 +148,7 @@ export function VariantsTable({ variants, onChange }: Props) {
                     variantLabel={label}
                     images={variant.media ?? []}
                     onChange={(media) => patchMedia(variant.id, media)}
+                    storeId={storeId}
                     trigger={
                       /*
                        * Base UI render prop receives this element and merges

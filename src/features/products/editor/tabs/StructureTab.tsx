@@ -13,6 +13,7 @@ interface Props {
   onOptionsChange: (options: ProductOption[]) => void;
   onVariantsChange: (variants: ProductVariant[]) => void;
   onGenerateCombinations: () => void;
+  storeId: string;
 }
 
 export function StructureTab({
@@ -21,6 +22,7 @@ export function StructureTab({
   onOptionsChange,
   onVariantsChange,
   onGenerateCombinations,
+  storeId,
 }: Props) {
   const t = useTranslations('products');
 
@@ -43,7 +45,7 @@ export function StructureTab({
           <CardTitle>{t('variantEditor.tabs.variants')}</CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <VariantsTable variants={variants} onChange={onVariantsChange} />
+          <VariantsTable variants={variants} onChange={onVariantsChange} storeId={storeId} />
         </CardContent>
       </Card>
     </div>

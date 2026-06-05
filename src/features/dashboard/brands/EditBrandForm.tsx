@@ -18,6 +18,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { GenericImageUploader } from '@/components/media/GenericImageUploader';
 
 interface Props {
   storeId: string;
@@ -127,28 +128,17 @@ export default function EditBrandForm({ storeId, brandId, brand }: Props) {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="logo_url">{t('form.fields.logoUrl')}</Label>
-                <Input
-                  id="logo_url"
-                  type="url"
-                  {...register('logo_url')}
-                  placeholder={t('form.fields.logoUrlPlaceholder')}
-                />
-                {errors.logo_url && (
-                  <p className="text-sm text-destructive">{errors.logo_url.message}</p>
-                )}
-                {logoUrl && (
-                  <div className="mt-2 h-16 w-16 rounded-md border bg-muted overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={logoUrl}
-                      alt={brand.name}
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                )}
-              </div>
+              {/* Logo Upload */}
+              <GenericImageUploader
+                value={logoUrl ?? ''}
+                onChange={(path) => setValue('logo_url', path || null, { shouldDirty: true })}
+                context="brands"
+                storeId={storeId}
+                label={t('form.fields.logoUrl')}
+              />
+              {errors.logo_url && (
+                <p className="text-sm text-destructive">{errors.logo_url.message}</p>
+              )}
             </CardContent>
           </Card>
         </div>

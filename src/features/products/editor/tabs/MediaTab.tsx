@@ -6,8 +6,9 @@ import { ProductMediaTab } from '@/features/products/editor/components/ProductMe
 interface Props {
   images: ProductImage[];
   onChange: (next: ProductImage[]) => void;
+  storeId: string;
 }
 
-export function MediaTab({ images, onChange }: Props) {
-  return <ProductMediaTab images={images} onChange={onChange} />;
+export function MediaTab({ images, onChange, storeId }: Props) {
+  return <ProductMediaTab images={images} onChange={onChange} storeId={storeId} />;
 }

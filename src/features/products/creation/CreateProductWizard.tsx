@@ -249,6 +249,7 @@ export function CreateProductWizard({
         <CreateProductStructureStep
           structure={structure}
           onChange={setStructure}
+          storeId={storeId}
         />
       )}
 
@@ -256,6 +257,7 @@ export function CreateProductWizard({
         <CreateProductMediaStep
           media={media}
           onChange={setMedia}
+          storeId={storeId}
         />
       )}
 

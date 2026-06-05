@@ -1,17 +1,18 @@
 // src/app/[locale]/(dashboard)/stores/[storeId]/products/[productId]/_components/ProductImagesManager.tsx
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Plus, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { GenericImageUploader } from '@/components/media/GenericImageUploader';
 import type { ProductImage } from '@/types/product';
 
 interface Props {
   images: ProductImage[];
   onChange: (next: ProductImage[]) => void;
+  storeId: string;
 }
 
 /**
@@ -25,33 +26,22 @@ function getNextNegativeImageId(images: ProductImage[]): number {
   return min <= 0 ? min - 1 : -1;
 }
 
-export function ProductImagesManager({ images, onChange }: Props) {
-  console.log('the images',{images})
+export function ProductImagesManager({ images, onChange, storeId }: Props) {
   const t = useTranslations('products');
-  const [urlDraft, setUrlDraft] = useState('');
 
-  // ── Add ───────────────────────────────────────────────────────────────────
+  // ── Add via file upload ───────────────────────────────────────────────────
 
-  const handleAdd = () => {
-    const url = urlDraft.trim();
-    if (!url) return;
+  const handleUpload = (path: string) => {
+    if (!path) return;
 
     const newImage: ProductImage = {
       id:       getNextNegativeImageId(images),
-      url,
+      url:      path, // Store the path from upload
       alt:      null,
       position: images.length + 1,
     };
 
     onChange([...images, newImage]);
-    setUrlDraft('');
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAdd();
-    }
   };
 
   // ── Remove ────────────────────────────────────────────────────────────────
@@ -92,28 +82,14 @@ export function ProductImagesManager({ images, onChange }: Props) {
         <p className="text-sm text-muted-foreground">{t('editor.media.imagesHint')}</p>
       </div>
 
-      {/* URL input */}
-      <div className="space-y-2">
-        <Label>{t('editor.media.imageUrl')}</Label>
-        <div className="flex gap-2">
-          <Input
-            value={urlDraft}
-            onChange={(e) => setUrlDraft(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t('editor.media.imageUrlPlaceholder')}
-            className="flex-1"
-          />
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleAdd}
-            disabled={!urlDraft.trim()}
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            {t('editor.media.addImage')}
-          </Button>
-        </div>
-      </div>
+      {/* File Upload */}
+      <GenericImageUploader
+        value=""
+        onChange={handleUpload}
+        context="products"
+        storeId={storeId}
+        label={t('editor.media.uploadImage')}
+      />
     
       {/* Image list */}
       {images.length > 0 && (
@@ -124,7 +100,7 @@ export function ProductImagesManager({ images, onChange }: Props) {
 
                 {/* Preview */}
                 <img
-                  src={img.url}
+                  src={img.url.startsWith('http') ? img.url : `${process.env.NEXT_PUBLIC_API_URL || ''}/storage/${img.url}`}
                   alt={img.alt ?? ''}
                   className="h-16 w-16 rounded object-cover border shrink-0"
                   onError={(e) => {

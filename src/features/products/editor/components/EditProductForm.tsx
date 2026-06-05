@@ -323,6 +323,7 @@ export default function EditProductForm({ product, storeId }: Props) {
               }));
               setStructureDirty(true);
             }}
+            storeId={storeId}
           />
         </TabsContent>
 
@@ -334,6 +335,7 @@ export default function EditProductForm({ product, storeId }: Props) {
               setImages(next);
               setMediaDirty(true);
             }}
+            storeId={storeId}
           />
         </TabsContent>
       </Tabs>

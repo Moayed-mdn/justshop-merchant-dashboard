@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { GenericImageUploader } from '@/components/media/GenericImageUploader';
 
 interface Props {
   storeId: string;
@@ -43,6 +44,7 @@ export default function CreateBrandForm({ storeId }: Props) {
   });
 
   const isActive = watch('is_active');
+  const logoUrl  = watch('logo_url');
 
   const onSubmit = async (values: BrandFormValues) => {
     await create.mutateAsync({
@@ -99,18 +101,17 @@ export default function CreateBrandForm({ storeId }: Props) {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="logo_url">{t('form.fields.logoUrl')}</Label>
-                <Input
-                  id="logo_url"
-                  type="url"
-                  {...register('logo_url')}
-                  placeholder={t('form.fields.logoUrlPlaceholder')}
-                />
-                {errors.logo_url && (
-                  <p className="text-sm text-destructive">{errors.logo_url.message}</p>
-                )}
-              </div>
+              {/* Logo Upload */}
+              <GenericImageUploader
+                value={logoUrl ?? ''}
+                onChange={(path) => setValue('logo_url', path || null, { shouldDirty: true })}
+                context="brands"
+                storeId={storeId}
+                label={t('form.fields.logoUrl')}
+              />
+              {errors.logo_url && (
+                <p className="text-sm text-destructive">{errors.logo_url.message}</p>
+              )}
             </CardContent>
           </Card>
         </div>

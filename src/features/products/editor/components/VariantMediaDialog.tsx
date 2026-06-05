@@ -13,9 +13,8 @@
  * Event handlers are merged onto the rendered element by Base UI.
  */
 
-import { useState }        from 'react';
 import { useTranslations } from 'next-intl';
-import { Plus, X }         from 'lucide-react';
+import { X }         from 'lucide-react';
 
 import { Button }   from '@/components/ui/button';
 import { Input }    from '@/components/ui/input';
@@ -28,12 +27,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
+import { GenericImageUploader } from '@/components/media/GenericImageUploader';
 import type { ProductImage } from '@/types/product';
 
 interface Props {
   variantLabel: string;
   images:       ProductImage[];
   onChange:     (next: ProductImage[]) => void;
+  storeId:      string;
   /** A single React element rendered as the dialog trigger button. */
   trigger:      React.ReactElement;
 }
@@ -47,26 +48,24 @@ export function VariantMediaDialog({
   variantLabel,
   images,
   onChange,
+  storeId,
   trigger,
 }: Props) {
   const t = useTranslations('products');
-  const [urlDraft, setUrlDraft] = useState('');
 
-  // ── Add ──────────────────────────────────────────────────────
+  // ── Add via file upload ──────────────────────────────────────
 
-  const handleAdd = () => {
-    const url = urlDraft.trim();
-    if (!url) return;
+  const handleUpload = (path: string) => {
+    if (!path) return;
     onChange([
       ...images,
       {
         id:       nextNegativeId(images),
-        url,
+        url:      path,
         alt:      null,
         position: images.length + 1,
       },
     ]);
-    setUrlDraft('');
   };
 
   // ── Remove ────────────────────────────────────────────────────
@@ -109,30 +108,14 @@ export function VariantMediaDialog({
           </DialogTitle>
         </DialogHeader>
 
-        {/* URL input */}
-        <div className="space-y-2">
-          <Label>{t('editor.media.imageUrl')}</Label>
-          <div className="flex gap-2">
-            <Input
-              value={urlDraft}
-              onChange={(e) => setUrlDraft(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') { e.preventDefault(); handleAdd(); }
-              }}
-              placeholder={t('editor.media.imageUrlPlaceholder')}
-              className="flex-1"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleAdd}
-              disabled={!urlDraft.trim()}
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              {t('editor.media.addImage')}
-            </Button>
-          </div>
-        </div>
+        {/* File Upload */}
+        <GenericImageUploader
+          value=""
+          onChange={handleUpload}
+          context="variants"
+          storeId={storeId}
+          label={t('editor.media.uploadImage')}
+        />
 
         {/* Image list */}
         {images.length === 0 ? (
@@ -147,7 +130,7 @@ export function VariantMediaDialog({
 
                   {/* Preview */}
                   <img
-                    src={img.url}
+                    src={img.url.startsWith('http') ? img.url : `${process.env.NEXT_PUBLIC_API_URL || ''}/storage/${img.url}`}
                     alt={img.alt ?? ''}
                     className="h-14 w-14 rounded object-cover border shrink-0"
                     onError={(e) => {

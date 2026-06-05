@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { GenericImageUploader } from '@/components/media/GenericImageUploader';
 
 interface Props {
   storeId: string;
@@ -111,6 +112,7 @@ export default function EditHeroBannerForm({ storeId, bannerId, banner }: Props)
   const visualType = watch('visual_type');
   const isActive = watch('is_active');
   const linkTarget = watch('link_target');
+  const imagePath = watch('image_path');
 
   // Reset form when banner changes
   useEffect(() => {
@@ -429,22 +431,16 @@ export default function EditHeroBannerForm({ storeId, bannerId, banner }: Props)
 
               {visualType === 'image' && (
                 <div className="space-y-2">
-                  <Label htmlFor="image_path">
-                    Image Path <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="image_path"
-                    {...register('image_path', {
-                      required: visualType === 'image' ? 'Image path is required' : false,
-                    })}
-                    placeholder="hero/banner-image.jpg"
+                  <GenericImageUploader
+                    value={imagePath ?? ''}
+                    onChange={(path) => setValue('image_path', path || '', { shouldDirty: true })}
+                    context="hero"
+                    storeId={storeId}
+                    label="Hero Banner Image"
                   />
                   {errors.image_path && (
                     <p className="text-sm text-destructive">{errors.image_path.message}</p>
                   )}
-                  <p className="text-xs text-muted-foreground">
-                    Relative path in storage (e.g., hero/banner.jpg)
-                  </p>
                 </div>
               )}
 
