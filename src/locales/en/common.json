@@ -417,7 +417,8 @@
         "imageUrl": "Image URL",
         "imageUrlPlaceholder": "https://...",
         "addImage": "Add image",
-        "removeImage": "Remove image"
+        "removeImage": "Remove image",
+        "uploadImage": "Upload image"
       }
     },
     "detail": {

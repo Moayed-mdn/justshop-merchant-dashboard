@@ -416,7 +416,8 @@
         "imageUrl": "رابط الصورة",
         "imageUrlPlaceholder": "https://...",
         "addImage": "إضافة صورة",
-        "removeImage": "إزالة الصورة"
+        "removeImage": "إزالة الصورة",
+        "uploadImage": "رفع صورة"
       }
     },
     "detail": {
