@@ -52,6 +52,11 @@ export const ROUTES = {
     },
     brands:     () => '/merchant/brands' as const,
     tags:       () => '/merchant/tags' as const,
+    heroBanners: {
+      list: () => '/merchant/hero-banners' as const,
+      new:  () => '/merchant/hero-banners/new' as const,
+      edit: (bannerId: string) => `/merchant/hero-banners/${bannerId}` as const,
+    },
     customers:  () => '/merchant/customers' as const,
     cmsPages:   () => '/merchant/cms/pages' as const,
     stores: {
@@ -102,6 +107,13 @@ export const ROUTES = {
       new:  () => `/stores/${storeId}/tags/new` as const,
       edit: (tagId: string) =>
         `/stores/${storeId}/tags/${tagId}/edit` as const,
+    },
+
+    heroBanners: {
+      list: () => `/stores/${storeId}/hero-banners` as const,
+      new:  () => `/stores/${storeId}/hero-banners/new` as const,
+      edit: (bannerId: string) =>
+        `/stores/${storeId}/hero-banners/${bannerId}` as const,
     },
   }),
 } as const;
@@ -241,6 +253,18 @@ export const API_ROUTES = {
         `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
       delete:  (tagId: string) =>
         `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
+    }),
+    heroBanners: () => ({
+      list:    () => `/api/v1/merchant/stores/${storeId}/hero-banners`,
+      detail:  (bannerId: string) =>
+        `/api/v1/merchant/stores/${storeId}/hero-banners/${bannerId}`,
+      create:  () => `/api/v1/merchant/stores/${storeId}/hero-banners`,
+      update:  (bannerId: string) =>
+        `/api/v1/merchant/stores/${storeId}/hero-banners/${bannerId}`,
+      delete:  (bannerId: string) =>
+        `/api/v1/merchant/stores/${storeId}/hero-banners/${bannerId}`,
+      restore: (bannerId: string) =>
+        `/api/v1/merchant/stores/${storeId}/hero-banners/${bannerId}/restore`,
     }),
     users: () => ({
       list:   () => `/api/v1/merchant/stores/${storeId}/users`,

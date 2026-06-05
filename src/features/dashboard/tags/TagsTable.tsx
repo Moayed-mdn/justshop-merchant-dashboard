@@ -23,11 +23,12 @@ interface Props {
   onPerPageChange: (perPage: number) => void;
   isLoading:       boolean;
   storeId:         string;
+  onDelete:        (tagId: string) => void;
 }
 
 export default function TagsTable({
   tags, pagination, page, onPageChange,
-  perPage, onPerPageChange, isLoading, storeId,
+  perPage, onPerPageChange, isLoading, storeId, onDelete,
 }: Props) {
   const t = useTranslations('tags');
 
@@ -96,12 +97,22 @@ export default function TagsTable({
                   {tag.createdAt}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Link
-                    href={ROUTES.store(storeId).tags.edit(String(tag.id))}
-                    className="inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius-md),12px)] border border-transparent bg-clip-padding h-7 gap-1 px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
-                  >
-                    {t('table.edit')}
-                  </Link>
+                  <div className="flex items-center justify-end gap-2">
+                    <Link
+                      href={ROUTES.store(storeId).tags.edit(String(tag.id))}
+                      className="inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius-md),12px)] border border-transparent bg-clip-padding h-7 gap-1 px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
+                    >
+                      {t('table.edit')}
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2.5 text-[0.8rem] text-destructive hover:text-destructive"
+                      onClick={() => onDelete(String(tag.id))}
+                    >
+                      {t('table.delete')}
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

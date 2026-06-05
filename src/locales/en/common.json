@@ -43,6 +43,7 @@
     "categories": "Categories",
     "brands": "Brands",
     "tags": "Tags",
+    "heroBanners": "Hero Banners",
     "cmsPages": "Marketing Pages",
     "settings": "Settings",
     "mainNav": "Main navigation",
@@ -549,6 +550,9 @@
       "actions": "Actions",
       "edit": "Edit",
       "empty": "No categories found",
+      "delete": "Delete",
+      "restore": "Restore",
+      "deleteConfirm": "Are you sure you want to delete this category?",
       "of": "of",
       "perPage": "Per page",
       "previous": "Previous",
@@ -626,6 +630,9 @@
       "actions": "Actions",
       "edit": "Edit",
       "empty": "No brands found",
+      "delete": "Delete",
+      "restore": "Restore",
+      "deleteConfirm": "Are you sure you want to delete this brand?",
       "of": "of",
       "perPage": "Per page",
       "previous": "Previous",
@@ -704,6 +711,9 @@
       "actions": "Actions",
       "edit": "Edit",
       "empty": "No tags found",
+      "delete": "Delete",
+      "restore": "Restore",
+      "deleteConfirm": "Are you sure you want to delete this tag?",
       "of": "of",
       "perPage": "Per page",
       "previous": "Previous",
@@ -880,6 +890,38 @@
     },
     "detail": {
       "error": "Failed to load marketing page"
+    }
+  },
+  "heroBanners": {
+    "loading": "Loading...",
+    "title": "Hero Banners",
+    "subtitle": "Manage homepage promotional banners",
+    "new": "New Banner",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "table": {
+      "position": "Pos",
+      "type": "Type",
+      "title": "Title",
+      "cta": "CTA",
+      "status": "Status",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "restore": "Restore",
+      "empty": "No hero banners found",
+      "deleteConfirm": "Are you sure you want to delete this hero banner?",
+      "deleteSuccess": "Hero banner deleted",
+      "deleteError": "Failed to delete hero banner",
+      "restoreSuccess": "Hero banner restored",
+      "restoreError": "Failed to restore hero banner"
+    },
+    "form": {
+      "createTitle": "New Hero Banner",
+      "editTitle": "Edit Hero Banner"
     }
   }
 }

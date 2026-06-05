@@ -56,6 +56,9 @@ export function WorkspaceStoreSwitcher() {
     return null;
   }
 
+  // Get the active store name for display
+  const activeStoreName = activeStore?.name || 'Select store';
+
   return (
     <div className="flex items-center gap-2">
       <Select
@@ -69,7 +72,7 @@ export function WorkspaceStoreSwitcher() {
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             ) : null}
             <div className="flex-1 truncate text-left">
-              <SelectValue placeholder="Select store" />
+              <span>{activeStoreName}</span>
             </div>
           </div>
         </SelectTrigger>

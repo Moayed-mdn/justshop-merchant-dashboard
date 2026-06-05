@@ -7,6 +7,10 @@ import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
 import { PlusCircle } from 'lucide-react';
+import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteTag } from '@/lib/api/tags';
+import { queryKeys } from '@/lib/queryKeys';
 import TagsTable from './TagsTable';
 import TagFilters from './TagFilters';
 import type { TagFilters as TagFiltersType } from '@/schemas/tags';
@@ -43,8 +47,25 @@ export default function TagsContent({ storeId, initialFilters }: Props) {
   };
 
   const { data, isLoading, error } = useTags(storeId, filters);
+  const queryClient = useQueryClient();
 
   if (error) logger.error('Failed to load tags', { error });
+
+  const deleteMutation = useMutation({
+    mutationFn: (tagId: string) => deleteTag(storeId, tagId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeId).lists() });
+      toast.success(t('form.deleteSuccess'));
+    },
+    onError: (err: any) => {
+      logger.error('Failed to delete tag', { error: err });
+      toast.error(err?.message ?? t('form.deleteError'));
+    },
+  });
+
+  const handleDelete = (tagId: string) => {
+    if (confirm(t('table.deleteConfirm'))) deleteMutation.mutate(tagId);
+  };
 
   const handleIsActiveChange = (value: 'all' | 'true' | 'false') => {
     setIsActive(value);
@@ -88,6 +109,7 @@ export default function TagsContent({ storeId, initialFilters }: Props) {
         onPerPageChange={setPerPage}
         isLoading={isLoading}
         storeId={storeId}
+        onDelete={handleDelete}
       />
     </div>
   );

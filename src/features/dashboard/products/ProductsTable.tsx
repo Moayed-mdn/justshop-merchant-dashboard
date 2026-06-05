@@ -113,7 +113,7 @@ export default function ProductsTable({
                 </TableCell>
                 <TableCell>
                   <Link
-                    href={`/merchant/products/${product.id}/edit`}
+                    href={ROUTES.store(storeId).products.edit(String(product.id))}
                     className="font-medium hover:underline"
                   >
                     {product.name}
@@ -138,10 +138,11 @@ export default function ProductsTable({
                   {product.createdAt}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Link href={`/merchant/products/${product.id}/edit`}>
-                    <Button variant="ghost" size="sm">
-                      {t('table.edit')}
-                    </Button>
+                  <Link
+                    href={ROUTES.store(storeId).products.edit(String(product.id))}
+                    className="inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius-md),12px)] border border-transparent bg-clip-padding h-7 gap-1 px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
+                  >
+                    {t('table.edit')}
                   </Link>
                 </TableCell>
               </TableRow>

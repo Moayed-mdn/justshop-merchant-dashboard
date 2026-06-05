@@ -14,6 +14,10 @@ import { PlusCircle } from 'lucide-react';
 import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
+import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteCategory, restoreCategory } from '@/lib/api/categories';
+import { queryKeys } from '@/lib/queryKeys';
 import CategoriesTable from './CategoriesTable';
 import CategoryFilters from './CategoryFilters';
 import type { CategoryFilters as CategoryFiltersType } from '@/schemas/categories';
@@ -48,10 +52,43 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
   const filters: CategoryFiltersType = { is_active: isActive, page, perPage };
 
   const { data, isLoading, error } = useCategories(storeId, filters);
+  const queryClient = useQueryClient();
 
   if (error) {
     logger.error('Failed to load categories', { error });
   }
+
+  const deleteMutation = useMutation({
+    mutationFn: (categoryId: string) => deleteCategory(storeId, categoryId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories(storeId).lists() });
+      toast.success(t('form.deleteSuccess'));
+    },
+    onError: (err: any) => {
+      logger.error('Failed to delete category', { error: err });
+      toast.error(err?.message ?? t('form.deleteError'));
+    },
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: (categoryId: string) => restoreCategory(storeId, categoryId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories(storeId).lists() });
+      toast.success(t('form.restoreSuccess'));
+    },
+    onError: (err: any) => {
+      logger.error('Failed to restore category', { error: err });
+      toast.error(err?.message ?? t('form.restoreError'));
+    },
+  });
+
+  const handleDelete = (categoryId: string) => {
+    if (confirm(t('table.deleteConfirm'))) deleteMutation.mutate(categoryId);
+  };
+
+  const handleRestore = (categoryId: string) => {
+    restoreMutation.mutate(categoryId);
+  };
 
   const handleIsActiveChange = (value: 'all' | 'true' | 'false') => {
     setIsActive(value);
@@ -91,6 +128,8 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
         onPerPageChange={setPerPage}
         isLoading={isLoading}
         storeId={storeId}
+        onDelete={handleDelete}
+        onRestore={handleRestore}
       />
     </div>
   );
