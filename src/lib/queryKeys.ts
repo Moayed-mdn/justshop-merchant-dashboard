@@ -114,6 +114,16 @@ export const queryKeys = {
     recentOrders: () => ['merchant', storeId, 'dashboard', 'recent-orders'] as const,
     topProducts:  () => ['merchant', storeId, 'dashboard', 'top-products'] as const,
   }),
+
+  // ── NAVIGATION ────────────────────────────────────────────────
+  navigation: (storeId: string) => ({
+    all:    () => ['merchant', storeId, 'navigation'] as const,
+    lists:  () => ['merchant', storeId, 'navigation', 'list'] as const,
+    list:   (filters: Record<string, unknown> = {}) =>
+      ['merchant', storeId, 'navigation', 'list', filters] as const,
+    detail: (menuId: string) =>
+      ['merchant', storeId, 'navigation', 'detail', menuId] as const,
+  }),
 };
 
 /** @deprecated Use queryKeys.merchant.me() */

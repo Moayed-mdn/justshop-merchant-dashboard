@@ -925,5 +925,109 @@
       "createTitle": "New Hero Banner",
       "editTitle": "Edit Hero Banner"
     }
+  },
+  "theme": {
+    "navigation": {
+      "title": "Navigation Menus",
+      "subtitle": "Manage navigation menus for your storefront",
+      "createMenu": "Create Menu",
+      "noMenus": "No navigation menus found. Create your first menu to get started.",
+      "deleteConfirm": "Are you sure you want to delete this navigation menu? All menu items will also be deleted.",
+      "deleteSuccess": "Navigation menu deleted successfully",
+      "deleteError": "Failed to delete navigation menu",
+      "table": {
+        "name": "Name",
+        "handle": "Handle",
+        "description": "Description",
+        "itemsCount": "Items",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "pagination": {
+        "showing": "Showing {from} to {to} of {total} menus",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "createDialog": {
+        "title": "Create Navigation Menu",
+        "description": "Create a new navigation menu for your storefront header, footer, or other sections.",
+        "form": {
+          "name": "Menu Name",
+          "namePlaceholder": "e.g. Main Menu",
+          "handle": "Handle",
+          "handlePlaceholder": "e.g. main-menu",
+          "handleHelp": "Unique identifier for this menu (lowercase, hyphens only)",
+          "description": "Description",
+          "descriptionPlaceholder": "Brief description of this menu",
+          "create": "Create Menu",
+          "creating": "Creating...",
+          "cancel": "Cancel"
+        },
+        "success": "Navigation menu created successfully",
+        "error": "Failed to create navigation menu"
+      },
+      "editor": {
+        "title": "Edit Navigation Menu",
+        "subtitle": "Manage menu items and settings",
+        "back": "Back to menus",
+        "save": "Save Changes",
+        "saving": "Saving...",
+        "saveSuccess": "Navigation menu updated successfully",
+        "saveError": "Failed to update navigation menu",
+        "loadError": "Failed to load navigation menu",
+        "settings": {
+          "title": "Menu Settings",
+          "description": "Basic information about this navigation menu",
+          "name": "Menu Name",
+          "handle": "Handle",
+          "handleHelp": "Unique identifier (lowercase, hyphens only)",
+          "description": "Description"
+        },
+        "items": {
+          "title": "Menu Items",
+          "description": "Add, edit, and organize menu items",
+          "noItems": "No menu items yet. Add your first item to get started.",
+          "addFirst": "Add First Item",
+          "addItem": "Add Menu Item",
+          "disabled": "Disabled",
+          "newTab": "New Tab",
+          "deleteConfirm": "Are you sure you want to delete this menu item?",
+          "deleteSuccess": "Menu item deleted successfully",
+          "deleteError": "Failed to delete menu item"
+        }
+      },
+      "itemDialog": {
+        "createTitle": "Add Menu Item",
+        "createDescription": "Add a new item to your navigation menu",
+        "editTitle": "Edit Menu Item",
+        "editDescription": "Update menu item details",
+        "form": {
+          "label": "Label",
+          "labelEn": "Label (English)",
+          "labelEnPlaceholder": "e.g. Home",
+          "labelAr": "Label (Arabic)",
+          "labelArPlaceholder": "e.g. الرئيسية",
+          "url": "URL",
+          "urlPlaceholder": "/",
+          "urlHelp": "Relative URL (e.g. /shop) or full URL (https://...)",
+          "target": "Link Target",
+          "targetSelf": "Same window",
+          "targetBlank": "New window",
+          "position": "Position",
+          "positionHelp": "Lower numbers appear first",
+          "enabled": "Enabled",
+          "create": "Create Item",
+          "creating": "Creating...",
+          "update": "Update Item",
+          "updating": "Updating...",
+          "cancel": "Cancel"
+        },
+        "createSuccess": "Menu item created successfully",
+        "createError": "Failed to create menu item",
+        "updateSuccess": "Menu item updated successfully",
+        "updateError": "Failed to update menu item"
+      }
+    }
   }
 }
