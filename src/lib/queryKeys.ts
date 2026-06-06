@@ -124,6 +124,24 @@ export const queryKeys = {
     detail: (menuId: string) =>
       ['merchant', storeId, 'navigation', 'detail', menuId] as const,
   }),
+
+  // ── ASSETS ────────────────────────────────────────────────────
+  assets: (storeId: string) => ({
+    all:    () => ['merchant', storeId, 'assets'] as const,
+    lists:  () => ['merchant', storeId, 'assets', 'list'] as const,
+    list:   (filters: Record<string, unknown> = {}) =>
+      ['merchant', storeId, 'assets', 'list', filters] as const,
+  }),
+
+  // ── THEMES ────────────────────────────────────────────────────
+  themes: (storeId: string) => ({
+    all:    () => ['merchant', storeId, 'themes'] as const,
+    lists:  () => ['merchant', storeId, 'themes', 'list'] as const,
+    list:   (filters: Record<string, unknown> = {}) =>
+      ['merchant', storeId, 'themes', 'list', filters] as const,
+    detail: (themeId: string) =>
+      ['merchant', storeId, 'themes', 'detail', themeId] as const,
+  }),
 };
 
 /** @deprecated Use queryKeys.merchant.me() */

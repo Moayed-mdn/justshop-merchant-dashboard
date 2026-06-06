@@ -312,6 +312,28 @@ export const API_ROUTES = {
           `/api/v1/merchant/stores/${storeId}/navigation/${menuId}/items/reorder`,
       }),
     }),
+    assets: () => ({
+      list:   () => `/api/v1/merchant/stores/${storeId}/assets`,
+      upload: () => `/api/v1/merchant/stores/${storeId}/assets`,
+      update: (assetId: string) =>
+        `/api/v1/merchant/stores/${storeId}/assets/${assetId}`,
+      delete: (assetId: string) =>
+        `/api/v1/merchant/stores/${storeId}/assets/${assetId}`,
+    }),
+    themes: () => ({
+      list:   () => `/api/v1/merchant/stores/${storeId}/themes`,
+      detail: (themeId: string) =>
+        `/api/v1/merchant/stores/${storeId}/themes/${themeId}`,
+      create: () => `/api/v1/merchant/stores/${storeId}/themes`,
+      update: (themeId: string) =>
+        `/api/v1/merchant/stores/${storeId}/themes/${themeId}`,
+      delete: (themeId: string) =>
+        `/api/v1/merchant/stores/${storeId}/themes/${themeId}`,
+      publish: (themeId: string) =>
+        `/api/v1/merchant/stores/${storeId}/themes/${themeId}/publish`,
+      duplicate: (themeId: string) =>
+        `/api/v1/merchant/stores/${storeId}/themes/${themeId}/duplicate`,
+    }),
     users: () => ({
       list:   () => `/api/v1/merchant/stores/${storeId}/users`,
       create: () => `/api/v1/merchant/stores/${storeId}/users`,
