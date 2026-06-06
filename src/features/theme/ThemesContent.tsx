@@ -1,0 +1,130 @@
+'use client';
+
+/**
+ * Themes overview page content (client component).
+ * Displays list of themes with publish/duplicate/delete actions.
+ */
+
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/lib/navigation';
+import { useThemes } from '@/hooks/themes/useThemes';
+import { useStoreStore } from '@/stores/storeStore';
+import { ThemeCard } from './ThemeCard';
+import { CreateThemeDialog } from './CreateThemeDialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Pagination } from '@/components/shared/Pagination';
+import { ROUTES } from '@/config/routes';
+import { Plus, Settings } from 'lucide-react';
+import type { ThemeFilters } from '@/types/theme';
+
+export function ThemesContent() {
+  const t = useTranslations();
+  const router = useRouter();
+  const { activeStoreId } = useStoreStore();
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [filters, setFilters] = useState<ThemeFilters>({
+    page: 1,
+    perPage: 12,
+  });
+
+  const { data, isLoading, error } = useThemes(activeStoreId!, filters);
+
+  const handlePageChange = (page: number) => {
+    setFilters((prev) => ({ ...prev, page }));
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t('common.theme.overview.title')}
+          </h1>
+          <p className="text-muted-foreground">
+            {t('common.theme.overview.subtitle')}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => router.push(ROUTES.merchant.theme.settings())}
+          >
+            <Settings className="mr-2 h-4 w-4" />
+            {t('common.theme.settings.title')}
+          </Button>
+          <Button onClick={() => setShowCreateDialog(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t('common.theme.createTheme')}
+          </Button>
+        </div>
+      </div>
+
+      {/* Create Dialog */}
+      {showCreateDialog && (
+        <CreateThemeDialog onClose={() => setShowCreateDialog(false)} />
+      )}
+
+      {/* Themes Grid */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('common.theme.yourThemes')}</CardTitle>
+          <CardDescription>
+            {t('common.theme.themesDescription')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoading && (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-muted-foreground">
+                {t('common.loading')}
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-destructive">
+                {t('common.error')}: {error.message}
+              </div>
+            </div>
+          )}
+
+          {data && data.data.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12">
+              <p className="text-muted-foreground mb-4">
+                {t('common.theme.noThemes')}
+              </p>
+              <Button onClick={() => setShowCreateDialog(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                {t('common.theme.createFirstTheme')}
+              </Button>
+            </div>
+          )}
+
+          {data && data.data.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.data.map((theme) => (
+                  <ThemeCard key={theme.id} theme={theme} />
+                ))}
+              </div>
+
+              {data.meta.last_page > 1 && (
+                <div className="mt-6">
+                  <Pagination
+                    currentPage={data.meta.current_page}
+                    totalPages={data.meta.last_page}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

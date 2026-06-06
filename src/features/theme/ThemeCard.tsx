@@ -1,0 +1,211 @@
+'use client';
+
+/**
+ * Theme card component.
+ * Displays single theme with status badge and actions.
+ */
+
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useStoreStore } from '@/stores/storeStore';
+import {
+  usePublishTheme,
+  useDeleteTheme,
+  useDuplicateTheme,
+} from '@/hooks/themes/useThemeMutations';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { MoreVertical, Check, Copy, Trash2, Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
+import { DuplicateThemeDialog } from './DuplicateThemeDialog';
+import type { ThemeListItemView } from '@/types/theme';
+
+interface ThemeCardProps {
+  theme: ThemeListItemView;
+}
+
+export function ThemeCard({ theme }: ThemeCardProps) {
+  const t = useTranslations();
+  const { activeStoreId } = useStoreStore();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+
+  const publishMutation = usePublishTheme(activeStoreId!);
+  const deleteMutation = useDeleteTheme(activeStoreId!);
+
+  const handlePublish = async () => {
+    try {
+      await publishMutation.mutateAsync(theme.id.toString());
+      toast.success(t('common.theme.publishSuccess'));
+    } catch (error) {
+      toast.error(t('common.theme.publishError'));
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteMutation.mutateAsync(theme.id.toString());
+      toast.success(t('common.theme.deleteSuccess'));
+    } catch (error) {
+      toast.error(t('common.theme.deleteError'));
+    } finally {
+      setShowDeleteDialog(false);
+    }
+  };
+
+  return (
+    <>
+      <Card className="overflow-hidden">
+        <CardHeader className="relative pb-0">
+          {/* Status Badges */}
+          <div className="flex items-center gap-2 mb-3">
+            {theme.isActive && (
+              <Badge variant="default" className="gap-1">
+                <Check className="h-3 w-3" />
+                {t('common.theme.active')}
+              </Badge>
+            )}
+            {theme.isPublished ? (
+              <Badge variant="secondary">
+                {t('common.theme.published')}
+              </Badge>
+            ) : (
+              <Badge variant="outline">{t('common.theme.draft')}</Badge>
+            )}
+          </div>
+
+          {/* Actions Menu */}
+          <div className="absolute top-4 right-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {!theme.isActive && (
+                  <>
+                    <DropdownMenuItem onClick={handlePublish}>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      {t('common.theme.publish')}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem onClick={() => setShowDuplicateDialog(true)}>
+                  <Copy className="mr-2 h-4 w-4" />
+                  {t('common.theme.duplicate')}
+                </DropdownMenuItem>
+                {!theme.isActive && (
+                  <DropdownMenuItem
+                    onClick={() => setShowDeleteDialog(true)}
+                    className="text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t('common.delete')}
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </CardHeader>
+
+        <CardContent className="pt-4">
+          {/* Theme Preview Placeholder */}
+          <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg mb-4 flex items-center justify-center">
+            <div className="text-center text-muted-foreground text-sm">
+              {t('common.theme.preview')}
+            </div>
+          </div>
+
+          {/* Theme Info */}
+          <div>
+            <h3 className="font-semibold text-lg mb-1">{theme.name}</h3>
+            {theme.description && (
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {theme.description}
+              </p>
+            )}
+            {theme.sectionsCount !== undefined && (
+              <p className="text-xs text-muted-foreground mt-2">
+                {theme.sectionsCount} {t('common.theme.sections')}
+              </p>
+            )}
+          </div>
+        </CardContent>
+
+        <CardFooter className="pt-0">
+          {!theme.isActive && (
+            <Button
+              className="w-full"
+              onClick={handlePublish}
+              disabled={publishMutation.isPending}
+            >
+              {publishMutation.isPending ? (
+                t('common.publishing')
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  {t('common.theme.publish')}
+                </>
+              )}
+            </Button>
+          )}
+          {theme.isActive && (
+            <div className="w-full text-center text-sm text-muted-foreground">
+              {t('common.theme.currentlyActive')}
+            </div>
+          )}
+        </CardFooter>
+      </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('common.theme.deleteTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('common.theme.deleteConfirmation')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleteMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteMutation.isPending ? t('common.deleting') : t('common.delete')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Duplicate Dialog */}
+      {showDuplicateDialog && (
+        <DuplicateThemeDialog
+          theme={theme}
+          onClose={() => setShowDuplicateDialog(false)}
+        />
+      )}
+    </>
+  );
+}
