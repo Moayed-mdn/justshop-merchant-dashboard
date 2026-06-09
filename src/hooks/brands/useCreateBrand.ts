@@ -28,7 +28,7 @@ export function useCreateBrand(storeId: string) {
         queryKey: queryKeys.brands(storeId).lists(),
       });
       toast.success(t('form.createSuccess'));
-      router.push(ROUTES.store(storeId).brands.list());
+      router.push(ROUTES.merchant.brands.list());
     },
 
     onError: (error) => {

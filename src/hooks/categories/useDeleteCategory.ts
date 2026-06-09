@@ -30,7 +30,7 @@ export function useDeleteCategory(storeId: string, categoryId: string) {
         queryKey: queryKeys.categories(storeId).detail(categoryId),
       });
       toast.success(t('form.deleteSuccess'));
-      router.push(ROUTES.store(storeId).categories.list());
+      router.push(ROUTES.merchant.categories.list());
     },
 
     onError: (error) => {

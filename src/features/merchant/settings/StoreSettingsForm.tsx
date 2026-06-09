@@ -1,6 +1,8 @@
 'use client';
 
-import { Store } from '@/types/store';
+import { useState } from 'react';
+import type { Store } from '@/types/store';
+import type { ApiError } from '@/types/api';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
@@ -9,7 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const schema = z.object({
   name: z.string().min(3, 'Store name must be at least 3 characters.'),
@@ -26,12 +29,14 @@ interface StoreSettingsFormProps {
  * Allows editing basic store metadata like name.
  */
 export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
+  const [showSaved, setShowSaved] = useState(false);
   const updateStoreMutation = useUpdateStore(String(store.id));
 
   const {
     register,
     handleSubmit,
     setError,
+    reset,
     formState: { errors, isValid, isDirty },
   } = useForm<StoreSettingsFormData>({
     resolver: zodResolver(schema),
@@ -44,9 +49,13 @@ export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await updateStoreMutation.mutateAsync(data);
-    } catch (error: any) {
-      if (error.errors?.name) {
-        setError('name', { message: error.errors.name[0] });
+      reset({ name: data.name });
+      setShowSaved(true);
+      setTimeout(() => setShowSaved(false), 3000);
+    } catch (error) {
+      const apiError = error as ApiError;
+      if (apiError.errors?.name?.[0]) {
+        setError('name', { message: apiError.errors.name[0] });
       }
     }
   });
@@ -58,11 +67,11 @@ export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
       <CardHeader>
         <CardTitle>Store Settings</CardTitle>
         <CardDescription>
-          Update your store's basic information.
+          Manage your store&rsquo;s name and view your store slug.
         </CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="store-name">Store Name</Label>
             <Input
@@ -74,6 +83,9 @@ export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
             {errors.name && (
               <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
+            <p className="text-xs text-muted-foreground">
+              This is shown to customers and appears in the store switcher.
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -85,24 +97,43 @@ export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
               className="bg-muted opacity-70"
             />
             <p className="text-xs text-muted-foreground">
-              Slug editing is currently disabled. Contact support to change your store slug.
+              The slug is used in your store&rsquo;s URL. Changing it would affect existing links and SEO, so it cannot be modified from this form.
             </p>
+            <details className="group">
+              <summary className="cursor-pointer text-xs font-medium text-muted-foreground hover:text-foreground">
+                Need to change your slug?
+              </summary>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Contact our support team with your preferred slug and we&rsquo;ll help you through the process. Note that changing a slug will update your store URL and may affect indexed search results.
+              </p>
+            </details>
           </div>
         </CardContent>
         <CardFooter className="border-t bg-muted/20 px-6 py-4">
-          <Button 
-            type="submit" 
-            disabled={!isValid || !isDirty || isPending}
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              'Save changes'
-            )}
-          </Button>
+          <div className="flex w-full items-center justify-between">
+            <div>
+              {showSaved ? (
+                <span className="flex items-center gap-1.5 text-sm text-green-600">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Saved
+                </span>
+              ) : null}
+            </div>
+            <Button 
+              type="submit" 
+              disabled={!isValid || !isDirty || isPending}
+              className={cn(showSaved && 'bg-green-600 hover:bg-green-700')}
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save changes'
+              )}
+            </Button>
+          </div>
         </CardFooter>
       </form>
     </Card>

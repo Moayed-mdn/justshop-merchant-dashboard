@@ -2,8 +2,11 @@
 
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
+import { MerchantPageHeader } from '@/features/merchant/components/MerchantPageHeader';
+import { PostOnboardingChecklist } from '@/features/merchant/components/PostOnboardingChecklist';
 import { WorkspaceDashboardContent } from '@/features/merchant/dashboard/WorkspaceDashboardContent';
 import { useTranslations } from 'next-intl';
+import { LayoutDashboard } from 'lucide-react';
 
 /**
  * Merchant Workspace Dashboard Page.
@@ -17,17 +20,27 @@ export default function MerchantDashboardPage() {
   if (!activeStore) {
     return (
       <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold">{t('title')}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
-        </div>
+        <MerchantPageHeader
+          title={t('title')}
+          description={t('subtitle')}
+        />
         <WorkspaceEmptyState 
+          icon={LayoutDashboard}
           title="No active store"
-          message="Select a store from the switcher to view its dashboard overview."
+          message="Select a store from the switcher to see your sales, orders, and performance at a glance."
         />
       </div>
     );
   }
 
-  return <WorkspaceDashboardContent storeId={String(activeStore.id)} />;
+  return (
+    <div className="space-y-6">
+      <MerchantPageHeader
+        title={t('title')}
+        description={t('subtitle')}
+      />
+      <PostOnboardingChecklist key={activeStore.id} />
+      <WorkspaceDashboardContent storeId={String(activeStore.id)} />
+    </div>
+  );
 }

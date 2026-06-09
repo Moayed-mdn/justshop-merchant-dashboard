@@ -2,12 +2,12 @@
 
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { StoreList } from '@/features/merchant/stores/StoreList';
-import { buttonVariants } from '@/components/ui/button';
+import { MerchantPageHeader } from '@/features/merchant/components/MerchantPageHeader';
+import { Button } from '@/components/ui/button';
 import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
 import { Plus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
 
 /**
  * Merchant Workspace Stores Page.
@@ -19,21 +19,17 @@ export default function MerchantStoresPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('stores')}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Manage your stores and businesses.
-          </p>
-        </div>
-        <Link 
-          href={ROUTES.merchant.stores.create()}
-          className={cn(buttonVariants({ variant: 'default' }))}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Create store
+      <MerchantPageHeader
+        title={t('stores')}
+        description="Manage your stores and businesses."
+      >
+        <Link href={ROUTES.merchant.stores.create()}>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Create store
+          </Button>
         </Link>
-      </div>
+      </MerchantPageHeader>
 
       <StoreList stores={stores} />
     </div>

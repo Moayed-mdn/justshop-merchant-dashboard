@@ -194,7 +194,7 @@ export function CreateProductWizard({
 
       {/* Page header */}
       <div className="flex items-center gap-4">
-        <Link href={ROUTES.store(storeId).products.list()}>
+        <Link href={ROUTES.merchant.products.list()}>
           <Button variant="ghost" size="icon" type="button">
             <ArrowLeft className="h-4 w-4" />
           </Button>

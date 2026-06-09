@@ -5,6 +5,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useUpdateTag } from '@/hooks/tags/useUpdateTag';
+import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 import { TagFormSchema, type TagFormValues, type TagFormInput } from '@/schemas/tags';
 import type { TagDetailView } from '@/types/tag';
 import { Button } from '@/components/ui/button';
@@ -49,6 +50,8 @@ export default function EditTagForm({ storeId, tagId, tag }: Props) {
     },
   });
 
+  const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
+
   const { fields } = useFieldArray({ control, name: 'translations' });
   const isActive   = watch('is_active');
 
@@ -67,6 +70,7 @@ export default function EditTagForm({ storeId, tagId, tag }: Props) {
   }, [tag.id]);
 
   const onSubmit = async (values: TagFormValues) => {
+    bypassNextNavigation();
     await update.mutateAsync({
       type:      values.type || null,
       color:     values.color || null,

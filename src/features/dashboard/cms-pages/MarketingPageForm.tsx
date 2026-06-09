@@ -27,6 +27,7 @@ import { LocalizedInput } from './components/LocalizedInput';
 import { SectionsBuilder } from './components/SectionsBuilder';
 import { SeoTab } from './components/SeoTab';
 import { DeleteMarketingPageDialog } from './components/DeleteMarketingPageDialog';
+import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 
 // ── Default values ────────────────────────────────────────────────────────
 
@@ -109,6 +110,8 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
     formState: { errors, isSubmitting, isDirty },
   } = form;
 
+  const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
+
   // Sync form state with page data when it loads
   useEffect(() => {
     if (page) {
@@ -120,6 +123,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
   const isScheduled = status === 'scheduled';
 
   const handleFormSubmit = async (values: MarketingPageFormValues) => {
+    bypassNextNavigation();
     try {
       await onSubmit(values);
     } catch (error) {

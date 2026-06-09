@@ -6,6 +6,7 @@ import { useSwitchStore } from '@/hooks/auth/useSwitchStore';
 import { useRouter } from '@/lib/navigation';
 import { Loader2 } from 'lucide-react';
 import { logger } from '@/lib/logger';
+import { logUXEvent } from '@/lib/ux-events';
 
 interface LegacyRouteRedirectorProps {
   storeId: string;
@@ -15,17 +16,27 @@ interface LegacyRouteRedirectorProps {
 
 /**
  * Compatibility adapter for legacy store-scoped routes.
- * Hydrates the active store context if needed and redirects to the canonical workspace route.
- * 
+ *
+ * Hydrates the active store context if needed and redirects to the canonical
+ * workspace route. This is a compatibility fallback only — normal navigation
+ * uses ROUTES.merchant.* directly (see P0-1).
+ *
  * Flow:
  * 1. Check if activeStore matches requested storeId.
  * 2. If not, trigger a store switch.
  * 3. Once activeStore is synchronized, redirect to the target workspace path.
+ *
+ * Design notes:
+ * - The shell (DashboardShell) is already rendered by the parent layout,
+ *   so sidebar and topbar remain visible during the redirect.
+ * - A compact inline card replaces the previous 50vh spinner.
+ * - On error, redirects to the target path and lets the merchant page's
+ *   WorkspaceEmptyState handle missing context gracefully.
  */
-export function LegacyRouteRedirector({ 
-  storeId, 
+export function LegacyRouteRedirector({
+  storeId,
   targetPath,
-  originalRoute 
+  originalRoute,
 }: LegacyRouteRedirectorProps) {
   const router = useRouter();
   const activeStore = useBootstrapStore((state) => state.activeStore);
@@ -38,7 +49,8 @@ export function LegacyRouteRedirector({
     const isActiveStoreMatch = activeStore && String(activeStore.id) === storeId;
 
     if (isActiveStoreMatch) {
-      logger.info('Legacy route access: store already active. Redirecting to workspace.', {
+      logUXEvent('redirect:legacy-route', { storeId, targetPath, originalRoute, hydrated: false });
+      logger.info('[LegacyRouteRedirector] Store already active — redirecting.', {
         originalRoute,
         targetPath,
         storeId,
@@ -46,18 +58,17 @@ export function LegacyRouteRedirector({
       hasRedirected.current = true;
       router.replace(targetPath);
     } else {
-      logger.info('Legacy route access: store mismatch. Hydrating context...', {
+      logger.info('[LegacyRouteRedirector] Store mismatch — hydrating context.', {
         originalRoute,
         targetPath,
         storeId,
         currentActiveStore: activeStore?.id,
       });
-      
-      // Trigger store switch. The useSwitchStore hook handles the API call,
-      // state update, and cache invalidation.
+
+      logUXEvent('redirect:legacy-route', { storeId, targetPath, originalRoute, hydrated: true });
       switchStoreMutation.mutate(storeId, {
         onSuccess: () => {
-          logger.info('Legacy context hydrated successfully. Redirecting to workspace.', {
+          logger.info('[LegacyRouteRedirector] Context hydrated — redirecting.', {
             targetPath,
             storeId,
           });
@@ -65,30 +76,28 @@ export function LegacyRouteRedirector({
           router.replace(targetPath);
         },
         onError: (error) => {
-          logger.error('Failed to hydrate legacy context. Redirecting to target anyway.', {
+          logger.error('[LegacyRouteRedirector] Hydration failed — redirecting to target.', {
             error,
             storeId,
             originalRoute,
-            targetPath
+            targetPath,
           });
-          // Redirect to target path anyway - the target page will handle
-          // "no active store" state gracefully with WorkspaceEmptyState
+          // Redirect to target anyway; the merchant page will show
+          // WorkspaceEmptyState if the store context is still missing.
           hasRedirected.current = true;
           router.replace(targetPath);
-        }
+        },
       });
     }
   }, [storeId, targetPath, activeStore, router, switchStoreMutation, originalRoute]);
 
   return (
-    <div className="flex h-[50vh] flex-col items-center justify-center gap-4 text-center">
-      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Switching Workspace Context</h2>
-        <p className="text-sm text-muted-foreground">
-          We're moving you to the new merchant workspace for Store #{storeId}...
-        </p>
-      </div>
+    <div className="mx-auto mt-16 max-w-sm rounded-lg border bg-card p-5 text-center shadow-sm">
+      <Loader2 className="mx-auto h-5 w-5 animate-spin text-primary" />
+      <p className="mt-3 text-sm font-medium text-foreground">Updating workspace...</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Redirecting to the new merchant workspace.
+      </p>
     </div>
   );
 }

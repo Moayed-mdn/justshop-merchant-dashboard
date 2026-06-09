@@ -170,7 +170,7 @@ export default function BrandsTable({
                     {!brand.deletedAt ? (
                       <>
                         <Link
-                          href={ROUTES.store(storeId).brands.edit(String(brand.id))}
+                          href={ROUTES.merchant.brands.edit(String(brand.id))}
                           className="inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius-md),12px)] border border-transparent bg-clip-padding h-7 gap-1 px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
                         >
                           {t('table.edit')}

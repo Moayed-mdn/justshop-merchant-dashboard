@@ -57,7 +57,7 @@ export function SidebarNav({ storeId, isCollapsed: isCollapsedProp }: SidebarNav
   const navItems: NavItem[] = [
     {
       label: t('dashboard'),
-      href: ROUTES.store(storeId).dashboard(),
+      href: ROUTES.merchant.dashboard(),
       icon: LayoutDashboard,
       show: canViewDashboard,
       exact: true,
@@ -76,31 +76,31 @@ export function SidebarNav({ storeId, isCollapsed: isCollapsedProp }: SidebarNav
     },
     {
       label: t('products'),
-      href: ROUTES.store(storeId).products.list(),
+      href: ROUTES.merchant.products.list(),
       icon: Package,
       show: canManageProducts,
     },
     {
       label: t('categories'),
-      href: ROUTES.store(storeId).categories.list(),
+      href: ROUTES.merchant.categories.list(),
       icon: LayoutGrid,
       show: canManageCategories,
     },
     {
       label: t('brands'),
-      href: ROUTES.store(storeId).brands.list(),
+      href: ROUTES.merchant.brands.list(),
       icon: Bookmark,
       show: canManageBrands,
     },
     {
       label: t('tags'),
-      href: ROUTES.store(storeId).tags.list(),
+      href: ROUTES.merchant.tags.list(),
       icon: Tag,
       show: canManageTags,
     },
     {
       label: t('orders'),
-      href: ROUTES.store(storeId).orders.list(),
+      href: ROUTES.merchant.orders.list(),
       icon: ShoppingCart,
       show: canManageOrders,
     },

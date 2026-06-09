@@ -13,6 +13,7 @@ import { ROUTES } from '@/config/routes';
 import { queryKeys } from '@/lib/queryKeys';
 import { Button } from '@/components/ui/button';
 import { clearDashboardClientStorage } from '@/lib/auth/storage';
+import { logUXEvent } from '@/lib/ux-events';
 
 interface BootstrapProviderProps {
   children: ReactNode;
@@ -76,6 +77,14 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     strippedPath === ROUTES.dashboard.home() ||
     strippedPath.startsWith('/stores/') ||
     isMerchantRoute;
+
+  /**
+   * Auth boundary: unauthenticated user on a route that requires authentication.
+   * These are hard boundaries where the shell cannot be meaningfully rendered.
+   * All other redirects (authenticated user moving between pages) are "soft" and
+   * should preserve the shell for an in-transition feel rather than full-screen takeover.
+   */
+  const isAuthBoundary = !isAuthenticated && (isProtectedRoute || isOnboardingRoute);
 
   const redirectTarget = useMemo(() => {
     if (!bootstrapResolved) {
@@ -331,23 +340,53 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
       return;
     }
 
+    logUXEvent('redirect:bootstrap', { target: redirectTarget });
     router.push(redirectTarget);
   }, [redirectTarget, router, strippedPath]);
 
   const isInitialBootstrapping = !bootstrapResolved && isBootstrapping;
   const isRefreshingWithoutData = !bootstrap && isBootstrapping;
-  const shouldShowFullScreenLoader = isInitialBootstrapping || isRefreshingWithoutData || Boolean(redirectTarget);
+
+  // Full-screen loader ONLY for cases where the shell cannot be meaningfully rendered:
+  // 1. Initial bootstrap (no data at all yet)
+  // 2. Refresh without cached bootstrap data
+  // 3. Auth boundary redirects (unauthenticated on protected route → login)
+  // All other redirects are "soft" — the shell stays visible for an in-transition feel.
+  const shouldShowFullScreenLoader =
+    isInitialBootstrapping ||
+    isRefreshingWithoutData ||
+    (isAuthBoundary && Boolean(redirectTarget));
+
+  // Soft redirect: user is authenticated, but needs to move to a different page.
+  // The shell stays visible; an in-shell transition indicator is shown.
+  const isSoftRedirect = Boolean(redirectTarget) && !isAuthBoundary;
 
   if (shouldShowFullScreenLoader) {
+    if (isInitialBootstrapping) logUXEvent('loader:fullscreen', { reason: 'initial-bootstrap' });
+    else if (isRefreshingWithoutData) logUXEvent('loader:fullscreen', { reason: 'refresh-no-data' });
+    else if (isAuthBoundary) logUXEvent('loader:fullscreen', { reason: 'auth-boundary' });
     return (
       <div className="flex h-screen w-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           <p className="text-sm text-muted-foreground">
-            {redirectTarget ? 'Redirecting to the correct dashboard state...' : 'Loading dashboard session...'}
+            {isAuthBoundary ? 'Preparing your session...' : 'Loading dashboard session...'}
           </p>
         </div>
       </div>
+    );
+  }
+
+  // ── Soft redirect: shell stays visible, show subtle in-shell transition bar ──
+  if (isSoftRedirect) {
+    logUXEvent('loader:soft', { redirectTarget });
+    return (
+      <>
+        <div className="fixed top-0 left-0 right-0 z-[60] h-1 bg-primary/10">
+          <div className="h-full w-1/3 animate-pulse rounded-full bg-primary transition-all" />
+        </div>
+        {children}
+      </>
     );
   }
 

@@ -6,10 +6,10 @@ import { useProvisioningStatus } from '@/hooks/auth/useProvisioningStatus';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import { isBootstrapStoreReady } from '@/lib/auth/bootstrap-routing';
-import { useRouter } from '@/lib/navigation';
-import { ROUTES } from '@/config/routes';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { SetupCompleteStep } from './SetupCompleteStep';
+import { logUXEvent } from '@/lib/ux-events';
 import {
   AlertCircle,
   CheckCircle2,
@@ -24,13 +24,11 @@ import {
  * Steps are shown as a progressive checklist during provisioning.
  */
 const LIFECYCLE_STEPS = [
-  { key: 'initializing_store',        label: 'Creating store' },
-  { key: 'provisioning_workspace',    label: 'Provisioning workspace' },
-  { key: 'applying_configuration',    label: 'Applying starter configuration' },
-  { key: 'finalizing_setup',          label: 'Finalizing setup' },
+  { key: 'initializing_store',        label: 'Creating your store' },
+  { key: 'provisioning_workspace',    label: 'Setting up your workspace' },
+  { key: 'applying_configuration',    label: 'Applying your starter settings' },
+  { key: 'finalizing_setup',          label: 'Almost done' },
 ] as const;
-
-type LifecycleStepKey = typeof LIFECYCLE_STEPS[number]['key'];
 
 function resolveLifecycleIndex(currentStep: string | null): number {
   if (!currentStep) return 0;
@@ -38,18 +36,10 @@ function resolveLifecycleIndex(currentStep: string | null): number {
   return idx >= 0 ? idx : 0;
 }
 
-function formatStep(step: string): string {
-  return step
-    .split('_')
-    .filter(Boolean)
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(' ');
-}
-
 export function ProvisioningStep() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const completedRefreshRef = useRef(false);
+  const hasLoggedMount = useRef(false);
 
   const provisioning = useBootstrapStore((state) => state.provisioning);
   const bootstrap = useBootstrapStore((state) => state.bootstrap);
@@ -58,11 +48,8 @@ export function ProvisioningStep() {
     refetch,
     isError,
     error,
-    trackedStoreId,
     softTimedOut,
     hardTimedOut,
-    isFetching,
-    isDocumentVisible,
     isOnline,
   } = useProvisioningStatus();
 
@@ -72,35 +59,40 @@ export function ProvisioningStep() {
   const progress = provisioning?.progress ?? 0;
   const message = provisioning?.message ?? null;
   const currentStep = provisioning?.current_step ?? null;
-  const lastCheckedAt = provisioning?.last_checked_at
-    ? new Date(provisioning.last_checked_at).toLocaleTimeString()
-    : null;
 
   const lifecycleIndex = resolveLifecycleIndex(currentStep);
 
   const heading = useMemo(() => {
-    if (status === 'completed') return 'Store is ready';
-    if (status === 'failed') return 'Setup needs attention';
+    if (status === 'completed') return 'Your store is ready!';
+    if (status === 'failed') return 'We hit a small snag';
     if (storeName) return `Setting up ${storeName}...`;
     return 'Setting up your store...';
   }, [status, storeName]);
 
   const subheading = useMemo(() => {
     if (!isOnline) return 'You are offline. Setup will resume when your connection returns.';
-    if (isError) return error?.message ?? 'The latest status check failed. You can safely try again.';
-    if (status === 'failed') return message || 'Provisioning stopped before the store became ready.';
-    if (hardTimedOut) return 'Provisioning is taking longer than expected. Polling has paused — retry manually.';
-    if (softTimedOut) return 'Still running. The app will keep checking in the background.';
-    if (status === 'completed') return 'Your store is provisioned and ready to use.';
+    if (isError) return error?.message ?? 'We couldn\u2019t check the latest status. You can safely try again.';
+    if (status === 'failed') return message || 'Setup stopped before the store became ready. You can try again below.';
+    if (hardTimedOut) return 'Setup is taking a bit longer than usual. You can check again whenever you\u2019re ready.';
+    if (softTimedOut) return 'Still setting things up. We\u2019ll keep checking for you.';
+    if (status === 'completed') return 'Everything is set up and ready to go.';
     return message ?? 'This usually takes less than a minute.';
   }, [error?.message, hardTimedOut, isError, isOnline, message, softTimedOut, status]);
 
-  const refreshBootstrap = async () => {
-    await queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
-  };
-
-  // Trigger bootstrap refresh once when provisioning completes
+  // Log provisioning mount once
   useEffect(() => {
+    if (hasLoggedMount.current) return;
+    if (status === 'pending' || status === 'running') {
+      hasLoggedMount.current = true;
+      logUXEvent('provisioning:mount');
+    }
+  }, [status]);
+
+  // Log provisioning complete once and trigger bootstrap refresh
+  useEffect(() => {
+    if (status === 'completed' && !completedRefreshRef.current) {
+      logUXEvent('provisioning:complete', { duration: provisioning?.progress ?? undefined });
+    }
     if (status !== 'completed') {
       completedRefreshRef.current = false;
       return;
@@ -111,24 +103,37 @@ export function ProvisioningStep() {
     }
     if (completedRefreshRef.current) return;
     completedRefreshRef.current = true;
-    void refreshBootstrap();
-  }, [bootstrap?.active_store, status]);
+    void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
+  }, [queryClient, bootstrap?.active_store, status]);
 
-  // Redirect to dashboard once store is ready
-  useEffect(() => {
-    if (
-      status !== 'completed' ||
-      !bootstrap?.active_store ||
-      !isBootstrapStoreReady(bootstrap.active_store)
-    ) {
-      return;
-    }
-    router.push(ROUTES.merchant.dashboard());
-  }, [bootstrap?.active_store, router, status]);
+  // Show the completion handoff screen when provisioning is done
+  if (status === 'completed' && bootstrap?.active_store && isBootstrapStoreReady(bootstrap.active_store)) {
+    return <SetupCompleteStep />;
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
       <div className="mx-auto w-full max-w-lg space-y-8">
+        {/* Step indicator */}
+        <div className="flex items-center justify-center gap-3">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </span>
+          <span className="h-px w-6 bg-primary" />
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </span>
+          <span className="h-px w-6 bg-primary" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+            <span>3</span>
+            <span className="hidden sm:inline">Setup</span>
+          </span>
+        </div>
+
         {/* Status icon */}
         <div className="flex justify-center">
           <div className="relative flex h-20 w-20 items-center justify-center">
@@ -153,9 +158,6 @@ export function ProvisioningStep() {
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold">{heading}</h1>
           <p className="text-muted-foreground">{subheading}</p>
-          {lastCheckedAt ? (
-            <p className="text-xs text-muted-foreground">Last checked at {lastCheckedAt}</p>
-          ) : null}
         </div>
 
         {/* Progress bar */}
@@ -202,49 +204,27 @@ export function ProvisioningStep() {
           </div>
         ) : null}
 
-        {/* Recovery guidance */}
-        {(softTimedOut || hardTimedOut || status === 'failed' || isError) ? (
-          <div className="rounded-xl border border-border bg-muted/40 p-4 text-left">
-            <h3 className="font-semibold">Recovery guidance</h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li>Use "Check again" to retry the provisioning status poll.</li>
-              <li>Use "Refresh bootstrap" after the backend finishes or after access changes.</li>
-              <li>Do not resubmit store creation unless the backend confirms the store was never created.</li>
-              <li>If this screen remains stuck after repeated retries, contact support.</li>
-            </ul>
-          </div>
-        ) : null}
-
         {/* Actions */}
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Button type="button" variant="outline" onClick={() => void refetch()}>
             <RefreshCcw className="mr-2 h-4 w-4" />
             Check again
           </Button>
-          <Button type="button" variant="outline" onClick={() => void refreshBootstrap()}>
-            Refresh bootstrap
-          </Button>
-          {status === 'completed' &&
-          bootstrap?.active_store &&
-          isBootstrapStoreReady(bootstrap.active_store) ? (
-            <Button
-              type="button"
-              onClick={() =>
-                router.push(ROUTES.store(String(bootstrap.active_store!.id)).dashboard())
-              }
-            >
-              Open dashboard
-            </Button>
-          ) : null}
         </div>
 
-        {trackedStoreId ? (
-          <p className="text-center text-xs text-muted-foreground">
-            Tracking store #{trackedStoreId}
-            {isFetching ? ' · Checking...' : null}
-            {!isDocumentVisible ? ' · Paused in background' : null}
-          </p>
+        {/* Recovery help — shown only when something needs attention */}
+        {(softTimedOut || hardTimedOut || status === 'failed' || isError) ? (
+          <div className="rounded-xl border border-border bg-muted/40 p-4 text-left">
+            <h3 className="font-semibold text-foreground">Need help?</h3>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <li>Click &ldquo;Check again&rdquo; to see if setup has finished.</li>
+              <li>Your store creation is being processed — no need to resubmit it.</li>
+              <li>Once setup finishes, your dashboard will open automatically.</li>
+              <li>If things don&rsquo;t progress after a few attempts, reach out to our support team.</li>
+            </ul>
+          </div>
         ) : null}
+
       </div>
     </div>
   );

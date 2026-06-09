@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useUpdateBrand } from '@/hooks/brands/useUpdateBrand';
+import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 import {
   BrandFormSchema,
   type BrandFormValues,
@@ -49,6 +50,8 @@ export default function EditBrandForm({ storeId, brandId, brand }: Props) {
     },
   });
 
+  const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
+
   const isActive = watch('is_active');
   const logoUrl  = watch('logo_url');
 
@@ -65,6 +68,7 @@ export default function EditBrandForm({ storeId, brandId, brand }: Props) {
   }, [brand.id]);
 
   const onSubmit = async (values: BrandFormValues) => {
+    bypassNextNavigation();
     await update.mutateAsync({
       name:        values.name,
       slug:        values.slug,

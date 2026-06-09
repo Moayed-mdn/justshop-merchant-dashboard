@@ -6,16 +6,12 @@
  * Manages filters, debounce, and pagination state via URL.
  */
 
-import { Link } from '@/lib/navigation';
 import { useQueryState, parseAsString, parseAsInteger, parseAsStringLiteral } from 'nuqs';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { useProducts } from '@/hooks/products/useProducts';
 import type { ProductFilters as ProductFiltersType } from '@/schemas/products';
 import { useTranslations } from 'next-intl';
 import { logger } from '@/lib/logger';
-import { ROUTES } from '@/config/routes';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import ProductsTable from './ProductsTable';
 import ProductFiltersComponent from './ProductFilters';
 
@@ -74,19 +70,6 @@ export default function ProductsContent({ storeId, initialFilters }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('title')}</h1>
-          <p className="text-muted-foreground">{t('subtitle')}</p>
-        </div>
-        <Link href={ROUTES.merchant.products.new()}>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            {t('new')}
-          </Button>
-        </Link>
-      </div>
-
       <ProductFiltersComponent
         search={search}
         onSearchChange={handleSearchChange}

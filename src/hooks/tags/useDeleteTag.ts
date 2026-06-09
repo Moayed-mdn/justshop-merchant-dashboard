@@ -22,7 +22,7 @@ export function useDeleteTag(storeId: string, tagId: string) {
       queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeId).lists() });
       queryClient.removeQueries({ queryKey: queryKeys.tags(storeId).detail(tagId) });
       toast.success(t('form.deleteSuccess'));
-      router.push(ROUTES.store(storeId).tags.list());
+      router.push(ROUTES.merchant.tags.list());
     },
 
     onError: (error) => {

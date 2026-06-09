@@ -12,6 +12,7 @@ import type {
 } from '@/types/auth';
 import type { Store, UserStore } from '@/types/store';
 import { login as loginRequest, register as registerRequest, logout as logoutRequest, bootstrap as bootstrapRequest, switchStore as switchStoreRequest } from '@/lib/api/auth';
+import { logUXEvent } from '@/lib/ux-events';
 import { resolveProvisioningStoreId } from '@/lib/auth/bootstrap-routing';
 import {
   canViewBrandsFromPermissions,
@@ -489,15 +490,24 @@ export const useBootstrapStore = create<BootstrapStore>((set, get) => ({
   },
 
   switchStore: async (storeId) => {
-    const response = await switchStoreRequest(storeId);
-    const payload = response.data;
+    logUXEvent('switch:start', { storeId });
+    try {
+      const response = await switchStoreRequest(storeId);
+      const payload = response.data;
 
-    if (isBootstrapDataShape(payload)) {
-      get().setBootstrap(payload);
+      if (isBootstrapDataShape(payload)) {
+        get().setBootstrap(payload);
+        logUXEvent('switch:complete', { storeId });
+        return get().bootstrap;
+      }
+
+      await get().fetchBootstrap();
+      logUXEvent('switch:complete', { storeId });
       return get().bootstrap;
+    } catch (error) {
+      logUXEvent('switch:failed', { storeId });
+      throw error;
     }
-
-    return get().fetchBootstrap();
   },
 
   clearSession: () =>

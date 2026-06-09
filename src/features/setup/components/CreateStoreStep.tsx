@@ -158,24 +158,42 @@ export function CreateStoreStep({ onSuccess }: Props) {
       if (apiError.status === 403) {
         await queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() });
         setFormError(
-          apiError.message || 'Store creation is currently blocked. Refresh the setup state to continue.'
+          apiError.message || 'Store creation is temporarily unavailable. Please try again in a moment.'
         );
-        toast.error(apiError.message || 'Store creation is currently blocked.');
+        toast.error(apiError.message || 'Store creation is temporarily unavailable.');
         onSuccess();
         return;
       }
 
       setFormError(
         apiError.message ||
-          'Failed to create store. If the request may have reached the backend, refresh setup before submitting again.'
+          'We weren&apos;t able to create your store right now. Please check the details and try again.'
       );
-      toast.error(apiError.message || 'Failed to create store.');
+      toast.error(apiError.message || 'Unable to create store. Please try again.');
     }
   });
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
       <div className="mx-auto w-full max-w-lg space-y-8">
+        {/* Step indicator */}
+        <div className="flex items-center justify-center gap-3">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </span>
+          <span className="h-px w-6 bg-primary" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+            <span>2</span>
+            <span className="hidden sm:inline">Create store</span>
+          </span>
+          <span className="h-px w-6 bg-border" />
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+            3
+          </span>
+        </div>
+
         {/* Header */}
         <div className="space-y-2 text-center">
           <div className="flex justify-center">
@@ -200,7 +218,7 @@ export function CreateStoreStep({ onSuccess }: Props) {
 
             {draftRestored ? (
               <div className="rounded-lg border border-border/70 bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
-                Restored your last draft. Review the details before continuing.
+                We found your details from before. Feel free to review them before continuing.
               </div>
             ) : null}
 
@@ -277,7 +295,7 @@ export function CreateStoreStep({ onSuccess }: Props) {
             </Button>
 
             <p className="text-xs text-muted-foreground">
-              Do not submit again after creation starts. If something interrupts the flow, refresh to restore your setup state.
+              Your store creation will continue in the background. If something interrupts the flow, simply refresh the page to continue.
             </p>
           </form>
         </div>

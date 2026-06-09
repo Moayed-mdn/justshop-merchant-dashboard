@@ -4,6 +4,7 @@ import { Store } from '@/types/store';
 import { StoreListItem } from './StoreListItem';
 import { WorkspaceEmptyState } from '../components/WorkspaceEmptyState';
 import { ROUTES } from '@/config/routes';
+import { Building2 } from 'lucide-react';
 
 interface StoreListProps {
   stores: Store[];
@@ -17,8 +18,9 @@ export function StoreList({ stores }: StoreListProps) {
   if (stores.length === 0) {
     return (
       <WorkspaceEmptyState
+        icon={Building2}
         title="No stores found"
-        message="You haven't created any stores yet. Create your first store to get started."
+        message="You haven't created any stores yet. Create your first store to start selling."
         actionLabel="Create first store"
         actionHref={ROUTES.setup()}
       />

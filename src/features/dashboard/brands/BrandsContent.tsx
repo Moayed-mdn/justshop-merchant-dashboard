@@ -104,7 +104,7 @@ export default function BrandsContent({ storeId, initialFilters }: Props) {
           <p className="text-muted-foreground">{t('subtitle')}</p>
         </div>
         <Link
-          href={ROUTES.store(storeId).brands.new()}
+          href={ROUTES.merchant.brands.new()}
           className="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-primary text-primary-foreground h-8 gap-1.5 px-2.5 text-sm font-medium transition-all hover:opacity-90"
         >
           <PlusCircle className="h-4 w-4" />

@@ -99,7 +99,7 @@ export default function TagsTable({
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
                     <Link
-                      href={ROUTES.store(storeId).tags.edit(String(tag.id))}
+                      href={ROUTES.merchant.tags.edit(String(tag.id))}
                       className="inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius-md),12px)] border border-transparent bg-clip-padding h-7 gap-1 px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
                     >
                       {t('table.edit')}

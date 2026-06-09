@@ -15,6 +15,7 @@ import type { HeroBanner, UpdateHeroBannerData, HeroVisualType, HeroLinkTarget }
 import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
+import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -66,6 +67,7 @@ export default function EditHeroBannerForm({ storeId, bannerId, banner }: Props)
   const t = useTranslations('heroBanners');
   const router = useRouter();
   const queryClient = useQueryClient();
+
   const [activeLocale, setActiveLocale] = useState<'en' | 'ar'>('en');
 
   // Extract translations from banner data
@@ -108,6 +110,8 @@ export default function EditHeroBannerForm({ storeId, bannerId, banner }: Props)
       cta_text_ar: arTranslation?.cta_text || 'تسوق الآن',
     },
   });
+
+  const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
 
   const visualType = watch('visual_type');
   const isActive = watch('is_active');
@@ -156,6 +160,7 @@ export default function EditHeroBannerForm({ storeId, bannerId, banner }: Props)
   });
 
   const onSubmit = async (values: FormValues) => {
+    bypassNextNavigation();
     const data: UpdateHeroBannerData = {
       cat_url: values.cat_url,
       position: values.position,

@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useUpdateCategory } from '@/hooks/categories/useUpdateCategory';
 import { useCategories } from '@/hooks/categories/useCategories';
+import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 import { CategoryFormInput, CategoryFormSchema, type CategoryFormValues } from '@/schemas/categories';
 import type { CategoryDetailView } from '@/types/category';
 import { Button } from '@/components/ui/button';
@@ -81,6 +82,8 @@ export default function EditCategoryForm({ storeId, categoryId, category }: Prop
     formState: { errors, isSubmitting, isDirty },
   } = form;
 
+  const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
+
   const isActive = watch('is_active');
 
   // Sync form if category data changes
@@ -96,6 +99,7 @@ export default function EditCategoryForm({ storeId, categoryId, category }: Prop
   }, [category.id]);
 
   const onSubmit = async (values: CategoryFormValues) => {
+    bypassNextNavigation();
     await update.mutateAsync({
       slug:         values.slug,
       parent_id:    values.parent_id,

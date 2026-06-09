@@ -97,7 +97,7 @@ export default function OrdersContent({ storeId, initialFilters }: Props) {
   if (error) {
     return (
       <div className="rounded-md border p-8 text-center">
-        <p className="text-destructive">{t('table.empty')}</p>
+        <p className="text-destructive">Failed to load orders. Please refresh the page.</p>
       </div>
     );
   }

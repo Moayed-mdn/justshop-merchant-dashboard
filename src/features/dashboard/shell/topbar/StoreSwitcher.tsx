@@ -80,7 +80,7 @@ export function StoreSwitcher() {
         </SelectContent>
       </Select>
       {switchStoreMutation.isPending ? (
-        <Badge variant="outline">Syncing</Badge>
+        <Badge variant="outline" className="text-[10px] uppercase">Switching</Badge>
       ) : null}
     </div>
   );

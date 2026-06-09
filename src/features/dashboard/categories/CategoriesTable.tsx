@@ -28,6 +28,8 @@ import {
 } from '@/components/ui/select';
 import { CategoryStatusBadge } from './CategoryStatusBadge';
 import { makeLabelByValue, renderSelectValue, type SelectOption } from '@/lib/selectOptions';
+import { DataTableEmptyState } from '@/features/merchant/components/DataTableEmptyState';
+import { FolderTree } from 'lucide-react';
 
 interface Props {
   categories:      CategoryListItemView[];
@@ -75,9 +77,13 @@ export default function CategoriesTable({
 
   if (categories.length === 0) {
     return (
-      <div className="rounded-lg border bg-card p-8 text-center">
-        <p className="text-muted-foreground">{t('table.empty')}</p>
-      </div>
+      <DataTableEmptyState
+        icon={FolderTree}
+        title={t('table.empty')}
+        explanation="Categories help organise your products. Create your first category to get started."
+        actionLabel={t('new')}
+        actionHref={ROUTES.merchant.categories.new()}
+      />
     );
   }
 
@@ -136,7 +142,7 @@ export default function CategoriesTable({
                     {!category.deletedAt ? (
                       <>
                         <Link
-                          href={ROUTES.store(storeId).categories.edit(String(category.id))}
+                          href={ROUTES.merchant.categories.edit(String(category.id))}
                           className="inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius-md),12px)] border border-transparent bg-clip-padding h-7 gap-1 px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
                         >
                           {t('table.edit')}

@@ -28,7 +28,7 @@ export function useCreateCategory(storeId: string) {
         queryKey: queryKeys.categories(storeId).lists(),
       });
       toast.success(t('form.createSuccess'));
-      router.push(ROUTES.store(storeId).categories.list());
+      router.push(ROUTES.merchant.categories.list());
     },
 
     onError: (error) => {

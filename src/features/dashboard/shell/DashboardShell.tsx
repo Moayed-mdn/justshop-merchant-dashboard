@@ -59,7 +59,7 @@ export function DashboardShell({ children, nav, switcher }: DashboardShellProps)
         <div className="pointer-events-none absolute inset-0 z-40 flex items-start justify-center bg-background/40 pt-20 backdrop-blur-[1px]">
           <div className="flex items-center gap-3 rounded-lg border bg-background px-4 py-3 text-sm shadow-lg">
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
-            <span>Switching active store and refreshing permissions...</span>
+            <span>Switching store...</span>
           </div>
         </div>
       ) : null}

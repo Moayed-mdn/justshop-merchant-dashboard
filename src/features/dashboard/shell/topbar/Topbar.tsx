@@ -13,7 +13,7 @@ import { StoreSwitcher } from './StoreSwitcher';
 import { ThemeToggle } from './ThemeToggle';
 import { LocaleToggle } from './LocaleToggle';
 import { Button } from '@/components/ui/button';
-import { Menu, PanelLeftOpen, PanelLeftClose, Search, Bell } from 'lucide-react';
+import { Menu, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Separator } from '@/components/ui/separator';
 import { FEATURES } from '@/config/features';
@@ -62,27 +62,14 @@ export function Topbar({ switcher }: TopbarProps) {
         )}
       </Button>
 
-      {/* Search placeholder */}
-      <div className="hidden md:flex flex-1 max-w-md relative">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <div className="h-9 w-full rounded-md border border-input bg-muted/50 px-9 py-2 text-sm text-muted-foreground cursor-not-allowed">
-          Search products, orders...
-        </div>
-      </div>
-
-      {/* Spacer for mobile */}
-      <div className="flex-1 md:hidden" />
+      {/* Spacer */}
+      <div className="flex-1" />
 
       {/* Right side controls */}
       <div className="flex items-center gap-2">
         {switcher || <StoreSwitcher />}
 
         <Separator orientation="vertical" className="mx-1 h-6 hidden md:block" />
-
-        <Button variant="ghost" size="icon" className="relative hidden md:flex" disabled>
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-primary" />
-        </Button>
 
         {FEATURES.enableDarkMode && <ThemeToggle />}
         {FEATURES.enableRTL && <LocaleToggle />}

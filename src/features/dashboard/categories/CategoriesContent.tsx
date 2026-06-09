@@ -10,9 +10,7 @@ import { useQueryState, parseAsInteger, parseAsString } from 'nuqs';
 import { parseAsStringLiteral } from 'nuqs';
 import { useCategories } from '@/hooks/categories/useCategories';
 import { useTranslations } from 'next-intl';
-import { PlusCircle } from 'lucide-react';
-import { Link } from '@/lib/navigation';
-import { ROUTES } from '@/config/routes';
+
 import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -97,21 +95,6 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('title')}</h1>
-          <p className="text-muted-foreground">{t('subtitle')}</p>
-        </div>
-        <Link
-          href={ROUTES.merchant.categories.new()}
-          className="inline-flex h-10 items-center justify-center gap-1.5 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-        >
-          <PlusCircle className="h-4 w-4" />
-          {t('new')}
-        </Link>
-      </div>
-
       {/* Filters */}
       <CategoryFilters
         isActive={isActive}

@@ -53,7 +53,7 @@ export async function RecentOrdersTable({ orders, storeId }: RecentOrdersTablePr
                 <TableRow key={order.id}>
                   <TableCell>
                     <Link
-                      href={ROUTES.store(storeId).orders.detail(String(order.id))}
+                      href={ROUTES.merchant.orders.detail(String(order.id))}
                       className="font-medium hover:underline text-primary"
                     >
                       {order.orderNumber}

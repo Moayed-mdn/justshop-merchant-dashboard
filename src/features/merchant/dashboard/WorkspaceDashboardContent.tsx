@@ -50,11 +50,6 @@ export function WorkspaceDashboardContent({ storeId }: WorkspaceDashboardContent
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{t('title')}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
-      </div>
-
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard 
@@ -110,7 +105,7 @@ export function WorkspaceDashboardContent({ storeId }: WorkspaceDashboardContent
                     <TableRow key={order.id}>
                       <TableCell>
                         <Link
-                          href={ROUTES.store(storeId).orders.detail(String(order.id))}
+                          href={ROUTES.merchant.orders.detail(String(order.id))}
                           className="font-medium text-primary hover:underline"
                         >
                           {order.orderNumber}

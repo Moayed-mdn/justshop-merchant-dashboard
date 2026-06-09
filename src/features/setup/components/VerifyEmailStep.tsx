@@ -63,6 +63,22 @@ export function VerifyEmailStep() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
       <div className="w-full max-w-md space-y-6 rounded-xl border bg-card p-8 text-center shadow-sm">
+        {/* Step indicator */}
+        <div className="flex items-center justify-center gap-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+            <span>1</span>
+            <span className="hidden sm:inline">Verify email</span>
+          </span>
+          <span className="h-px w-6 bg-border" />
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+            2
+          </span>
+          <span className="h-px w-6 bg-border" />
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+            3
+          </span>
+        </div>
+
         <div className="flex justify-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             <MailCheck className="h-8 w-8 text-primary" />

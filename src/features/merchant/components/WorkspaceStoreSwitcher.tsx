@@ -5,17 +5,29 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
   SelectSeparator,
 } from '@/components/ui/select';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useSwitchStore } from '@/hooks/auth/useSwitchStore';
-import { Loader2, Plus } from 'lucide-react';
+import { CheckCircle2, Loader2, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ROUTES } from '@/config/routes';
 import { useRouter } from '@/lib/navigation';
 import { needsProvisioningFlow } from '@/lib/auth/bootstrap-routing';
 import { cn } from '@/lib/utils';
+
+/**
+ * Maps backend store-status values to human-readable labels and explanations.
+ */
+const STORE_STATUS_LABELS: Record<string, { label: string; description: string }> = {
+  pending_setup: { label: 'Pending setup', description: 'Setup has not started yet.' },
+  provisioning: { label: 'Setting up', description: 'Store is being set up and will be available soon.' },
+  active: { label: 'Active', description: 'Store is fully operational.' },
+  disabled: { label: 'Disabled', description: 'This store has been disabled.' },
+  suspended: { label: 'Suspended', description: 'Store access has been temporarily suspended.' },
+  archived: { label: 'Archived', description: 'This store has been archived.' },
+  deleted_pending: { label: 'Deleting', description: 'Store is pending deletion.' },
+};
 
 /**
  * Workspace Store Switcher.
@@ -79,6 +91,8 @@ export function WorkspaceStoreSwitcher() {
         <SelectContent>
           {stores.map((store) => {
             const isStoreActive = store.status === 'active' && store.is_active;
+            const isCurrentStore = activeStore?.id === store.id;
+            const statusInfo = STORE_STATUS_LABELS[store.status];
 
             return (
               <SelectItem
@@ -86,14 +100,20 @@ export function WorkspaceStoreSwitcher() {
                 value={String(store.id)}
                 disabled={!isStoreActive}
                 className={cn(!isStoreActive && 'opacity-50')}
+                title={!isStoreActive && statusInfo ? statusInfo.description : undefined}
               >
                 <div className="flex w-full items-center justify-between gap-4">
-                  <span>{store.name}</span>
-                  {!isStoreActive && (
-                    <Badge variant="outline" className="ml-auto text-[10px] uppercase">
-                      {store.status.replace('_', ' ')}
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    {isCurrentStore ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                    ) : null}
+                    <span className="truncate">{store.name}</span>
+                  </div>
+                  {!isStoreActive && statusInfo ? (
+                    <Badge variant="outline" className="ml-auto shrink-0 text-[10px] uppercase">
+                      {statusInfo.label}
                     </Badge>
-                  )}
+                  ) : null}
                 </div>
               </SelectItem>
             );
@@ -111,10 +131,10 @@ export function WorkspaceStoreSwitcher() {
       </Select>
 
       {switchStoreMutation.isPending && (
-        <Badge variant="outline" className="animate-pulse">Syncing</Badge>
+        <Badge variant="outline" className="animate-pulse text-[10px] uppercase">Switching</Badge>
       )}
       {isProvisioning && (
-        <Badge variant="outline" className="animate-pulse">Provisioning</Badge>
+        <Badge variant="outline" className="animate-pulse text-[10px] uppercase">Setting up</Badge>
       )}
     </div>
   );

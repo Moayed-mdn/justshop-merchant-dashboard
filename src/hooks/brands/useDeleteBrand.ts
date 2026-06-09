@@ -30,7 +30,7 @@ export function useDeleteBrand(storeId: string, brandId: string) {
         queryKey: queryKeys.brands(storeId).detail(brandId),
       });
       toast.success(t('form.deleteSuccess'));
-      router.push(ROUTES.store(storeId).brands.list());
+      router.push(ROUTES.merchant.brands.list());
     },
 
     onError: (error) => {

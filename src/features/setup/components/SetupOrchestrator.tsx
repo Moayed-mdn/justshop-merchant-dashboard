@@ -10,6 +10,7 @@ import { ROUTES } from '@/config/routes';
 import { VerifyEmailStep } from './VerifyEmailStep';
 import { CreateStoreStep } from './CreateStoreStep';
 import { ProvisioningStep } from './ProvisioningStep';
+import { SetupCompleteStep } from './SetupCompleteStep';
 
 /**
  * SetupOrchestrator
@@ -41,9 +42,12 @@ export function SetupOrchestrator() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
         <div className="w-full max-w-md rounded-xl border bg-card p-8 text-center shadow-sm">
-          <h1 className="text-2xl font-bold">Restoring your setup</h1>
+          <div className="flex justify-center">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          </div>
+          <h1 className="mt-4 text-2xl font-bold">Let&apos;s get your store ready</h1>
           <p className="mt-3 text-muted-foreground">
-            Recovering your merchant setup state from the server.
+            We&apos;re picking up where you left off.
           </p>
           <div className="mt-6 flex items-center justify-center gap-3">
             <Button
@@ -90,18 +94,8 @@ export function SetupOrchestrator() {
   }
 
   // Fallback: bootstrap resolved and onboarding complete.
-  // BootstrapProvider will handle the redirect to merchant dashboard.
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
-      <div className="w-full max-w-md rounded-xl border bg-card p-8 text-center shadow-sm">
-        <div className="flex justify-center mb-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        </div>
-        <h1 className="text-2xl font-bold">Store is ready</h1>
-        <p className="mt-3 text-muted-foreground">
-          Redirecting you to your dashboard...
-        </p>
-      </div>
-    </div>
-  );
+  // Show the completion handoff with first-action guidance.
+  // BootstrapProvider will redirect to merchant routes as needed,
+  // but this gives the merchant a moment to orient and choose their next step.
+  return <SetupCompleteStep />;
 }

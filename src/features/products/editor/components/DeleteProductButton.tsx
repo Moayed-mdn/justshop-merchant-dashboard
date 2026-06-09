@@ -41,7 +41,7 @@ export default function DeleteProductButton({
     onSuccess: () => {
       toast.success(t('form.deleteSuccess'));
       setOpen(false);
-      router.push(ROUTES.store(storeId).products.list());
+      router.push(ROUTES.merchant.products.list());
     },
     onError: () => {
       toast.error(t('form.deleteError'));

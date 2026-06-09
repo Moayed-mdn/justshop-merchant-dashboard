@@ -22,7 +22,7 @@ export function useCreateTag(storeId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeId).lists() });
       toast.success(t('form.createSuccess'));
-      router.push(ROUTES.store(storeId).tags.list());
+      router.push(ROUTES.merchant.tags.list());
     },
 
     onError: (error) => {

@@ -35,7 +35,7 @@ export async function TopProductsList({ products, storeId }: TopProductsListProp
               <li key={product.id} className="flex items-center justify-between">
                 <div className="flex flex-col gap-0.5">
                   <Link
-                    href={ROUTES.store(storeId).products.edit(String(product.id))}
+                    href={ROUTES.merchant.products.edit(String(product.id))}
                     className="text-sm font-medium hover:underline"
                   >
                     {product.name}

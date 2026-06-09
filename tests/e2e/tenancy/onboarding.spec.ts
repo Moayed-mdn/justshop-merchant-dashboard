@@ -18,7 +18,7 @@ test.beforeEach(async ({ request }) => {
   await resetMockBackend(request);
 });
 
-test('successful first store creation completes onboarding and grants dashboard access', async ({ page }) => {
+test('successful first store creation completes onboarding and shows setup completion handoff', async ({ page }) => {
   await login(page, 'nostore@example.com');
   await page.goto('/en/setup');
 
@@ -27,8 +27,9 @@ test('successful first store creation completes onboarding and grants dashboard 
     slug: 'my-first-store',
   });
 
-  await expect(page).toHaveURL(/\/en\/merchant\/dashboard$/);
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+  await expect(page).toHaveURL(/\/en\/setup$/);
+  await expect(page.getByRole('heading', { name: 'My First Store is ready!' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Add your first product' })).toBeVisible();
 });
 
 test('provisioning failure blocks dashboard access and shows recovery UI', async ({ page }) => {
@@ -43,10 +44,10 @@ test('provisioning failure blocks dashboard access and shows recovery UI', async
 
   await expect(page).toHaveURL(/\/en\/setup$/);
   await expect(page.getByRole('heading', { name: 'Setup needs attention' })).toBeVisible();
-  await expect(page.getByText('Recovery guidance')).toBeVisible();
+  await expect(page.getByText('Need help?')).toBeVisible();
 });
 
-test('failed provisioning recovers after manual retry', async ({ page }) => {
+test('failed provisioning recovers after manual retry and returns to setup completion handoff', async ({ page }) => {
   await setNextCreatedStoreProvisioning(page.context().request, 'failed');
   await login(page, 'nostore@example.com');
   await page.goto('/en/setup');
@@ -69,8 +70,9 @@ test('failed provisioning recovers after manual retry', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Check again' }).click();
 
-  await expect(page).toHaveURL(/\/en\/merchant\/dashboard$/);
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+  await expect(page).toHaveURL(/\/en\/setup$/);
+  await expect(page.getByRole('heading', { name: 'Retry Store is ready!' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Go to dashboard' })).toBeVisible();
 });
 
 test('provisioning state persists across page refresh', async ({ page }) => {

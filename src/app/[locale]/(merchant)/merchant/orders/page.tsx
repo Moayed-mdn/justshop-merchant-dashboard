@@ -2,8 +2,10 @@
 
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
+import { MerchantPageHeader } from '@/features/merchant/components/MerchantPageHeader';
 import OrdersContent from '@/features/dashboard/orders/OrdersContent';
 import { useTranslations } from 'next-intl';
+import { ShoppingCart } from 'lucide-react';
 
 const INITIAL_FILTERS = {
   search: '',
@@ -24,12 +26,14 @@ export default function MerchantOrdersPage() {
   if (!activeStore) {
     return (
       <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold">{t('orders')}</h1>
-        </div>
+        <MerchantPageHeader
+          title={t('orders')}
+          description="View and manage customer orders."
+        />
         <WorkspaceEmptyState 
+          icon={ShoppingCart}
           title="No active store"
-          message="Select a store from the switcher to view its orders."
+          message="Select a store from the switcher to view and fulfil its orders."
         />
       </div>
     );
@@ -37,9 +41,10 @@ export default function MerchantOrdersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{t('orders')}</h1>
-      </div>
+      <MerchantPageHeader
+        title={t('orders')}
+        description="View and manage customer orders."
+      />
       <OrdersContent storeId={String(activeStore.id)} initialFilters={INITIAL_FILTERS} />
     </div>
   );

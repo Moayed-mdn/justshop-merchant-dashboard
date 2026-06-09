@@ -39,6 +39,16 @@ export const ROUTES = {
   stores: {
     new: () => '/setup' as const,
   },
+  /**
+   * CANONICAL MERCHANT WORKSPACE ROUTES.
+   *
+   * IMPORTANT RULE:
+   * Merchant-facing UI MUST link to /merchant/* routes ONLY.
+   * ROUTES.store(storeId) is LEGACY and reserved for compatibility fallback.
+   *
+   * Do NOT add new navigation links using ROUTES.store().
+   * If a merchant page needs a route, add it here under the appropriate section.
+   */
   merchant: {
     dashboard:  () => '/merchant/dashboard' as const,
     orders: {
@@ -360,10 +370,12 @@ export const API_ROUTES = {
 } as const;
 
 /**
- * Context-aware route helper (PREPARATION for storeId removal from URL).
- * In the future, this will use the active store from context/session
- * instead of requiring an explicit storeId.
- * 
+ * Context-aware route helper (LEGACY — compatibility only).
+ *
+ * Returns ROUTES.store(storeId) for use in legacy store-scoped pages.
+ * Do NOT use this for new merchant navigation.
+ * Use ROUTES.merchant.* directly in merchant-facing UI instead.
+ *
  * Usage in hooks/components:
  * const routes = useActiveStoreRoutes(currentStoreId);
  */

@@ -29,6 +29,8 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { makeLabelByValue, renderSelectValue, type SelectOption } from '@/lib/selectOptions';
+import { DataTableEmptyState } from '@/features/merchant/components/DataTableEmptyState';
+import { Package } from 'lucide-react';
 
 interface Props {
   products: ProductListItemView[];
@@ -71,9 +73,13 @@ export default function ProductsTable({
 
   if (products.length === 0) {
     return (
-      <div className="rounded-lg border bg-card p-8 text-center">
-        <p className="text-muted-foreground">{t('table.empty')}</p>
-      </div>
+      <DataTableEmptyState
+        icon={Package}
+        title={t('table.empty')}
+        explanation="Products you add will appear here. Create your first product to start selling."
+        actionLabel={t('new')}
+        actionHref={ROUTES.merchant.products.new()}
+      />
     );
   }
 
@@ -113,7 +119,7 @@ export default function ProductsTable({
                 </TableCell>
                 <TableCell>
                   <Link
-                    href={ROUTES.store(storeId).products.edit(String(product.id))}
+                    href={ROUTES.merchant.products.edit(String(product.id))}
                     className="font-medium hover:underline"
                   >
                     {product.name}
@@ -139,7 +145,7 @@ export default function ProductsTable({
                 </TableCell>
                 <TableCell className="text-right">
                   <Link
-                    href={ROUTES.store(storeId).products.edit(String(product.id))}
+                    href={ROUTES.merchant.products.edit(String(product.id))}
                     className="inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius-md),12px)] border border-transparent bg-clip-padding h-7 gap-1 px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
                   >
                     {t('table.edit')}

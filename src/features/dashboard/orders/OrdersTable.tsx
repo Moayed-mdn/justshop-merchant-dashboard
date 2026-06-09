@@ -13,6 +13,8 @@ import type { PaginationMeta } from '@/types/api';
 import { ROUTES } from '@/config/routes';
 import { OrderStatusBadge } from './OrderStatusBadge';
 import { PaymentStatusBadge } from './PaymentStatusBadge';
+import { DataTableEmptyState } from '@/features/merchant/components/DataTableEmptyState';
+import { ShoppingCart } from 'lucide-react';
 
 interface OrdersTableProps {
   orders: OrderListItemView[];
@@ -43,9 +45,11 @@ export default function OrdersTable({
 
   if (orders.length === 0) {
     return (
-      <div className="rounded-md border p-8 text-center">
-        <p className="text-muted-foreground">{t('table.empty')}</p>
-      </div>
+      <DataTableEmptyState
+        icon={ShoppingCart}
+        title={t('table.empty')}
+        explanation="Orders from customers will appear here once they start purchasing. Share your store link to start getting orders."
+      />
     );
   }
 
@@ -69,7 +73,7 @@ export default function OrdersTable({
               <TableRow key={order.id}>
                 <TableCell>
                   <Link
-                    href={ROUTES.store(storeId).orders.detail(String(order.id))}
+                    href={ROUTES.merchant.orders.detail(String(order.id))}
                     className="font-medium text-primary hover:underline"
                   >
                     #{order.orderNumber}

@@ -27,9 +27,7 @@ function StorePickerContent() {
     }
 
     if (stores.length === 1) {
-      router.replace(
-        ROUTES.store(String(stores[0].id)).dashboard()
-      );
+      router.replace(ROUTES.merchant.dashboard());
       return;
     }
   }, [isLoading, router, stores, user]);
@@ -87,9 +85,7 @@ function StorePickerContent() {
             <button
               key={store.id}
               onClick={() =>
-                router.push(
-                  ROUTES.store(String(store.id)).dashboard()
-                )
+                router.push(ROUTES.merchant.dashboard())
               }
               className="w-full flex items-center justify-between rounded-lg border p-4 hover:bg-accent hover:border-primary transition-colors text-left"
             >
