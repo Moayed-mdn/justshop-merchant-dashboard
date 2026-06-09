@@ -8,7 +8,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAssets } from '@/hooks/assets/useAssets';
-import { useStoreStore } from '@/stores/storeStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { AssetGrid } from './AssetGrid';
 import { AssetUploader } from './AssetUploader';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,8 @@ import type { AssetType, AssetFilters } from '@/types/asset';
 
 export function AssetsContent() {
   const t = useTranslations();
-  const { activeStoreId } = useStoreStore();
+  const activeStore = useBootstrapStore((state) => state.activeStore);
+  const activeStoreId = activeStore ? String(activeStore.id) : null;
   const [showUploader, setShowUploader] = useState(false);
   const [filters, setFilters] = useState<AssetFilters>({
     page: 1,

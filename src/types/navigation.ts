@@ -7,16 +7,25 @@
 
 // ── Raw API types ─────────────────────────────────────────────────────────
 
+export interface LocalizedNavigationLabel {
+  en: string;
+  ar: string;
+}
+
 /** Navigation menu item - raw API shape */
 export interface NavigationMenuItem {
   id: number;
-  navigation_menu_id: number;
+  menu_id: number;
   parent_id: number | null;
-  label: Record<string, string>; // {"en": "Home", "ar": "الرئيسية"}
+  label: string;
+  type: 'page' | 'category' | 'product' | 'collection' | 'external' | 'custom' | 'link' | 'group';
   url: string;
+  resource_id: number | null;
+  resource_type: string | null;
   target: '_self' | '_blank';
+  settings: Record<string, unknown> | null;
   position: number;
-  is_enabled: boolean;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
   children?: NavigationMenuItem[]; // Nested children
@@ -53,11 +62,15 @@ export interface NavigationMenuItemView {
   id: number;
   menuId: number;
   parentId: number | null;
-  label: Record<string, string>;
+  label: LocalizedNavigationLabel;
+  type: NavigationMenuItem['type'];
   url: string;
+  resourceId: number | null;
+  resourceType: string | null;
   target: '_self' | '_blank';
+  settings: Record<string, unknown> | null;
   position: number;
-  isEnabled: boolean;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
   children?: NavigationMenuItemView[];
@@ -106,21 +119,29 @@ export interface UpdateNavigationMenuPayload {
 /** Payload sent to POST /navigation/:menuId/items */
 export interface CreateMenuItemPayload {
   parent_id: number | null;
-  label: Record<string, string>; // {"en": "Home", "ar": "الرئيسية"}
+  label: string;
+  type: NavigationMenuItem['type'];
   url: string;
+  resource_id?: number | null;
+  resource_type?: string | null;
   target: '_self' | '_blank';
+  settings?: Record<string, unknown> | null;
   position: number;
-  is_enabled: boolean;
+  is_active: boolean;
 }
 
 /** Payload sent to PATCH /navigation/:menuId/items/:itemId */
 export interface UpdateMenuItemPayload {
   parent_id: number | null;
-  label: Record<string, string>;
+  label: string;
+  type: NavigationMenuItem['type'];
   url: string;
+  resource_id?: number | null;
+  resource_type?: string | null;
   target: '_self' | '_blank';
+  settings?: Record<string, unknown> | null;
   position: number;
-  is_enabled: boolean;
+  is_active: boolean;
 }
 
 /** Payload sent to POST /navigation/:menuId/items/reorder */

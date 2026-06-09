@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useStoreStore } from '@/stores/storeStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useCreateTheme } from '@/hooks/themes/useThemeMutations';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,9 +28,11 @@ interface CreateThemeDialogProps {
 
 export function CreateThemeDialog({ onClose }: CreateThemeDialogProps) {
   const t = useTranslations();
-  const { activeStoreId } = useStoreStore();
+  const activeStore = useBootstrapStore((state) => state.activeStore);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+
+  const activeStoreId = activeStore ? String(activeStore.id) : null;
 
   const createMutation = useCreateTheme(activeStoreId!);
 

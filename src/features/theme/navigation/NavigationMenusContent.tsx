@@ -9,8 +9,6 @@ import { useQueryState, parseAsInteger } from 'nuqs';
 import { useNavigationMenus } from '@/hooks/navigation/useNavigationMenus';
 import { useDeleteNavigationMenu } from '@/hooks/navigation/useNavigationMenuMutations';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/lib/navigation';
-import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
 import { PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -88,7 +86,6 @@ export default function NavigationMenusContent({ storeId, initialFilters }: Prop
         perPage={perPage}
         onPerPageChange={setPerPage}
         isLoading={isLoading}
-        storeId={storeId}
         onDelete={handleDelete}
       />
 

@@ -7,7 +7,7 @@
 
 import { useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { useStoreStore } from '@/stores/storeStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useUploadAsset } from '@/hooks/assets/useAssetMutations';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,7 +43,8 @@ export function AssetUploader({
   defaultType = 'other',
 }: AssetUploaderProps) {
   const t = useTranslations();
-  const { activeStoreId } = useStoreStore();
+  const activeStore = useBootstrapStore((state) => state.activeStore);
+  const activeStoreId = activeStore ? String(activeStore.id) : null;
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [assetType, setAssetType] = useState<AssetType>(defaultType);

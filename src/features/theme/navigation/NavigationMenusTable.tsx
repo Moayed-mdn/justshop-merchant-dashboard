@@ -9,7 +9,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
 import { Edit, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -19,18 +19,18 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import type { NavigationMenuListItemView } from '@/types/navigation';
-import type { Pagination } from '@/types/api';
+import type { PaginationMeta } from '@/types/api';
 
 interface Props {
   menus: NavigationMenuListItemView[];
-  pagination?: Pagination;
+  pagination?: PaginationMeta;
   page: number;
   onPageChange: (page: number) => void;
   perPage: number;
   onPerPageChange: (perPage: number) => void;
   isLoading: boolean;
-  storeId: string;
   onDelete: (menuId: string) => void;
 }
 
@@ -40,7 +40,6 @@ export default function NavigationMenusTable({
   page,
   onPageChange,
   isLoading,
-  storeId,
   onDelete,
 }: Props) {
   const t = useTranslations('theme.navigation');
@@ -89,16 +88,13 @@ export default function NavigationMenusTable({
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
+                    <Link
+                      href={ROUTES.merchant.theme.navigation.edit(String(menu.id))}
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
                     >
-                      <Link href={ROUTES.merchant.theme.navigation.edit(String(menu.id))}>
-                        <Edit className="h-4 w-4" />
-                        {t('table.edit')}
-                      </Link>
-                    </Button>
+                      <Edit className="h-4 w-4" />
+                      {t('table.edit')}
+                    </Link>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -116,7 +112,7 @@ export default function NavigationMenusTable({
       </div>
 
       {/* Pagination */}
-      {pagination && pagination.total > 1 && (
+      {pagination && pagination.total_pages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             {t('pagination.showing', {
@@ -138,7 +134,7 @@ export default function NavigationMenusTable({
               variant="outline"
               size="sm"
               onClick={() => onPageChange(page + 1)}
-              disabled={page === pagination.last_page}
+              disabled={page === pagination.total_pages}
             >
               {t('pagination.next')}
             </Button>

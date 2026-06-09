@@ -67,3 +67,6 @@ export const selectTenantContext = (state: StoreStore) => ({
 });
 export const selectMemberships = (state: StoreStore) => state.memberships;
 export const selectPermissions = (state: StoreStore) => state.permissions;
+
+// Alias for activeStoreId (same as selectCurrentStoreId)
+export const selectActiveStoreId = selectCurrentStoreId;

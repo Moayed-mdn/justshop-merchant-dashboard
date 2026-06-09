@@ -26,11 +26,32 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { serializeNavigationLabel } from '@/lib/mappers/navigation';
+import { useValidateNavigationUrl } from '@/hooks/navigation/useNavigationResources';
+import ResourcePicker from './ResourcePicker';
 import type {
+  LocalizedNavigationLabel,
   NavigationMenuItemView,
   CreateMenuItemPayload,
-  UpdateMenuItemPayload,
+  UpdateMenuItemPayload
 } from '@/types/navigation';
+
+const DEFAULT_MENU_ITEM_TYPE: CreateMenuItemPayload['type'] = 'link';
+
+interface MenuItemFormValues {
+  parent_id: number | null;
+  label: LocalizedNavigationLabel;
+  type: CreateMenuItemPayload['type'];
+  url: string;
+  resource_id?: number | null;
+  resource_type?: string | null;
+  target: '_self' | '_blank';
+  settings?: Record<string, unknown> | null;
+  position: number;
+  is_active: boolean;
+}
+
+const EMPTY_LABEL: LocalizedNavigationLabel = { en: '', ar: '' };
 
 interface Props {
   storeId: string;
@@ -57,14 +78,26 @@ export default function MenuItemDialog({
     ? useUpdateMenuItem(storeId, menuId, String(item.id))
     : null;
 
-  const [formData, setFormData] = useState<CreateMenuItemPayload | UpdateMenuItemPayload>({
+  const [formData, setFormData] = useState<MenuItemFormValues>({
     parent_id: parentId || null,
-    label: { en: '', ar: '' },
+    label: EMPTY_LABEL,
+    type: DEFAULT_MENU_ITEM_TYPE,
     url: '',
     target: '_self',
     position: 0,
-    is_enabled: true,
+    is_active: true,
   });
+
+  // Validate URL for custom links (debounced)
+  const shouldValidateUrl = (formData.type === 'link' || formData.type === 'custom') && 
+                            formData.url.length > 1 && 
+                            !formData.url.startsWith('http');
+  
+  const { data: urlValidation } = useValidateNavigationUrl(
+    storeId,
+    formData.url,
+    shouldValidateUrl
+  );
 
   // Initialize form data when item changes
   useEffect(() => {
@@ -72,28 +105,48 @@ export default function MenuItemDialog({
       setFormData({
         parent_id: item.parentId,
         label: item.label,
+        type: item.type,
         url: item.url,
         target: item.target,
         position: item.position,
-        is_enabled: item.isEnabled,
+        resource_id: item.resourceId,
+        resource_type: item.resourceType,
+        settings: item.settings,
+        is_active: item.isActive,
       });
     } else {
       setFormData({
         parent_id: parentId || null,
-        label: { en: '', ar: '' },
+        label: EMPTY_LABEL,
+        type: DEFAULT_MENU_ITEM_TYPE,
         url: '',
         target: '_self',
         position: 0,
-        is_enabled: true,
+        is_active: true,
       });
     }
   }, [item, parentId, open]);
 
+  const buildPayload = (): CreateMenuItemPayload | UpdateMenuItemPayload => ({
+    parent_id: formData.parent_id,
+    label: serializeNavigationLabel(formData.label),
+    type: formData.type,
+    url: formData.url,
+    resource_id: formData.resource_id,
+    resource_type: formData.resource_type,
+    target: formData.target,
+    settings: formData.settings,
+    position: formData.position,
+    is_active: formData.is_active,
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const payload = buildPayload();
+
     if (isEditMode && updateMutation) {
-      updateMutation.mutate(formData as UpdateMenuItemPayload, {
+      updateMutation.mutate(payload as UpdateMenuItemPayload, {
         onSuccess: () => {
           toast.success(t('updateSuccess'));
           onOpenChange(false);
@@ -104,7 +157,7 @@ export default function MenuItemDialog({
         },
       });
     } else {
-      createMutation.mutate(formData as CreateMenuItemPayload, {
+      createMutation.mutate(payload as CreateMenuItemPayload, {
         onSuccess: () => {
           toast.success(t('createSuccess'));
           onOpenChange(false);
@@ -121,7 +174,7 @@ export default function MenuItemDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-lg p-3">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
@@ -132,18 +185,17 @@ export default function MenuItemDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            {/* Multilingual Labels */}
-            <div className="space-y-3">
+          <div className="py-1">
+            <div className="space-y-2">
               <Label>{t('form.label')}</Label>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="label-en" className="text-sm text-muted-foreground">
                   {t('form.labelEn')}
                 </Label>
                 <Input
                   id="label-en"
-                  value={formData.label.en || ''}
+                  value={formData.label.en}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -161,7 +213,7 @@ export default function MenuItemDialog({
                 </Label>
                 <Input
                   id="label-ar"
-                  value={formData.label.ar || ''}
+                  value={formData.label.ar}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -177,27 +229,167 @@ export default function MenuItemDialog({
 
             <Separator />
 
-            {/* URL */}
+            {/* Type Selection */}
             <div className="space-y-2">
-              <Label htmlFor="url">{t('form.url')}</Label>
-              <Input
-                id="url"
-                value={formData.url}
-                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                placeholder={t('form.urlPlaceholder')}
-                required
-              />
-              <p className="text-xs text-muted-foreground">{t('form.urlHelp')}</p>
+              <Label htmlFor="type">{t('form.type')}</Label>
+              <Select
+                value={formData.type}
+                onValueChange={(value) => {
+                  if (!value) return;
+                  setFormData({ 
+                    ...formData, 
+                    type: value as CreateMenuItemPayload['type'],
+                    // Clear URL and resource when switching types
+                    url: value === 'group' ? '' : formData.url,
+                    resource_id: null,
+                    resource_type: null,
+                  });
+                }}
+              >
+                <SelectTrigger id="type">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="page">{t('form.typePage')}</SelectItem>
+                  <SelectItem value="category">{t('form.typeCategory')}</SelectItem>
+                  <SelectItem value="product">{t('form.typeProduct')}</SelectItem>
+                  <SelectItem value="link">{t('form.typeLink')}</SelectItem>
+                  <SelectItem value="group">{t('form.typeGroup')}</SelectItem>
+                  <SelectItem value="external">{t('form.typeExternal')}</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                {formData.type === 'group' 
+                  ? t('form.typeGroupHelp')
+                  : formData.type === 'page'
+                  ? t('form.typePageHelp')
+                  : formData.type === 'category'
+                  ? t('form.typeCategoryHelp')
+                  : formData.type === 'product'
+                  ? t('form.typeProductHelp')
+                  : formData.type === 'link'
+                  ? t('form.typeLinkHelp')
+                  : t('form.typeHelp')
+                }
+              </p>
             </div>
+
+            <Separator />
+
+            {/* Resource Picker for page, category, product */}
+            {(formData.type === 'page' || formData.type === 'category' || formData.type === 'product') && (
+              <div className="space-y-2">
+                <Label>{t('form.selectResource', { type: t(`form.type${formData.type.charAt(0).toUpperCase() + formData.type.slice(1)}`) })}</Label>
+                <ResourcePicker
+                  storeId={storeId}
+                  type={formData.type as 'page' | 'category' | 'product'}
+                  selectedId={formData.resource_id || null}
+                  onSelect={(resource) => {
+                    setFormData({
+                      ...formData,
+                      resource_id: resource.id,
+                      resource_type: resource.resourceType,
+                      url: resource.url,
+                      // Auto-populate label if empty
+                      label: formData.label.en === '' && formData.label.ar === ''
+                        ? resource.label
+                        : formData.label,
+                    });
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Manual URL input for 'link', 'custom', 'external' types */}
+            {(formData.type === 'link' || formData.type === 'custom' || formData.type === 'external') && (
+              <div className="space-y-2">
+                <Label htmlFor="url">{t('form.url')}</Label>
+                <Input
+                  id="url"
+                  value={formData.url}
+                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  placeholder={formData.type === 'external' ? 'https://example.com' : '/custom-page'}
+                  required={formData.type === 'link' || formData.type === 'external'}
+                  className={urlValidation && !urlValidation.exists ? 'border-amber-500' : ''}
+                />
+                
+                {/* URL Validation Feedback */}
+                {urlValidation && !urlValidation.exists && formData.url.length > 1 && (
+                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                    <div className="flex items-start gap-2">
+                      <span className="text-lg">⚠️</span>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-amber-900">
+                          {t('form.urlWarningTitle')}
+                        </p>
+                        <p className="text-xs text-amber-700 mt-1">
+                          {t('form.urlWarningMessage')}
+                        </p>
+                        {urlValidation.suggestion && (
+                          <p className="text-xs text-amber-600 mt-2">
+                            💡 {t('form.urlSuggestion')}: <code className="bg-amber-100 px-1 rounded">{urlValidation.suggestion}</code>
+                          </p>
+                        )}
+                        <div className="mt-3 flex gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="text-xs"
+                            onClick={() => {
+                              // Open CMS to create page (future enhancement)
+                              window.open(`/merchant/cms/pages/create?slug=${encodeURIComponent(formData.url)}`, '_blank');
+                            }}
+                          >
+                            🆕 {t('form.createPage')}
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            className="text-xs"
+                            onClick={() => {
+                              // Switch to page type
+                              setFormData({ ...formData, type: 'page', url: '', resource_id: null, resource_type: null });
+                            }}
+                          >
+                            🔗 {t('form.linkToExisting')}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {urlValidation && urlValidation.exists && (
+                  <div className="flex items-center gap-2 text-xs text-green-600">
+                    <span>✅</span>
+                    <span>{t('form.urlExists')}</span>
+                  </div>
+                )}
+                
+                <p className="text-xs text-muted-foreground">{t('form.urlHelp')}</p>
+              </div>
+            )}
+
+            {/* Info for group type */}
+            {formData.type === 'group' && (
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                <p className="text-sm text-blue-900">
+                  ℹ️ {t('form.groupInfo')}
+                </p>
+              </div>
+            )}
 
             {/* Target */}
             <div className="space-y-2">
               <Label htmlFor="target">{t('form.target')}</Label>
               <Select
                 value={formData.target}
-                onValueChange={(value: '_self' | '_blank') =>
-                  setFormData({ ...formData, target: value })
-                }
+                onValueChange={(value) => {
+                  if (!value) return;
+                  setFormData({ ...formData, target: value });
+                }}
               >
                 <SelectTrigger id="target">
                   <SelectValue />
@@ -228,14 +420,14 @@ export default function MenuItemDialog({
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                id="is_enabled"
-                checked={formData.is_enabled}
+                id="is_active"
+                checked={formData.is_active}
                 onChange={(e) =>
-                  setFormData({ ...formData, is_enabled: e.target.checked })
+                  setFormData({ ...formData, is_active: e.target.checked })
                 }
                 className="h-4 w-4"
               />
-              <Label htmlFor="is_enabled" className="font-normal">
+              <Label htmlFor="is_active" className="font-normal">
                 {t('form.enabled')}
               </Label>
             </div>

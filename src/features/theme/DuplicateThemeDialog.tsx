@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useStoreStore } from '@/stores/storeStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useDuplicateTheme } from '@/hooks/themes/useThemeMutations';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,8 +32,10 @@ export function DuplicateThemeDialog({
   onClose,
 }: DuplicateThemeDialogProps) {
   const t = useTranslations();
-  const { activeStoreId } = useStoreStore();
+  const activeStore = useBootstrapStore((state) => state.activeStore);
   const [name, setName] = useState(`${theme.name} (Copy)`);
+
+  const activeStoreId = activeStore ? String(activeStore.id) : null;
 
   const duplicateMutation = useDuplicateTheme(activeStoreId!);
 

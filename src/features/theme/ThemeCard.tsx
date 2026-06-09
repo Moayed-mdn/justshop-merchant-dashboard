@@ -7,11 +7,10 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useStoreStore } from '@/stores/storeStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import {
   usePublishTheme,
   useDeleteTheme,
-  useDuplicateTheme,
 } from '@/hooks/themes/useThemeMutations';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -44,9 +43,11 @@ interface ThemeCardProps {
 
 export function ThemeCard({ theme }: ThemeCardProps) {
   const t = useTranslations();
-  const { activeStoreId } = useStoreStore();
+  const activeStore = useBootstrapStore((state) => state.activeStore);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+
+  const activeStoreId = activeStore ? String(activeStore.id) : null;
 
   const publishMutation = usePublishTheme(activeStoreId!);
   const deleteMutation = useDeleteTheme(activeStoreId!);
@@ -95,10 +96,12 @@ export function ThemeCard({ theme }: ThemeCardProps) {
           {/* Actions Menu */}
           <div className="absolute top-4 right-4">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
+              <DropdownMenuTrigger
+                type="button"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md p-0 hover:bg-accent hover:text-accent-foreground"
+                aria-label={t('common.actions')}
+              >
+                <MoreVertical className="h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {!theme.isActive && (

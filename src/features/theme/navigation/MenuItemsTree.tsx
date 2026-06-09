@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import MenuItemNode from './MenuItemNode';
 import MenuItemDialog from './MenuItemDialog';
-import type { NavigationMenuItemView, CreateMenuItemPayload } from '@/types/navigation';
+import type { NavigationMenuItemView } from '@/types/navigation';
 
 interface Props {
   storeId: string;
@@ -38,13 +38,23 @@ export default function MenuItemsTree({ storeId, menuId, items }: Props) {
 
   if (!items || items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8">
-        <p className="mb-4 text-muted-foreground">{t('noItems')}</p>
-        <Button onClick={handleAddRootItem} size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          {t('addFirst')}
-        </Button>
-      </div>
+      <>
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8">
+          <p className="mb-4 text-muted-foreground">{t('noItems')}</p>
+          <Button onClick={handleAddRootItem} size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            {t('addFirst')}
+          </Button>
+        </div>
+
+        <MenuItemDialog
+          storeId={storeId}
+          menuId={menuId}
+          parentId={parentIdForNew}
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+        />
+      </>
     );
   }
 

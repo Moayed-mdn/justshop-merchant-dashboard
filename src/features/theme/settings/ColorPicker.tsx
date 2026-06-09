@@ -5,10 +5,9 @@
  * Allows selecting colors with HEX input and visual preview.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
 
 interface ColorPickerProps {
   value: string;
@@ -17,6 +16,10 @@ interface ColorPickerProps {
 
 export function ColorPicker({ value, onChange }: ColorPickerProps) {
   const [localValue, setLocalValue] = useState(value);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -37,15 +40,16 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
   return (
     <div className="flex gap-2">
       <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-12 h-10 p-0 border-2"
-            style={{ backgroundColor: value }}
-          >
-            <span className="sr-only">Pick color</span>
-          </Button>
-        </PopoverTrigger>
+        <PopoverTrigger
+          render={
+            <button
+              type="button"
+              className="h-10 w-12 rounded-md border-2 border-input p-0"
+              style={{ backgroundColor: value }}
+              aria-label="Pick color"
+            />
+          }
+        />
         <PopoverContent className="w-64">
           <div className="space-y-3">
             <div className="space-y-2">

@@ -47,6 +47,8 @@ export interface ApiError {
   status: number;
   code: string;
   redirect?: string;
+  logoutUrl?: string;
+  action?: string;
 }
 
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';

@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useStoreStore } from '@/stores/storeStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useUpdateAsset } from '@/hooks/assets/useAssetMutations';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,7 +37,8 @@ interface EditAssetDialogProps {
 
 export function EditAssetDialog({ asset, onClose }: EditAssetDialogProps) {
   const t = useTranslations();
-  const { activeStoreId } = useStoreStore();
+  const activeStore = useBootstrapStore((state) => state.activeStore);
+  const activeStoreId = activeStore ? String(activeStore.id) : null;
   const [assetType, setAssetType] = useState<AssetType>(asset.assetType);
   const [altText, setAltText] = useState(asset.altText || '');
 

@@ -5,20 +5,22 @@
  * Main editor component with drag-and-drop menu tree.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigationMenu } from '@/hooks/navigation/useNavigationMenu';
 import { useUpdateNavigationMenu } from '@/hooks/navigation/useNavigationMenuMutations';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
 import { ArrowLeft, Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
+import { cn } from '@/lib/utils';
 import MenuItemsTree from './MenuItemsTree';
+import NavigationHealthWidget from './NavigationHealthWidget';
 import type { UpdateNavigationMenuPayload } from '@/types/navigation';
 
 interface Props {
@@ -33,14 +35,17 @@ export default function NavigationMenuEditor({ storeId, menuId }: Props) {
 
   const [formData, setFormData] = useState<UpdateNavigationMenuPayload | null>(null);
 
-  // Initialize form data when menu loads
-  if (menu && !formData) {
+  useEffect(() => {
+    if (!menu) {
+      return;
+    }
+
     setFormData({
       name: menu.name,
       handle: menu.handle,
       description: menu.description,
     });
-  }
+  }, [menu]);
 
   const handleSave = () => {
     if (!formData) return;
@@ -56,18 +61,18 @@ export default function NavigationMenuEditor({ storeId, menuId }: Props) {
     });
   };
 
-  if (isLoading || !menu || !formData) {
+  if (error) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="rounded-lg border border-destructive bg-destructive/10 p-4">
+        <p className="text-destructive">{error.message || t('loadError')}</p>
       </div>
     );
   }
 
-  if (error) {
+  if (isLoading || !menu || !formData) {
     return (
-      <div className="rounded-lg border border-destructive bg-destructive/10 p-4">
-        <p className="text-destructive">{t('loadError')}</p>
+      <div className="flex items-center justify-center py-12">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -77,12 +82,13 @@ export default function NavigationMenuEditor({ storeId, menuId }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href={ROUTES.merchant.theme.navigation.list()}>
-              <ArrowLeft className="h-4 w-4" />
-              {t('back')}
-            </Link>
-          </Button>
+          <Link
+            href={ROUTES.merchant.theme.navigation.list()}
+            className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {t('back')}
+          </Link>
           <div>
             <h1 className="text-2xl font-bold">{menu.name}</h1>
             <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
@@ -117,7 +123,7 @@ export default function NavigationMenuEditor({ storeId, menuId }: Props) {
                 id="handle"
                 value={formData.handle}
                 onChange={(e) => setFormData({ ...formData, handle: e.target.value })}
-                pattern="[a-z0-9-]+"
+                pattern="[a-z0-9\-]+"
               />
               <p className="text-xs text-muted-foreground">
                 {t('settings.handleHelp')}
@@ -138,15 +144,31 @@ export default function NavigationMenuEditor({ storeId, menuId }: Props) {
         </Card>
 
         {/* Menu Items Tree */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>{t('items.title')}</CardTitle>
-            <CardDescription>{t('items.description')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <MenuItemsTree storeId={storeId} menuId={menuId} items={menu.items} />
-          </CardContent>
-        </Card>
+        <div className="lg:col-span-2 space-y-6">
+          {/* Health Widget */}
+          <NavigationHealthWidget
+            items={menu.items}
+            onEditItem={(itemId) => {
+              // Future: open edit dialog for specific item
+              console.log('Edit item:', itemId);
+            }}
+            onCreatePage={(url) => {
+              // Open CMS to create page
+              window.open(`/merchant/cms/pages/create?slug=${encodeURIComponent(url.replace('/', ''))}`, '_blank');
+            }}
+          />
+
+          {/* Tree */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('items.title')}</CardTitle>
+              <CardDescription>{t('items.description')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MenuItemsTree storeId={storeId} menuId={menuId} items={menu.items} />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

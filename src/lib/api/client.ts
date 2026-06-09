@@ -50,6 +50,14 @@ export async function clientFetch<T>(
     }
 
     const apiError: ApiError = await toApiError(response, `Request failed with status ${response.status}`);
+    
+    // Handle identity domain mismatch (e.g., logged in as customer but accessing merchant routes)
+    // Do NOT redirect — let the BootstrapProvider surface the error UI with a logout button.
+    if (response.status === 403 && apiError.code === 'IDENTITY_DOMAIN_MISMATCH' && typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('auth:domain-mismatch'));
+      // Fall through so the error propagates to the store and triggers the logout UI
+    }
+    
     throw apiError;
   }
 

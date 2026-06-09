@@ -6,11 +6,12 @@
  */
 
 import { useState } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Plus, ChevronRight, ChevronDown } from 'lucide-react';
+import { Edit, Trash2, Plus, ChevronRight, ChevronDown, AlertTriangle } from 'lucide-react';
 import { useDeleteMenuItem } from '@/hooks/navigation/useNavigationMenuMutations';
+import { useValidateNavigationUrl } from '@/hooks/navigation/useNavigationResources';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
@@ -32,15 +33,42 @@ export default function MenuItemNode({
   onAddChild,
   level = 0,
 }: Props) {
-  const t = useTranslations('theme.navigation.items');
   const locale = useLocale();
+  const t = useTranslations('theme.navigation.items');
   const [isExpanded, setIsExpanded] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const deleteMutation = useDeleteMenuItem(storeId, menuId);
 
   const hasChildren = item.children && item.children.length > 0;
-  const label = item.label[locale] || item.label['en'] || Object.values(item.label)[0];
+  const isGroup = item.type === 'group';
+  const isResourceLinked = ['page', 'category', 'product'].includes(item.type);
+  const label = locale === 'ar'
+    ? item.label.ar || item.label.en
+    : item.label.en || item.label.ar;
+
+  // Validate URL for custom links and non-resource types
+  const shouldValidate = (item.type === 'link' || item.type === 'custom') && 
+                         item.url && 
+                         !item.url.startsWith('http');
+  
+  const { data: urlValidation } = useValidateNavigationUrl(
+    storeId,
+    item.url,
+    !!shouldValidate
+  );
+  
+  const isBroken = shouldValidate && urlValidation && !urlValidation.exists;
+
+  // Get resource type icon
+  const getResourceIcon = () => {
+    if (isGroup) return '📁';
+    if (item.type === 'page') return '📄';
+    if (item.type === 'category') return '🏷️';
+    if (item.type === 'product') return '📦';
+    if (item.type === 'external') return '🔗';
+    return '🔘';
+  };
 
   const handleDelete = () => {
     if (confirm(t('deleteConfirm'))) {
@@ -62,7 +90,8 @@ export default function MenuItemNode({
       <div
         className={cn(
           'flex items-center gap-2 rounded-lg border p-3',
-          !item.isEnabled && 'opacity-50',
+          !item.isActive && 'opacity-50',
+          isBroken && 'border-amber-300 bg-amber-50'
         )}
         style={{ marginLeft: `${level * 24}px` }}
       >
@@ -85,8 +114,26 @@ export default function MenuItemNode({
         {/* Label */}
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-medium">{label}</span>
-            {!item.isEnabled && (
+            <span className={cn("font-medium", isGroup && "text-blue-700")}>
+              {getResourceIcon()} {label}
+            </span>
+            {isBroken && (
+              <Badge variant="destructive" className="text-xs bg-amber-200 text-amber-900">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                {t('broken')}
+              </Badge>
+            )}
+            {isGroup && (
+              <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700">
+                {t('group')}
+              </Badge>
+            )}
+            {isResourceLinked && (
+              <Badge variant="outline" className="text-xs">
+                {item.type}
+              </Badge>
+            )}
+            {!item.isActive && (
               <Badge variant="secondary" className="text-xs">
                 {t('disabled')}
               </Badge>
@@ -97,7 +144,19 @@ export default function MenuItemNode({
               </Badge>
             )}
           </div>
-          <p className="text-xs text-muted-foreground">{item.url}</p>
+          <p className="text-xs text-muted-foreground">
+            {isGroup 
+              ? t('groupDescription', { count: item.children?.length || 0 })
+              : isResourceLinked
+              ? `Linked: ${item.url}`
+              : item.url
+            }
+          </p>
+          {isBroken && (
+            <p className="text-xs text-amber-700 mt-1">
+              ⚠️ {t('brokenLinkWarning')}
+            </p>
+          )}
         </div>
 
         {/* Actions */}

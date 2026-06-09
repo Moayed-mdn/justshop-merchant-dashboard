@@ -71,6 +71,7 @@ export const ROUTES = {
       edit: (bannerId: string) => `/merchant/hero-banners/${bannerId}/edit` as const,
     },
     theme: {
+      overview: () => '/merchant/theme' as const,
       navigation: {
         list: () => '/merchant/theme/navigation' as const,
         edit: (menuId: string) => `/merchant/theme/navigation/${menuId}` as const,

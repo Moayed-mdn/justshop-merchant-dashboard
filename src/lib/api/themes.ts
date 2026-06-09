@@ -71,7 +71,7 @@ export async function updateTheme(
   themeId: string,
   payload: UpdateThemePayload,
 ): Promise<Theme> {
-  const response = await clientApi.patch<ApiResponse<Theme>>(
+  const response = await clientApi.put<ApiResponse<Theme>>(
     API_ROUTES.store(storeId).themes().update(themeId),
     payload,
   );

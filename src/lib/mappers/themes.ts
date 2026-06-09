@@ -33,6 +33,7 @@ export function mapThemeListItem(item: ThemeListItem): ThemeListItemView {
     description: item.description,
     isActive: item.is_active,
     isPublished: item.is_published,
+    settings: item.settings,
     sectionsCount: item.sections_count,
     createdAt: item.created_at,
     updatedAt: item.updated_at,

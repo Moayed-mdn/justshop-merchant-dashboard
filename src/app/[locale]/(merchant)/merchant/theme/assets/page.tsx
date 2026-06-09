@@ -8,10 +8,11 @@ import { getTranslations } from 'next-intl/server';
 import { AssetsContent } from '@/features/theme/assets/AssetsContent';
 
 export async function generateMetadata({
-  params: { locale },
+  params,
 }: {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'common' });
 
   return {

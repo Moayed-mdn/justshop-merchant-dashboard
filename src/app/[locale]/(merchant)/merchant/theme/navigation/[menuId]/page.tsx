@@ -1,14 +1,15 @@
 'use client';
 
+import { use } from 'react';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import NavigationMenuEditor from '@/features/theme/navigation/NavigationMenuEditor';
 import { useTranslations } from 'next-intl';
 
 interface Props {
-  params: {
+  params: Promise<{
     menuId: string;
-  };
+  }>;
 }
 
 /**
@@ -16,6 +17,7 @@ interface Props {
  * Displays the menu editor with drag-and-drop tree for the selected menu.
  */
 export default function NavigationMenuEditorPage({ params }: Props) {
+  const { menuId } = use(params);
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('theme.navigation');
 
@@ -37,7 +39,7 @@ export default function NavigationMenuEditorPage({ params }: Props) {
     <div className="space-y-6">
       <NavigationMenuEditor 
         storeId={String(activeStore.id)} 
-        menuId={params.menuId}
+        menuId={menuId}
       />
     </div>
   );

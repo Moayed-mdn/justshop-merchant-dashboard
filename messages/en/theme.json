@@ -1,0 +1,120 @@
+{
+  "navigation": {
+    "title": "Navigation Menus",
+    "createDialog": {
+      "title": "Create Navigation Menu",
+      "description": "Create a new navigation menu for your store",
+      "saveSuccess": "Navigation menu created successfully",
+      "saveError": "Failed to create navigation menu"
+    },
+    "editor": {
+      "title": "Edit Navigation Menu",
+      "subtitle": "Manage menu items and structure",
+      "back": "Back to menus",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "saveSuccess": "Navigation menu updated successfully",
+      "saveError": "Failed to update navigation menu",
+      "loadError": "Failed to load navigation menu",
+      "settings": {
+        "title": "Menu Settings",
+        "description": "Configure menu details",
+        "name": "Menu Name",
+        "handle": "Menu Handle",
+        "handleHelp": "Unique identifier (lowercase, dashes only)",
+        "description": "Description"
+      },
+      "items": {
+        "title": "Menu Items",
+        "description": "Add and organize menu items"
+      }
+    },
+    "items": {
+      "noItems": "No menu items yet",
+      "addFirst": "Add First Item",
+      "addItem": "Add Item",
+      "disabled": "Disabled",
+      "newTab": "New Tab",
+      "group": "Group",
+      "groupDescription": "{count} items",
+      "broken": "Broken",
+      "brokenLinkWarning": "This link doesn't point to an existing page",
+      "deleteConfirm": "Are you sure you want to delete this menu item?",
+      "deleteSuccess": "Menu item deleted successfully",
+      "deleteError": "Failed to delete menu item"
+    },
+    "itemDialog": {
+      "createTitle": "Add Menu Item",
+      "createDescription": "Create a new navigation item",
+      "editTitle": "Edit Menu Item",
+      "editDescription": "Update navigation item details",
+      "createSuccess": "Menu item created successfully",
+      "createError": "Failed to create menu item",
+      "updateSuccess": "Menu item updated successfully",
+      "updateError": "Failed to update menu item",
+      "form": {
+        "label": "Label",
+        "labelEn": "Label (English)",
+        "labelEnPlaceholder": "Home, Shop, About Us...",
+        "labelAr": "Label (Arabic)",
+        "labelArPlaceholder": "الرئيسية، المتجر، من نحن...",
+        "type": "Item Type",
+        "typePage": "Page (from CMS)",
+        "typeCategory": "Category",
+        "typeProduct": "Product",
+        "typeLink": "Custom Link",
+        "typeGroup": "Group (Section Header)",
+        "typeExternal": "External Link",
+        "typeHelp": "Select the type of navigation item",
+        "typePageHelp": "Link to a page from your CMS. The URL will automatically update if you change the page slug.",
+        "typeCategoryHelp": "Link to a product category. The URL will automatically update if you change the category slug.",
+        "typeProductHelp": "Link to a specific product. The URL will automatically update if you change the product slug.",
+        "typeLinkHelp": "Custom internal link with a manually entered URL",
+        "typeGroupHelp": "Non-clickable header that organizes child items (for footer sections like 'Department', 'Services')",
+        "groupInfo": "Group items act as section headers. After creating this group, add child items to populate the section.",
+        "selectResource": "Select {type}",
+        "url": "URL",
+        "urlPlaceholder": "/shop, /about, https://example.com",
+        "urlHelp": "Internal path or external URL",
+        "urlWarningTitle": "Page doesn't exist yet",
+        "urlWarningMessage": "This URL doesn't point to an existing page. You can create the page now or save anyway.",
+        "urlSuggestion": "Suggestion",
+        "urlExists": "Page exists",
+        "createPage": "Create Page",
+        "linkToExisting": "Link to Existing Page",
+        "target": "Link Target",
+        "targetSelf": "Same Tab",
+        "targetBlank": "New Tab",
+        "position": "Position",
+        "positionHelp": "Display order (0 = first)",
+        "enabled": "Enabled",
+        "cancel": "Cancel",
+        "create": "Create Item",
+        "creating": "Creating...",
+        "update": "Update Item",
+        "updating": "Updating..."
+      }
+    },
+    "resourcePicker": {
+      "searchPlaceholder": "Search {type}...",
+      "noResources": "No {type} found. Create one first to link it here.",
+      "createNew": "Create New {type}",
+      "selected": "Selected resource",
+      "helpText": "Select a {type} to link. The URL will automatically update if the resource changes.",
+      "type": {
+        "page": "page",
+        "category": "category",
+        "product": "product"
+      }
+    },
+    "health": {
+      "title": "{count} potential issues found",
+      "description": "These links may not point to existing pages. Review and fix them.",
+      "allGood": "All links look good!",
+      "allGoodDescription": "No broken links detected in your navigation.",
+      "createPage": "Create page",
+      "fixLink": "Fix link",
+      "andMore": "and {count} more..."
+    }
+  }
+}

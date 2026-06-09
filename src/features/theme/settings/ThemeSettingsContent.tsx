@@ -10,7 +10,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/lib/navigation';
 import { useThemes } from '@/hooks/themes/useThemes';
 import { useUpdateTheme } from '@/hooks/themes/useThemeMutations';
-import { useStoreStore } from '@/stores/storeStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { ColorPicker } from './ColorPicker';
 import { FontSelector } from './FontSelector';
 import { Button } from '@/components/ui/button';
@@ -25,9 +25,10 @@ import type { ThemeSettings } from '@/types/theme';
 export function ThemeSettingsContent() {
   const t = useTranslations();
   const router = useRouter();
-  const { activeStoreId } = useStoreStore();
+  const activeStore = useBootstrapStore((state) => state.activeStore);
   
   // Fetch themes to get the active one
+  const activeStoreId = activeStore ? String(activeStore.id) : null;
   const { data: themesData } = useThemes(activeStoreId!, {
     page: 1,
     perPage: 100, // Get all themes

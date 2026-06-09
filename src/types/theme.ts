@@ -79,6 +79,7 @@ export interface ThemeListItemView {
   description: string | null;
   isActive: boolean;
   isPublished: boolean;
+  settings?: ThemeSettings;
   sectionsCount?: number;
   createdAt: string;
   updatedAt: string;

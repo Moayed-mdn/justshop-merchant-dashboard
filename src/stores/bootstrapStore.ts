@@ -435,13 +435,25 @@ export const useBootstrapStore = create<BootstrapStore>((set, get) => ({
     } catch (error) {
       const apiError = error as ApiError;
 
-      // Handle standard unauthorized and contamination errors
-      const message = apiError.message?.toLowerCase() ?? '';
-      const isContaminated = message.includes('session contamination') || message.includes('domain mismatch');
-
-      if (apiError.status === 401 || isContaminated) {
+      // 401 = unauthenticated, silently clear session and redirect to login
+      if (apiError.status === 401) {
         get().clearSession();
         return null;
+      }
+
+      // Domain mismatch (403 IDENTITY_DOMAIN_MISMATCH) — surface as error so the
+      // UI can show the user a logout button with context. Do NOT silently clear.
+      const isDomainMismatch =
+        apiError.code === 'IDENTITY_DOMAIN_MISMATCH' ||
+        apiError.action === 'logout_required';
+
+      if (isDomainMismatch) {
+        set({
+          isBootstrapping: false,
+          bootstrapResolved: true,
+          bootstrapError: apiError,
+        });
+        throw apiError;
       }
 
       if (options?.signal?.aborted) {

@@ -17,11 +17,14 @@ export function useBootstrap() {
     refetchOnWindowFocus: true,
     retry: (failureCount, error) => {
       const apiError = error as unknown as ApiError;
-      const message = apiError.message?.toLowerCase() ?? '';
-      const isContaminated = message.includes('session contamination') || message.includes('domain mismatch');
 
-      if (apiError.status === 401 || isContaminated) {
+      // Don't retry on 401 or domain mismatch — these are not transient errors
+      if (apiError.status === 401) {
         queryClient.setQueryData(queryKeys.merchant.me(), null);
+        return false;
+      }
+
+      if (apiError.code === 'IDENTITY_DOMAIN_MISMATCH' || apiError.action === 'logout_required') {
         return false;
       }
 

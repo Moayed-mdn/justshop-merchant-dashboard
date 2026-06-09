@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/lib/navigation';
 import { useThemes } from '@/hooks/themes/useThemes';
-import { useStoreStore } from '@/stores/storeStore';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { ThemeCard } from './ThemeCard';
 import { CreateThemeDialog } from './CreateThemeDialog';
 import { Button } from '@/components/ui/button';
@@ -22,12 +22,14 @@ import type { ThemeFilters } from '@/types/theme';
 export function ThemesContent() {
   const t = useTranslations();
   const router = useRouter();
-  const { activeStoreId } = useStoreStore();
+  const activeStore = useBootstrapStore((state) => state.activeStore);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [filters, setFilters] = useState<ThemeFilters>({
     page: 1,
     perPage: 12,
   });
+
+  const activeStoreId = activeStore ? String(activeStore.id) : null;
 
   const { data, isLoading, error } = useThemes(activeStoreId!, filters);
 
@@ -112,11 +114,11 @@ export function ThemesContent() {
                 ))}
               </div>
 
-              {data.meta.last_page > 1 && (
+              {data.meta.pagination.total_pages > 1 && (
                 <div className="mt-6">
                   <Pagination
-                    currentPage={data.meta.current_page}
-                    totalPages={data.meta.last_page}
+                    currentPage={data.meta.pagination.current_page}
+                    totalPages={data.meta.pagination.total_pages}
                     onPageChange={handlePageChange}
                   />
                 </div>

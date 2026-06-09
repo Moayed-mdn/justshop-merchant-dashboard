@@ -351,50 +351,107 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     );
   }
 
-  if (bootstrapError && (isProtectedRoute || isOnboardingRoute)) {
-    return (
-      <div className="flex h-screen w-screen flex-col items-center justify-center p-4 text-center">
-        <h1 className="mb-2 text-2xl font-bold text-destructive">Bootstrap Failed</h1>
-        <p className="mb-4 text-muted-foreground">
-          {!isOnline
-            ? 'The app is offline. Reconnect to restore your dashboard session.'
-            : bootstrapError.message || 'The app could not restore the dashboard session.'}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Button onClick={() => void bootstrapQuery.refetch()}>
-            Retry
-          </Button>
-          <Button variant="outline" onClick={() => router.push(ROUTES.auth.login())}>
-            Go to login
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  if (bootstrapError) {
+    // Special handling for domain mismatch errors — must be checked FIRST
+    // before route-specific error handling, since it applies regardless of route type.
+    const isDomainMismatch = 
+      bootstrapError.code === 'IDENTITY_DOMAIN_MISMATCH' || 
+      bootstrapError.action === 'logout_required';
 
-  if (bootstrapError && isGuestRoute) {
-    return (
-      <>
-        <div className="fixed inset-x-4 top-4 z-50 flex justify-center">
-          <div className="w-full max-w-xl rounded-lg border border-destructive/30 bg-background px-4 py-3 text-sm shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-foreground">
-                {!isOnline
-                  ? 'You are offline. Sign-in and onboarding actions will resume once the connection returns.'
-                  : bootstrapError.message || 'Session restoration failed. You can still continue with guest actions.'}
-              </p>
-              <Button variant="outline" size="sm" onClick={() => void bootstrapQuery.refetch()}>
-                Retry
-              </Button>
-            </div>
+    console.log('[BootstrapProvider] Error detected:', {
+      code: bootstrapError.code,
+      action: bootstrapError.action,
+      logoutUrl: bootstrapError.logoutUrl,
+      isDomainMismatch,
+    });
+
+    if (isDomainMismatch && bootstrapError.logoutUrl) {
+      return (
+        <div className="flex h-screen w-screen flex-col items-center justify-center p-4 text-center">
+          <h1 className="mb-2 text-2xl font-bold text-destructive">Wrong Account Type</h1>
+          <p className="mb-6 max-w-md text-muted-foreground">
+            {bootstrapError.message || 'You are logged in with the wrong account type for this page.'}
+          </p>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => void bootstrapQuery.refetch()}
+            >
+              Retry
+            </Button>
+            <Button
+              onClick={async () => {
+                try {
+                  // Call the logout URL provided by the API
+                  await fetch(bootstrapError.logoutUrl!, { 
+                    method: 'POST',
+                    credentials: 'include'
+                  });
+                  // Clear local session
+                  clearSession();
+                  clearDashboardClientStorage();
+                  // Redirect to login
+                  window.location.href = getLoginUrl(locale, pathname);
+                } catch (error) {
+                  console.error('Logout failed:', error);
+                  // Still try to clear and redirect
+                  clearSession();
+                  clearDashboardClientStorage();
+                  window.location.href = getLoginUrl(locale, pathname);
+                }
+              }}
+            >
+              Log Out and Switch Account
+            </Button>
           </div>
         </div>
-        {children}
-      </>
-    );
-  }
+      );
+    }
 
-  if (bootstrapError) {
+    if (isProtectedRoute || isOnboardingRoute) {
+      return (
+        <div className="flex h-screen w-screen flex-col items-center justify-center p-4 text-center">
+          <h1 className="mb-2 text-2xl font-bold text-destructive">Bootstrap Failed</h1>
+          <p className="mb-4 text-muted-foreground">
+            {!isOnline
+              ? 'The app is offline. Reconnect to restore your dashboard session.'
+              : bootstrapError.message || 'The app could not restore the dashboard session.'}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Button onClick={() => void bootstrapQuery.refetch()}>
+              Retry
+            </Button>
+            <Button variant="outline" onClick={() => router.push(ROUTES.auth.login())}>
+              Go to login
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    if (isGuestRoute) {
+      return (
+        <>
+          <div className="fixed inset-x-4 top-4 z-50 flex justify-center">
+            <div className="w-full max-w-xl rounded-lg border border-destructive/30 bg-background px-4 py-3 text-sm shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-foreground">
+                  {!isOnline
+                    ? 'You are offline. Sign-in and onboarding actions will resume once the connection returns.'
+                    : bootstrapError.message || 'Session restoration failed. You can still continue with guest actions.'}
+                </p>
+                <Button variant="outline" size="sm" onClick={() => void bootstrapQuery.refetch()}>
+                  Retry
+                </Button>
+              </div>
+            </div>
+          </div>
+          {children}
+        </>
+      );
+    }
+
+    // Fallback error handling
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center p-4 text-center">
         <h1 className="mb-2 text-2xl font-bold text-destructive">Bootstrap Failed</h1>

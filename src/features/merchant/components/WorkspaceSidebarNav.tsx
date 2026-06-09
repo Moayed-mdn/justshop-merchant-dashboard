@@ -18,6 +18,7 @@ import {
   Settings,
   FileText,
   Image,
+  Palette,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -50,6 +51,7 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
   const canManageUsers    = useCan('canManageUsers');
   const canManageCmsPages = useCan('canManageCmsPages');
   const canManageHeroBanners = useCan('canManageBrands'); // Uses same store-management permission
+  const canManageThemes   = true; // All merchants can manage themes
 
   const navItems: NavItem[] = [
     {
@@ -94,6 +96,12 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
       href:  ROUTES.merchant.heroBanners.list(),
       icon:  Image,
       show:  canManageHeroBanners,
+    },
+    {
+      label: t('theme'),
+      href:  ROUTES.merchant.theme.overview(),
+      icon:  Palette,
+      show:  canManageThemes,
     },
     {
       label: t('cmsPages'),
