@@ -101,6 +101,17 @@ export const ROUTES = {
       create:   () => '/merchant/stores/create' as const,
       settings: (storeId: string) => `/merchant/stores/${storeId}/settings` as const,
     },
+    billing: {
+      dashboard: () => '/merchant/billing' as const,
+      plans:     () => '/merchant/billing/plans' as const,
+      invoices: {
+        list:   () => '/merchant/billing/invoices' as const,
+        detail: (invoiceId: string) => `/merchant/billing/invoices/${invoiceId}` as const,
+      },
+      trial: {
+        start:  () => '/merchant/billing/trial/start' as const,
+      },
+    },
     settings:   () => '/merchant/settings' as const,
   },
   store: (storeId: string) => ({

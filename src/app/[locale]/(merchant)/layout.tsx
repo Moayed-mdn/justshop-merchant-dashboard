@@ -3,6 +3,7 @@ import { DashboardShell } from '@/features/dashboard/shell/DashboardShell';
 import { TenantInitializer } from '@/features/dashboard/shell/TenantInitializer';
 import { WorkspaceSidebarNav } from '@/features/merchant/components/WorkspaceSidebarNav';
 import { WorkspaceStoreSwitcher } from '@/features/merchant/components/WorkspaceStoreSwitcher';
+import { BillingBanners } from './BillingBanners';
 
 interface MerchantLayoutProps {
   children: React.ReactNode;
@@ -26,6 +27,7 @@ export default async function MerchantLayout({ children, params }: MerchantLayou
         nav={<WorkspaceSidebarNav />} 
         switcher={<WorkspaceStoreSwitcher />}
       >
+        <BillingBanners />
         {children}
       </DashboardShell>
     </>

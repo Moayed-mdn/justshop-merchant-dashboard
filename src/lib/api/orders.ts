@@ -44,7 +44,8 @@ export async function getOrderDetail(
   storeId: string,
   orderId: string
 ): Promise<AdminOrder> {
-  return clientApi.get<AdminOrder>(API_ROUTES.store(storeId).orders().detail(orderId));
+  const response = await clientApi.get<ApiResponse<AdminOrder>>(API_ROUTES.store(storeId).orders().detail(orderId));
+  return response.data;
 }
 
 /**

@@ -4,6 +4,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import { MerchantPageHeader } from '@/features/merchant/components/MerchantPageHeader';
 import { StoreSettingsForm } from '@/features/merchant/settings/StoreSettingsForm';
+import { BillingSettingsCard } from '@/features/merchant/settings/BillingSettingsCard';
 import { useTranslations } from 'next-intl';
 import { Settings } from 'lucide-react';
 
@@ -38,6 +39,10 @@ export default function MerchantSettingsPage() {
         description={`Manage configuration for ${activeStore.name}.`}
       />
 
+      {/* Billing Settings */}
+      <BillingSettingsCard />
+
+      {/* Store Settings */}
       <StoreSettingsForm store={activeStore} />
     </div>
   );

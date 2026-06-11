@@ -19,6 +19,7 @@ import {
   FileText,
   Image,
   Palette,
+  CreditCard,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -120,6 +121,12 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
       href:  ROUTES.merchant.stores.list(),
       icon:  Store,
       show:  canManageStores,
+    },
+    {
+      label: t('billing'),
+      href:  ROUTES.merchant.billing.dashboard(),
+      icon:  CreditCard,
+      show:  true,
     },
     {
       label: t('settings'),

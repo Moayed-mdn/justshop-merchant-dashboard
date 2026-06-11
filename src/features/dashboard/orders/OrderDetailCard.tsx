@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from '@/lib/navigation'
 import { ROUTES } from '@/config/routes'
@@ -9,8 +9,8 @@ interface Props {
   storeId: string
 }
 
-export default async function OrderDetailCard({ order, storeId }: Props) {
-  const t = await getTranslations('orders')
+export default function OrderDetailCard({ order, storeId }: Props) {
+  const t = useTranslations('orders')
 
   return (
     <div className="space-y-6">

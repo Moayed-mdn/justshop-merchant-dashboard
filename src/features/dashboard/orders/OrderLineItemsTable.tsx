@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -14,8 +14,8 @@ interface Props {
   lineItems: OrderLineItemView[]
 }
 
-export default async function OrderLineItemsTable({ lineItems }: Props) {
-  const t = await getTranslations('orders')
+export default function OrderLineItemsTable({ lineItems }: Props) {
+  const t = useTranslations('orders')
 
   return (
     <Card>

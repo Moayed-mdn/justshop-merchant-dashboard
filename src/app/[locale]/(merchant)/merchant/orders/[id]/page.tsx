@@ -61,18 +61,18 @@ export default function MerchantOrderDetailPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <OrderLineItemsTable items={order.items} />
+          <OrderLineItemsTable lineItems={order.lineItems} />
         </div>
 
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>{t('detail.status')}</CardTitle>
+              <CardTitle>{t('detail.statusLabel')}</CardTitle>
             </CardHeader>
             <CardContent>
               <OrderStatusSelect
                 storeId={storeId}
-                orderId={order.id}
+                orderId={String(order.id)}
                 currentStatus={order.status}
               />
             </CardContent>

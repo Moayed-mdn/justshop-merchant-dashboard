@@ -5,11 +5,9 @@ const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['laratenant.local', '*.laratenant.local'],
-  // Turbopack disabled due to routing issues with route groups + dynamic segments
-  // See: https://github.com/vercel/next.js/issues/...
-  // turbopack: {
-  //   root: process.cwd(),
-  // },
+ // turbopack: {
+ //   root: process.cwd(),
+ // },
   images: {
     remotePatterns: [
       {

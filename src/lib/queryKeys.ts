@@ -142,6 +142,19 @@ export const queryKeys = {
     detail: (themeId: string) =>
       ['merchant', storeId, 'themes', 'detail', themeId] as const,
   }),
+
+  // ── BILLING ───────────────────────────────────────────────────
+  billing: {
+    all:          () => ['billing'] as const,
+    plans:        () => ['billing', 'plans'] as const,
+    subscription: () => ['billing', 'subscription'] as const,
+    invoices:     (filters: Record<string, unknown> = {}) =>
+      ['billing', 'invoices', 'list', filters] as const,
+    invoice:      (invoiceId: number) =>
+      ['billing', 'invoices', 'detail', invoiceId] as const,
+    entitlements: (storeId: string) =>
+      ['billing', 'entitlements', storeId] as const,
+  },
 };
 
 /** @deprecated Use queryKeys.merchant.me() */

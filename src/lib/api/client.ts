@@ -35,7 +35,11 @@ export async function clientFetch<T>(
   options: ClientFetchOptions = {}
 ): Promise<T> {
   const endpoint = withQueryParams(path, options.params);
-  const response = await fetch(`/api/proxy?endpoint=${encodeURIComponent(endpoint)}`, {
+  const baseUrl =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+  const response = await fetch(`${baseUrl}/api/proxy?endpoint=${encodeURIComponent(endpoint)}`, {
     method: options.method ?? 'GET',
     credentials: 'include',
     headers: buildHeaders(DEFAULT_JSON_HEADERS, options.headers),
