@@ -15,18 +15,18 @@ import { useTranslations } from 'next-intl';
  */
 export default function MerchantStoresPage() {
   const stores = useBootstrapStore((state) => state.stores);
-  const t = useTranslations('nav');
+  const t = useTranslations('stores');
 
   return (
     <div className="space-y-6">
       <MerchantPageHeader
-        title={t('stores')}
-        description="Manage your stores and businesses."
+        title={t('title')}
+        description={t('subtitle')}
       >
         <Link href={ROUTES.merchant.stores.create()}>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            Create store
+            {t('createButton')}
           </Button>
         </Link>
       </MerchantPageHeader>

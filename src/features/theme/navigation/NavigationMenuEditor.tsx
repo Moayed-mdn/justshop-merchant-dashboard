@@ -83,7 +83,7 @@ export default function NavigationMenuEditor({ storeId, menuId }: Props) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
-            href={ROUTES.merchant.theme.navigation.list()}
+            href={ROUTES.merchant.navigation.list()}
             className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
           >
             <ArrowLeft className="h-4 w-4" />

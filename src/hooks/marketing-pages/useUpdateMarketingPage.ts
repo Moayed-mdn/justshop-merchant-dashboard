@@ -31,7 +31,7 @@ export function useUpdateMarketingPage(storeId: string, pageId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to update marketing page', { error });
+      logger.error('Failed to update marketing page', error);
       toast.error(error.message ?? t('form.updateError'));
     },
   });

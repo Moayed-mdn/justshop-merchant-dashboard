@@ -34,7 +34,7 @@ export function useUpdateProduct(
       options?.onSuccess?.(data);
     },
     onError: (error: ApiError) => {
-      logger.error('Update product failed', { error });
+      logger.error('Update product failed', error);
       options?.onError?.(error);
     },
   });

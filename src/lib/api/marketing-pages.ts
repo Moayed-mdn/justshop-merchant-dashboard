@@ -50,15 +50,44 @@ export async function getMarketingPageDetail(
 }
 
 /**
+ * Transform frontend payload to backend format.
+ * Frontend uses 'type' for sections, backend expects 'section_type'.
+ */
+function transformPayloadForBackend(payload: CreateMarketingPagePayload | UpdateMarketingPagePayload): any {
+  return {
+    title: payload.title,
+    slug: payload.slug,
+    excerpt: payload.excerpt,
+    template: payload.template,
+    status: payload.status,
+    published_at: payload.published_at,
+    sort_order: payload.sort_order,
+    is_homepage: payload.is_homepage,
+    seo: payload.seo,
+    sections: payload.sections.map((section) => ({
+      section_type: section.type,
+      identifier: section.identifier,
+      sort_order: (section as any).sort_order,
+      title: section.title,
+      subtitle: section.subtitle,
+      content: section.content,
+      settings: section.settings,
+      is_active: section.is_active,
+    })),
+  };
+}
+
+/**
  * Create a new marketing page.
  */
 export async function createMarketingPage(
   storeId: string,
   payload: CreateMarketingPagePayload,
 ): Promise<MarketingPageDetail> {
+  const transformedPayload = transformPayloadForBackend(payload);
   const response = await clientApi.post<ApiResponse<MarketingPageDetail>>(
     API_ROUTES.store(storeId).cmsPages().create(),
-    payload,
+    transformedPayload,
   );
   return response.data;
 }
@@ -71,9 +100,10 @@ export async function updateMarketingPage(
   pageId: string,
   payload: UpdateMarketingPagePayload,
 ): Promise<MarketingPageDetail> {
+  const transformedPayload = transformPayloadForBackend(payload);
   const response = await clientApi.put<ApiResponse<MarketingPageDetail>>(
     API_ROUTES.store(storeId).cmsPages().update(pageId),
-    payload,
+    transformedPayload,
   );
   return response.data;
 }
@@ -128,6 +158,24 @@ export async function getMarketingSectionTypes(
 ): Promise<SectionTypeOption[]> {
   const response = await clientApi.get<ApiResponse<SectionTypeOption[]>>(
     API_ROUTES.store(storeId).sectionTypes(),
+  );
+  return response.data;
+}
+
+/**
+ * Check if a homepage already exists for the store.
+ * Returns the existing homepage info or null.
+ */
+export async function checkHomepage(
+  storeId: string,
+  excludeId?: string,
+): Promise<{ exists: boolean; page: { id: number; title: Record<string, string>; slug: Record<string, string> } | null }> {
+  const params: Record<string, string | number> = {};
+  if (excludeId) params.exclude_id = excludeId;
+
+  const response = await clientApi.get<ApiResponse<{ exists: boolean; page: any }>>(
+    `${API_ROUTES.store(storeId).cmsPages().list()}/check-homepage`,
+    { params },
   );
   return response.data;
 }

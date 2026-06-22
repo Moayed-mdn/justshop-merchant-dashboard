@@ -26,7 +26,7 @@ export function useDeleteTag(storeId: string, tagId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to delete tag', { error });
+      logger.error('Failed to delete tag', error);
       toast.error(error.message ?? t('form.deleteError'));
     },
   });

@@ -397,6 +397,266 @@ Verify store settings feel clearer and more self-serve.
 
 ---
 
+## Scenario 12A: Profile Avatar Upload
+
+### Goal
+
+Verify merchants can upload and update their profile picture.
+
+### Steps
+
+1. Navigate to Settings page (`/en/merchant/settings`).
+2. Locate the "Profile Picture" card at the top of the Profile Settings section.
+3. Click "Upload new picture" button.
+4. Select a valid image file (JPEG, PNG, GIF, or WebP under 2MB).
+5. Observe the upload process.
+6. Check avatar updates throughout the app (header, sidebar).
+7. Try uploading an invalid file (e.g., PDF or > 2MB image).
+
+### Expected
+
+- file picker opens on button click
+- preview shows before upload completes
+- upload progress is visible
+- success toast appears after upload
+- avatar updates in header and other locations immediately
+- invalid files show clear error messages
+- file size limit is enforced (2MB max)
+- accepted formats are validated
+
+### Watch For
+
+- upload hanging without feedback
+- avatar not updating in other parts of UI
+- missing error messages for invalid files
+- no visual feedback during upload
+- broken image display after upload
+
+---
+
+## Scenario 12B: Profile Information Update
+
+### Goal
+
+Verify merchants can update their personal information.
+
+### Steps
+
+1. Navigate to Settings page (`/en/merchant/settings`).
+2. Locate the "Personal Information" card in Profile Settings section.
+3. Update the name field with a new value.
+4. Update the email field.
+5. Add or update phone number.
+6. Click "Save changes" button.
+7. Verify email verification badge status.
+8. Try submitting invalid data (e.g., invalid email format).
+
+### Expected
+
+- form validates in real-time as you type
+- save button is disabled when form is invalid or unchanged
+- success toast appears after successful save
+- "Saved" indicator shows briefly (green checkmark)
+- button turns green momentarily on success
+- email verification badge shows correct status (Verified/Unverified)
+- warning appears when changing email (requires re-verification)
+- form errors are clear and inline
+- validation messages are helpful
+
+### Watch For
+
+- save button enabled with invalid data
+- no feedback after save
+- form not clearing dirty state after save
+- email verification status not updating
+- missing validation messages
+- unclear error text
+- phone number format issues
+
+---
+
+## Scenario 12C: Password Change Flow
+
+### Goal
+
+Verify merchants can securely change their password.
+
+### Steps
+
+1. Navigate to Settings page (`/en/merchant/settings`).
+2. Locate the "Change Password" card in Profile Settings section.
+3. Enter current password.
+4. Enter new password (at least 8 characters).
+5. Confirm new password.
+6. Toggle password visibility icons.
+7. Try mismatched passwords.
+8. Try incorrect current password.
+9. Successfully change password.
+
+### Expected
+
+- all password fields have visibility toggle (eye icons)
+- password visibility toggles work correctly
+- real-time validation shows password requirements
+- form validates password match before submission
+- save button disabled until all fields are valid
+- incorrect current password shows clear error
+- mismatched passwords show validation error
+- success toast appears after password change
+- form clears automatically after success
+- "Password updated" indicator shows briefly
+
+### Watch For
+
+- passwords visible by default
+- visibility toggle not working
+- weak password accepted
+- unclear validation messages
+- form not clearing after success
+- no feedback on incorrect current password
+- password requirements not communicated
+- confusing error messages
+
+---
+
+## Scenario 12D: Account Status and Management
+
+### Goal
+
+Verify account status information and dangerous actions are handled appropriately.
+
+### Steps
+
+1. Navigate to Settings page (`/en/merchant/settings`).
+2. Locate the "Account Status" card in Profile Settings section.
+3. Verify account status badge displays correctly.
+4. Check connected services status (Password, Google).
+5. Locate the "Danger Zone" section.
+6. Click "Delete Account" button.
+7. Review deletion confirmation dialog.
+8. Check listed data that will be deleted.
+9. Cancel the deletion.
+10. (Optional) Verify deletion flow if in test environment.
+
+### Expected
+
+- account status badge shows "Active" with green checkmark
+- connected services display correct status
+- password authentication shows "Enabled"
+- danger zone is visually distinct (red border/background)
+- delete button is clearly marked as destructive
+- confirmation dialog has strong warning language
+- dialog lists all data that will be deleted (stores, products, orders, etc.)
+- warning emphasizes irreversibility
+- cancel button is easily accessible
+- deletion requires explicit confirmation
+
+### Watch For
+
+- missing account status information
+- incorrect connected services status
+- danger zone not visually distinct
+- delete action without confirmation
+- weak warning language
+- unclear consequences in dialog
+- missing list of data to be deleted
+- easy accidental deletion
+- no way to cancel deletion
+
+---
+
+## Scenario 12E: Profile Settings Page Layout
+
+### Goal
+
+Verify the Settings page is well-organized and easy to navigate.
+
+### Steps
+
+1. Navigate to Settings page (`/en/merchant/settings`).
+2. Scroll through the entire page.
+3. Verify all sections are present and clearly labeled.
+4. Check section separators and spacing.
+5. Verify cards are properly sized (max-w-2xl).
+6. Test responsiveness by resizing browser window.
+
+### Expected
+
+- page has clear header with title "Settings"
+- three main sections visible:
+  1. Profile Settings (Avatar, Personal Info, Password, Account)
+  2. Billing & Subscription
+  3. Store Settings
+- each section has a heading and description
+- horizontal separators between major sections
+- cards are consistently sized and styled
+- profile section has 4 cards in logical order
+- page is scrollable without layout issues
+- responsive on smaller screens
+- adequate spacing between elements
+
+### Watch For
+
+- missing section headings
+- unclear section boundaries
+- inconsistent card styling
+- cramped or excessive spacing
+- layout breaking on small screens
+- cards extending full width when they shouldn't
+- missing or duplicate separators
+- sections in illogical order
+
+---
+
+## Scenario 12F: Profile Settings End-to-End Flow
+
+### Goal
+
+Verify complete profile management workflow feels cohesive.
+
+### Steps
+
+1. Navigate to Settings from the sidebar navigation.
+2. Upload a new profile picture.
+3. Update name and email.
+4. Add/update phone number.
+5. Change password.
+6. Verify all changes persist.
+7. Check if profile changes appear in other parts of the app:
+   - Header avatar
+   - Sidebar user display
+   - Any user profile mentions
+8. Refresh the page and verify changes persist.
+9. Log out and log back in with new credentials.
+
+### Expected
+
+- settings page accessible from sidebar
+- all profile updates work independently
+- changes save without interfering with each other
+- success feedback for each action
+- no data loss between operations
+- avatar updates globally across UI
+- name updates reflect in navigation
+- password change works immediately
+- all changes persist after page refresh
+- can log in with new email/password
+- user experience feels smooth and predictable
+
+### Watch For
+
+- one update breaking another
+- avatar not updating globally
+- stale data after changes
+- lost changes after navigation
+- inconsistent state across app
+- login issues after email change
+- password change not taking effect
+- confusing multi-step experience
+- unexpected errors during workflow
+
+---
+
 ## Scenario 13: First-Run Merchant Checklist
 
 ### Goal

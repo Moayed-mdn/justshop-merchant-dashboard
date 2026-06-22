@@ -65,7 +65,7 @@ export default function CreateNavigationMenuDialog({
         setFormData({ name: '', handle: '', description: null });
         
         // Navigate to editor
-        router.push(ROUTES.merchant.theme.navigation.edit(String(data.id)));
+        router.push(ROUTES.merchant.navigation.edit(String(data.id)));
       },
       onError: (err: any) => {
         logger.error('Failed to create navigation menu', { error: err });

@@ -34,7 +34,7 @@ export function usePublishMarketingPage(storeId: string, pageId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to publish marketing page', { error });
+      logger.error('Failed to publish marketing page', error);
       toast.error(error.message ?? t('form.publishError'));
     },
   });
@@ -58,7 +58,7 @@ export function useUnpublishMarketingPage(storeId: string, pageId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to unpublish marketing page', { error });
+      logger.error('Failed to unpublish marketing page', error);
       toast.error(error.message ?? t('form.unpublishError'));
     },
   });

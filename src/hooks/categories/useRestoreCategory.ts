@@ -30,7 +30,7 @@ export function useRestoreCategory(storeId: string, categoryId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to restore category', { error });
+      logger.error('Failed to restore category', error);
       toast.error(error.message ?? t('form.restoreError'));
     },
   });

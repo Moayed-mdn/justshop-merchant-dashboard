@@ -49,7 +49,7 @@ export default function TagsContent({ storeId, initialFilters }: Props) {
   const { data, isLoading, error } = useTags(storeId, filters);
   const queryClient = useQueryClient();
 
-  if (error) logger.error('Failed to load tags', { error });
+  if (error) logger.error('Failed to load tags', error);
 
   const deleteMutation = useMutation({
     mutationFn: (tagId: string) => deleteTag(storeId, tagId),

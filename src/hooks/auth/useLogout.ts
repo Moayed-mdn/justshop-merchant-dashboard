@@ -57,7 +57,7 @@ export function useLogout(options?: UseLogoutOptions) {
       options?.onSuccess?.();
     },
     onError: (error: ApiError) => {
-      logger.error('Logout failed', { error });
+      logger.error('Logout failed', error);
       options?.onError?.(error);
     },
   });

@@ -45,9 +45,10 @@
     "categories": "التصنيفات",
     "brands": "العلامات التجارية",
     "tags": "الوسوم",
-    "theme": "القوالب",
-    "heroBanners": "البانرات الترويجية",
-    "cmsPages": "صفحات التسويق",
+    "themes": "القوالب",
+    "marketingPages": "صفحات التسويق",
+    "navigation": "القوائم",
+    "customers": "العملاء",
     "settings": "الإعدادات",
     "billing": "الفواتير",
     "mainNav": "التنقل الرئيسي",
@@ -82,10 +83,52 @@
       "nameTooShort": "يجب أن يتكون الاسم من حرفين على الأقل",
       "invalidEmail": "يرجى إدخال عنوان بريد إلكتروني صالح",
       "passwordTooShort": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
-      "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين"
+      "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
     },
     "success": {
       "registered": "تم التسجيل بنجاح! يرجى التحقق من بريدك الإلكتروني لتفعيل حسابك."
+    }
+  },
+  "forgotPassword": {
+    "pageTitle": "نسيت كلمة المرور — لوحة التحكم",
+    "pageDescription": "إعادة تعيين كلمة مرور حسابك",
+    "appName": "لوحة التحكم",
+    "title": "نسيت كلمة المرور؟",
+    "subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "you@example.com",
+    "submitButton": "إرسال رابط إعادة التعيين",
+    "sending": "جارٍ الإرسال...",
+    "backToLogin": "العودة إلى تسجيل الدخول",
+    "successMessage": "إذا كان هناك حساب بهذا البريد الإلكتروني، فقد أرسلنا رابط إعادة تعيين كلمة المرور إليه.",
+    "success": {
+      "emailSent": "تم إرسال رابط إعادة التعيين! تحقق من بريدك الإلكتروني."
+    },
+    "errors": {
+      "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "resetPassword": {
+    "pageTitle": "إعادة تعيين كلمة المرور — لوحة التحكم",
+    "pageDescription": "تعيين كلمة مرور جديدة لحسابك",
+    "appName": "لوحة التحكم",
+    "title": "تعيين كلمة مرور جديدة",
+    "subtitle": "أدخل كلمة المرور الجديدة أدناه.",
+    "passwordLabel": "كلمة المرور الجديدة",
+    "passwordPlaceholder": "أدخل كلمة المرور الجديدة",
+    "passwordConfirmationLabel": "تأكيد كلمة المرور الجديدة",
+    "passwordConfirmationPlaceholder": "أكد كلمة المرور الجديدة",
+    "submitButton": "إعادة تعيين كلمة المرور",
+    "resetting": "جارٍ إعادة التعيين...",
+    "success": {
+      "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح! يمكنك الآن تسجيل الدخول."
+    },
+    "errors": {
+      "passwordTooShort": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+      "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
     }
   },
   "locale": {
@@ -96,6 +139,9 @@
   "dashboard": {
     "title": "الرئيسية",
     "subtitle": "مرحباً بعودتك. إليك ما يحدث في متجرك.",
+    "noActiveStore": "لا يوجد متجر نشط",
+    "noActiveStoreMessage": "اختر متجراً من المبدّل لرؤية مبيعاتك وطلباتك وأدائك بلمحة سريعة.",
+    "viewAllStores": "عرض جميع المتاجر",
     "error": "فشل تحميل بيانات لوحة التحكم. يرجى تحديث الصفحة.",
     "stats": {
       "revenue": "إجمالي الإيرادات",
@@ -209,15 +255,30 @@
       "delete": "حذف العميل",
       "deleteConfirm": "هل أنت متأكد من رغبتك في حذف هذا العميل؟ لا يمكن التراجع عن هذا الإجراء.",
       "deleteSuccess": "تم حذف العميل",
-      "deleteError": "فشل حذف العميل"
+      "deleteError": "فشل حذف العميل",
+      "error": "فشل تحميل تفاصيل العميل"
     },
     "cancel": "إلغاء",
     "delete": "حذف"
   },
   "stores": {
+    "title": "المتاجر",
+    "subtitle": "إدارة متاجرك وأعمالك",
+    "createButton": "إنشاء متجر",
     "noStores": "ليس لديك أي متاجر حتى الآن.",
     "welcome": "أهلاً بك!",
-    "createFirst": "أنشئ متجرك الأول"
+    "createFirst": "أنشئ متجرك الأول",
+    "create": {
+      "title": "إنشاء متجر",
+      "checkingLimits": "جارٍ التحقق من حدود المتاجر...",
+      "limitReachedTitle": "تم الوصول إلى حد المتاجر",
+      "limitReachedDescription": "لقد وصلت إلى حد خطتك للمتاجر",
+      "currentUsage": "الاستخدام الحالي",
+      "storesCreated": "متجراً تم إنشاؤها",
+      "upgradePrompt": "قم بترقية خطتك لإنشاء المزيد من المتاجر وإدارة علامات تجارية متعددة.",
+      "viewPlans": "عرض الخطط",
+      "backToStores": "العودة إلى المتاجر"
+    }
   },
   "products": {
     "title": "المنتجات",
@@ -577,7 +638,6 @@
         "slugPlaceholder": "مثال: clothing",
         "sortOrder": "ترتيب العرض",
         "isActive": "نشط",
-        "parentCategory": "التصنيف الرئيسي",
         "noParent": "بدون أب",
         "searchParent": "ابحث في التصنيف الأب...",
         "noCategoriesFound": "لم يتم العثور على تصنيفات.",
@@ -772,7 +832,7 @@
       "verificationFailed": "لم نتمكن من التحقق من بريدك الإلكتروني. يرجى المحاولة مرة أخرى أو طلب رابط جديد."
     },
     "successTitle": "تم التحقق بنجاح",
-    "successDescription": "تم التحقق من بريدك الإلكتروني. يمكنك الآن الدخول إلى لوحة التحكم الخاصة بك.",
+    "successDescription": "تم التحقق من بريدك الإلكتروني. يرجى تسجيل الدخول للمتابعة.",
     "goToDashboard": "الذهاب إلى لوحة التحكم"
   },
   "cmsPages": {
@@ -830,11 +890,14 @@
         "template": "القالب",
         "status": "الحالة",
         "publishedAt": "تاريخ النشر",
-        "sortOrder": "ترتيب العرض"
+        "sortOrder": "ترتيب العرض",
+        "isHomepage": "استخدام كصفحة رئيسية",
+        "isHomepageHelp": "تعيين هذه الصفحة كصفحة رئيسية للمتجر"
       },
       "errors": {
         "titleRequired": "العنوان مطلوب بلغة واحدة على الأقل",
-        "slugRequired": "المعرّف مطلوب بلغة واحدة على الأقل"
+        "slugRequired": "المعرّف مطلوب بلغة واحدة على الأقل",
+        "validationFailed": "يرجى إصلاح أخطاء التحقق من الصحة قبل الحفظ."
       },
       "seo": {
         "metaTitle": "عنوان Meta",
@@ -880,6 +943,152 @@
         "title": "العنوان",
         "subtitle": "العنوان الفرعي",
         "isActive": "نشط"
+      },
+      "editors": {
+        "video": {
+          "heading": "محتوى الفيديو",
+          "videoUrl": "رابط الفيديو",
+          "videoUrlHelp": "رابط يوتيوب أو فيميو (يتم اكتشاف صيغة التضمين تلقائياً)",
+          "posterUrl": "رابط الصورة المصغرة",
+          "description": "الوصف"
+        },
+        "cta": {
+          "heading": "محتوى دعوة الإجراء",
+          "ctas": "دعوات الإجراء",
+          "addCta": "إضافة دعوة إجراء",
+          "noCtas": "لا توجد دعوات إجراء بعد",
+          "label": "نص الزر",
+          "url": "رابط الزر",
+          "style": "نمط الزر",
+          "stylePrimary": "أساسي",
+          "styleSecondary": "ثانوي",
+          "styleOutline": "محدد",
+          "trustBadges": "شارات الثقة",
+          "addTrustBadge": "إضافة شارة",
+          "noTrustBadges": "لا توجد شارات ثقة بعد",
+          "badgeText": "نص الشارة"
+        },
+        "custom": {
+          "heading": "قسم مخصص",
+          "warning": "الأقسام المخصصة تظهر كعنصر نائب على الواجهة الأمامية حتى يتم إضافة مُعالج مخصص. استخدم هذا للإعدادات المتقدمة.",
+          "content": "المحتوى (JSON)",
+          "settings": "الإعدادات (JSON)"
+        },
+        "features": {
+          "heading": "محتوى المميزات",
+          "addFeature": "إضافة ميزة",
+          "noFeatures": "لا توجد مميزات بعد",
+          "title": "عنوان الميزة",
+          "body": "وصف الميزة",
+          "icon": "الأيقونة"
+        },
+        "faq": {
+          "heading": "محتوى الأسئلة الشائعة",
+          "addQuestion": "إضافة سؤال",
+          "noQuestions": "لا توجد أسئلة بعد",
+          "question": "السؤال",
+          "answer": "الإجابة"
+        },
+        "gallery": {
+          "heading": "أعضاء الفريق",
+          "note": "يعرض هذا القسم أعضاء الفريق، وليس الصور العامة.",
+          "showBio": "عرض السيرة الذاتية",
+          "addMember": "إضافة عضو",
+          "noMembers": "لا يوجد أعضاء فريق بعد",
+          "name": "الاسم",
+          "role": "المنصب / الدور",
+          "bio": "السيرة الذاتية",
+          "image": "رابط الصورة"
+        },
+        "testimonials": {
+          "heading": "محتوى آراء العملاء",
+          "showRating": "عرض التقييمات",
+          "addTestimonial": "إضافة رأي",
+          "noTestimonials": "لا توجد آراء بعد",
+          "quote": "الاقتباس",
+          "author": "اسم الكاتب",
+          "role": "الدور / الشركة",
+          "rating": "التقييم (1-5)",
+          "avatar": "رابط الصورة الشخصية",
+          "aggregate": "الإحصائيات الإجمالية (اختياري)",
+          "averageRating": "متوسط التقييم",
+          "totalReviews": "إجمالي المراجعات"
+        },
+        "content": {
+          "heading": "محتوى غني",
+          "body": "المحتوى الرئيسي",
+          "stats": "الإحصائيات",
+          "addStat": "إضافة إحصائية",
+          "noStats": "لا توجد إحصائيات بعد",
+          "statValue": "القيمة",
+          "statLabel": "التسمية",
+          "promises": "الوعود",
+          "addPromise": "إضافة وعد",
+          "noPromises": "لا توجد وعود بعد",
+          "promiseTitle": "عنوان الوعد",
+          "promiseBody": "تفاصيل الوعد",
+          "metrics": "المقاييس",
+          "addMetric": "إضافة مقياس",
+          "noMetrics": "لا توجد مقاييس بعد",
+          "metricLabel": "اسم المقياس",
+          "metricValue": "القيمة",
+          "metricNote": "ملاحظة",
+          "disclosure": "الإفصاح"
+        },
+        "pricing": {
+          "heading": "خطط التسعير",
+          "addPlan": "إضافة خطة",
+          "noPlans": "لا توجد خطط بعد",
+          "name": "اسم الخطة",
+          "price": "السعر",
+          "currency": "العملة",
+          "description": "الوصف",
+          "period": "فترة الفوترة",
+          "features": "المميزات",
+          "addFeature": "إضافة ميزة",
+          "ctaLabel": "نص زر الإجراء",
+          "ctaUrl": "رابط زر الإجراء",
+          "badge": "الشارة",
+          "featured": "خطة مميزة"
+        },
+        "hero": {
+          "heading": "محتوى البطل",
+          "eyebrow": "النص العلوي",
+          "headline": "العنوان الرئيسي",
+          "subheadline": "العنوان الفرعي",
+          "ctaText": "نص زر الإجراء",
+          "ctaUrl": "رابط زر الإجراء",
+          "visualType": "نوع المرئي",
+          "visualTypeGradient": "تدرج",
+          "visualTypeImage": "صورة",
+          "gradientFrom": "لون بداية التدرج",
+          "gradientTo": "لون نهاية التدرج",
+          "imageUrl": "رابط صورة الخلفية",
+          "note": "يقوم هذا المحرر بإنشاء عنصر بطل واحد. يتم مزامنة القيم تلقائياً مع الاحتياطيات على المستوى الأعلى لتوافق المعالج."
+        },
+        "products": {
+          "heading": "قسم المنتجات",
+          "selectProducts": "اختر المنتجات",
+          "settings": "إعدادات العرض",
+          "columns": "الأعمدة",
+          "style": "نمط العرض",
+          "styleGrid": "شبكة",
+          "styleCarousel": "دائري",
+          "styleList": "قائمة",
+          "showPrices": "عرض الأسعار",
+          "showAddToCart": "عرض زر الإضافة للسلة"
+        },
+        "categoryGrid": {
+          "heading": "محتوى شبكة الفئات",
+          "addCategory": "إضافة فئة",
+          "noCategories": "لا توجد فئات بعد",
+          "id": "معرف الفئة",
+          "name": "اسم الفئة",
+          "slug": "الاسم المختصر",
+          "path": "المسار",
+          "productCount": "عدد المنتجات",
+          "image": "صورة الفئة"
+        }
       }
     },
     "sectionTypes": {
@@ -887,42 +1096,11 @@
       "features": "مميزات",
       "faq": "الأسئلة الشائعة",
       "gallery": "معرض الصور",
-      "testimonials": "آراء العملاء"
+      "testimonials": "آراء العملاء",
+      "category_grid": "شبكة الفئات"
     },
     "detail": {
       "error": "فشل تحميل الصفحة التسويقية"
-    }
-  },
-  "heroBanners": {
-    "loading": "جارٍ التحميل...",
-    "title": "البانرات الترويجية",
-    "subtitle": "إدارة البانرات الترويجية للصفحة الرئيسية",
-    "new": "بانر جديد",
-    "status": {
-      "active": "نشط",
-      "inactive": "غير نشط",
-      "deleted": "محذوف"
-    },
-    "table": {
-      "position": "الترتيب",
-      "type": "النوع",
-      "title": "العنوان",
-      "cta": "زر الدعوة",
-      "status": "الحالة",
-      "actions": "الإجراءات",
-      "edit": "تعديل",
-      "delete": "حذف",
-      "restore": "استعادة",
-      "empty": "لم يتم العثور على بانرات ترويجية",
-      "deleteConfirm": "هل أنت متأكد من رغبتك في حذف هذا البانر؟",
-      "deleteSuccess": "تم حذف البانر",
-      "deleteError": "فشل حذف البانر",
-      "restoreSuccess": "تمت استعادة البانر",
-      "restoreError": "فشل استعادة البانر"
-    },
-    "form": {
-      "createTitle": "بانر ترويجي جديد",
-      "editTitle": "تعديل البانر الترويجي"
     }
   },
   "theme": {
@@ -934,6 +1112,8 @@
       "createDialog": {
         "title": "إنشاء قائمة تنقل",
         "description": "إنشاء قائمة تنقل جديدة لمتجرك",
+        "success": "تم إنشاء قائمة التنقل بنجاح",
+        "error": "فشل في إنشاء قائمة التنقل",
         "saveSuccess": "تم إنشاء قائمة التنقل بنجاح",
         "saveError": "فشل في إنشاء قائمة التنقل",
         "form": {
@@ -1141,6 +1321,7 @@
     "preview": "معاينة القالب",
     "sections": "أقسام",
     "currentlyActive": "نشط حالياً",
+    "customize": "تخصيص",
     "publish": "نشر",
     "publishing": "جاري النشر...",
     "publishSuccess": "تم نشر القالب بنجاح",
@@ -1176,6 +1357,257 @@
       "typographyDescription": "اختر الخطوط لقالبك",
       "headingFont": "خط العناوين",
       "bodyFont": "خط المحتوى"
+    }
+  },
+  "billing": {
+    "title": "الاشتراك والفواتير",
+    "subtitle": "إدارة اشتراكك وعرض معلومات الفواتير",
+    "loading": "جارٍ التحميل...",
+    "activatingSubscription": "جارٍ تفعيل اشتراكك... يرجى الانتظار لحظة.",
+    "redirectingToTrial": "جارٍ التحويل إلى تسجيل التجربة المجانية...",
+    "subscription": {
+      "title": "الاشتراك الحالي",
+      "description": "إدارة اشتراكك والفواتير",
+      "plan": "الخطة",
+      "billedAnnually": "الدفع السنوي",
+      "billedMonthly": "الدفع الشهري",
+      "renewsOn": "يتجدد في",
+      "changePlan": "تغيير الخطة",
+      "billingPortal": "بوابة الفواتير",
+      "cancelDowngrade": "إلغاء التخفيض",
+      "resumeSubscription": "استئناف الاشتراك"
+    },
+    "status": {
+      "incomplete": "غير مكتمل",
+      "trialing": "تجربة مجانية",
+      "active": "نشط",
+      "pastDue": "فشل الدفع",
+      "gracePeriod": "فترة سماح",
+      "paused": "متوقف مؤقتاً",
+      "canceled": "ملغي",
+      "expired": "منتهي الصلاحية"
+    },
+    "alerts": {
+      "downgradeScheduled": "تم جدولة التخفيض",
+      "downgradeMessage": "ستتغير خطتك من {currentPlan} إلى {newPlan} في {date}",
+      "keepAccessMessage": "ستحتفظ بإمكانية الوصول الكامل إلى ميزات {planName} حتى ذلك الحين. لن يتم إصدار استرداد للوقت المتبقي.",
+      "trialEnds": "تنتهي التجربة في {date}",
+      "trialMessage": "اختر خطة للمتابعة بعد انتهاء تجربتك",
+      "subscriptionCanceled": "تم إلغاء الاشتراك",
+      "accessUntil": "الوصول حتى {date}",
+      "paymentFailed": "فشل الدفع",
+      "updatePaymentBy": "تحديث الدفع بحلول {date}",
+      "trialStarted": "بدأت التجربة!",
+      "trialActivating": "جارٍ تفعيل اشتراكك. قد يستغرق هذا بضع ثوانٍ...",
+      "subscriptionActive": "نجاح!",
+      "subscriptionActiveMessage": "اشتراكك نشط الآن."
+    },
+    "usage": {
+      "title": "الاستخدام والحدود",
+      "description": "الاستخدام الحالي عبر اشتراكك",
+      "stores": "المتاجر",
+      "products": "المنتجات",
+      "features": "المميزات",
+      "enabled": "مفعّل",
+      "disabled": "معطّل",
+      "approachingLimit": "أنت تقترب من حد المتاجر الخاص بك"
+    },
+    "payment": {
+      "title": "الفواتير والدفع",
+      "description": "إدارة طرق الدفع وعرض الفواتير",
+      "viewInvoices": "عرض الفواتير",
+      "billingPortal": "بوابة الفواتير",
+      "opening": "جارٍ الفتح...",
+      "nextInvoice": "الفاتورة التالية",
+      "on": "في"
+    },
+    "plans": {
+      "title": "اختر خطتك",
+      "subtitle": "اختر الخطة التي تناسب احتياجات عملك",
+      "trialSubtitle": "ابدأ اشتراكك المدفوع باختيار خطة",
+      "loadingPlans": "جارٍ تحميل الخطط...",
+      "noPlans": "لا توجد خطط متاحة",
+      "monthly": "شهري",
+      "annual": "سنوي",
+      "savePercentage": "(وفّر 20%)",
+      "perYear": "/سنة",
+      "perMonth": "/شهر",
+      "billedAnnually": "الدفع السنوي",
+      "currentPlan": "الخطة الحالية",
+      "selectPlan": "اختر {plan}",
+      "popular": "الأكثر شعبية",
+      "upTo": "حتى {count}",
+      "included": "مشمول",
+      "redirectingToCheckout": "جارٍ التحويل إلى صفحة الدفع",
+      "settingUpSubscription": "جارٍ إعداد اشتراكك...",
+      "planUpgraded": "تمت ترقية الخطة!",
+      "upgradedTo": "تمت ترقيتك إلى {plan}",
+      "downgradeScheduled": "تم جدولة التخفيض",
+      "downgradeMessage": "ستتغير خطتك إلى {plan} في نهاية فترة الفوترة. ستحتفظ بإمكانية الوصول الكامل إلى خطتك الحالية حتى ذلك الحين."
+    },
+    "downgrade": {
+      "confirmTitle": "تأكيد التخفيض",
+      "confirmDescription": "أنت على وشك التخفيض من {currentPlan} إلى {targetPlan}. سيصبح التغيير ساريًا في {date}.",
+      "whatHappens": "ماذا يحدث عند التخفيض:",
+      "reducedLimits": "حدود تخزين وميزات أقل",
+      "fewerFeatures": "الوصول إلى ميزات مميزة أقل",
+      "lowerPriority": "دعم ذو أولوية أقل",
+      "noteTitle": "ملاحظة:",
+      "noteMessage": "ستحتفظ بإمكانية الوصول الكامل إلى خطتك الحالية حتى {date}.",
+      "cancel": "إلغاء",
+      "confirmButton": "التخفيض إلى {plan}",
+      "processing": "جارٍ المعالجة...",
+      "failed": "فشل التخفيض",
+      "failedMessage": "فشل جدولة التخفيض. يرجى المحاولة مرة أخرى."
+    },
+    "errors": {
+      "noActiveStore": "لم يتم العثور على متجر نشط. يرجى اختيار متجر أولاً.",
+      "planNotFound": "الخطة غير موجودة",
+      "priceNotFound": "السعر غير متوفر لدورة الفوترة المحددة",
+      "checkoutFailed": "فشل بدء عملية الدفع. يرجى المحاولة مرة أخرى.",
+      "planChangeFailed": "فشل تغيير الخطة. يرجى المحاولة مرة أخرى."
+    },
+    "invoices": {
+      "title": "الفواتير",
+      "subtitle": "عرض وتنزيل فواتير الفوترة الخاصة بك"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "إدارة ملفك الشخصي والفواتير وإعدادات المتجر",
+    "noActiveStore": "لا يوجد متجر نشط",
+    "noActiveStoreMessage": "اختر متجرًا من المبدّل لتكوين إعداداته وتفضيلاته",
+    "profile": {
+      "title": "إعدادات الملف الشخصي",
+      "subtitle": "إدارة معلوماتك الشخصية وأمان الحساب",
+      "avatar": {
+        "title": "صورة الملف الشخصي",
+        "subtitle": "قم بتحميل صورة الملف الشخصي لتخصيص حسابك",
+        "uploading": "جارٍ الرفع...",
+        "upload": "رفع صورة جديدة",
+        "remove": "إزالة",
+        "change": "تغيير الصورة",
+        "recommended": "يوصى بـ: صورة مربعة، 400×400 بكسل على الأقل",
+        "maxSize": "الحد الأقصى لحجم الملف: 2 ميجابايت",
+        "supportedFormats": "التنسيقات المدعومة: JPEG، PNG، GIF، WebP",
+        "invalidFileType": "يرجى تحميل ملف صورة صالح (JPEG، PNG، GIF، أو WebP)",
+        "fileTooLarge": "يجب أن يكون حجم الصورة أقل من 2 ميجابايت"
+      },
+      "info": {
+        "title": "المعلومات الشخصية",
+        "subtitle": "تحديث الاسم والبريد الإلكتروني وتفاصيل الاتصال",
+        "name": "الاسم الكامل",
+        "namePlaceholder": "أدخل اسمك",
+        "email": "عنوان البريد الإلكتروني",
+        "emailPlaceholder": "you@example.com",
+        "phone": "رقم الهاتف",
+        "phoneOptional": "رقم الهاتف (اختياري)",
+        "phonePlaceholder": "+966 50 000 0000",
+        "emailVerified": "موثق",
+        "emailNotVerified": "غير موثق",
+        "emailVerificationPrompt": "يرجى التحقق من عنوان بريدك الإلكتروني للوصول إلى جميع الميزات.",
+        "emailChangeNote": "تغيير بريدك الإلكتروني يتطلب إعادة التحقق.",
+        "phoneNote": "يُستخدم لاستعادة الحساب والإشعارات المهمة.",
+        "save": "حفظ التغييرات",
+        "saving": "جارٍ الحفظ...",
+        "saved": "تم الحفظ",
+        "saveSuccess": "تم تحديث الملف الشخصي بنجاح",
+        "saveError": "فشل تحديث الملف الشخصي"
+      },
+      "password": {
+        "title": "تغيير كلمة المرور",
+        "subtitle": "تحديث كلمة المرور الخاصة بك للحفاظ على أمان حسابك",
+        "currentPassword": "كلمة المرور الحالية",
+        "currentPasswordPlaceholder": "أدخل كلمة المرور الحالية",
+        "newPassword": "كلمة المرور الجديدة",
+        "newPasswordPlaceholder": "أدخل كلمة المرور الجديدة",
+        "confirmPassword": "تأكيد كلمة المرور الجديدة",
+        "confirmPasswordPlaceholder": "أكد كلمة المرور الجديدة",
+        "changePassword": "تغيير كلمة المرور",
+        "updatePassword": "تحديث كلمة المرور",
+        "changing": "جارٍ التغيير...",
+        "updating": "جارٍ التحديث...",
+        "passwordUpdated": "تم تحديث كلمة المرور",
+        "changeSuccess": "تم تغيير كلمة المرور بنجاح",
+        "changeError": "فشل تغيير كلمة المرور",
+        "requirements": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل."
+      },
+      "account": {
+        "title": "حالة الحساب",
+        "subtitle": "إدارة أمان حسابك والخدمات المتصلة",
+        "statusTitle": "حالة الحساب",
+        "statusDescription": "حسابك نشط وفي وضع جيد",
+        "statusActive": "نشط",
+        "connectedServices": "الخدمات المتصلة",
+        "passwordAuth": "مصادقة كلمة المرور",
+        "passwordAuthDesc": "تسجيل الدخول بالبريد الإلكتروني وكلمة المرور",
+        "googleAccount": "حساب جوجل",
+        "googleAccountDesc": "تسجيل الدخول باستخدام حساب جوجل الخاص بك",
+        "enabled": "مفعّل",
+        "notConnected": "غير متصل",
+        "dangerZone": "منطقة الخطر",
+        "dangerZoneDesc": "إجراءات لا يمكن التراجع عنها تؤثر على حسابك",
+        "deleteAccountButton": "حذف الحساب",
+        "deleteConfirmTitle": "هل أنت متأكد تمامًا؟",
+        "deleteConfirmWarning": "لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف حسابك نهائيًا وإزالة جميع البيانات المرتبطة من خوادمنا.",
+        "deleteIncludesTitle": "يشمل ذلك:",
+        "deleteIncludesStores": "جميع متاجرك وبياناتها",
+        "deleteIncludesProducts": "المنتجات والطلبات ومعلومات العملاء",
+        "deleteIncludesBilling": "سجل الفواتير والاشتراكات",
+        "deleteIncludesThemes": "تخصيصات وإعدادات المظهر",
+        "deleteIrreversible": "⚠️ هذا الإجراء لا رجعة فيه. لا يمكن استعادة بياناتك.",
+        "deleteConfirmButton": "نعم، احذف حسابي",
+        "cancel": "إلغاء",
+        "language": "اللغة",
+        "languageDescription": "اختر لغتك المفضلة",
+        "timezone": "المنطقة الزمنية",
+        "timezoneDescription": "اضبط منطقتك الزمنية المحلية",
+        "deleteAccount": "حذف الحساب",
+        "deleteAccountDescription": "حذف حسابك نهائيًا وجميع البيانات المرتبطة به",
+        "deleteAccountConfirm": "هل أنت متأكد من رغبتك في حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء."
+      }
+    },
+    "billing": {
+      "title": "الفواتير والاشتراك",
+      "subtitle": "إدارة خطة الاشتراك ومعلومات الفوترة",
+      "currentPlan": "الخطة الحالية",
+      "viewBilling": "عرض تفاصيل الفواتير",
+      "manageBilling": "إدارة الفواتير"
+    },
+    "billingCard": {
+      "title": "الاشتراك والفواتير",
+      "subtitle": "إدارة خطة الاشتراك ومعلومات الفوترة",
+      "loading": "جارٍ تحميل معلومات الاشتراك...",
+      "noSubscription": "ليس لديك اشتراك نشط",
+      "startTrial": "ابدأ تجربة مجانية",
+      "currentPlan": "الخطة الحالية",
+      "billedCycle": "الدفع {cycle}ياً",
+      "trialEnds": "تنتهي التجربة",
+      "renews": "يتجدد",
+      "manageSubscription": "إدارة الاشتراك",
+      "viewPlans": "عرض الخطط",
+      "billingPortal": "بوابة الفواتير",
+      "opening": "جارٍ الفتح..."
+    },
+    "store": {
+      "title": "إعدادات المتجر",
+      "subtitle": "إدارة اسم متجرك وعرض معرّف المتجر",
+      "name": "اسم المتجر",
+      "namePlaceholder": "مثال: شركة أكمي",
+      "nameHint": "يُعرض هذا للعملاء ويظهر في مبدّل المتجر.",
+      "slug": "معرّف المتجر",
+      "slugHint": "يُستخدم المعرّف في عنوان URL لمتجرك. تغييره سيؤثر على الروابط الموجودة وتحسين محركات البحث، لذا لا يمكن تعديله من هذا النموذج.",
+      "slugChangeQuestion": "هل تحتاج إلى تغيير المعرّف؟",
+      "slugChangeAnswer": "تواصل مع فريق الدعم مع المعرّف المفضل لديك وسنساعدك خلال العملية. لاحظ أن تغيير المعرّف سيحدّث عنوان URL لمتجرك وقد يؤثر على نتائج البحث المفهرسة.",
+      "save": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ...",
+      "saved": "تم الحفظ",
+      "description": "الوصف",
+      "descriptionPlaceholder": "صف متجرك",
+      "domain": "النطاق المخصص",
+      "domainPlaceholder": "yourstore.com",
+      "saveSuccess": "تم تحديث إعدادات المتجر",
+      "saveError": "فشل تحديث إعدادات المتجر"
     }
   },
   "assets": "الملفات",

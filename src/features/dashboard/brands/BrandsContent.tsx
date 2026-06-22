@@ -55,7 +55,7 @@ export default function BrandsContent({ storeId, initialFilters }: Props) {
   const queryClient = useQueryClient();
 
   if (error) {
-    logger.error('Failed to load brands', { error });
+    logger.error('Failed to load brands', error);
   }
 
   const deleteMutation = useMutation({

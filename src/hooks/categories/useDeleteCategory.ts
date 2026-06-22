@@ -34,7 +34,7 @@ export function useDeleteCategory(storeId: string, categoryId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to delete category', { error });
+      logger.error('Failed to delete category', error);
       toast.error(error.message ?? t('form.deleteError'));
     },
   });

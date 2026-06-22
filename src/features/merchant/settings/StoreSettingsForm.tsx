@@ -6,6 +6,7 @@ import type { ApiError } from '@/types/api';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
+import { useTranslations } from 'next-intl';
 import { useUpdateStore } from './useUpdateStore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -29,6 +30,7 @@ interface StoreSettingsFormProps {
  * Allows editing basic store metadata like name.
  */
 export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
+  const t = useTranslations('settings.store');
   const [showSaved, setShowSaved] = useState(false);
   const updateStoreMutation = useUpdateStore(String(store.id));
 
@@ -65,31 +67,31 @@ export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
   return (
     <Card className="max-w-2xl">
       <CardHeader>
-        <CardTitle>Store Settings</CardTitle>
+        <CardTitle>{t('title')}</CardTitle>
         <CardDescription>
-          Manage your store&rsquo;s name and view your store slug.
+          {t('subtitle')}
         </CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="store-name">Store Name</Label>
+            <Label htmlFor="store-name">{t('name')}</Label>
             <Input
               id="store-name"
               {...register('name')}
-              placeholder="e.g. Acme Corp"
+              placeholder={t('namePlaceholder')}
               disabled={isPending}
             />
             {errors.name && (
               <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
             <p className="text-xs text-muted-foreground">
-              This is shown to customers and appears in the store switcher.
+              {t('nameHint')}
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="store-slug">Store Slug</Label>
+            <Label htmlFor="store-slug">{t('slug')}</Label>
             <Input
               id="store-slug"
               value={store.slug}
@@ -97,14 +99,14 @@ export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
               className="bg-muted opacity-70"
             />
             <p className="text-xs text-muted-foreground">
-              The slug is used in your store&rsquo;s URL. Changing it would affect existing links and SEO, so it cannot be modified from this form.
+              {t('slugHint')}
             </p>
             <details className="group">
               <summary className="cursor-pointer text-xs font-medium text-muted-foreground hover:text-foreground">
-                Need to change your slug?
+                {t('slugChangeQuestion')}
               </summary>
               <p className="mt-2 text-xs text-muted-foreground">
-                Contact our support team with your preferred slug and we&rsquo;ll help you through the process. Note that changing a slug will update your store URL and may affect indexed search results.
+                {t('slugChangeAnswer')}
               </p>
             </details>
           </div>
@@ -115,7 +117,7 @@ export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
               {showSaved ? (
                 <span className="flex items-center gap-1.5 text-sm text-green-600">
                   <CheckCircle2 className="h-4 w-4" />
-                  Saved
+                  {t('saved')}
                 </span>
               ) : null}
             </div>
@@ -127,10 +129,10 @@ export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  {t('saving')}
                 </>
               ) : (
-                'Save changes'
+                t('save')
               )}
             </Button>
           </div>

@@ -27,7 +27,7 @@ export default async function UserDetailContent({ storeId, userId }: Props) {
     );
     user = mapUserDetail(response.data);
   } catch (error) {
-    logger.error('Failed to load user detail', { error });
+    logger.error('Failed to load user detail', error);
   }
 
   if (!user) {

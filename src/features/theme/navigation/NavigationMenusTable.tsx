@@ -89,7 +89,7 @@ export default function NavigationMenusTable({
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
                     <Link
-                      href={ROUTES.merchant.theme.navigation.edit(String(menu.id))}
+                      href={ROUTES.merchant.navigation.edit(String(menu.id))}
                       className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
                     >
                       <Edit className="h-4 w-4" />

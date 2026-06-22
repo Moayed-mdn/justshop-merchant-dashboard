@@ -154,6 +154,10 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
         return null; // stay on /setup, ProvisioningStep will render
       }
 
+      if (accessState.kind === 'ready') {
+        return null; // stay on /setup, SetupCompleteStep will render - let user choose their next action
+      }
+
       return accessState.redirectPath;
     }
 

@@ -17,8 +17,10 @@ import { useCreatePortalSession } from '@/hooks/billing/useCreatePortalSession';
 import { formatCurrency } from '@/lib/billing/billing-utils';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslations } from 'next-intl';
 
 export function BillingPageClient() {
+  const t = useTranslations('billing');
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -35,8 +37,8 @@ export function BillingPageClient() {
     if (trialSuccess && !waitingForWebhook) {
       setWaitingForWebhook(true);
       toast({
-        title: 'Trial Started!',
-        description: 'Your subscription is being activated. This may take a few seconds...',
+        title: t('alerts.trialStarted'),
+        description: t('alerts.trialActivating'),
       });
       
       // Clean up URL
@@ -53,13 +55,13 @@ export function BillingPageClient() {
     if (!isLoading && waitingForWebhook) {
       if (subscription) {
         toast({
-          title: 'Success!',
-          description: 'Your subscription is now active.',
+          title: t('alerts.subscriptionActive'),
+          description: t('alerts.subscriptionActiveMessage'),
         });
       }
       setWaitingForWebhook(false);
     }
-  }, [isLoading, waitingForWebhook, subscription, toast]);
+  }, [isLoading, waitingForWebhook, subscription, toast, t]);
 
   const noSubscription = !isLoading && !subscription && !waitingForWebhook;
 
@@ -79,11 +81,11 @@ export function BillingPageClient() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold">Subscription & Billing</h1>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground">
             {waitingForWebhook 
-              ? 'Activating your subscription... Please wait a moment.' 
-              : 'Loading...'}
+              ? t('activatingSubscription')
+              : t('loading')}
           </p>
         </div>
       </div>
@@ -95,8 +97,8 @@ export function BillingPageClient() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold">Subscription & Billing</h1>
-          <p className="text-muted-foreground">Redirecting to trial signup...</p>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('redirectingToTrial')}</p>
         </div>
       </div>
     );
@@ -152,8 +154,8 @@ export function BillingPageClient() {
     <div className="space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold">Subscription & Billing</h1>
-        <p className="text-muted-foreground">Manage your subscription and view billing information</p>
+        <h1 className="text-3xl font-bold">{t('title')}</h1>
+        <p className="text-muted-foreground">{t('subtitle')}</p>
       </div>
 
       {/* Subscription Status */}
@@ -174,15 +176,15 @@ export function BillingPageClient() {
       <section>
         <Card>
           <CardHeader>
-            <CardTitle>Billing & Payment</CardTitle>
-            <CardDescription>Manage payment methods and view invoices</CardDescription>
+            <CardTitle>{t('payment.title')}</CardTitle>
+            <CardDescription>{t('payment.description')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="/merchant/billing/invoices" className="flex-1">
                 <Button variant="outline" className="w-full">
                   <Receipt className="me-2 h-4 w-4" />
-                  View Invoices
+                  {t('payment.viewInvoices')}
                 </Button>
               </Link>
               <Button
@@ -192,7 +194,7 @@ export function BillingPageClient() {
                 disabled={createPortal.isPending}
               >
                 <ExternalLink className="me-2 h-4 w-4" />
-                {createPortal.isPending ? 'Opening...' : 'Billing Portal'}
+                {createPortal.isPending ? t('payment.opening') : t('payment.billingPortal')}
               </Button>
             </div>
 
@@ -200,12 +202,12 @@ export function BillingPageClient() {
               <div className="rounded-lg border p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium">Next Invoice</p>
+                    <p className="text-sm font-medium">{t('payment.nextInvoice')}</p>
                     <p className="text-2xl font-bold">
                       {formatCurrency(currentPrice.amount_cents, currentPrice.currency)}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      on {new Date(subscription.current_period_ends_at).toLocaleDateString()}
+                      {t('payment.on')} {new Date(subscription.current_period_ends_at).toLocaleDateString()}
                     </p>
                   </div>
                   <CreditCard className="h-8 w-8 text-muted-foreground" />

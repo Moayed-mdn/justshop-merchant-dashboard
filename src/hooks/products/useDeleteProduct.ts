@@ -30,7 +30,7 @@ export function useDeleteProduct(
       options?.onSuccess?.();
     },
     onError: (error: ApiError) => {
-      logger.error('Delete product failed', { error });
+      logger.error('Delete product failed', error);
       options?.onError?.(error);
     },
   });

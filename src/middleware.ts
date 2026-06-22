@@ -74,8 +74,9 @@ export default function middleware(request: NextRequest): NextResponse {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = `/${locale}/login`;
     // Only set redirect if it's a safe internal path
-    if (pathname && !pathname.includes(':')) {
-      loginUrl.searchParams.set('redirect', pathname);
+    // Use strippedPath to avoid including locale twice
+    if (strippedPath && !strippedPath.includes(':')) {
+      loginUrl.searchParams.set('redirect', strippedPath);
     }
     return NextResponse.redirect(loginUrl);
   }

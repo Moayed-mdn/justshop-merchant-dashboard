@@ -19,20 +19,17 @@ export interface QuotaCheckResult {
  */
 export async function canCreateStore(): Promise<QuotaCheckResult> {
   try {
-    const entitlements = await getEntitlements();
+    const data = await getEntitlements();
 
-    // Find the stores.max feature
-    const maxStores = entitlements.features['stores.max'];
-    
+    const usage = (data as any)?.usage;
+    const maxStores = usage?.stores?.limit;
+    const currentCount = usage?.stores?.count ?? 0;
+
     if (typeof maxStores !== 'number') {
-      // No limit defined, allow creation
       return {
         allowed: true,
       };
     }
-
-    // Get current store count from limits
-    const currentCount = entitlements.limits?.stores_count || 0;
 
     if (currentCount >= maxStores) {
       return {
@@ -50,8 +47,6 @@ export async function canCreateStore(): Promise<QuotaCheckResult> {
       limit: maxStores,
     };
   } catch (error) {
-    // If entitlement check fails, allow creation (fail open)
-    console.error('Failed to check store quota:', error);
     return {
       allowed: true,
       reason: 'Unable to verify quota',

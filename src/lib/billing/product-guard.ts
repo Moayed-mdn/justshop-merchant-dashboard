@@ -22,8 +22,9 @@ export async function canCreateProduct(storeId: number): Promise<QuotaCheckResul
   try {
     const entitlements = await getEntitlements();
 
-    // Find the products.max feature
-    const maxProducts = entitlements.features['products.max'];
+    // Extract usage data - handle both legacy features format and usage format
+    const usage = (entitlements as any).usage;
+    const maxProducts = usage?.products?.limit ?? entitlements.features?.['products.max'];
     
     if (typeof maxProducts !== 'number') {
       // No limit defined, allow creation
@@ -32,8 +33,8 @@ export async function canCreateProduct(storeId: number): Promise<QuotaCheckResul
       };
     }
 
-    // Get current product count from limits
-    const currentCount = entitlements.limits?.products_count || 0;
+    // Get current product count
+    const currentCount = usage?.products?.count ?? entitlements.limits?.products_count ?? 0;
 
     if (currentCount >= maxProducts) {
       return {

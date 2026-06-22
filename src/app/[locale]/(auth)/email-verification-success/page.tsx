@@ -21,8 +21,8 @@ export default function EmailVerificationSuccessPage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <p className="text-muted-foreground">{t('successDescription')}</p>
-          <Button onClick={() => router.push('/dashboard')} className="w-full">
-            {t('goToDashboard')}
+          <Button onClick={() => router.push('/login')} className="w-full">
+            {t('backToLogin')}
           </Button>
         </CardContent>
       </Card>

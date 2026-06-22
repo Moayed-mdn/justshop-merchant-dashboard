@@ -1,5 +1,16 @@
 /**
  * Zod schemas for marketing page filters and forms.
+ * 
+ * IMPORTANT: These schemas match the EXACT backend structure:
+ * - Backend Model: StoreMarketingPage (laratenant-backend/app/Models/Cms/Marketing/Store/StoreMarketingPage.php)
+ * - Backend Resource: AdminStoreMarketingPageResource
+ * - Backend Section Resource: StoreMarketingSectionResource
+ * 
+ * Backend returns:
+ * - title, slug, excerpt, content: arrays (localized maps like { en: "text", ar: "نص" })
+ * - seo: array with meta_title, meta_description (arrays), canonical_url, og_image, robots
+ * - sections: array with section_type, identifier, title, subtitle, content, settings (all arrays)
+ * - published_at: ISO 8601 string or null
  */
 
 import { z } from 'zod';
@@ -17,50 +28,95 @@ export const MarketingPageFiltersSchema = z.object({
 export type MarketingPageFilters = z.infer<typeof MarketingPageFiltersSchema>;
 
 // ── Localized string schema ───────────────────────────────────────────────
+// Backend returns objects like { en: "text", ar: "نص" }
+// BUT can also return { en: null, ar: null } for empty fields!
 
-const LocalizedStringSchema = z.record(z.string(), z.string());
+const LocalizedStringSchema = z.record(
+  z.string(), 
+  z.string().nullable()
+).transform(val => {
+  // Convert null values to empty strings
+  if (!val) return { en: '', ar: '' };
+  const result: Record<string, string> = {};
+  for (const [key, value] of Object.entries(val)) {
+    result[key] = value || '';
+  }
+  return result;
+});
 
 // ── SEO schema ────────────────────────────────────────────────────────────
+// Backend returns seo as array with specific structure. Fields can be null or empty.
+// og_image can be string or array<string, string> (localized) per backend SeoMetaDTO
 
 export const MarketingPageSeoSchema = z.object({
-  meta_title:       LocalizedStringSchema.default({ en: '', ar: '' }),
-  meta_description: LocalizedStringSchema.default({ en: '', ar: '' }),
-  canonical_url:    z.string().default(''),
-  robots:           z.string().default(''),
-  og_image:         z.string().default(''),
+  meta_title:       LocalizedStringSchema,
+  meta_description: LocalizedStringSchema,
+  canonical_url:    z.string().nullable().transform(val => val || ''),
+  robots:           z.string().nullable().transform(val => val || ''),
+  og_image:         z.union([
+    z.string(), 
+    z.record(z.string(), z.string()),
+    z.null()
+  ]).transform(val => {
+    // Transform to string for form consistency
+    if (typeof val === 'string') return val;
+    if (val && typeof val === 'object') {
+      const values = Object.values(val).filter(v => v);
+      return values[0] || '';
+    }
+    return '';
+  }),
 });
 
 // ── Section schema ────────────────────────────────────────────────────────
+// Backend StoreMarketingSection model casts: title, subtitle, content, settings as arrays
 
 export const MarketingPageSectionSchema = z.object({
+  // Backend uses 'section_type', frontend uses 'type' (mapper handles this)
   type:       z.string().min(1, 'Section type is required'),
   identifier: z.string().min(1, 'Section identifier is required'),
-  title:      LocalizedStringSchema.default({ en: '', ar: '' }),
-  subtitle:   LocalizedStringSchema.default({ en: '', ar: '' }),
-  content:    z.record(z.string(), z.unknown()).default({}),
-  settings:   z.record(z.string(), z.unknown()).default({}),
+  title:      LocalizedStringSchema,
+  subtitle:   LocalizedStringSchema,
+  // content and settings can be empty arrays [] from backend
+  content:    z.union([
+    z.record(z.string(), z.unknown()),
+    z.array(z.unknown())
+  ]).transform(val => {
+    if (Array.isArray(val) && val.length === 0) return {};
+    return val as Record<string, unknown>;
+  }),
+  settings:   z.union([
+    z.record(z.string(), z.unknown()),
+    z.array(z.unknown())
+  ]).transform(val => {
+    if (Array.isArray(val) && val.length === 0) return {};
+    return val as Record<string, unknown>;
+  }),
   is_active:  z.boolean().default(true),
 });
 
 export type MarketingPageSectionFormValues = z.infer<typeof MarketingPageSectionSchema>;
 
 // ── Create / Update form schema ───────────────────────────────────────────
+// Matches AdminStoreMarketingPageResource output shape
 
 export const MarketingPageFormSchema = z
   .object({
     title:        LocalizedStringSchema,
     slug:         LocalizedStringSchema,
-    excerpt:      LocalizedStringSchema.default({ en: '', ar: '' }),
+    excerpt:      LocalizedStringSchema,
     template:     z.enum(['landing', 'campaign', 'promotion', 'generic']),
     status:       z.enum(['draft', 'published', 'scheduled']),
-    published_at: z.string().nullable().default(null),
+    // Backend returns ISO 8601 string or null, form uses empty string for datetime-local input
+    published_at: z.string().default(''),
     sort_order:   z.coerce.number().min(0).default(0),
+    is_homepage:  z.boolean().default(false),
     seo:          MarketingPageSeoSchema,
     sections:     z.array(MarketingPageSectionSchema).default([]),
   })
   .superRefine((data, ctx) => {
     // published_at is required when status is 'scheduled'
-    if (data.status === 'scheduled' && !data.published_at) {
+    if (data.status === 'scheduled' && (!data.published_at || data.published_at.trim() === '')) {
       ctx.addIssue({
         code:    z.ZodIssueCode.custom,
         message: 'Publish date is required when status is Scheduled',
@@ -69,7 +125,7 @@ export const MarketingPageFormSchema = z
     }
 
     // title must have at least one non-empty locale
-    const hasTitle = Object.values(data.title).some((v) => v.trim().length > 0);
+    const hasTitle = Object.values(data.title).some((v) => v && v.trim().length > 0);
     if (!hasTitle) {
       ctx.addIssue({
         code:    z.ZodIssueCode.custom,
@@ -79,7 +135,7 @@ export const MarketingPageFormSchema = z
     }
 
     // slug must have at least one non-empty locale
-    const hasSlug = Object.values(data.slug).some((v) => v.trim().length > 0);
+    const hasSlug = Object.values(data.slug).some((v) => v && v.trim().length > 0);
     if (!hasSlug) {
       ctx.addIssue({
         code:    z.ZodIssueCode.custom,

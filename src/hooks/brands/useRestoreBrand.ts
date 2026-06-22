@@ -30,7 +30,7 @@ export function useRestoreBrand(storeId: string, brandId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to restore brand', { error });
+      logger.error('Failed to restore brand', error);
       toast.error(error.message ?? t('form.restoreError'));
     },
   });

@@ -18,6 +18,8 @@ import { AlertTriangle, TrendingDown } from 'lucide-react';
 import { useDowngradeSubscription } from '@/hooks/billing/useDowngradeSubscription';
 import { useState } from 'react';
 import type { BillingCycle } from '@/types/billing/plan';
+import { useBootstrapStore } from '@/stores/bootstrapStore';
+import { useToast } from '@/hooks/use-toast';
 
 interface DowngradeConfirmDialogProps {
   open: boolean;
@@ -42,20 +44,56 @@ export function DowngradeConfirmDialog({
 }: DowngradeConfirmDialogProps) {
   const downgradeMutation = useDowngradeSubscription();
   const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
+  
+  // Get active store from bootstrap
+  const activeStore = useBootstrapStore((state) => state.activeStore);
 
   const handleDowngrade = async () => {
+    // Validate active store exists
+    if (!activeStore) {
+      toast({
+        title: 'Error',
+        description: 'No active store found. Please select a store first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       setIsProcessing(true);
+      
+      const storeId = activeStore.id;
+      
       await downgradeMutation.mutateAsync({
         plan_code: targetPlanCode,
         billing_cycle: billingCycle,
+        store_id: storeId,
         apply_immediately: false,
       });
       onSuccess?.();
       onOpenChange(false);
     } catch (error) {
-      // Error is handled by React Query
-      console.error('Failed to downgrade subscription:', error);
+      console.error('Downgrade failed:', error);
+      
+      // Extract meaningful error message
+      let errorMessage = 'Failed to schedule downgrade. Please try again.';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const apiError = error as { message?: string; errors?: Record<string, string[]> };
+        if (apiError.message) {
+          errorMessage = apiError.message;
+        } else if (apiError.errors && Object.keys(apiError.errors).length > 0) {
+          errorMessage = Object.values(apiError.errors).flat().join(', ');
+        }
+      }
+      
+      toast({
+        title: 'Downgrade Failed',
+        description: errorMessage,
+        variant: 'destructive',
+      });
     } finally {
       setIsProcessing(false);
     }

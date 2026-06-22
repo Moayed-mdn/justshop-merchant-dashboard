@@ -23,7 +23,7 @@ export function useUpdateTag(storeId: string, tagId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to update tag', { error });
+      logger.error('Failed to update tag', error);
       toast.error(error.message ?? t('form.updateError'));
     },
   });

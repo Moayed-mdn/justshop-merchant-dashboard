@@ -26,8 +26,9 @@ export default function MerchantDashboardPage() {
         />
         <WorkspaceEmptyState 
           icon={LayoutDashboard}
-          title="No active store"
-          message="Select a store from the switcher to see your sales, orders, and performance at a glance."
+          title={t('noActiveStore')}
+          message={t('noActiveStoreMessage')}
+          actionLabel={t('viewAllStores')}
         />
       </div>
     );

@@ -26,11 +26,12 @@ interface WorkspaceDashboardContentProps {
 export function WorkspaceDashboardContent({ storeId }: WorkspaceDashboardContentProps) {
   const t = useTranslations('dashboard');
   
-  const { data: stats, isLoading: statsLoading } = useDashboardStats(storeId);
-  const { data: orders, isLoading: ordersLoading } = useRecentOrders(storeId);
-  const { data: products, isLoading: productsLoading } = useTopProducts(storeId);
+  const { data: stats, isLoading: statsLoading, error: statsError, isError: isStatsError } = useDashboardStats(storeId);
+  const { data: orders, isLoading: ordersLoading, error: ordersError, isError: isOrdersError } = useRecentOrders(storeId);
+  const { data: products, isLoading: productsLoading, error: productsError, isError: isProductsError } = useTopProducts(storeId);
 
   const isLoading = statsLoading || ordersLoading || productsLoading;
+  const hasError = (isStatsError || isOrdersError || isProductsError) && !isLoading;
 
   if (isLoading) {
     return (
@@ -40,7 +41,8 @@ export function WorkspaceDashboardContent({ storeId }: WorkspaceDashboardContent
     );
   }
 
-  if (!stats || !orders || !products) {
+  // Only show error if not loading and at least one query has an error
+  if (hasError) {
     return (
       <div className="rounded-md bg-destructive/10 p-4">
         <p className="text-sm text-destructive">{t('error')}</p>

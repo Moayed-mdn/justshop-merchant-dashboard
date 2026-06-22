@@ -109,7 +109,7 @@ export function ThemeSettingsContent() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push(ROUTES.merchant.theme.navigation.list())}
+            onClick={() => router.push(ROUTES.merchant.theme.overview())}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t('common.back')}
@@ -122,7 +122,7 @@ export function ThemeSettingsContent() {
             </p>
             <Button
               className="mt-4"
-              onClick={() => router.push(ROUTES.merchant.theme.navigation.list())}
+              onClick={() => router.push(ROUTES.merchant.theme.overview())}
             >
               {t('common.theme.goToThemes')}
             </Button>
@@ -140,7 +140,7 @@ export function ThemeSettingsContent() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push(ROUTES.merchant.theme.navigation.list())}
+            onClick={() => router.push(ROUTES.merchant.theme.overview())}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t('common.back')}

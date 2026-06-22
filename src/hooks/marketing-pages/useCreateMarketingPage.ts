@@ -32,7 +32,7 @@ export function useCreateMarketingPage(storeId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to create marketing page', { error });
+      logger.error('Failed to create marketing page', error);
       toast.error(error.message ?? t('form.createError'));
     },
   });

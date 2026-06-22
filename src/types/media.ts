@@ -11,7 +11,8 @@ export type MediaContext =
   | 'categories' 
   | 'hero' 
   | 'tags' 
-  | 'stores';
+  | 'stores'
+  | 'cms';
 
 export interface UploadResponse {
   status: boolean;

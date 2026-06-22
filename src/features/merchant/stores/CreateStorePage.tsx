@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { CreateStoreStep } from '@/features/setup/components/CreateStoreStep';
 import { WorkspaceProvisioningView } from '../components/WorkspaceProvisioningView';
@@ -18,6 +19,7 @@ import Link from 'next/link';
  * Handles creating additional stores for an existing merchant.
  */
 export function CreateStorePage() {
+  const t = useTranslations('stores.create');
   const router = useRouter();
   const stores = useBootstrapStore((state) => state.stores);
   const [showProvisioning, setShowProvisioning] = useState(false);
@@ -63,11 +65,11 @@ export function CreateStorePage() {
     return (
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-2xl font-bold">Create Store</h1>
+          <h1 className="text-2xl font-bold">{t('title')}</h1>
         </div>
         <Card>
           <CardContent className="py-10 text-center">
-            <p className="text-sm text-muted-foreground">Checking store limits...</p>
+            <p className="text-sm text-muted-foreground">{t('checkingLimits')}</p>
           </CardContent>
         </Card>
       </div>
@@ -78,7 +80,7 @@ export function CreateStorePage() {
     return (
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-2xl font-bold">Create Store</h1>
+          <h1 className="text-2xl font-bold">{t('title')}</h1>
         </div>
         
         <Card>
@@ -88,9 +90,9 @@ export function CreateStorePage() {
                 <AlertCircle className="h-5 w-5 text-destructive" />
               </div>
               <div>
-                <CardTitle>Store Limit Reached</CardTitle>
+                <CardTitle>{t('limitReachedTitle')}</CardTitle>
                 <CardDescription>
-                  You've reached your plan's store limit
+                  {t('limitReachedDescription')}
                 </CardDescription>
               </div>
             </div>
@@ -99,26 +101,26 @@ export function CreateStorePage() {
             <div className="rounded-lg border bg-muted/50 p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium">Current Usage</p>
+                  <p className="text-sm font-medium">{t('currentUsage')}</p>
                   <p className="text-2xl font-bold">
                     {quotaCheck.currentCount || 0} / {quotaCheck.limit || 0}
                   </p>
-                  <p className="text-sm text-muted-foreground">stores created</p>
+                  <p className="text-sm text-muted-foreground">{t('storesCreated')}</p>
                 </div>
                 <Store className="h-8 w-8 text-muted-foreground" />
               </div>
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Upgrade your plan to create more stores and manage multiple brands.
+              {t('upgradePrompt')}
             </p>
 
             <div className="flex gap-2">
               <Button asChild>
-                <Link href={ROUTES.merchant.billing.plans()}>View Plans</Link>
+                <Link href={ROUTES.merchant.billing.plans()}>{t('viewPlans')}</Link>
               </Button>
               <Button asChild variant="outline">
-                <Link href={ROUTES.merchant.stores.list()}>Back to Stores</Link>
+                <Link href={ROUTES.merchant.stores.list()}>{t('backToStores')}</Link>
               </Button>
             </div>
           </CardContent>

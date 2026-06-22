@@ -61,7 +61,7 @@ export default function OrdersContent({ storeId, initialFilters }: Props) {
   };
 
   // Fetch orders
-  const { data, isLoading, error } = useOrders(storeId, filters);
+  const { data, isLoading, error, isError } = useOrders(storeId, filters);
 
   // Handler functions - reset page on filter change
   const handleSearchChange = (value: string) => {
@@ -94,7 +94,9 @@ export default function OrdersContent({ storeId, initialFilters }: Props) {
     logger.info('Per page changed', { perPage: newPerPage });
   };
 
-  if (error) {
+  // Only show error if not currently loading AND error state is active
+  // This prevents transient errors during hydration from blocking successful retries
+  if (isError && !isLoading) {
     return (
       <div className="rounded-md border p-8 text-center">
         <p className="text-destructive">Failed to load orders. Please refresh the page.</p>

@@ -20,6 +20,7 @@ import {
   Image,
   Palette,
   CreditCard,
+  Menu,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -51,7 +52,6 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
   const canManageTags     = useCan('canManageTags');
   const canManageUsers    = useCan('canManageUsers');
   const canManageCmsPages = useCan('canManageCmsPages');
-  const canManageHeroBanners = useCan('canManageBrands'); // Uses same store-management permission
   const canManageThemes   = true; // All merchants can manage themes
 
   const navItems: NavItem[] = [
@@ -93,25 +93,25 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
       show:  canManageTags,
     },
     {
-      label: t('heroBanners'),
-      href:  ROUTES.merchant.heroBanners.list(),
-      icon:  Image,
-      show:  canManageHeroBanners,
-    },
-    {
-      label: t('theme'),
-      href:  ROUTES.merchant.theme.overview(),
-      icon:  Palette,
-      show:  canManageThemes,
-    },
-    {
-      label: t('cmsPages'),
+      label: t('marketingPages'),
       href:  ROUTES.merchant.cmsPages(),
       icon:  FileText,
       show:  canManageCmsPages,
     },
     {
-      label: t('users'),
+      label: t('navigation'),
+      href:  ROUTES.merchant.navigation.list(),
+      icon:  Menu,
+      show:  canManageThemes,
+    },
+    {
+      label: t('themes'),
+      href:  ROUTES.merchant.theme.overview(),
+      icon:  Palette,
+      show:  canManageThemes,
+    },
+    {
+      label: t('customers'),
       href:  ROUTES.merchant.customers.list(),
       icon:  Users,
       show:  canManageUsers,
@@ -126,12 +126,6 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
       label: t('billing'),
       href:  ROUTES.merchant.billing.dashboard(),
       icon:  CreditCard,
-      show:  true,
-    },
-    {
-      label: t('settings'),
-      href:  ROUTES.merchant.settings(),
-      icon:  Settings,
       show:  true,
     },
   ];

@@ -53,7 +53,7 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
   const queryClient = useQueryClient();
 
   if (error) {
-    logger.error('Failed to load categories', { error });
+    logger.error('Failed to load categories', error);
   }
 
   const deleteMutation = useMutation({

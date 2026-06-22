@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Pagination } from '@/components/shared/Pagination';
 import { ROUTES } from '@/config/routes';
-import { Plus, Settings } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { ThemeFilters } from '@/types/theme';
 
 export function ThemesContent() {
@@ -49,19 +49,10 @@ export function ThemesContent() {
             {t('common.theme.overview.subtitle')}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => router.push(ROUTES.merchant.theme.settings())}
-          >
-            <Settings className="mr-2 h-4 w-4" />
-            {t('common.theme.settings.title')}
-          </Button>
-          <Button onClick={() => setShowCreateDialog(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            {t('common.theme.createTheme')}
-          </Button>
-        </div>
+        <Button onClick={() => setShowCreateDialog(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          {t('common.theme.createTheme')}
+        </Button>
       </div>
 
       {/* Create Dialog */}

@@ -101,6 +101,7 @@ export interface StartTrialResponse {
 export interface UpgradeSubscriptionPayload {
   plan_code: string;
   billing_cycle: BillingCycle;
+  store_id: number;
   prorate?: boolean;
 }
 
@@ -108,6 +109,7 @@ export interface UpgradeSubscriptionPayload {
 export interface DowngradeSubscriptionPayload {
   plan_code: string;
   billing_cycle: BillingCycle;
+  store_id: number;
   apply_immediately?: boolean;
 }
 

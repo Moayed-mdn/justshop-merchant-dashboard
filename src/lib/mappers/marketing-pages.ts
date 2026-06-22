@@ -1,6 +1,8 @@
 /**
  * Marketing page data mappers.
  * Transforms raw API types to view types for UI consumption.
+ * 
+ * Backend source: AdminStoreMarketingPageResource, StoreMarketingSectionResource
  */
 
 import type {
@@ -26,7 +28,8 @@ export function resolveLocalizedString(
 }
 
 /**
- * Build a default SEO object when the API returns null.
+ * Build a default SEO object when the API returns null or incomplete data.
+ * Backend returns seo as array, but might be null for new pages.
  */
 function defaultSeo(): MarketingPageSeo {
   return {
@@ -35,6 +38,33 @@ function defaultSeo(): MarketingPageSeo {
     canonical_url:    '',
     robots:           '',
     og_image:         '',
+  };
+}
+
+/**
+ * Normalize SEO data from backend.
+ * Backend can return:
+ * - null (for new pages)
+ * - object with nullable fields
+ * - og_image can be string, array, or null
+ */
+function normalizeSeo(seo: any): MarketingPageSeo {
+  if (!seo) return defaultSeo();
+
+  // Normalize og_image: can be string, localized object, or null
+  let ogImage = '';
+  if (typeof seo.og_image === 'string') {
+    ogImage = seo.og_image;
+  } else if (seo.og_image && typeof seo.og_image === 'object') {
+    ogImage = seo.og_image.en || seo.og_image.ar || Object.values(seo.og_image)[0] || '';
+  }
+
+  return {
+    meta_title:       seo.meta_title || { en: '', ar: '' },
+    meta_description: seo.meta_description || { en: '', ar: '' },
+    canonical_url:    seo.canonical_url || '',
+    robots:           seo.robots || '',
+    og_image:         ogImage,
   };
 }
 
@@ -61,6 +91,7 @@ export function mapMarketingPageListItem(
 
 /**
  * Map marketing page detail from raw API shape to view shape.
+ * Backend returns section_type, frontend expects type.
  */
 export function mapMarketingPageDetail(
   raw: MarketingPageDetail,
@@ -68,20 +99,26 @@ export function mapMarketingPageDetail(
   return {
     id:          raw.id,
     storeId:     raw.store_id,
-    title:       raw.title,
-    slug:        raw.slug,
-    excerpt:     raw.excerpt,
+    title:       raw.title || { en: '', ar: '' },
+    slug:        raw.slug || { en: '', ar: '' },
+    excerpt:     raw.excerpt || { en: '', ar: '' },
     template:    raw.template,
     status:      raw.status,
     publishedAt: raw.published_at,
     sortOrder:   raw.sort_order,
-    seo:         raw.seo ?? defaultSeo(),
+    isHomepage:  (raw as any).is_homepage ?? false,
+    seo:         normalizeSeo(raw.seo),
     sections:    (raw.sections ?? []).map((s: any) => {
-      const type = s.type || s.section_type || '';
+      // Backend uses 'section_type', frontend uses 'type'
+      const type = s.section_type || s.type || '';
       return {
-        ...s,
         type,
-        section_type: type,
+        identifier:   s.identifier || '',
+        title:        s.title || { en: '', ar: '' },
+        subtitle:     s.subtitle || { en: '', ar: '' },
+        content:      s.content || {},
+        settings:     s.settings || {},
+        is_active:    s.is_active ?? true,
       };
     }),
     createdAt:   formatDate(raw.created_at),

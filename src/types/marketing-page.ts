@@ -96,6 +96,7 @@ export interface MarketingPageDetailView {
   status:      MarketingPageStatus;
   publishedAt: string | null;
   sortOrder:   number;
+  isHomepage:  boolean;
   seo:         MarketingPageSeo;
   sections:    MarketingPageSection[];
   createdAt:   string;
@@ -112,6 +113,7 @@ export interface CreateMarketingPagePayload {
   status:       MarketingPageStatus;
   published_at: string | null;
   sort_order:   number;
+  is_homepage:  boolean;
   seo:          MarketingPageSeo;
   sections:     MarketingPageSection[];
 }

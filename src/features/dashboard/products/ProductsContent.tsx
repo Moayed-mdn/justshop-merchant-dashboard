@@ -53,7 +53,7 @@ export default function ProductsContent({ storeId, initialFilters }: Props) {
   const { data, isLoading, error } = useProducts(storeId, filters);
 
   if (error) {
-    logger.error('Failed to load products', { error });
+    logger.error('Failed to load products', error);
   }
 
   const handleSearchChange = (value: string) => {

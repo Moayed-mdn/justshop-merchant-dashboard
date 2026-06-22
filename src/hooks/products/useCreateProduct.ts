@@ -27,7 +27,7 @@ export function useCreateProduct(storeId: string, options?: UseCreateProductOpti
       options?.onSuccess?.(data);
     },
     onError: (error: ApiError) => {
-      logger.error('Create product failed', { error });
+      logger.error('Create product failed', error);
       options?.onError?.(error);
     },
   });

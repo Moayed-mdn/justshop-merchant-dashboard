@@ -40,7 +40,7 @@ export function UserMenu() {
       router.push(ROUTES.auth.login());
     },
     onError: (error) => {
-      logger.error('Logout error', { error });
+      logger.error('Logout error', error);
       toast.error(error.message);
     },
   });

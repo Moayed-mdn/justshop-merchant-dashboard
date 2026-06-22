@@ -50,10 +50,33 @@ export const logger = {
         console.error(message);
       }
     } else {
+      const timestamp = `[ERROR] [${getTimestamp()}]`;
+      
       if (data !== undefined) {
-        console.error(`[ERROR] [${getTimestamp()}] ${message}`, data);
+        // Handle Error objects specially to ensure they serialize properly
+        if (data instanceof Error) {
+          const errorDetails: Record<string, unknown> = {
+            name: data.name,
+            message: data.message,
+          };
+
+          // If it has a toJSON method, use it to get all properties
+          if (typeof (data as any).toJSON === 'function') {
+            Object.assign(errorDetails, (data as any).toJSON());
+          }
+
+          // Add stack trace
+          if (data.stack) {
+            errorDetails.stack = data.stack;
+          }
+
+          console.error(`${timestamp} ${message}`);
+          console.error('Error Details:', errorDetails);
+        } else {
+          console.error(`${timestamp} ${message}`, data);
+        }
       } else {
-        console.error(`[ERROR] [${getTimestamp()}] ${message}`);
+        console.error(`${timestamp} ${message}`);
       }
     }
   },

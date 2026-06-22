@@ -27,7 +27,7 @@ export function useDeleteUser(storeId: string, options?: UseDeleteUserOptions) {
       options?.onSuccess?.();
     },
     onError: (error: ApiError) => {
-      logger.error('Delete user failed', { error });
+      logger.error('Delete user failed', error);
       options?.onError?.(error);
     },
   });

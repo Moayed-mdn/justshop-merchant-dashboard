@@ -75,21 +75,16 @@ export const ROUTES = {
       new:  () => '/merchant/tags/new' as const,
       edit: (tagId: string) => `/merchant/tags/${tagId}/edit` as const,
     },
-    heroBanners: {
-      list: () => '/merchant/hero-banners' as const,
-      new:  () => '/merchant/hero-banners/new' as const,
-      edit: (bannerId: string) => `/merchant/hero-banners/${bannerId}/edit` as const,
-    },
     theme: {
       overview: () => '/merchant/theme' as const,
-      navigation: {
-        list: () => '/merchant/theme/navigation' as const,
-        edit: (menuId: string) => `/merchant/theme/navigation/${menuId}` as const,
-      },
       assets: {
         list: () => '/merchant/theme/assets' as const,
       },
       settings: () => '/merchant/theme/settings' as const,
+    },
+    navigation: {
+      list: () => '/merchant/navigation' as const,
+      edit: (menuId: string) => `/merchant/navigation/${menuId}` as const,
     },
     customers: {
       list: () => '/merchant/customers' as const,
@@ -155,13 +150,6 @@ export const ROUTES = {
       new:  () => `/stores/${storeId}/tags/new` as const,
       edit: (tagId: string) =>
         `/stores/${storeId}/tags/${tagId}/edit` as const,
-    },
-
-    heroBanners: {
-      list: () => `/stores/${storeId}/hero-banners` as const,
-      new:  () => `/stores/${storeId}/hero-banners/new` as const,
-      edit: (bannerId: string) =>
-        `/stores/${storeId}/hero-banners/${bannerId}` as const,
     },
   }),
 } as const;
@@ -301,18 +289,6 @@ export const API_ROUTES = {
         `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
       delete:  (tagId: string) =>
         `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
-    }),
-    heroBanners: () => ({
-      list:    () => `/api/v1/merchant/stores/${storeId}/hero-banners`,
-      detail:  (bannerId: string) =>
-        `/api/v1/merchant/stores/${storeId}/hero-banners/${bannerId}`,
-      create:  () => `/api/v1/merchant/stores/${storeId}/hero-banners`,
-      update:  (bannerId: string) =>
-        `/api/v1/merchant/stores/${storeId}/hero-banners/${bannerId}`,
-      delete:  (bannerId: string) =>
-        `/api/v1/merchant/stores/${storeId}/hero-banners/${bannerId}`,
-      restore: (bannerId: string) =>
-        `/api/v1/merchant/stores/${storeId}/hero-banners/${bannerId}/restore`,
     }),
     navigation: () => ({
       list:    () => `/api/v1/merchant/stores/${storeId}/navigation`,

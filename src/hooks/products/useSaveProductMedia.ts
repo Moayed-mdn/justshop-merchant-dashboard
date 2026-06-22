@@ -37,7 +37,7 @@ export function useSaveProductMedia(
       options?.onSuccess?.(data);
     },
     onError: (error) => {
-      logger.error('Save product media failed', { error });
+      logger.error('Save product media failed', error);
       options?.onError?.(error);
     },
   });

@@ -34,7 +34,7 @@ export function useDeleteMarketingPage(storeId: string, pageId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to delete marketing page', { error });
+      logger.error('Failed to delete marketing page', error);
       toast.error(error.message ?? t('form.deleteError'));
     },
   });

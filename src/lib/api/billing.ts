@@ -192,16 +192,44 @@ export async function createPortalSession(
 // ==================== Entitlements ====================
 
 /**
+ * Get account-level entitlement data for current organization.
+ * GET /api/v1/merchant/billing/subscription/usage
+ * 
+ * This returns features, limits, and usage for the billing account,
+ * not for a specific store.
+ */
+export async function getEntitlements(): Promise<StoreEntitlement> {
+  try {
+    const response = await clientApi.get<ApiResponse<StoreEntitlement>>(
+      `${BILLING_BASE}/subscription/usage`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('getEntitlements failed:', {
+      endpoint: `${BILLING_BASE}/subscription/usage`,
+      message: error instanceof Error ? error.message : String(error),
+      status: (error as any)?.status,
+      code: (error as any)?.code,
+      errors: (error as any)?.errors,
+      errorType: error?.constructor?.name,
+      errorKeys: error ? Object.keys(error) : [],
+    });
+    // Log the raw error separately for better visibility
+    console.error('Raw error object:', error);
+    throw error;
+  }
+}
+
+/**
+ * @deprecated Use getEntitlements() instead. This endpoint is account-level, not store-level.
  * Get usage/entitlement data for current organization.
  * GET /api/v1/merchant/billing/subscription/usage
  */
 export async function getStoreEntitlements(
   storeId: string
 ): Promise<StoreEntitlement> {
-  const response = await clientApi.get<ApiResponse<StoreEntitlement>>(
-    `${BILLING_BASE}/subscription/usage`
-  );
-  return response.data;
+  // Note: storeId parameter is not used as the endpoint is account-level
+  return getEntitlements();
 }
 
 /**
@@ -213,16 +241,17 @@ export async function checkEntitlement(
   featureKey: string
 ): Promise<{ allowed: boolean; reason?: string; current?: number; limit?: number }> {
   // Get usage data from subscription/usage endpoint
-  const response = await clientApi.get<ApiResponse<any>>(
-    `${BILLING_BASE}/subscription/usage`
-  );
-  const usage = response.data;
+  const entitlements = await getEntitlements();
   
   // Client-side check based on feature key
   // This is a UX helper - backend should also enforce
+  const usage = (entitlements as any).usage;
+  const limit = usage?.[featureKey.split('.')[0]]?.limit ?? entitlements.features?.[featureKey];
+  const current = usage?.[featureKey.split('.')[0]]?.count ?? entitlements.limits?.[featureKey.replace('.', '_')] ?? 0;
+  
   return { 
-    allowed: true, // Implement based on usage data structure
-    current: usage.current_count,
-    limit: usage.limit
+    allowed: typeof limit === 'number' ? current < limit : true,
+    current: typeof current === 'number' ? current : undefined,
+    limit: typeof limit === 'number' ? limit : undefined
   };
 }

@@ -60,7 +60,7 @@ export default function MarketingPagesContent({ storeId, initialFilters }: Props
   const { data, isLoading, error } = useMarketingPages(storeId, filters);
 
   if (error) {
-    logger.error('Failed to load marketing pages', { error });
+    logger.error('Failed to load marketing pages', error);
   }
 
   const handleStatusChange = (value: typeof status) => {

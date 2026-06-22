@@ -32,7 +32,7 @@ export function useCreateCategory(storeId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to create category', { error });
+      logger.error('Failed to create category', error);
       toast.error(error.message ?? t('form.createError'));
     },
   });

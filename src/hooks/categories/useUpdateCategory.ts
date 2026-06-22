@@ -31,7 +31,7 @@ export function useUpdateCategory(storeId: string, categoryId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to update category', { error });
+      logger.error('Failed to update category', error);
       toast.error(error.message ?? t('form.updateError'));
     },
   });

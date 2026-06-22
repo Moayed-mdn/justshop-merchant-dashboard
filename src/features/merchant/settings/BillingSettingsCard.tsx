@@ -14,8 +14,11 @@ import { useCreatePortalSession } from '@/hooks/billing/useCreatePortalSession';
 import { formatCurrency } from '@/lib/billing/billing-utils';
 import Link from 'next/link';
 import { ROUTES } from '@/config/routes';
+import { useLocale, useTranslations } from 'next-intl';
 
 export function BillingSettingsCard() {
+  const t = useTranslations('settings.billingCard');
+  const locale = useLocale();
   const { data: subscription, isLoading } = useSubscription();
   const createPortal = useCreatePortalSession();
 
@@ -28,15 +31,21 @@ export function BillingSettingsCard() {
     }
   };
 
+  const getPlanName = (name: string | Record<string, string> | undefined): string => {
+    if (!name) return 'Unknown';
+    if (typeof name === 'string') return name;
+    return name[locale] || name['en'] || 'Unknown';
+  };
+
   if (isLoading) {
     return (
       <Card className="max-w-2xl">
         <CardHeader>
           <div className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
-            <CardTitle>Subscription & Billing</CardTitle>
+            <CardTitle>{t('title')}</CardTitle>
           </div>
-          <CardDescription>Loading subscription information...</CardDescription>
+          <CardDescription>{t('loading')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -48,20 +57,20 @@ export function BillingSettingsCard() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
-            <CardTitle>Subscription & Billing</CardTitle>
+            <CardTitle>{t('title')}</CardTitle>
           </div>
           <CardDescription>
-            Manage your subscription plan and billing information
+            {t('subtitle')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center gap-4 py-6 text-center">
             <p className="text-sm text-muted-foreground">
-              You don't have an active subscription
+              {t('noSubscription')}
             </p>
             <Button asChild>
               <Link href={ROUTES.merchant.billing.trial.start()}>
-                Start Free Trial
+                {t('startTrial')}
                 <ArrowRight className="ms-2 h-4 w-4" />
               </Link>
             </Button>
@@ -96,30 +105,30 @@ export function BillingSettingsCard() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
-            <CardTitle>Subscription & Billing</CardTitle>
+            <CardTitle>{t('title')}</CardTitle>
           </div>
           <Badge variant={getStatusVariant(subscription.status)}>
-            {subscription.plan?.name || subscription.status}
+            {getPlanName(subscription.plan?.name) || subscription.status}
           </Badge>
         </div>
         <CardDescription>
-          Manage your subscription plan and billing information
+          {t('subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Current Plan Info */}
         <div className="flex items-center justify-between rounded-lg border p-4">
           <div>
-            <p className="text-sm font-medium">Current Plan</p>
-            <p className="text-2xl font-bold">{subscription.plan?.name || 'Unknown'}</p>
+            <p className="text-sm font-medium">{t('currentPlan')}</p>
+            <p className="text-2xl font-bold">{getPlanName(subscription.plan?.name)}</p>
             <p className="text-sm capitalize text-muted-foreground">
-              Billed {subscription.billing_cycle}ly
+              {t('billedCycle', { cycle: subscription.billing_cycle })}
             </p>
           </div>
           {currentPrice && subscription.current_period_ends_at && (
             <div className="text-end">
               <p className="text-sm text-muted-foreground">
-                {subscription.status === 'trialing' ? 'Trial ends' : 'Renews'}
+                {subscription.status === 'trialing' ? t('trialEnds') : t('renews')}
               </p>
               <p className="text-sm font-medium">
                 {new Date(
@@ -141,12 +150,12 @@ export function BillingSettingsCard() {
         <div className="flex flex-col gap-2 sm:flex-row">
           <Button asChild variant="default" className="flex-1">
             <Link href={ROUTES.merchant.billing.dashboard()}>
-              Manage Subscription
+              {t('manageSubscription')}
               <ArrowRight className="ms-2 h-4 w-4" />
             </Link>
           </Button>
           <Button asChild variant="outline" className="flex-1">
-            <Link href={ROUTES.merchant.billing.plans()}>View Plans</Link>
+            <Link href={ROUTES.merchant.billing.plans()}>{t('viewPlans')}</Link>
           </Button>
           <Button
             variant="outline"
@@ -154,7 +163,7 @@ export function BillingSettingsCard() {
             disabled={createPortal.isPending}
           >
             <ExternalLink className="me-2 h-4 w-4" />
-            {createPortal.isPending ? 'Opening...' : 'Billing Portal'}
+            {createPortal.isPending ? t('opening') : t('billingPortal')}
           </Button>
         </div>
       </CardContent>

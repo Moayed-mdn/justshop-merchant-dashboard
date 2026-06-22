@@ -43,7 +43,7 @@ export default function NavigationMenusContent({ storeId, initialFilters }: Prop
   const deleteMutation = useDeleteNavigationMenu(storeId);
 
   if (error) {
-    logger.error('Failed to load navigation menus', { error });
+    logger.error('Failed to load navigation menus', error);
   }
 
   const handleDelete = (menuId: string) => {

@@ -17,7 +17,7 @@ export default function CreateMarketingPageForm({ storeId }: Props) {
       ? values.published_at 
       : null;
 
-    await create.mutateAsync({
+    return create.mutateAsync({
       title:        values.title,
       slug:         values.slug,
       excerpt:      values.excerpt,
@@ -25,12 +25,9 @@ export default function CreateMarketingPageForm({ storeId }: Props) {
       status:       values.status,
       published_at: publishedAt,
       sort_order:   values.sort_order,
+      is_homepage:  values.is_homepage,
       seo:          values.seo,
-      sections:     values.sections.map(s => ({
-        ...s,
-        // Ensure both 'type' and 'section_type' are present for backend compatibility
-        section_type: s.type,
-      })),
+      sections:     values.sections,
     });
   };
 

@@ -31,6 +31,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { LocalizedInput } from './LocalizedInput';
+import { SectionContentEditor } from './section-editors/SectionContentEditor';
+import { defaultContentFor } from './section-content-defaults';
 import { useMarketingSectionTypes } from '@/hooks/marketing-pages/useMarketingSectionTypes';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 import type { SectionTypeOption } from '@/types/marketing-page';
@@ -40,13 +42,14 @@ function generateIdentifier(type: string): string {
 }
 
 function buildEmptySection(type: string) {
+  const defaults = defaultContentFor(type);
   return {
     type,
     identifier: generateIdentifier(type),
     title:      { en: '', ar: '' },
     subtitle:   { en: '', ar: '' },
-    content:    {},
-    settings:   {},
+    content:    defaults.content,
+    settings:   defaults.settings,
     is_active:  true,
   };
 }
@@ -223,8 +226,6 @@ export function SectionsBuilder({ storeId }: SectionsBuilderProps) {
             {/* Section fields (collapsible) */}
             {!isCollapsed && (
               <CardContent className="pt-0 space-y-4">
-                {/* Hidden registration for type to ensure it's tracked by react-hook-form */}
-                <input type="hidden" {...register(`sections.${index}.type`)} />
 
                 {/* Type */}
                 <div className="space-y-2">
@@ -287,6 +288,13 @@ export function SectionsBuilder({ storeId }: SectionsBuilderProps) {
                     }
                   />
                 </div>
+
+                {/* Section content editor (per-type) */}
+                <SectionContentEditor
+                  sectionType={sectionType}
+                  sectionIndex={index}
+                  storeId={storeId}
+                />
 
                 {/* Active toggle */}
                 <div className="flex items-center justify-between">

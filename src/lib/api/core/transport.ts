@@ -9,6 +9,76 @@ interface ApiErrorPayload {
   action?: string;
 }
 
+/**
+ * Custom Error class for API errors that properly preserves all properties
+ * and makes them enumerable for logging and debugging.
+ */
+export class ApiErrorClass extends Error implements ApiError {
+  public readonly status: number;
+  public readonly code: string;
+  public readonly errors: Record<string, string[]>;
+  public readonly redirect?: string;
+  public readonly logoutUrl?: string;
+  public readonly action?: string;
+
+  constructor(apiError: ApiError) {
+    // Create a more descriptive error message
+    const detailedMessage = apiError.message + 
+      (Object.keys(apiError.errors).length > 0 
+        ? `\nValidation errors: ${JSON.stringify(apiError.errors, null, 2)}`
+        : '');
+    
+    super(detailedMessage);
+    this.name = 'ApiError';
+    this.status = apiError.status;
+    this.code = apiError.code;
+    this.errors = apiError.errors;
+    this.redirect = apiError.redirect;
+    this.logoutUrl = apiError.logoutUrl;
+    this.action = apiError.action;
+
+    // Ensure the prototype chain is correct
+    Object.setPrototypeOf(this, ApiErrorClass.prototype);
+  }
+
+  // Make the error serializable
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status: this.status,
+      code: this.code,
+      errors: this.errors,
+      redirect: this.redirect,
+      logoutUrl: this.logoutUrl,
+      action: this.action,
+    };
+  }
+
+  // Custom toString for better console output
+  toString() {
+    return `${this.name} [${this.status}]: ${this.message}${
+      Object.keys(this.errors).length > 0 
+        ? '\nErrors: ' + JSON.stringify(this.errors, null, 2)
+        : ''
+    }`;
+  }
+
+  // Custom inspect for Node.js console
+  [Symbol.for('nodejs.util.inspect.custom')]() {
+    return {
+      name: this.name,
+      message: this.message,
+      status: this.status,
+      code: this.code,
+      errors: this.errors,
+      ...(this.redirect && { redirect: this.redirect }),
+      ...(this.logoutUrl && { logoutUrl: this.logoutUrl }),
+      ...(this.action && { action: this.action }),
+    };
+  }
+}
+
 export const DEFAULT_JSON_HEADERS: HeadersInit = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
@@ -62,11 +132,11 @@ export async function parseResponseBody<T>(response: Response): Promise<T> {
 export async function toApiError(
   response: Response,
   fallbackMessage = 'Request failed'
-): Promise<ApiError> {
+): Promise<ApiErrorClass> {
   const payload =
     (await parseResponseBody<ApiErrorPayload>(response).catch(() => undefined)) ?? {};
 
-  return {
+  const apiError: ApiError = {
     message: payload.message ?? fallbackMessage,
     errors: payload.errors ?? {},
     status: response.status,
@@ -75,4 +145,6 @@ export async function toApiError(
     logoutUrl: payload.logoutUrl,
     action: payload.action,
   };
+
+  return new ApiErrorClass(apiError);
 }

@@ -53,7 +53,7 @@ export async function clientFetch<T>(
       window.dispatchEvent(new Event('auth:unauthorized'));
     }
 
-    const apiError: ApiError = await toApiError(response, `Request failed with status ${response.status}`);
+    const apiError = await toApiError(response, `Request failed with status ${response.status}`);
     
     // Handle identity domain mismatch (e.g., logged in as customer but accessing merchant routes)
     // Do NOT redirect — let the BootstrapProvider surface the error UI with a logout button.

@@ -26,7 +26,7 @@ export function useCreateTag(storeId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to create tag', { error });
+      logger.error('Failed to create tag', error);
       toast.error(error.message ?? t('form.createError'));
     },
   });

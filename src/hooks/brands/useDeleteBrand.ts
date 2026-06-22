@@ -34,7 +34,7 @@ export function useDeleteBrand(storeId: string, brandId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to delete brand', { error });
+      logger.error('Failed to delete brand', error);
       toast.error(error.message ?? t('form.deleteError'));
     },
   });

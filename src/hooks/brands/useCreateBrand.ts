@@ -32,7 +32,7 @@ export function useCreateBrand(storeId: string) {
     },
 
     onError: (error) => {
-      logger.error('Failed to create brand', { error });
+      logger.error('Failed to create brand', error);
       toast.error(error.message ?? t('form.createError'));
     },
   });

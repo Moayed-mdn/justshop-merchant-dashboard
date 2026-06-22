@@ -62,7 +62,7 @@ export default function UsersContent({ storeId, initialFilters }: Props) {
 
   // Error handling
   if (error) {
-    logger.error('Failed to load users', { error });
+    logger.error('Failed to load users', error);
   }
 
   // Handler functions that reset page when filters change

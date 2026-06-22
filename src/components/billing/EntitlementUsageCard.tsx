@@ -1,12 +1,15 @@
 /**
- * Entitlement Usage Card (Server Component)
+ * Entitlement Usage Card
  * Displays quota usage and feature entitlements
  */
+
+'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Store, Package, Check, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import type { StoreEntitlement } from '@/types/billing/entitlement';
 
@@ -21,6 +24,8 @@ export function EntitlementUsageCard({
   currentStores = 0,
   currentProducts = 0,
 }: EntitlementUsageCardProps) {
+  const t = useTranslations('billing.usage');
+  
   // Extract limits from features
   const storesMax = entitlement.features['stores.max'] as number || 1;
   const productsMax = entitlement.features['products.max'] as number || 100;
@@ -94,12 +99,12 @@ export function EntitlementUsageCard({
                   {enabled ? (
                     <Badge variant="default" className="gap-1">
                       <Check className="h-3 w-3" />
-                      Enabled
+                      {t('enabled')}
                     </Badge>
                   ) : (
                     <Badge variant="outline" className="gap-1">
                       <X className="h-3 w-3" />
-                      Disabled
+                      {t('disabled')}
                     </Badge>
                   )}
                 </div>

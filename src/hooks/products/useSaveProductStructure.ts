@@ -36,7 +36,7 @@ export function useSaveProductStructure(
       options?.onSuccess?.(data);
     },
     onError: (error) => {
-      logger.error('Save product structure failed', { error });
+      logger.error('Save product structure failed', error);
       options?.onError?.(error);
     },
   });

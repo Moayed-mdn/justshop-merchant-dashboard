@@ -47,7 +47,7 @@ export function useSaveProductContent(
       options?.onSuccess?.(data);
     },
     onError: (error) => {
-      logger.error('Save product content failed', { error });
+      logger.error('Save product content failed', error);
       options?.onError?.(error);
     },
   });

@@ -30,7 +30,14 @@ export async function POST(): Promise<NextResponse> {
     const cookieStore = await cookies();
     
     // List of common cookies to clear
-    const cookiesToClear = ['laravel_session', 'XSRF-TOKEN', 'auth_token'];
+    const sanctumCookie = process.env.SANCTUM_SESSION_COOKIE;
+    const cookiesToClear = [
+      sanctumCookie,
+      'laravel_session',
+      'ecommerce_session',
+      'XSRF-TOKEN',
+      'auth_token',
+    ].filter(Boolean) as string[];
     
     const response = NextResponse.json({ success: true, message: 'Logged out' });
 

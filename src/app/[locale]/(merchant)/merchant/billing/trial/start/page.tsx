@@ -16,8 +16,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TrialStartPage() {
-  const plans = await getPlans();
-  const sortedPlans = plans.sort((a, b) => a.sort_order - b.sort_order);
+  let plans;
+
+  try {
+    plans = await getPlans();
+  } catch {
+    plans = [];
+  }
+
+  const sortedPlans = [...plans].sort((a, b) => a.sort_order - b.sort_order);
 
   return (
     <div className="space-y-12">
@@ -47,7 +54,13 @@ export default async function TrialStartPage() {
       </div>
 
       {/* Plan Selection - Client Component */}
-      <TrialSignupClient plans={sortedPlans} />
+      {sortedPlans.length > 0 ? (
+        <TrialSignupClient plans={sortedPlans} />
+      ) : (
+        <div className="text-center text-muted-foreground">
+          <p>No plans are available right now. Please try again later.</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -14,6 +14,7 @@ import { MarketingPageFormSchema, type MarketingPageFormValues, type MarketingPa
 import type { MarketingPageDetailView, MarketingPageTemplate, MarketingPageStatus } from '@/types/marketing-page';import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -31,6 +32,34 @@ import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 
 // ── Default values ────────────────────────────────────────────────────────
 
+/**
+ * Convert ISO 8601 datetime string to datetime-local format.
+ * datetime-local input expects: YYYY-MM-DDTHH:mm
+ * Backend returns: YYYY-MM-DDTHH:mm:ss.ffffffZ
+ */
+function toDatetimeLocalValue(isoString: string | null | undefined): string {
+  if (!isoString) return '';
+  
+  try {
+    // Parse the ISO string and convert to local timezone
+    const date = new Date(isoString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) return '';
+    
+    // Format as YYYY-MM-DDTHH:mm (local timezone)
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  } catch {
+    return '';
+  }
+}
+
 function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormValues {
   if (page) {
     return {
@@ -39,8 +68,9 @@ function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormVa
       excerpt:      page.excerpt,
       template:     page.template,
       status:       page.status,
-      published_at: page.publishedAt,
+      published_at: toDatetimeLocalValue(page.publishedAt),
       sort_order:   page.sortOrder,
+      is_homepage:  page.isHomepage ?? false,
       seo:          page.seo,
       sections:     page.sections,
     };
@@ -57,6 +87,7 @@ function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormVa
       status:       'draft',
       published_at: '',
       sort_order:   0,
+      is_homepage:  false,
       seo: {
         meta_title:       { en: `Meta ${randomId}`, ar: `عنوان ميتا ${randomId}` },
         meta_description: { en: `SEO description for ${randomId}`, ar: `وصف سيو ${randomId}` },
@@ -71,10 +102,24 @@ function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormVa
         title:      { en: `Welcome to ${randomId}`, ar: `أهلاً بك في ${randomId}` },
         subtitle:   { en: 'Valid random subtitle', ar: 'عنوان فرعي عشوائي' },
         content:    {
-          cta_label: 'Explore',
-          cta_url:   '/',
+          items: [
+            {
+              headline: { en: `Welcome to ${randomId}`, ar: `أهلاً بك في ${randomId}` },
+              subheadline: { en: 'Discover our amazing products', ar: 'اكتشف منتجاتنا الرائعة' },
+              eyebrow: { en: 'New', ar: 'جديد' },
+              ctaText: { en: 'Explore', ar: 'استكشف' },
+              ctaUrl: '/',
+              visualType: 'gradient',
+              imageUrl: null,
+              gradientFrom: '#4F46E5',
+              gradientTo: '#7C3AED',
+            },
+          ],
+          eyebrow: { en: 'New', ar: 'جديد' },
+          headline: { en: `Welcome to ${randomId}`, ar: `أهلاً بك في ${randomId}` },
+          subheadline: { en: 'Discover our amazing products', ar: 'اكتشف منتجاتنا الرائعة' },
         },
-        settings:  { full_width: true },
+        settings:  {},
         is_active: true,
       },
     ],
@@ -124,13 +169,9 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
 
   const handleFormSubmit = async (values: MarketingPageFormValues) => {
     bypassNextNavigation();
-    try {
-      await onSubmit(values);
-    } catch (error) {
-      console.error('Form submission error:', error);
-      // Mutation errors are usually handled by useMutation onError,
-      // but we catch here to ensure isSubmitting is reset correctly.
-    }
+    // Call the onSubmit handler. Errors are handled by the mutation's onError callback,
+    // so we don't need a try-catch here. The mutation manages its own error state.
+    await onSubmit(values);
   };
 
   const onInvalid = (errors: any) => {
@@ -330,6 +371,23 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
                       {errors.sort_order && (
                         <p className="text-sm text-destructive">{errors.sort_order.message}</p>
                       )}
+                    </div>
+
+                    {/* Is Homepage */}
+                    <div className="flex items-center justify-between rounded border p-3 bg-background">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="is_homepage">{t('form.fields.isHomepage')}</Label>
+                        <p className="text-xs text-muted-foreground">
+                          {t('form.fields.isHomepageHelp')}
+                        </p>
+                      </div>
+                      <Switch
+                        id="is_homepage"
+                        checked={watch('is_homepage') ?? false}
+                        onCheckedChange={(v) =>
+                          setValue('is_homepage', v, { shouldDirty: true })
+                        }
+                      />
                     </div>
                   </CardContent>
                 </Card>

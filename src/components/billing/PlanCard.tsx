@@ -53,12 +53,15 @@ export function PlanCard({
   const sortedFeatures = [...plan.features].sort((a, b) => a.id - b.id);
 
   return (
-    <Card className={`relative ${isPopular ? 'border-primary shadow-lg' : ''}`}>
+    <div className={isPopular ? 'relative pt-4' : ''}>
       {isPopular && (
-        <Badge className="absolute -top-3 start-1/2 -translate-x-1/2" variant="default">
-          Popular
-        </Badge>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
+          <Badge variant="default" className="whitespace-nowrap">
+            Popular
+          </Badge>
+        </div>
       )}
+      <Card className={`relative h-full ${isPopular ? 'border-primary shadow-lg' : ''}`}>
 
       <CardHeader>
         <div className="space-y-2">
@@ -124,5 +127,6 @@ export function PlanCard({
         </Button>
       </CardContent>
     </Card>
+    </div>
   );
 }

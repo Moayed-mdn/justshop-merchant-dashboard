@@ -29,7 +29,7 @@ export default async function EditProductContent({ storeId, productId }: Props) 
 
     return <EditProductForm product={product} storeId={storeId} />;
   } catch (error) {
-    logger.error('Failed to load product detail', { error });
+    logger.error('Failed to load product detail', error);
 
     return (
       <div className="rounded-lg border border-destructive bg-destructive/10 p-8 text-center">
