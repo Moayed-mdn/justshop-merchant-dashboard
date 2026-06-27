@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from '@/lib/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { getAuthChannelSource, getAuthChannelStorageKey, parseAuthChannelMessage } from '@/lib/auth/channel';
-import { getLoginUrl, stripLocale } from '@/lib/auth/redirects';
+import { getLoginUrl, isSafeRedirectPath, stripLocale } from '@/lib/auth/redirects';
 import { resolveBootstrapAccessState } from '@/lib/auth/bootstrap-routing';
 import { ROUTES } from '@/config/routes';
 import { queryKeys } from '@/lib/queryKeys';
@@ -21,7 +21,29 @@ interface BootstrapProviderProps {
 
 export function BootstrapProvider({ children }: BootstrapProviderProps) {
   const queryClient = useQueryClient();
-  const bootstrapQuery = useBootstrap();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isOnline, setIsOnline] = useState(
+    () => typeof navigator === 'undefined' || navigator.onLine
+  );
+  const strippedPath = useMemo(() => stripLocale(pathname || '/'), [pathname]);
+  const isProtectedRoute =
+    strippedPath === ROUTES.dashboard.home() ||
+    strippedPath.startsWith('/stores/') ||
+    strippedPath.startsWith('/merchant');
+  const isSetupRoute =
+    strippedPath === ROUTES.setup() ||
+    strippedPath === ROUTES.onboarding.home() ||
+    strippedPath === ROUTES.onboarding.createStore();
+  const isGuestRoute =
+    strippedPath === ROUTES.auth.login() ||
+    strippedPath === ROUTES.auth.signup() ||
+    strippedPath.startsWith('/forgot-password') ||
+    strippedPath.startsWith('/reset-password');
+  
+  const shouldBootstrap = isProtectedRoute || isSetupRoute || isGuestRoute;
+  
+  const bootstrapQuery = useBootstrap(shouldBootstrap);
 
   const bootstrap = useBootstrapStore((state) => state.bootstrap);
   const provisioning = useBootstrapStore((state) => state.provisioning);
@@ -30,12 +52,6 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
   const bootstrapResolved = useBootstrapStore((state) => state.bootstrapResolved);
   const bootstrapError = useBootstrapStore((state) => state.bootstrapError);
   const clearSession = useBootstrapStore((state) => state.clearSession);
-  const pathname = usePathname();
-  const router = useRouter();
-  const [isOnline, setIsOnline] = useState(
-    () => typeof navigator === 'undefined' || navigator.onLine
-  );
-  const strippedPath = useMemo(() => stripLocale(pathname || '/'), [pathname]);
   const localeMatch = pathname?.match(/^\/(en|ar)(?:\/|$)/);
   const locale = localeMatch?.[1] ?? 'en';
   const routeStoreId = strippedPath.startsWith('/stores/') ? strippedPath.split('/')[2] ?? null : null;
@@ -46,8 +62,11 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
   const lastBootstrapRefreshAtRef = useRef(0);
   const lastChannelEventAtRef = useRef(0);
   const expiredSessionRedirectRef = useRef(false);
+  const isOnboardingRoute = isSetupRoute;
+  const isMerchantRoute = strippedPath.startsWith('/merchant');
 
   const requestBootstrapRefresh = useCallback(() => {
+    if (!shouldBootstrap) return;
     const now = Date.now();
     if (now - lastBootstrapRefreshAtRef.current < 1000) {
       return;
@@ -55,28 +74,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
 
     lastBootstrapRefreshAtRef.current = now;
     void bootstrapQuery.refetch();
-  }, [bootstrapQuery]);
-
-  const isGuestRoute =
-    strippedPath === ROUTES.auth.login() ||
-    strippedPath === ROUTES.auth.signup() ||
-    strippedPath.startsWith('/forgot-password') ||
-    strippedPath.startsWith('/reset-password');
-
-  // /setup is the canonical setup route; /onboarding and /create-store redirect to it
-  const isSetupRoute =
-    strippedPath === ROUTES.setup() ||
-    strippedPath === ROUTES.onboarding.home() ||
-    strippedPath === ROUTES.onboarding.createStore();
-
-  const isOnboardingRoute = isSetupRoute;
-
-  const isMerchantRoute = strippedPath.startsWith('/merchant');
-
-  const isProtectedRoute =
-    strippedPath === ROUTES.dashboard.home() ||
-    strippedPath.startsWith('/stores/') ||
-    isMerchantRoute;
+  }, [bootstrapQuery, shouldBootstrap]);
 
   /**
    * Auth boundary: unauthenticated user on a route that requires authentication.
@@ -96,7 +94,10 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
         return null;
       }
 
-      const loginUrl = new URL(getLoginUrl(locale, pathname), 'http://localhost');
+      const loginUrl = new URL(ROUTES.auth.login(), 'http://localhost');
+      if (isSafeRedirectPath(strippedPath)) {
+        loginUrl.searchParams.set('redirect', strippedPath);
+      }
       if (expiredSessionRedirectRef.current) {
         loginUrl.searchParams.set('expired', '1');
       }
@@ -324,7 +325,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
 
       if (isProtectedRoute || isOnboardingRoute) {
         const loginPath = ROUTES.auth.login();
-        const redirectParam = encodeURIComponent(pathname);
+        const redirectParam = encodeURIComponent(strippedPath);
         router.push(`${loginPath}?redirect=${redirectParam}&expired=1`);
       }
     };
@@ -333,7 +334,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     return () => {
       window.removeEventListener('auth:unauthorized', onUnauthorized);
     };
-  }, [clearSession, isOnboardingRoute, isProtectedRoute, locale, pathname, router]);
+  }, [clearSession, isOnboardingRoute, isProtectedRoute, router, strippedPath]);
 
   useEffect(() => {
     if (!redirectTarget) {
@@ -348,8 +349,8 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     router.push(redirectTarget);
   }, [redirectTarget, router, strippedPath]);
 
-  const isInitialBootstrapping = !bootstrapResolved && isBootstrapping;
-  const isRefreshingWithoutData = !bootstrap && isBootstrapping;
+  const isInitialBootstrapping = !bootstrapResolved && isBootstrapping && shouldBootstrap;
+  const isRefreshingWithoutData = !bootstrap && isBootstrapping && shouldBootstrap;
 
   // Full-screen loader ONLY for cases where the shell cannot be meaningfully rendered:
   // 1. Initial bootstrap (no data at all yet)
@@ -358,7 +359,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
   // All other redirects are "soft" — the shell stays visible for an in-transition feel.
   const shouldShowFullScreenLoader =
     isInitialBootstrapping ||
-    isRefreshingWithoutData ||
+    (isRefreshingWithoutData && isAuthBoundary) ||
     (isAuthBoundary && Boolean(redirectTarget));
 
   // Soft redirect: user is authenticated, but needs to move to a different page.

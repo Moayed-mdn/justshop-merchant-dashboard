@@ -5,16 +5,17 @@ import { queryKeys } from '@/lib/queryKeys';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import type { ApiError } from '@/types/api';
 
-export function useBootstrap() {
+export function useBootstrap(enabled: boolean = true) {
   const fetchBootstrap = useBootstrapStore((state) => state.fetchBootstrap);
   const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: queryKeys.merchant.me(),
     queryFn: ({ signal }) => fetchBootstrap({ signal }),
-    staleTime: 0,
-    gcTime: 1000 * 60,
-    refetchOnWindowFocus: true,
+    enabled,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
+    refetchOnWindowFocus: false,
     retry: (failureCount, error) => {
       const apiError = error as unknown as ApiError;
 
