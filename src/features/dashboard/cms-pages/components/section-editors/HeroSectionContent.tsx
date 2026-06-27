@@ -14,6 +14,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LocalizedTextField } from '../LocalizedTextField';
 import { ImageUrlOrUpload } from '@/components/media/ImageUrlOrUpload';
+import { ColorSchemeSelector } from './ColorSchemeSelector';
+import { ColorPicker } from '@/features/theme/settings/ColorPicker';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface HeroSectionContentProps {
@@ -56,6 +58,12 @@ export function HeroSectionContent({ index, storeId }: HeroSectionContentProps) 
       <h4 className="text-sm font-semibold">
         {t('sections.editors.hero.heading')}
       </h4>
+
+      {/* Color Scheme */}
+      <ColorSchemeSelector
+        fieldPath={`sections.${index}.settings.color_scheme`}
+        description={t('sections.editors.common.colorSchemeDescription')}
+      />
 
       {/* Eyebrow (localized) */}
       <div className="space-y-2">
@@ -128,16 +136,16 @@ export function HeroSectionContent({ index, storeId }: HeroSectionContentProps) 
         <div className="grid grid-cols-2 gap-3 rounded border p-3 bg-background">
           <div className="space-y-2">
             <Label>{t('sections.editors.hero.gradientFrom')}</Label>
-            <Input
-              {...register(`${itemPath}.gradientFrom` as any)}
-              placeholder="#4F46E5"
+            <ColorPicker
+              value={item.gradientFrom ?? '#4F46E5'}
+              onChange={(v) => setValue(`${itemPath}.gradientFrom` as any, v, { shouldDirty: true })}
             />
           </div>
           <div className="space-y-2">
             <Label>{t('sections.editors.hero.gradientTo')}</Label>
-            <Input
-              {...register(`${itemPath}.gradientTo` as any)}
-              placeholder="#7C3AED"
+            <ColorPicker
+              value={item.gradientTo ?? '#7C3AED'}
+              onChange={(v) => setValue(`${itemPath}.gradientTo` as any, v, { shouldDirty: true })}
             />
           </div>
         </div>

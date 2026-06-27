@@ -1,0 +1,126 @@
+{
+  "sections": {
+    "editors": {
+      "common": {
+        "colorScheme": "Color Scheme",
+        "colorSchemeDescription": "Select a color scheme for this section. Changes will appear on the storefront.",
+        "preview": "Preview"
+      },
+      "hero": {
+        "heading": "Hero Section Content",
+        "eyebrow": "Eyebrow Text",
+        "headline": "Headline",
+        "subheadline": "Subheadline",
+        "ctaText": "CTA Button Text",
+        "ctaUrl": "CTA Button URL",
+        "visualType": "Visual Type",
+        "visualTypeGradient": "Gradient",
+        "visualTypeImage": "Image",
+        "gradientFrom": "Gradient From",
+        "gradientTo": "Gradient To",
+        "imageUrl": "Background Image",
+        "note": "Note: Top-level fallbacks are automatically synced for renderer compatibility."
+      },
+      "cta": {
+        "heading": "CTA Section Content",
+        "ctas": "Call to Action Buttons",
+        "addCta": "Add CTA Button",
+        "noCtas": "No CTA buttons yet. Add your first button.",
+        "label": "Button Label",
+        "url": "Button URL",
+        "style": "Button Style",
+        "stylePrimary": "Primary",
+        "styleSecondary": "Secondary",
+        "styleOutline": "Outline",
+        "trustBadges": "Trust Badges",
+        "addTrustBadge": "Add Trust Badge",
+        "noTrustBadges": "No trust badges yet.",
+        "badgeText": "Badge Text"
+      },
+      "content": {
+        "heading": "Content Section",
+        "body": "Main Content",
+        "stats": "Statistics",
+        "addStat": "Add Stat",
+        "noStats": "No statistics yet.",
+        "statValue": "Value",
+        "statLabel": "Label",
+        "promises": "Promises/Benefits",
+        "addPromise": "Add Promise",
+        "noPromises": "No promises yet.",
+        "promiseTitle": "Promise Title",
+        "promiseBody": "Promise Description",
+        "metrics": "Metrics",
+        "addMetric": "Add Metric",
+        "noMetrics": "No metrics yet.",
+        "metricLabel": "Metric Label",
+        "metricValue": "Value",
+        "metricNote": "Note (optional)",
+        "disclosure": "Disclosure/Legal Note"
+      },
+      "features": {
+        "heading": "Features Section",
+        "addFeature": "Add Feature",
+        "noFeatures": "No features yet. Add your first feature.",
+        "title": "Feature Title",
+        "body": "Feature Description",
+        "icon": "Icon (URL or name)"
+      },
+      "testimonials": {
+        "heading": "Testimonials Section",
+        "showRating": "Show Ratings",
+        "addTestimonial": "Add Testimonial",
+        "noTestimonials": "No testimonials yet.",
+        "quote": "Quote",
+        "author": "Author Name",
+        "role": "Role/Title",
+        "rating": "Rating (1-5)",
+        "avatar": "Avatar Image",
+        "aggregate": "Aggregate Rating (Optional)",
+        "averageRating": "Average Rating",
+        "totalReviews": "Total Reviews"
+      },
+      "pricing": {
+        "heading": "Pricing Section",
+        "addPlan": "Add Pricing Plan",
+        "noPlans": "No pricing plans yet.",
+        "name": "Plan Name",
+        "price": "Price",
+        "currency": "Currency",
+        "description": "Description",
+        "period": "Billing Period",
+        "features": "Features",
+        "addFeature": "Add Feature",
+        "ctaLabel": "CTA Button Label",
+        "ctaUrl": "CTA Button URL",
+        "badge": "Badge (e.g., 'Most Popular')",
+        "featured": "Featured Plan"
+      },
+      "faq": {
+        "heading": "FAQ Section",
+        "addQuestion": "Add Question",
+        "noQuestions": "No questions yet.",
+        "question": "Question",
+        "answer": "Answer"
+      },
+      "gallery": {
+        "heading": "Gallery/Team Section",
+        "note": "This section displays team members or a gallery of people.",
+        "showBio": "Show Bio/Description",
+        "addMember": "Add Team Member",
+        "noMembers": "No team members yet.",
+        "name": "Name",
+        "role": "Role/Title",
+        "bio": "Bio/Description",
+        "image": "Photo"
+      },
+      "video": {
+        "heading": "Video Section",
+        "videoUrl": "Video URL",
+        "videoUrlHelp": "YouTube, Vimeo, or direct video URL",
+        "posterUrl": "Poster/Thumbnail Image",
+        "description": "Video Description"
+      }
+    }
+  }
+}

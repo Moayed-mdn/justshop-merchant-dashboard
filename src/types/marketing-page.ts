@@ -49,19 +49,20 @@ export interface SectionTypeOption {
 
 /** Marketing page list item — raw API shape */
 export interface MarketingPageListItem {
-  id:           number;
-  store_id:     number;
-  title:        LocalizedString;
-  slug:         LocalizedString;
-  excerpt:      LocalizedString;
-  template:     MarketingPageTemplate;
-  status:       MarketingPageStatus;
-  published_at: string | null;
-  sort_order:   number;
-  seo:          MarketingPageSeo | null;
-  sections:     MarketingPageSection[];
-  created_at:   string;
-  updated_at:   string;
+  id:               number;
+  store_id:         number;
+  title:            LocalizedString;
+  slug:             LocalizedString;
+  excerpt:          LocalizedString;
+  template:         MarketingPageTemplate;
+  page_template_id: number | null;
+  status:           MarketingPageStatus;
+  published_at:     string | null;
+  sort_order:       number;
+  seo:              MarketingPageSeo | null;
+  sections:         MarketingPageSection[];
+  created_at:       string;
+  updated_at:       string;
 }
 
 /** Marketing page detail — same shape as list item for this API */
@@ -71,51 +72,54 @@ export type MarketingPageDetail = MarketingPageListItem;
 
 /** Marketing page list item — mapped for UI consumption */
 export interface MarketingPageListItemView {
-  id:          number;
-  storeId:     number;
-  title:       LocalizedString;
-  slug:        LocalizedString;
-  template:    MarketingPageTemplate;
-  status:      MarketingPageStatus;
-  publishedAt: string | null;
-  sortOrder:   number;
+  id:             number;
+  storeId:        number;
+  title:          LocalizedString;
+  slug:           LocalizedString;
+  template:       MarketingPageTemplate;
+  pageTemplateId: number | null;
+  status:         MarketingPageStatus;
+  publishedAt:    string | null;
+  sortOrder:      number;
   /** Resolved display title (en fallback) */
   displayTitle: string;
-  createdAt:   string;
-  updatedAt:   string;
+  createdAt:    string;
+  updatedAt:    string;
 }
 
 /** Marketing page detail — mapped for UI consumption */
 export interface MarketingPageDetailView {
-  id:          number;
-  storeId:     number;
-  title:       LocalizedString;
-  slug:        LocalizedString;
-  excerpt:     LocalizedString;
-  template:    MarketingPageTemplate;
-  status:      MarketingPageStatus;
-  publishedAt: string | null;
-  sortOrder:   number;
-  isHomepage:  boolean;
-  seo:         MarketingPageSeo;
-  sections:    MarketingPageSection[];
-  createdAt:   string;
-  updatedAt:   string;
+  id:              number;
+  storeId:         number;
+  title:           LocalizedString;
+  slug:            LocalizedString;
+  excerpt:         LocalizedString;
+  template:        MarketingPageTemplate;
+  pageTemplateId:  number | null;
+  status:          MarketingPageStatus;
+  publishedAt:     string | null;
+  sortOrder:       number;
+  isHomepage:      boolean;
+  seo:             MarketingPageSeo;
+  sections:        MarketingPageSection[];
+  createdAt:       string;
+  updatedAt:       string;
 }
 
 // ── Payload types ─────────────────────────────────────────────────────────
 
 export interface CreateMarketingPagePayload {
-  title:        LocalizedString;
-  slug:         LocalizedString;
-  excerpt:      LocalizedString;
-  template:     MarketingPageTemplate;
-  status:       MarketingPageStatus;
-  published_at: string | null;
-  sort_order:   number;
-  is_homepage:  boolean;
-  seo:          MarketingPageSeo;
-  sections:     MarketingPageSection[];
+  title:           LocalizedString;
+  slug:            LocalizedString;
+  excerpt:         LocalizedString;
+  template:        MarketingPageTemplate;
+  page_template_id: number | null;
+  status:          MarketingPageStatus;
+  published_at:    string | null;
+  sort_order:      number;
+  is_homepage:     boolean;
+  seo:             MarketingPageSeo;
+  sections:        MarketingPageSection[];
 }
 
 export type UpdateMarketingPagePayload = CreateMarketingPagePayload;

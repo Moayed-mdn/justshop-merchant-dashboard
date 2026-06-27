@@ -22,8 +22,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { LogOut, Loader2 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { LogOut, Loader2, User } from 'lucide-react';
 import { logger } from '@/lib/logger';
 
 /**
@@ -69,6 +69,12 @@ export function UserMenu() {
         data-testid="user-menu-trigger"
       >
         <Avatar className="h-8 w-8">
+          {user?.avatar_url && (
+            <AvatarImage 
+              src={user.avatar_url} 
+              alt={user.name ?? 'User avatar'} 
+            />
+          )}
           <AvatarFallback>{getInitials(user?.name ?? null)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
@@ -78,6 +84,18 @@ export function UserMenu() {
             <div className="text-sm font-medium">{user?.name}</div>
             <div className="text-xs text-muted-foreground">{user?.email}</div>
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem 
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(ROUTES.account.profile());
+            }}
+            className="cursor-pointer"
+            data-testid="profile-action"
+          >
+            <User className="mr-2 h-4 w-4" aria-hidden="true" />
+            <span>{t('profile')}</span>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem 
             onClick={(e) => {

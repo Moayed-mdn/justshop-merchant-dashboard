@@ -76,7 +76,7 @@ export default function CreateNavigationMenuDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto overflow-x-hidden">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{t('title')}</DialogTitle>

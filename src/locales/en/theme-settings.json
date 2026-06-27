@@ -1,0 +1,181 @@
+{
+  "title": "Theme Settings",
+  "theme": "Theme",
+  "loading": "Loading theme settings...",
+  "saving": "Saving...",
+  "save": "Save Changes",
+  "saved": "Theme settings saved successfully",
+  "error": "Failed to save theme settings",
+  "comingSoon": "Coming soon",
+  "tabs": {
+    "buttons": "Button Styles",
+    "colors": "Colors",
+    "typography": "Typography"
+  },
+  "colors": {
+    "title": "Color Settings",
+    "subtitle": "Customize your theme color palette",
+    "primary": {
+      "label": "Primary Color",
+      "description": "Main brand color for buttons, links, and highlights"
+    },
+    "secondary": {
+      "label": "Secondary Color",
+      "description": "Secondary accent color for complementary elements"
+    },
+    "accent": {
+      "label": "Accent Color",
+      "description": "Accent color for call-to-action buttons and important highlights"
+    },
+    "background": {
+      "label": "Background Color",
+      "description": "Main background color for pages and cards"
+    },
+    "text": {
+      "label": "Text Color",
+      "description": "Primary text color for headings and body text"
+    },
+    "textMuted": {
+      "label": "Muted Text Color",
+      "description": "Secondary text color for less important content"
+    },
+    "border": {
+      "label": "Border Color",
+      "description": "Default color for borders and dividers"
+    },
+    "success": {
+      "label": "Success Color",
+      "description": "Color for success messages and positive states"
+    },
+    "error": {
+      "label": "Error Color",
+      "description": "Color for error messages and negative states"
+    },
+    "warning": {
+      "label": "Warning Color",
+      "description": "Color for warning messages and caution states"
+    },
+    "preview": "Color Preview",
+    "previewTitle": "Preview Card",
+    "previewText": "This is how your colors will look in the storefront.",
+    "primaryAction": "Primary Button",
+    "secondaryAction": "Secondary Button",
+    "accentAction": "Accent Button",
+    "statusColors": "Status Colors",
+    "successExample": "Success",
+    "errorExample": "Error",
+    "warningExample": "Warning"
+  },
+  "typography": {
+    "title": "Typography Settings",
+    "subtitle": "Customize fonts, sizes, and text styling",
+    "headingFont": {
+      "label": "Heading Font",
+      "description": "Font family for headings (h1, h2, h3, etc.)"
+    },
+    "bodyFont": {
+      "label": "Body Font",
+      "description": "Font family for body text and paragraphs"
+    },
+    "headingWeight": {
+      "label": "Heading Font Weight",
+      "description": "Weight/thickness for heading text"
+    },
+    "bodyWeight": {
+      "label": "Body Font Weight",
+      "description": "Weight/thickness for body text"
+    },
+    "baseFontSize": {
+      "label": "Base Font Size",
+      "description": "Root font size for the entire site"
+    },
+    "lineHeight": {
+      "label": "Line Height",
+      "description": "Spacing between lines of text"
+    },
+    "letterSpacing": {
+      "label": "Letter Spacing",
+      "description": "Spacing between characters"
+    },
+    "fontWeight": {
+      "normal": "Normal (400)",
+      "medium": "Medium (500)",
+      "semibold": "Semibold (600)",
+      "bold": "Bold (700)"
+    },
+    "fontSize": {
+      "sm": "Small (14px)",
+      "base": "Base (16px)",
+      "lg": "Large (18px)"
+    },
+    "lineHeightValue": {
+      "tight": "Tight (1.25)",
+      "normal": "Normal (1.5)",
+      "relaxed": "Relaxed (1.75)"
+    },
+    "letterSpacingValue": {
+      "tight": "Tight (-0.025em)",
+      "normal": "Normal (0)",
+      "wide": "Wide (0.025em)"
+    },
+    "preview": "Typography Preview",
+    "previewHeading": "This is a Heading",
+    "previewSubheading": "This is a Subheading",
+    "previewBody": "This is body text. You can see how your chosen typography settings will look across your storefront. The quick brown fox jumps over the lazy dog."
+  },
+  "buttons": {
+    "preview": "Button Preview",
+    "backgroundColor": "Background Color",
+    "textColor": "Text Color",
+    "borderColor": "Border Color",
+    "borderWidth": "Border Width (px)",
+    "borderRadius": "Border Radius",
+    "paddingX": "Horizontal Padding",
+    "paddingY": "Vertical Padding",
+    "fontSize": "Font Size",
+    "fontWeight": "Font Weight",
+    "hoverEffect": "Hover Effect",
+    "primary": {
+      "label": "Primary Button",
+      "description": "Main action button style (e.g., 'Add to Cart', 'Buy Now')"
+    },
+    "secondary": {
+      "label": "Secondary Button",
+      "description": "Alternative action button style (e.g., 'Learn More', 'View Details')"
+    },
+    "outline": {
+      "label": "Outline Button",
+      "description": "Minimal button style with border only"
+    },
+    "radius": {
+      "none": "None (Square)",
+      "sm": "Small (2px)",
+      "md": "Medium (4px)",
+      "lg": "Large (8px)",
+      "full": "Full (Pill shape)"
+    },
+    "padding": {
+      "sm": "Small",
+      "md": "Medium",
+      "lg": "Large",
+      "xl": "Extra Large"
+    },
+    "size": {
+      "sm": "Small (14px)",
+      "base": "Base (15px)",
+      "lg": "Large (16px)"
+    },
+    "weight": {
+      "normal": "Normal (400)",
+      "medium": "Medium (500)",
+      "semibold": "Semi Bold (600)",
+      "bold": "Bold (700)"
+    },
+    "hover": {
+      "opacity": "Opacity",
+      "darken": "Darken",
+      "lift": "Lift",
+      "scale": "Scale"
+    }
+  }
+}

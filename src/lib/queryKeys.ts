@@ -27,6 +27,12 @@ export const queryKeys = {
 
   // ── STOREFRONT ────────────────────────────────────────────────
   storefront: {
+    runtime: {
+      resolve:    (path: string) => ['storefront', 'runtime', 'resolve', path] as const,
+      page:       (pageId: string) => ['storefront', 'runtime', 'page', pageId] as const,
+      navigation: () => ['storefront', 'runtime', 'navigation'] as const,
+      theme:      () => ['storefront', 'runtime', 'theme'] as const,
+    },
     store: (storeId: string) => ({
       products: () => ['storefront', 'store', storeId, 'products'] as const,
       cart:     () => ['storefront', 'store', storeId, 'cart'] as const,
@@ -141,6 +147,20 @@ export const queryKeys = {
       ['merchant', storeId, 'themes', 'list', filters] as const,
     detail: (themeId: string) =>
       ['merchant', storeId, 'themes', 'detail', themeId] as const,
+  }),
+
+  // ── PAGE TEMPLATES ────────────────────────────────────────────
+  pageTemplates: (storeId: string) => ({
+    all:    () => ['merchant', storeId, 'page-templates'] as const,
+    lists:  () => ['merchant', storeId, 'page-templates', 'list'] as const,
+    list:   () => ['merchant', storeId, 'page-templates', 'list'] as const,
+    detail: (templateId: string) =>
+      ['merchant', storeId, 'page-templates', 'detail', templateId] as const,
+  }),
+
+  // ── SECTION SCHEMAS ───────────────────────────────────────────
+  sectionSchemas: (storeId: string) => ({
+    all: () => ['merchant', storeId, 'section-schemas'] as const,
   }),
 
   // ── BILLING ───────────────────────────────────────────────────

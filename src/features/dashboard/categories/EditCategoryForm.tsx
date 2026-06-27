@@ -5,9 +5,11 @@
  */
 
 import { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
 import { useUpdateCategory } from '@/hooks/categories/useUpdateCategory';
 import { useCategories } from '@/hooks/categories/useCategories';
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
@@ -33,6 +35,7 @@ interface Props {
 export default function EditCategoryForm({ storeId, categoryId, category }: Props) {
   const t      = useTranslations('categories');
   const update = useUpdateCategory(storeId, categoryId);
+  const router = useRouter();
 
   // Fetch all categories to compute descendant exclusion
   const { data: allCategoriesData, isLoading: isAllLoading } = useCategories(storeId, {
@@ -112,17 +115,30 @@ export default function EditCategoryForm({ storeId, categoryId, category }: Prop
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-muted-foreground text-sm font-mono">
-              {category.slug}
-            </p>
-            {category.deletedAt && (
-              <Badge variant="destructive" className="text-xs">
-                {t('status.deleted')}
-              </Badge>
-            )}
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => {
+              bypassNextNavigation();
+              router.back();
+            }}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-muted-foreground text-sm font-mono">
+                {category.slug}
+              </p>
+              {category.deletedAt && (
+                <Badge variant="destructive" className="text-xs">
+                  {t('status.deleted')}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
         <Button type="submit" disabled={isSubmitting || !isDirty}>

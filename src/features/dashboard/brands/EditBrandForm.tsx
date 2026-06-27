@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
 import { useUpdateBrand } from '@/hooks/brands/useUpdateBrand';
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 import {
@@ -30,6 +32,7 @@ interface Props {
 export default function EditBrandForm({ storeId, brandId, brand }: Props) {
   const t      = useTranslations('brands');
   const update = useUpdateBrand(storeId, brandId);
+  const router = useRouter();
 
   const {
     register,
@@ -82,17 +85,30 @@ export default function EditBrandForm({ storeId, brandId, brand }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-muted-foreground text-sm font-mono">
-              {brand.slug}
-            </p>
-            {brand.deletedAt && (
-              <Badge variant="destructive" className="text-xs">
-                {t('status.deleted')}
-              </Badge>
-            )}
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => {
+              bypassNextNavigation();
+              router.back();
+            }}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-muted-foreground text-sm font-mono">
+                {brand.slug}
+              </p>
+              {brand.deletedAt && (
+                <Badge variant="destructive" className="text-xs">
+                  {t('status.deleted')}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
         <Button type="submit" disabled={isSubmitting || !isDirty}>

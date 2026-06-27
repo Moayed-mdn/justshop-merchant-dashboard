@@ -13,6 +13,7 @@ import { useUpdateTheme } from '@/hooks/themes/useThemeMutations';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { ColorPicker } from './ColorPicker';
 import { FontSelector } from './FontSelector';
+import { ColorSchemeManager } from './ColorSchemeManager';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -20,21 +21,21 @@ import { ROUTES } from '@/config/routes';
 import { ArrowLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { DEFAULT_COLORS, DEFAULT_FONTS } from '@/lib/fonts';
-import type { ThemeSettings } from '@/types/theme';
+import type { ThemeSettings, ColorScheme } from '@/types/theme';
 
-export function ThemeSettingsContent() {
+export function ThemeSettingsContent({ themeId }: { themeId: string }) {
   const t = useTranslations();
   const router = useRouter();
   const activeStore = useBootstrapStore((state) => state.activeStore);
   
-  // Fetch themes to get the active one
+  // Fetch themes to get the specific theme
   const activeStoreId = activeStore ? String(activeStore.id) : null;
   const { data: themesData } = useThemes(activeStoreId!, {
     page: 1,
     perPage: 100, // Get all themes
   });
 
-  const activeTheme = themesData?.data.find((theme) => theme.isActive);
+  const currentTheme = themesData?.data.find((theme) => theme.id.toString() === themeId);
   const updateMutation = useUpdateTheme(activeStoreId!);
 
   // Settings state
@@ -51,12 +52,51 @@ export function ThemeSettingsContent() {
     body: DEFAULT_FONTS.body,
   });
 
+  const [colorSchemes, setColorSchemes] = useState<Record<string, ColorScheme>>({
+    default: {
+      name: 'Default',
+      background: '#FFFFFF',
+      text: '#1F2937',
+      button_background: '#3B82F6',
+      button_text: '#FFFFFF',
+      secondary_background: '#F3F4F6',
+      border: '#E5E7EB',
+    },
+    brand: {
+      name: 'Brand',
+      background: '#3B82F6',
+      text: '#FFFFFF',
+      button_background: '#FFFFFF',
+      button_text: '#3B82F6',
+      secondary_background: '#2563EB',
+      border: 'rgba(255, 255, 255, 0.2)',
+    },
+    dark: {
+      name: 'Dark',
+      background: '#1F2937',
+      text: '#FFFFFF',
+      button_background: '#F59E0B',
+      button_text: '#000000',
+      secondary_background: '#374151',
+      border: '#4B5563',
+    },
+    light: {
+      name: 'Light',
+      background: '#F9FAFB',
+      text: '#1F2937',
+      button_background: '#3B82F6',
+      button_text: '#FFFFFF',
+      secondary_background: '#FFFFFF',
+      border: '#E5E7EB',
+    },
+  });
+
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Load settings from active theme
+  // Load settings from current theme
   useEffect(() => {
-    if (activeTheme) {
-      const settings = activeTheme as unknown as { settings?: ThemeSettings };
+    if (currentTheme) {
+      const settings = currentTheme as unknown as { settings?: ThemeSettings };
       if (settings.settings) {
         if (settings.settings.colors) {
           setColors((prev) => ({ ...prev, ...settings.settings.colors }));
@@ -64,9 +104,12 @@ export function ThemeSettingsContent() {
         if (settings.settings.fonts) {
           setFonts((prev) => ({ ...prev, ...settings.settings.fonts }));
         }
+        if (settings.settings.color_schemes) {
+          setColorSchemes(settings.settings.color_schemes);
+        }
       }
     }
-  }, [activeTheme]);
+  }, [currentTheme]);
 
   const handleColorChange = (key: string, value: string) => {
     setColors((prev) => ({ ...prev, [key]: value }));
@@ -78,19 +121,25 @@ export function ThemeSettingsContent() {
     setHasChanges(true);
   };
 
+  const handleColorSchemesChange = (schemes: Record<string, ColorScheme>) => {
+    setColorSchemes(schemes);
+    setHasChanges(true);
+  };
+
   const handleSave = async () => {
-    if (!activeTheme) {
-      toast.error(t('common.theme.settings.noActiveTheme'));
+    if (!currentTheme) {
+      toast.error(t('common.theme.settings.noThemeFound'));
       return;
     }
 
     try {
       await updateMutation.mutateAsync({
-        themeId: activeTheme.id.toString(),
+        themeId: currentTheme.id.toString(),
         payload: {
           settings: {
             colors,
             fonts,
+            color_schemes: colorSchemes,
           },
         },
       });
@@ -102,7 +151,7 @@ export function ThemeSettingsContent() {
     }
   };
 
-  if (!activeTheme) {
+  if (!currentTheme) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
@@ -118,7 +167,7 @@ export function ThemeSettingsContent() {
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">
-              {t('common.theme.settings.noActiveTheme')}
+              {t('common.theme.settings.noThemeFound')}
             </p>
             <Button
               className="mt-4"
@@ -163,11 +212,18 @@ export function ThemeSettingsContent() {
         </Button>
       </div>
 
-      {/* Active Theme Info */}
+      {/* Current Theme Info */}
       <Card>
         <CardHeader>
           <CardTitle>{t('common.theme.settings.editingTheme')}</CardTitle>
-          <CardDescription>{activeTheme.name}</CardDescription>
+          <CardDescription>
+            {currentTheme.name}
+            {currentTheme.isActive && (
+              <span className="ml-2 text-xs text-primary">
+                ({t('common.theme.active')})
+              </span>
+            )}
+          </CardDescription>
         </CardHeader>
       </Card>
 
@@ -247,6 +303,12 @@ export function ThemeSettingsContent() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Color Scheme Settings */}
+      <ColorSchemeManager
+        colorSchemes={colorSchemes}
+        onChange={handleColorSchemesChange}
+      />
     </div>
   );
 }

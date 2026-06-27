@@ -14,6 +14,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RepeaterField } from '../RepeaterField';
 import { LocalizedTextField } from '../LocalizedTextField';
+import { ColorSchemeSelector } from './ColorSchemeSelector';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface PricingSectionContentProps {
@@ -74,6 +75,12 @@ export function PricingSectionContent({ index }: PricingSectionContentProps) {
       <h4 className="text-sm font-semibold">
         {t('sections.editors.pricing.heading')}
       </h4>
+
+      {/* Color Scheme */}
+      <ColorSchemeSelector
+        fieldPath={`sections.${index}.settings.color_scheme`}
+        description={t('sections.editors.common.colorSchemeDescription')}
+      />
 
       <RepeaterField
         items={plans}

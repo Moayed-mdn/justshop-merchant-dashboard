@@ -1,0 +1,18 @@
+{
+  "title": "Settings",
+  "subtitle": "Manage your store configuration and billing",
+  "noActiveStore": "No Active Store",
+  "noActiveStoreMessage": "Please select or create a store to manage settings",
+  "profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your personal information and account security"
+  },
+  "billing": {
+    "title": "Billing & Subscription",
+    "subtitle": "Manage your subscription plan and billing information"
+  },
+  "store": {
+    "title": "Store Settings",
+    "subtitle": "Manage your store's name and view your store slug"
+  }
+}

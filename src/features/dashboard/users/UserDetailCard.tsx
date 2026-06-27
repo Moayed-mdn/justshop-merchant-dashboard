@@ -1,9 +1,11 @@
+'use client';
+
 /**
  * User detail card component.
  * Displays user information in a card layout.
  */
 
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
 import type { UserDetailView } from '@/types/user';
@@ -21,8 +23,8 @@ interface Props {
   storeId: string;
 }
 
-export default async function UserDetailCard({ user, storeId }: Props) {
-  const t = await getTranslations('users');
+export default function UserDetailCard({ user, storeId }: Props) {
+  const t = useTranslations('users');
 
   return (
     <div className="space-y-6">

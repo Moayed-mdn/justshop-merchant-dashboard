@@ -18,16 +18,17 @@ export default function CreateMarketingPageForm({ storeId }: Props) {
       : null;
 
     return create.mutateAsync({
-      title:        values.title,
-      slug:         values.slug,
-      excerpt:      values.excerpt,
-      template:     values.template,
-      status:       values.status,
-      published_at: publishedAt,
-      sort_order:   values.sort_order,
-      is_homepage:  values.is_homepage,
-      seo:          values.seo,
-      sections:     values.sections,
+      title:           values.title,
+      slug:            values.slug,
+      excerpt:         values.excerpt,
+      template:        values.template,
+      page_template_id: values.page_template_id,
+      status:          values.status,
+      published_at:    publishedAt,
+      sort_order:      values.sort_order,
+      is_homepage:     values.is_homepage,
+      seo:             values.seo,
+      sections:        values.sections,
     });
   };
 

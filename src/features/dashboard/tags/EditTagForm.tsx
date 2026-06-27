@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
 import { useUpdateTag } from '@/hooks/tags/useUpdateTag';
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 import { TagFormSchema, type TagFormValues, type TagFormInput } from '@/schemas/tags';
@@ -14,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ColorPicker } from '@/features/theme/settings/ColorPicker';
 
 interface Props {
   storeId: string;
@@ -26,6 +29,7 @@ const LOCALES = ['en', 'ar'] as const;
 export default function EditTagForm({ storeId, tagId, tag }: Props) {
   const t      = useTranslations('tags');
   const update = useUpdateTag(storeId, tagId);
+  const router = useRouter();
 
   const defaultTranslations = LOCALES.map((locale) => {
     const existing = tag.translations.find((tr) => tr.locale === locale);
@@ -84,7 +88,22 @@ export default function EditTagForm({ storeId, tagId, tag }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => {
+              bypassNextNavigation();
+              router.back();
+            }}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
+          </div>
+        </div>
         <Button type="submit" disabled={isSubmitting || !isDirty}>
           {isSubmitting ? t('form.saving') : t('form.save')}
         </Button>
@@ -150,10 +169,9 @@ export default function EditTagForm({ storeId, tagId, tag }: Props) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="color">{t('form.fields.color')}</Label>
-                <Input
-                  id="color"
-                  {...register('color')}
-                  placeholder={t('form.fields.colorPlaceholder')}
+                <ColorPicker
+                  value={watch('color') || ''}
+                  onChange={(v) => setValue('color', v, { shouldDirty: true })}
                 />
               </div>
               <div className="flex items-center justify-between">

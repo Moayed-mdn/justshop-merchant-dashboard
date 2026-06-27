@@ -1,7 +1,9 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslations }               from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
 import { toast }                         from 'sonner';
 
 import { mapProductDetail }          from '@/lib/mappers/products';
@@ -85,6 +87,7 @@ export function isEditorSaveBlocked(params: {
 
 export default function EditProductForm({ product, storeId }: Props) {
   const t = useTranslations('products');
+  const router = useRouter();
 
   const initialState = buildEditorState(product);
   const baselineRef  = useRef<ProductEditorState>(initialState);
@@ -258,6 +261,27 @@ export default function EditProductForm({ product, storeId }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            bypassNextNavigation();
+            router.back();
+          }}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold">
+            {t('form.editTitle')}
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            {product.name}
+          </p>
+        </div>
+      </div>
 
       {/* Validation errors banner */}
       {validationErrors.length > 0 && (

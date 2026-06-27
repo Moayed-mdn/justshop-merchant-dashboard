@@ -10,6 +10,7 @@
 import { Link } from '@/lib/navigation';
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
+import React from 'react';
 
 interface SidebarNavItemProps {
   label: string;
@@ -17,11 +18,13 @@ interface SidebarNavItemProps {
   icon: LucideIcon;
   isCollapsed: boolean;
   isActive: boolean;
+  children?: React.ReactNode;
 }
 
 /**
  * Single navigation item with icon and label.
  * Shows only icon when collapsed, with tooltip.
+ * Supports children for badges or other indicators.
  */
 export function SidebarNavItem({
   label,
@@ -29,9 +32,10 @@ export function SidebarNavItem({
   icon: Icon,
   isCollapsed,
   isActive,
+  children,
 }: SidebarNavItemProps) {
   return (
-    <li>
+    <li className="relative">
       <Link
         href={href}
         aria-current={isActive ? 'page' : undefined}
@@ -52,7 +56,9 @@ export function SidebarNavItem({
         >
           {label}
         </span>
+        {!isCollapsed && children}
       </Link>
+      {isCollapsed && children}
     </li>
   );
 }

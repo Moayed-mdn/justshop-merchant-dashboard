@@ -102,10 +102,10 @@ export function LoginForm() {
     <form onSubmit={onSubmit} className="w-full space-y-4">
       {sessionExpired ? (
         <div 
-          className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-900 dark:text-amber-200"
+          className="rounded-lg border border-warning/30 bg-warning-bg px-3 py-2 text-sm text-warning"
           data-testid="session-expired-error"
         >
-          Your session expired. Sign in again to restore your dashboard.
+          {t('sessionExpired')}
         </div>
       ) : null}
       {formError ? (

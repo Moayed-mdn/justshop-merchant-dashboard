@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RepeaterField } from '../RepeaterField';
 import { LocalizedTextField } from '../LocalizedTextField';
+import { ColorSchemeSelector } from './ColorSchemeSelector';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface ContentSectionContentProps {
@@ -31,6 +32,12 @@ export function ContentSectionContent({ index }: ContentSectionContentProps) {
       <h4 className="text-sm font-semibold">
         {t('sections.editors.content.heading')}
       </h4>
+
+      {/* Color Scheme */}
+      <ColorSchemeSelector
+        fieldPath={`sections.${index}.settings.color_scheme`}
+        description={t('sections.editors.common.colorSchemeDescription')}
+      />
 
       {/* Body (localized, main content) */}
       <div className="space-y-2">

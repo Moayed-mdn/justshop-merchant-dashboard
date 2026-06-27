@@ -7,11 +7,14 @@
 
 import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
+import { ArrowLeft } from 'lucide-react';
 import { MarketingPageFormSchema, type MarketingPageFormValues, type MarketingPageFormInput } from '@/schemas/marketing-pages';
-import type { MarketingPageDetailView, MarketingPageTemplate, MarketingPageStatus } from '@/types/marketing-page';import { Button } from '@/components/ui/button';
+import type { MarketingPageDetailView, MarketingPageTemplate, MarketingPageStatus } from '@/types/marketing-page';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -29,6 +32,7 @@ import { SectionsBuilder } from './components/SectionsBuilder';
 import { SeoTab } from './components/SeoTab';
 import { DeleteMarketingPageDialog } from './components/DeleteMarketingPageDialog';
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
+import { usePageTemplates } from '@/hooks/page-templates/usePageTemplates';
 
 // ── Default values ────────────────────────────────────────────────────────
 
@@ -63,16 +67,17 @@ function toDatetimeLocalValue(isoString: string | null | undefined): string {
 function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormValues {
   if (page) {
     return {
-      title:        page.title,
-      slug:         page.slug,
-      excerpt:      page.excerpt,
-      template:     page.template,
-      status:       page.status,
-      published_at: toDatetimeLocalValue(page.publishedAt),
-      sort_order:   page.sortOrder,
-      is_homepage:  page.isHomepage ?? false,
-      seo:          page.seo,
-      sections:     page.sections,
+      title:           page.title,
+      slug:            page.slug,
+      excerpt:         page.excerpt,
+      template:        page.template,
+      page_template_id: page.pageTemplateId,
+      status:          page.status,
+      published_at:    toDatetimeLocalValue(page.publishedAt),
+      sort_order:      page.sortOrder,
+      is_homepage:     page.isHomepage ?? false,
+      seo:             page.seo,
+      sections:        page.sections,
     };
   }
 
@@ -80,14 +85,15 @@ function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormVa
     const slug     = `page-${randomId}`;
 
     return {
-      title:        { en: `Page ${randomId}`, ar: `صفحة ${randomId}` },
-      slug:         { en: slug, ar: slug },
-      excerpt:      { en: 'Short page description.', ar: 'وصف قصير للصفحة.' },
-      template:     'generic',
-      status:       'draft',
-      published_at: '',
-      sort_order:   0,
-      is_homepage:  false,
+      title:           { en: `Page ${randomId}`, ar: `صفحة ${randomId}` },
+      slug:            { en: slug, ar: slug },
+      excerpt:         { en: 'Short page description.', ar: 'وصف قصير للصفحة.' },
+      template:        'generic',
+      page_template_id: null,
+      status:          'draft',
+      published_at:    '',
+      sort_order:      0,
+      is_homepage:     false,
       seo: {
         meta_title:       { en: `Meta ${randomId}`, ar: `عنوان ميتا ${randomId}` },
         meta_description: { en: `SEO description for ${randomId}`, ar: `وصف سيو ${randomId}` },
@@ -140,6 +146,7 @@ interface Props {
 export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }: Props) {
   const t       = useTranslations('cmsPages');
   const isEdit  = Boolean(page);
+  const router  = useRouter();
 
   const form = useForm<MarketingPageFormInput, unknown, MarketingPageFormValues>({
     resolver:      zodResolver(MarketingPageFormSchema),
@@ -156,6 +163,8 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
   } = form;
 
   const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
+
+  const { data: pageTemplates = [] } = usePageTemplates(storeId);
 
   // Sync form state with page data when it loads
   useEffect(() => {
@@ -184,13 +193,25 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
       <form onSubmit={handleSubmit(handleFormSubmit, onInvalid)} className="space-y-6">
         {/* Page header */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">
-              {isEdit ? t('form.editTitle') : t('form.createTitle')}
-            </h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              {isEdit ? t('form.editSubtitle') : t('form.createSubtitle')}
-            </p>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                bypassNextNavigation();
+                router.back();
+              }}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold">
+                {isEdit ? t('form.editTitle') : t('form.createTitle')}
+              </h1>
+              <p className="text-muted-foreground text-sm mt-1">
+                {isEdit ? t('form.editSubtitle') : t('form.createSubtitle')}
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             {isEdit && page && (
@@ -215,7 +236,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
 
         {/* Main tabs */}
         <Tabs defaultValue="general">
-          <TabsList>
+          <TabsList className="bg-muted-foreground/15">
             <TabsTrigger value="general">{t('form.tabs.general')}</TabsTrigger>
             <TabsTrigger value="content">{t('form.tabs.content')}</TabsTrigger>
             <TabsTrigger value="seo">{t('form.tabs.seo')}</TabsTrigger>
@@ -315,6 +336,34 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
                       {errors.template && (
                         <p className="text-sm text-destructive">{errors.template.message}</p>
                       )}
+                    </div>
+
+                    {/* Page Template (Shopify-style template) */}
+                    <div className="space-y-2">
+                      <Label htmlFor="page_template_id">{t('form.fields.pageTemplate')}</Label>
+                      <Select
+                        value={String(watch('page_template_id') ?? '')}
+                        onValueChange={(v) => {
+                          setValue('page_template_id', v ? Number(v) : null, { shouldDirty: true });
+                        }}
+                      >
+                        <SelectTrigger id="page_template_id">
+                          {(() => {
+                            const id = watch('page_template_id');
+                            if (!id) return <span className="text-muted-foreground">{t('form.fields.pageTemplateNone')}</span>;
+                            const pt = pageTemplates.find((t) => t.id === id);
+                            return <span>{pt?.name ?? String(id)}</span>;
+                          })()}
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">{t('form.fields.pageTemplateNone')}</SelectItem>
+                          {pageTemplates.map((pt) => (
+                            <SelectItem key={pt.id} value={String(pt.id)}>
+                              {pt.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     {/* Status */}

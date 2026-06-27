@@ -84,7 +84,7 @@ export default function NavigationMenusTable({
                   {menu.description || '—'}
                 </TableCell>
                 <TableCell className="text-center">
-                  <Badge variant="secondary">{menu.itemsCount}</Badge>
+                  <Badge variant="default">{menu.itemsCount}</Badge>
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">

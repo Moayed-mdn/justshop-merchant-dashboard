@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RepeaterField } from '../RepeaterField';
 import { LocalizedTextField } from '../LocalizedTextField';
+import { ColorSchemeSelector } from './ColorSchemeSelector';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface CtaSectionContentProps {
@@ -76,6 +77,12 @@ export function CtaSectionContent({ index }: CtaSectionContentProps) {
       <h4 className="text-sm font-semibold">
         {t('sections.editors.cta.heading')}
       </h4>
+
+      {/* Color Scheme */}
+      <ColorSchemeSelector
+        fieldPath={`sections.${index}.settings.color_scheme`}
+        description={t('sections.editors.common.colorSchemeDescription')}
+      />
 
       {/* CTAs repeater */}
       <div className="space-y-2">

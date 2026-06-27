@@ -34,6 +34,7 @@ import { LocalizedInput } from './LocalizedInput';
 import { SectionContentEditor } from './section-editors/SectionContentEditor';
 import { defaultContentFor } from './section-content-defaults';
 import { useMarketingSectionTypes } from '@/hooks/marketing-pages/useMarketingSectionTypes';
+import { useTheme } from '@/hooks/themes/useTheme';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 import type { SectionTypeOption } from '@/types/marketing-page';
 
@@ -77,6 +78,11 @@ export function SectionsBuilder({ storeId }: SectionsBuilderProps) {
   });
 
   const { data: sectionTypes = [], isLoading } = useMarketingSectionTypes(storeId);
+
+  // Fetch active theme to get color schemes
+  const { data: themes } = useTheme(storeId, '', { enabled: !!storeId });
+  const activeTheme = Array.isArray(themes) ? themes.find((t: any) => t.isActive) : null;
+  const colorSchemes = (activeTheme?.settings as any)?.color_schemes || {};
 
   const [collapsed, setCollapsed] = useState<Record<number, boolean>>({});
   const [newSectionType, setNewSectionType] = useState<string>('');
@@ -288,6 +294,41 @@ export function SectionsBuilder({ storeId }: SectionsBuilderProps) {
                     }
                   />
                 </div>
+
+                {/* Color Scheme */}
+                {Object.keys(colorSchemes).length > 0 && (
+                  <div className="space-y-2">
+                    <Label htmlFor={`sections.${index}.settings.color_scheme`}>
+                      Color Scheme
+                    </Label>
+                    <Select
+                      value={watch(`sections.${index}.settings.color_scheme` as any) || 'default'}
+                      onValueChange={(v) => {
+                        setValue(`sections.${index}.settings.color_scheme` as any, v, { shouldDirty: true });
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select color scheme" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(colorSchemes).map(([key, scheme]: [string, any]) => (
+                          <SelectItem key={key} value={key}>
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-4 h-4 rounded border"
+                                style={{ backgroundColor: scheme.background }}
+                              />
+                              <span>{scheme.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Choose a color scheme for this section's background and text colors
+                    </p>
+                  </div>
+                )}
 
                 {/* Section content editor (per-type) */}
                 <SectionContentEditor

@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { RepeaterField } from '../RepeaterField';
 import { LocalizedTextField } from '../LocalizedTextField';
 import { ImageUrlOrUpload } from '@/components/media/ImageUrlOrUpload';
+import { ColorSchemeSelector } from './ColorSchemeSelector';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface GallerySectionContentProps {
@@ -61,6 +62,12 @@ export function GallerySectionContent({ index, storeId }: GallerySectionContentP
       <p className="text-xs text-muted-foreground">
         {t('sections.editors.gallery.note')}
       </p>
+
+      {/* Color Scheme */}
+      <ColorSchemeSelector
+        fieldPath={`sections.${index}.settings.color_scheme`}
+        description={t('sections.editors.common.colorSchemeDescription')}
+      />
 
       {/* Show bio setting */}
       <div className="flex items-center justify-between rounded border p-3 bg-background">

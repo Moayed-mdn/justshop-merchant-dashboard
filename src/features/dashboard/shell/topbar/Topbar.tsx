@@ -13,7 +13,7 @@ import { StoreSwitcher } from './StoreSwitcher';
 import { ThemeToggle } from './ThemeToggle';
 import { LocaleToggle } from './LocaleToggle';
 import { Button } from '@/components/ui/button';
-import { Menu, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
+import { Menu, PanelLeftOpen, PanelLeftClose, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Separator } from '@/components/ui/separator';
 import { FEATURES } from '@/config/features';
@@ -30,6 +30,7 @@ export function Topbar({ switcher }: TopbarProps) {
   const sidebarCollapsed = useUiStore(selectSidebarCollapsed);
   const setSidebarOpen   = useUiStore((state) => state.setSidebarOpen);
   const toggleSidebar    = useUiStore((state) => state.toggleSidebar);
+  const toggleCommandPalette = useUiStore((state) => state.toggleCommandPalette);
   const t = useTranslations('nav');
 
   return (
@@ -62,6 +63,32 @@ export function Topbar({ switcher }: TopbarProps) {
         )}
       </Button>
 
+      {/* Command Palette Trigger */}
+      <Button
+        variant="ghost"
+        size="sm"
+        type="button"
+        onClick={toggleCommandPalette}
+        className="hidden md:flex gap-2 text-muted-foreground"
+      >
+        <Search className="h-4 w-4" />
+        <span className="text-sm">Search...</span>
+        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+          ⌘K
+        </kbd>
+      </Button>
+      
+      {/* Mobile Command Palette Trigger */}
+      <Button
+        variant="ghost"
+        size="icon"
+        type="button"
+        onClick={toggleCommandPalette}
+        className="md:hidden"
+      >
+        <Search className="h-5 w-5" />
+      </Button>
+      
       {/* Spacer */}
       <div className="flex-1" />
 

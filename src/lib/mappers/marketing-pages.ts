@@ -75,17 +75,18 @@ export function mapMarketingPageListItem(
   raw: MarketingPageListItem,
 ): MarketingPageListItemView {
   return {
-    id:           raw.id,
-    storeId:      raw.store_id,
-    title:        raw.title,
-    slug:         raw.slug,
-    template:     raw.template,
-    status:       raw.status,
-    publishedAt:  raw.published_at,
-    sortOrder:    raw.sort_order,
-    displayTitle: resolveLocalizedString(raw.title, `Page #${raw.id}`),
-    createdAt:    formatDate(raw.created_at),
-    updatedAt:    formatDate(raw.updated_at),
+    id:             raw.id,
+    storeId:        raw.store_id,
+    title:          raw.title,
+    slug:           raw.slug,
+    template:       raw.template,
+    pageTemplateId: raw.page_template_id ?? null,
+    status:         raw.status,
+    publishedAt:    raw.published_at,
+    sortOrder:      raw.sort_order,
+    displayTitle:   resolveLocalizedString(raw.title, `Page #${raw.id}`),
+    createdAt:      formatDate(raw.created_at),
+    updatedAt:      formatDate(raw.updated_at),
   };
 }
 
@@ -97,17 +98,18 @@ export function mapMarketingPageDetail(
   raw: MarketingPageDetail,
 ): MarketingPageDetailView {
   return {
-    id:          raw.id,
-    storeId:     raw.store_id,
-    title:       raw.title || { en: '', ar: '' },
-    slug:        raw.slug || { en: '', ar: '' },
-    excerpt:     raw.excerpt || { en: '', ar: '' },
-    template:    raw.template,
-    status:      raw.status,
-    publishedAt: raw.published_at,
-    sortOrder:   raw.sort_order,
-    isHomepage:  (raw as any).is_homepage ?? false,
-    seo:         normalizeSeo(raw.seo),
+    id:             raw.id,
+    storeId:        raw.store_id,
+    title:          raw.title || { en: '', ar: '' },
+    slug:           raw.slug || { en: '', ar: '' },
+    excerpt:        raw.excerpt || { en: '', ar: '' },
+    template:       raw.template,
+    pageTemplateId: raw.page_template_id ?? null,
+    status:         raw.status,
+    publishedAt:    raw.published_at,
+    sortOrder:      raw.sort_order,
+    isHomepage:     (raw as any).is_homepage ?? false,
+    seo:            normalizeSeo(raw.seo),
     sections:    (raw.sections ?? []).map((s: any) => {
       // Backend uses 'section_type', frontend uses 'type'
       const type = s.section_type || s.type || '';

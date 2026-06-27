@@ -90,19 +90,39 @@ async function handleProxy(request: Request): Promise<NextResponse> {
   const requestLocale = resolveRequestLocale(cookieStore, request);
   logger.debug('Proxy request locale resolved', { requestLocale });
   const method = request.method.toUpperCase();
-  const rawBody = method === 'GET' || method === 'DELETE' ? undefined : await request.text();
+  
+  // Detect content type and handle body accordingly
+  const requestContentType = request.headers.get('content-type');
+  const isFormData = requestContentType?.includes('multipart/form-data');
+  
+  let body: FormData | string | undefined;
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+    'locale': requestLocale,
+    Cookie: cookieHeader,
+    ...(xsrfToken && method !== 'GET' ? { 'X-XSRF-TOKEN': decodeURIComponent(xsrfToken) } : {}),
+  };
+
+  if (method === 'GET' || method === 'DELETE') {
+    body = undefined;
+    headers['Content-Type'] = 'application/json';
+  } else if (isFormData) {
+    // For FormData, get it directly and don't set Content-Type (browser sets it with boundary)
+    body = await request.formData();
+    // Don't set Content-Type header - fetch will set it automatically with the correct boundary
+  } else {
+    // For JSON and other content types
+    const rawBody = await request.text();
+    body = rawBody && rawBody.length > 0 ? rawBody : undefined;
+    headers['Content-Type'] = 'application/json';
+  }
+
   const upstream = await fetch(`${APP_CONFIG.apiBaseUrl}${endpoint}`, {
     method,
     credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'locale': requestLocale,
-      Cookie: cookieHeader,
-      ...(xsrfToken && method !== 'GET' ? { 'X-XSRF-TOKEN': decodeURIComponent(xsrfToken) } : {}),
-    },
-    body: rawBody && rawBody.length > 0 ? rawBody : undefined,
+    headers,
+    body: body as BodyInit | undefined,
     cache: 'no-store',
   });
 

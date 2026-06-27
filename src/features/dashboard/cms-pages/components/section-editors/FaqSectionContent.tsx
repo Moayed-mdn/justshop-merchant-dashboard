@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 import { Label } from '@/components/ui/label';
 import { RepeaterField } from '../RepeaterField';
 import { LocalizedTextField } from '../LocalizedTextField';
+import { ColorSchemeSelector } from './ColorSchemeSelector';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface FaqSectionContentProps {
@@ -51,6 +52,12 @@ export function FaqSectionContent({ index }: FaqSectionContentProps) {
       <h4 className="text-sm font-semibold">
         {t('sections.editors.faq.heading')}
       </h4>
+
+      {/* Color Scheme */}
+      <ColorSchemeSelector
+        fieldPath={`sections.${index}.settings.color_scheme`}
+        description={t('sections.editors.common.colorSchemeDescription')}
+      />
 
       <RepeaterField
         items={items}

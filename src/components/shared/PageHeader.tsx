@@ -1,0 +1,54 @@
+'use client';
+
+/**
+ * Page Header Component (Shopify-style).
+ * Consistent header with breadcrumbs, title, and primary actions.
+ */
+
+import { Breadcrumbs, BreadcrumbItem } from './Breadcrumbs';
+import { cn } from '@/lib/utils';
+
+interface PageHeaderProps {
+  breadcrumbs?: BreadcrumbItem[];
+  title: string;
+  description?: string;
+  actions?: React.ReactNode;
+  tabs?: React.ReactNode;
+  className?: string;
+}
+
+export function PageHeader({
+  breadcrumbs,
+  title,
+  description,
+  actions,
+  tabs,
+  className,
+}: PageHeaderProps) {
+  return (
+    <div className={cn('space-y-4 mb-6', className)}>
+      {/* Breadcrumbs */}
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <Breadcrumbs items={breadcrumbs} />
+      )}
+
+      {/* Title and Actions */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+          {description && (
+            <p className="text-muted-foreground">{description}</p>
+          )}
+        </div>
+        {actions && (
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {actions}
+          </div>
+        )}
+      </div>
+
+      {/* Tabs */}
+      {tabs && <div className="border-b">{tabs}</div>}
+    </div>
+  );
+}

@@ -139,20 +139,22 @@ export function ProfileAccountCard() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription className="space-y-2">
-              <p>
-                {t('deleteConfirmWarning')}
-              </p>
-              <p className="text-sm font-medium">{t('deleteIncludesTitle')}</p>
-              <ul className="list-inside list-disc space-y-1 text-sm">
-                <li>{t('deleteIncludesStores')}</li>
-                <li>{t('deleteIncludesProducts')}</li>
-                <li>{t('deleteIncludesBilling')}</li>
-                <li>{t('deleteIncludesThemes')}</li>
-              </ul>
-              <p className="mt-3 rounded-lg border border-destructive bg-destructive/10 p-3 text-sm font-medium text-destructive">
-                {t('deleteIrreversible')}
-              </p>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2">
+                <p>
+                  {t('deleteConfirmWarning')}
+                </p>
+                <p className="text-sm font-medium">{t('deleteIncludesTitle')}</p>
+                <ul className="list-inside list-disc space-y-1 text-sm">
+                  <li>{t('deleteIncludesStores')}</li>
+                  <li>{t('deleteIncludesProducts')}</li>
+                  <li>{t('deleteIncludesBilling')}</li>
+                  <li>{t('deleteIncludesThemes')}</li>
+                </ul>
+                <div className="mt-3 rounded-lg border border-destructive bg-destructive/10 p-3 text-sm font-medium text-destructive">
+                  {t('deleteIrreversible')}
+                </div>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

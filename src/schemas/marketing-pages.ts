@@ -102,11 +102,12 @@ export type MarketingPageSectionFormValues = z.infer<typeof MarketingPageSection
 
 export const MarketingPageFormSchema = z
   .object({
-    title:        LocalizedStringSchema,
-    slug:         LocalizedStringSchema,
-    excerpt:      LocalizedStringSchema,
-    template:     z.enum(['landing', 'campaign', 'promotion', 'generic']),
-    status:       z.enum(['draft', 'published', 'scheduled']),
+    title:           LocalizedStringSchema,
+    slug:            LocalizedStringSchema,
+    excerpt:         LocalizedStringSchema,
+    template:        z.enum(['landing', 'campaign', 'promotion', 'generic']),
+    page_template_id: z.number().nullable().default(null),
+    status:          z.enum(['draft', 'published', 'scheduled']),
     // Backend returns ISO 8601 string or null, form uses empty string for datetime-local input
     published_at: z.string().default(''),
     sort_order:   z.coerce.number().min(0).default(0),

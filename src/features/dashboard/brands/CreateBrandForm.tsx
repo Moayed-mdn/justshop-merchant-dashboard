@@ -1,8 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
 import { useCreateBrand } from '@/hooks/brands/useCreateBrand';
 import {
   BrandFormSchema,
@@ -24,6 +26,7 @@ interface Props {
 export default function CreateBrandForm({ storeId }: Props) {
   const t      = useTranslations('brands');
   const create = useCreateBrand(storeId);
+  const router = useRouter();
 
   const {
     register,
@@ -60,9 +63,19 @@ export default function CreateBrandForm({ storeId }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
-          <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
+            <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
+          </div>
         </div>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? t('form.creating') : t('form.create')}

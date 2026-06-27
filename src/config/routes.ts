@@ -23,6 +23,9 @@ export const ROUTES = {
     logout: () => '/logout' as const,
     signup: () => '/signup' as const,
   },
+  account: {
+    profile: () => '/account/profile' as const,
+  },
   /**
    * Canonical merchant setup route.
    * All onboarding steps are rendered inside /setup as an internal state machine.
@@ -75,12 +78,17 @@ export const ROUTES = {
       new:  () => '/merchant/tags/new' as const,
       edit: (tagId: string) => `/merchant/tags/${tagId}/edit` as const,
     },
+    templates: {
+      list:   () => '/merchant/templates' as const,
+      create: () => '/merchant/templates/create' as const,
+      edit:   (templateId: string) => `/merchant/templates/${templateId}/edit` as const,
+    },
     theme: {
       overview: () => '/merchant/theme' as const,
       assets: {
         list: () => '/merchant/theme/assets' as const,
       },
-      settings: () => '/merchant/theme/settings' as const,
+      settings: (themeId: string) => `/merchant/themes/${themeId}/settings` as const,
     },
     navigation: {
       list: () => '/merchant/navigation' as const,
@@ -331,6 +339,20 @@ export const API_ROUTES = {
         `/api/v1/merchant/stores/${storeId}/themes/${themeId}/publish`,
       duplicate: (themeId: string) =>
         `/api/v1/merchant/stores/${storeId}/themes/${themeId}/duplicate`,
+      updateSettings: (themeId: string) =>
+        `/api/v1/merchant/stores/${storeId}/themes/${themeId}/settings`,
+    }),
+    templates: () => ({
+      list:      () => `/api/v1/merchant/stores/${storeId}/templates`,
+      detail:    (templateId: string) =>
+        `/api/v1/merchant/stores/${storeId}/templates/${templateId}`,
+      create:    () => `/api/v1/merchant/stores/${storeId}/templates`,
+      update:    (templateId: string) =>
+        `/api/v1/merchant/stores/${storeId}/templates/${templateId}`,
+      delete:    (templateId: string) =>
+        `/api/v1/merchant/stores/${storeId}/templates/${templateId}`,
+      duplicate: (templateId: string) =>
+        `/api/v1/merchant/stores/${storeId}/templates/${templateId}/duplicate`,
     }),
     users: () => ({
       list:   () => `/api/v1/merchant/stores/${storeId}/users`,
@@ -353,6 +375,7 @@ export const API_ROUTES = {
         `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}/unpublish`,
     }),
     sectionTypes: () => `/api/v1/merchant/stores/${storeId}/cms/section-types`,
+    sectionSchemas: () => `/api/v1/merchant/stores/${storeId}/section-schemas`,
   }),
 } as const;
 

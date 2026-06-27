@@ -15,6 +15,7 @@ import { Switch } from '@/components/ui/switch';
 import { RepeaterField } from '../RepeaterField';
 import { LocalizedTextField } from '../LocalizedTextField';
 import { ImageUrlOrUpload } from '@/components/media/ImageUrlOrUpload';
+import { ColorSchemeSelector } from './ColorSchemeSelector';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface TestimonialsSectionContentProps {
@@ -61,6 +62,12 @@ export function TestimonialsSectionContent({ index, storeId }: TestimonialsSecti
       <h4 className="text-sm font-semibold">
         {t('sections.editors.testimonials.heading')}
       </h4>
+
+      {/* Color Scheme */}
+      <ColorSchemeSelector
+        fieldPath={`sections.${index}.settings.color_scheme`}
+        description={t('sections.editors.common.colorSchemeDescription')}
+      />
 
       {/* Show rating setting */}
       <div className="flex items-center justify-between rounded border p-3 bg-background">

@@ -174,7 +174,7 @@ export default function MenuItemDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-3">
+      <DialogContent className="max-w-lg p-3 max-h-[80vh] overflow-y-auto overflow-x-hidden">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>

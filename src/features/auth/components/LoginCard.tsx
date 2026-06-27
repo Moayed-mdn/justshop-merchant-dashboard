@@ -35,9 +35,9 @@ export function LoginCard() {
         <CardContent className="space-y-4">
           <LoginForm />
           <div className="text-center text-sm text-muted-foreground">
-            Need an account?{' '}
+            {t('needAccount')}{' '}
             <Link href="/signup" className="text-primary hover:underline">
-              Create one
+              {t('createOne')}
             </Link>
           </div>
         </CardContent>

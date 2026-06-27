@@ -59,6 +59,7 @@ function transformPayloadForBackend(payload: CreateMarketingPagePayload | Update
     slug: payload.slug,
     excerpt: payload.excerpt,
     template: payload.template,
+    page_template_id: payload.page_template_id,
     status: payload.status,
     published_at: payload.published_at,
     sort_order: payload.sort_order,

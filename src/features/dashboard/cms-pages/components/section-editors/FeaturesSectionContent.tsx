@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { RepeaterField } from '../RepeaterField';
 import { LocalizedTextField } from '../LocalizedTextField';
 import { ImageUrlOrUpload } from '@/components/media/ImageUrlOrUpload';
+import { ColorSchemeSelector } from './ColorSchemeSelector';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface FeaturesSectionContentProps {
@@ -54,6 +55,12 @@ export function FeaturesSectionContent({ index, storeId }: FeaturesSectionConten
       <h4 className="text-sm font-semibold">
         {t('sections.editors.features.heading')}
       </h4>
+
+      {/* Color Scheme */}
+      <ColorSchemeSelector
+        fieldPath={`sections.${index}.settings.color_scheme`}
+        description={t('sections.editors.common.colorSchemeDescription')}
+      />
 
       <RepeaterField
         items={items}

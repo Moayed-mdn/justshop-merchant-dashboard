@@ -42,7 +42,7 @@ export function LocalizedInput({
 
   return (
     <Tabs value={activeLocale} onValueChange={setActiveLocale}>
-      <TabsList className="h-8">
+      <TabsList className="bg-muted-foreground/15 h-8">
         {LOCALES.map((locale) => (
           <TabsTrigger key={locale.code} value={locale.code} className="text-xs px-3 h-7">
             {locale.label}

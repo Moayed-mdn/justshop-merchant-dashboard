@@ -1,9 +1,12 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
 import { useCreateTag } from '@/hooks/tags/useCreateTag';
+import { ColorPicker } from '@/features/theme/settings/ColorPicker';
 import { TagFormSchema, type TagFormValues, type TagFormInput } from '@/schemas/tags';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +22,7 @@ const LOCALES = ['en', 'ar'] as const;
 export default function CreateTagForm({ storeId }: Props) {
   const t      = useTranslations('tags');
   const create = useCreateTag(storeId);
+  const router = useRouter();
 
   const {
     register,
@@ -54,9 +58,19 @@ export default function CreateTagForm({ storeId }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
-          <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
+            <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
+          </div>
         </div>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? t('form.creating') : t('form.create')}
@@ -128,10 +142,9 @@ export default function CreateTagForm({ storeId }: Props) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="color">{t('form.fields.color')}</Label>
-                <Input
-                  id="color"
-                  {...register('color')}
-                  placeholder={t('form.fields.colorPlaceholder')}
+                <ColorPicker
+                  value={watch('color') || ''}
+                  onChange={(v) => setValue('color', v, { shouldDirty: true })}
                 />
               </div>
               <div className="flex items-center justify-between">

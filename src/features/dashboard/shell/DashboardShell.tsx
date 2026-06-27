@@ -3,19 +3,20 @@
 /**
  * DashboardShell component.
  * Composes sidebar, topbar, and main content area.
- * 
+ *
  * Reason for 'use client': needs Zustand sidebar state.
  */
 
 import { useUiStore, selectIsRTL } from '@/stores/uiStore';
 import { useLocale } from 'next-intl';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Sidebar } from './sidebar/Sidebar';
 import { Topbar } from './topbar/Topbar';
 import { MobileNav } from './MobileNav';
 import { cn } from '@/lib/utils';
 import { useIsMutating } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
+import { CommandPalette } from '@/components/shared/CommandPalette';
 
 interface DashboardShellProps {
   children: React.ReactNode;
@@ -66,6 +67,9 @@ export function DashboardShell({ children, nav, switcher }: DashboardShellProps)
 
       {/* Mobile nav overlay */}
       <MobileNav nav={nav} />
+      
+      {/* Command Palette (Heuristic 6: Recognition Rather Than Recall) */}
+      <CommandPalette />
     </div>
   );
 }

@@ -54,15 +54,44 @@
   --color-info:        hsl(199 89% 48%);
   --color-info-bg:     hsl(199 89% 95%);
 
-  /* shadcn compatibility */
-  --background:    0 0% 98%;
-  --foreground:    222 47% 11%;
-  --card:          0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --border:        215 20% 91%;
-  --input:         215 20% 91%;
-  --ring:          224 76% 48%;
+  /* shadcn compatibility - both var() references and utility class generation */
+  --background:    hsl(0 0% 98%);
+  --foreground:    hsl(222 47% 11%);
+  --card:          hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+  --popover:       hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+  --muted-bg:      hsl(215 20% 96%);
+  --muted-foreground: hsl(215 16% 47%);
+  --destructive:   hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --input:         hsl(215 20% 91%);
+  --ring:          hsl(224 76% 48%);
   --radius:        0.5rem;
+  --chart-1:       hsl(224 76% 48%);
+  --chart-2:       hsl(262 83% 58%);
+  --chart-3:       hsl(142 71% 45%);
+  --chart-4:       hsl(38 92% 50%);
+  --chart-5:       hsl(0 84% 60%);
+
+  /* Tailwind v4 utility class generation (--color-* prefix required) */
+  --color-background:    hsl(0 0% 98%);
+  --color-foreground:    hsl(222 47% 11%);
+  --color-card:          hsl(0 0% 100%);
+  --color-card-foreground: hsl(222 47% 11%);
+  --color-popover:       hsl(0 0% 100%);
+  --color-popover-foreground: hsl(222 47% 11%);
+  --color-muted-bg:      hsl(215 20% 96%);
+  --color-muted-foreground: hsl(215 16% 47%);
+  --color-destructive:   hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+  --color-input:         hsl(215 20% 91%);
+  --color-ring:          hsl(224 76% 48%);
+  --color-chart-1:       hsl(224 76% 48%);
+  --color-chart-2:       hsl(262 83% 58%);
+  --color-chart-3:       hsl(142 71% 45%);
+  --color-chart-4:       hsl(38 92% 50%);
+  --color-chart-5:       hsl(0 84% 60%);
 }
 
 .dark {
@@ -83,14 +112,42 @@
   --color-danger-bg:      hsl(0   84% 10%);
   --color-info-bg:        hsl(199 89% 10%);
 
-  /* shadcn compatibility */
-  --background:    222 47% 8%;
-  --foreground:    210 40% 96%;
-  --card:          222 47% 11%;
-  --card-foreground: 210 40% 96%;
-  --border:        217 33% 20%;
-  --input:         217 33% 20%;
-  --ring:          224 76% 48%;
+  /* shadcn compatibility - both var() references and utility class generation */
+  --background:    hsl(222 47% 8%);
+  --foreground:    hsl(210 40% 96%);
+  --card:          hsl(222 47% 11%);
+  --card-foreground: hsl(210 40% 96%);
+  --popover:       hsl(222 47% 11%);
+  --popover-foreground: hsl(210 40% 96%);
+  --muted-bg:      hsl(217 33% 17%);
+  --muted-foreground: hsl(215 20% 65%);
+  --destructive:   hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --input:         hsl(217 33% 20%);
+  --ring:          hsl(224 76% 48%);
+  --chart-1:       hsl(224 76% 48%);
+  --chart-2:       hsl(262 83% 58%);
+  --chart-3:       hsl(142 71% 45%);
+  --chart-4:       hsl(38 92% 50%);
+  --chart-5:       hsl(0 84% 60%);
+
+  /* Tailwind v4 utility class generation (--color-* prefix required) */
+  --color-background:    hsl(222 47% 8%);
+  --color-card:          hsl(222 47% 11%);
+  --color-card-foreground: hsl(210 40% 96%);
+  --color-popover:       hsl(222 47% 11%);
+  --color-popover-foreground: hsl(210 40% 96%);
+  --color-muted-bg:      hsl(217 33% 17%);
+  --color-muted-foreground: hsl(215 20% 65%);
+  --color-destructive:   hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+  --color-input:         hsl(217 33% 20%);
+  --color-ring:          hsl(224 76% 48%);
+  --color-chart-1:       hsl(224 76% 48%);
+  --color-chart-2:       hsl(262 83% 58%);
+  --color-chart-3:       hsl(142 71% 45%);
+  --color-chart-4:       hsl(38 92% 50%);
+  --color-chart-5:       hsl(0 84% 60%);
 }
 
 @layer base {

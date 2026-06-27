@@ -12,6 +12,8 @@
   "filter": "تصفية",
   "actions": "الإجراءات",
   "back": "رجوع",
+  "goBack": "العودة",
+  "errorLoading": "فشل تحميل البيانات",
   "login": {
     "pageTitle": "تسجيل الدخول — لوحة التحكم",
     "pageDescription": "سجّل دخولك إلى لوحة التحكم",
@@ -33,7 +35,10 @@
     },
     "success": {
       "loggedIn": "مرحباً بعودتك!"
-    }
+    },
+    "sessionExpired": "انتهت صلاحية جلستك. سجّل الدخول مرة أخرى لاستعادة لوحة التحكم.",
+    "needAccount": "ليس لديك حساب؟",
+    "createOne": "إنشاء حساب"
   },
   "nav": {
     "appName": "لوحة التحكم",
@@ -47,19 +52,31 @@
     "tags": "الوسوم",
     "themes": "القوالب",
     "marketingPages": "صفحات التسويق",
+    "pages": "الصفحات",
     "navigation": "القوائم",
     "customers": "العملاء",
     "settings": "الإعدادات",
     "billing": "الفواتير",
+    "templates": "القوالب",
     "mainNav": "التنقل الرئيسي",
     "toggleSidebar": "تبديل الشريط الجانبي",
     "toggleMenu": "تبديل القائمة",
-    "user": "مستخدم"
+    "user": "مستخدم",
+    "groups": {
+      "sales": "المبيعات",
+      "products": "المنتجات",
+      "content": "المحتوى",
+      "onlineStore": "المتجر الإلكتروني",
+      "storefront": "واجهة المتجر",
+      "customers": "العملاء",
+      "settings": "الإعدادات"
+    }
   },
   "auth": {
     "logout": "تسجيل الخروج",
     "loggingOut": "جارٍ تسجيل الخروج...",
-    "loggedOut": "تم تسجيل خروجك"
+    "loggedOut": "تم تسجيل خروجك",
+    "profile": "إعدادات الحساب"
   },
   "signup": {
     "pageTitle": "إنشاء حساب — لوحة التحكم",
@@ -888,6 +905,8 @@
         "slug": "المعرّف",
         "excerpt": "المقتطف",
         "template": "القالب",
+        "pageTemplate": "قالب الصفحة",
+        "pageTemplateNone": "لا شيء (بدون قالب)",
         "status": "الحالة",
         "publishedAt": "تاريخ النشر",
         "sortOrder": "ترتيب العرض",
@@ -1088,6 +1107,11 @@
           "path": "المسار",
           "productCount": "عدد المنتجات",
           "image": "صورة الفئة"
+        },
+        "common": {
+          "colorScheme": "نظام الألوان",
+          "colorSchemeDescription": "اختر نظام ألوان لهذا القسم. ستظهر التغييرات على واجهة المتجر.",
+          "preview": "معاينة"
         }
       }
     },
@@ -1344,6 +1368,7 @@
       "subtitle": "تخصيص الألوان والخطوط والتخطيط لواجهة متجرك",
       "editingTheme": "تعديل القالب",
       "noActiveTheme": "لم يتم العثور على قالب نشط. يرجى نشر قالب أولاً.",
+      "noThemeFound": "القالب غير موجود. يرجى اختيار قالب صالح.",
       "saveSuccess": "تم حفظ إعدادات القالب بنجاح",
       "saveError": "فشل حفظ إعدادات القالب",
       "colors": "الألوان",
@@ -1357,6 +1382,74 @@
       "typographyDescription": "اختر الخطوط لقالبك",
       "headingFont": "خط العناوين",
       "bodyFont": "خط المحتوى"
+    },
+    "templates": {
+      "title": "قوالب الصفحات",
+      "subtitle": "إنشاء وإدارة قوالب الصفحات لواجهة متجرك",
+      "createTemplate": "إنشاء قالب",
+      "createDescription": "إنشاء قالب صفحة جديد",
+      "name": "اسم القالب",
+      "namePlaceholder": "مثال: صفحة تسجيل الدخول",
+      "handle": "المعرف",
+      "handlePlaceholder": "مثال: auth-page",
+      "handleHelp": "معرف فريد (أحرف صغيرة، شرطات فقط)",
+      "type": "نوع القالب",
+      "typePage": "صفحة",
+      "typeLanding": "صفحة هبوط",
+      "description": "الوصف",
+      "descriptionPlaceholder": "وصف مختصر لهذا القالب",
+      "nameRequired": "اسم القالب مطلوب",
+      "createSuccess": "تم إنشاء القالب بنجاح",
+      "createError": "فشل إنشاء القالب",
+      "creating": "جارٍ الإنشاء...",
+      "noTemplates": "لم يتم العثور على قوالب. أنشئ أول قالب للبدء.",
+      "createFirstTemplate": "إنشاء أول قالب",
+      "sections": "أقسام",
+      "default": "افتراضي",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "pagesUsing": "الصفحات التي تستخدم هذا القالب",
+      "noPagesUsing": "لا توجد صفحات تستخدم هذا القالب بعد",
+      "deleteTitle": "حذف القالب",
+      "deleteConfirmation": "هل أنت متأكد من رغبتك في حذف هذا القالب؟ لا يمكن التراجع عن هذا الإجراء.",
+      "deleteSuccess": "تم حذف القالب بنجاح",
+      "deleteError": "فشل حذف القالب",
+      "duplicateTemplate": "تكرار القالب",
+      "duplicateDescription": "إنشاء نسخة من هذا القالب باسم جديد",
+      "duplicateSuccess": "تم تكرار القالب بنجاح",
+      "duplicateError": "فشل تكرار القالب",
+      "table": {
+        "name": "الاسم",
+        "type": "النوع",
+        "handle": "المعرف",
+        "sections": "الأقسام",
+        "default": "افتراضي",
+        "status": "الحالة",
+        "pagesCount": "الصفحات",
+        "actions": "الإجراءات",
+        "edit": "تعديل",
+        "delete": "حذف"
+      },
+      "customizer": {
+        "pageTitle": "تعديل القالب",
+        "editing": "جارٍ تعديل القالب",
+        "templateDetails": "تفاصيل القالب",
+        "sections": "الأقسام",
+        "sectionSettings": "إعدادات القسم",
+        "sectionType": "نوع القسم",
+        "sectionIdentifier": "معرف القسم",
+        "identifierPlaceholder": "يتم إنشاؤه تلقائياً إذا كان فارغاً",
+        "addSection": "إضافة قسم",
+        "addSectionDescription": "اختر نوع القسم لإضافته إلى هذا القالب",
+        "sectionAdded": "تم إضافة القسم بنجاح",
+        "sectionRemoved": "تم إزالة القسم",
+        "noSections": "لا توجد أقسام بعد. انقر على \"إضافة قسم\" للبدء.",
+        "noSettings": "هذا القسم لا يحتوي على إعدادات قابلة للتكوين.",
+        "selectSection": "اختر قسماً لتعديل إعداداته",
+        "saveSuccess": "تم حفظ القالب بنجاح",
+        "saveError": "فشل حفظ القالب",
+        "unsavedWarning": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة؟"
+      }
     }
   },
   "billing": {

@@ -5,9 +5,11 @@
  * Handles translations for EN + AR locales.
  */
 
+import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
 import { useCreateCategory } from '@/hooks/categories/useCreateCategory';
 import { CategoryFormInput, CategoryFormSchema, type CategoryFormValues } from '@/schemas/categories';
 import { Button } from '@/components/ui/button';
@@ -30,6 +32,7 @@ const DEFAULT_TRANSLATIONS = [
 export default function CreateCategoryForm({ storeId }: Props) {
   const t      = useTranslations('categories');
   const create = useCreateCategory(storeId);
+  const router = useRouter();
 
   const form = useForm<CategoryFormInput, unknown, CategoryFormValues>({
     resolver:      zodResolver(CategoryFormSchema),
@@ -70,9 +73,19 @@ export default function CreateCategoryForm({ storeId }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
-          <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
+            <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
+          </div>
         </div>
         <Button type="submit" disabled={isSubmitting} data-testid="category-create-button">
           {isSubmitting ? t('form.creating') : t('form.create')}

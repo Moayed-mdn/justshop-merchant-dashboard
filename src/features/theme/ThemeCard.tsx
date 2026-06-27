@@ -32,9 +32,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { MoreVertical, Check, Copy, Trash2, Sparkles } from 'lucide-react';
+import { MoreVertical, Check, Copy, Trash2, Sparkles, Palette } from 'lucide-react';
 import { toast } from 'sonner';
+import { useRouter } from '@/lib/navigation';
 import { DuplicateThemeDialog } from './DuplicateThemeDialog';
+import { ROUTES } from '@/config/routes';
 import type { ThemeListItemView } from '@/types/theme';
 
 interface ThemeCardProps {
@@ -43,6 +45,7 @@ interface ThemeCardProps {
 
 export function ThemeCard({ theme }: ThemeCardProps) {
   const t = useTranslations();
+  const router = useRouter();
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
@@ -70,6 +73,10 @@ export function ThemeCard({ theme }: ThemeCardProps) {
     } finally {
       setShowDeleteDialog(false);
     }
+  };
+
+  const handleCustomize = () => {
+    router.push(ROUTES.merchant.theme.settings(theme.id.toString()));
   };
 
   return (
@@ -156,27 +163,14 @@ export function ThemeCard({ theme }: ThemeCardProps) {
         </CardContent>
 
         <CardFooter className="pt-0">
-          {!theme.isActive && (
-            <Button
-              className="w-full"
-              onClick={handlePublish}
-              disabled={publishMutation.isPending}
-            >
-              {publishMutation.isPending ? (
-                t('common.publishing')
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  {t('common.theme.publish')}
-                </>
-              )}
-            </Button>
-          )}
-          {theme.isActive && (
-            <div className="w-full text-center text-sm text-muted-foreground">
-              {t('common.theme.currentlyActive')}
-            </div>
-          )}
+          <Button
+            className="w-full"
+            variant={theme.isActive ? "outline" : "default"}
+            onClick={handleCustomize}
+          >
+            <Palette className="mr-2 h-4 w-4" />
+            {t('common.theme.customize')}
+          </Button>
         </CardFooter>
       </Card>
 

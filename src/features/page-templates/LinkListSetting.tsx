@@ -34,17 +34,12 @@ export function LinkListSetting({ storeId, setting, value, onChange }: LinkListS
   const { data: menus, isLoading, isError } = useQuery({
     queryKey: ['merchant', storeId, 'navigation-menus', 'all'],
     queryFn: async () => {
-      console.log('[LinkListSetting] Fetching navigation menus');
-      const response = await clientApi.get<NavigationMenuOption[]>(
+      const response = await clientApi.get<{ data: NavigationMenuOption[] }>(
         API_ROUTES.store(storeId).navigation().list(),
         { params: { per_page: 100 } }
       );
 
-      console.log('[LinkListSetting] Raw response:', response);
-
-      const raw = response ?? [];
-
-      return raw.map((menu: NavigationMenuOption) => ({
+      return (response.data ?? []).map((menu) => ({
         id: menu.id,
         name: menu.name,
         handle: menu.handle,

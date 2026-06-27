@@ -1,11 +1,6 @@
-/**
- * Theme settings page.
- * Server component that wraps the client-side theme settings content.
- */
-
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { ThemeSettingsContent } from '@/features/theme/settings/ThemeSettingsContent';
+import { PageTemplateEditContent } from '@/features/page-templates/PageTemplateEditContent';
 
 export async function generateMetadata({
   params,
@@ -16,10 +11,10 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: 'common' });
 
   return {
-    title: t('theme.settings.title'),
+    title: t('theme.templates.customizer.pageTitle'),
   };
 }
 
-export default function ThemeSettingsPage() {
-  return <ThemeSettingsContent />;
+export default function PageTemplateEditPage() {
+  return <PageTemplateEditContent />;
 }

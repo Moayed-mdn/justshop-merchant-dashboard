@@ -1,0 +1,126 @@
+{
+  "sections": {
+    "editors": {
+      "common": {
+        "colorScheme": "نظام الألوان",
+        "colorSchemeDescription": "اختر نظام ألوان لهذا القسم. ستظهر التغييرات على واجهة المتجر.",
+        "preview": "معاينة"
+      },
+      "hero": {
+        "heading": "محتوى قسم البطل",
+        "eyebrow": "نص العنوان الصغير",
+        "headline": "العنوان الرئيسي",
+        "subheadline": "العنوان الفرعي",
+        "ctaText": "نص زر الدعوة للعمل",
+        "ctaUrl": "رابط زر الدعوة للعمل",
+        "visualType": "نوع المرئي",
+        "visualTypeGradient": "تدرج",
+        "visualTypeImage": "صورة",
+        "gradientFrom": "التدرج من",
+        "gradientTo": "التدرج إلى",
+        "imageUrl": "صورة الخلفية",
+        "note": "ملاحظة: يتم مزامنة الاحتياطيات تلقائياً للتوافق مع المعرض."
+      },
+      "cta": {
+        "heading": "محتوى قسم الدعوة للعمل",
+        "ctas": "أزرار الدعوة للعمل",
+        "addCta": "إضافة زر CTA",
+        "noCtas": "لا توجد أزرار CTA بعد. أضف زرك الأول.",
+        "label": "تسمية الزر",
+        "url": "رابط الزر",
+        "style": "نمط الزر",
+        "stylePrimary": "أساسي",
+        "styleSecondary": "ثانوي",
+        "styleOutline": "محدد",
+        "trustBadges": "شارات الثقة",
+        "addTrustBadge": "إضافة شارة ثقة",
+        "noTrustBadges": "لا توجد شارات ثقة بعد.",
+        "badgeText": "نص الشارة"
+      },
+      "content": {
+        "heading": "قسم المحتوى",
+        "body": "المحتوى الرئيسي",
+        "stats": "الإحصائيات",
+        "addStat": "إضافة إحصائية",
+        "noStats": "لا توجد إحصائيات بعد.",
+        "statValue": "القيمة",
+        "statLabel": "التسمية",
+        "promises": "الوعود/الفوائد",
+        "addPromise": "إضافة وعد",
+        "noPromises": "لا توجد وعود بعد.",
+        "promiseTitle": "عنوان الوعد",
+        "promiseBody": "وصف الوعد",
+        "metrics": "المقاييس",
+        "addMetric": "إضافة مقياس",
+        "noMetrics": "لا توجد مقاييس بعد.",
+        "metricLabel": "تسمية المقياس",
+        "metricValue": "القيمة",
+        "metricNote": "ملاحظة (اختياري)",
+        "disclosure": "إفصاح/ملاحظة قانونية"
+      },
+      "features": {
+        "heading": "قسم الميزات",
+        "addFeature": "إضافة ميزة",
+        "noFeatures": "لا توجد ميزات بعد. أضف ميزتك الأولى.",
+        "title": "عنوان الميزة",
+        "body": "وصف الميزة",
+        "icon": "أيقونة (رابط أو اسم)"
+      },
+      "testimonials": {
+        "heading": "قسم الشهادات",
+        "showRating": "إظهار التقييمات",
+        "addTestimonial": "إضافة شهادة",
+        "noTestimonials": "لا توجد شهادات بعد.",
+        "quote": "الاقتباس",
+        "author": "اسم الكاتب",
+        "role": "الدور/المنصب",
+        "rating": "التقييم (1-5)",
+        "avatar": "صورة الملف الشخصي",
+        "aggregate": "التقييم الإجمالي (اختياري)",
+        "averageRating": "متوسط التقييم",
+        "totalReviews": "إجمالي المراجعات"
+      },
+      "pricing": {
+        "heading": "قسم التسعير",
+        "addPlan": "إضافة خطة تسعير",
+        "noPlans": "لا توجد خطط تسعير بعد.",
+        "name": "اسم الخطة",
+        "price": "السعر",
+        "currency": "العملة",
+        "description": "الوصف",
+        "period": "فترة الفوترة",
+        "features": "الميزات",
+        "addFeature": "إضافة ميزة",
+        "ctaLabel": "تسمية زر الدعوة للعمل",
+        "ctaUrl": "رابط زر الدعوة للعمل",
+        "badge": "شارة (مثل 'الأكثر شعبية')",
+        "featured": "خطة مميزة"
+      },
+      "faq": {
+        "heading": "قسم الأسئلة الشائعة",
+        "addQuestion": "إضافة سؤال",
+        "noQuestions": "لا توجد أسئلة بعد.",
+        "question": "السؤال",
+        "answer": "الإجابة"
+      },
+      "gallery": {
+        "heading": "قسم المعرض/الفريق",
+        "note": "يعرض هذا القسم أعضاء الفريق أو معرض للأشخاص.",
+        "showBio": "إظهار السيرة الذاتية/الوصف",
+        "addMember": "إضافة عضو فريق",
+        "noMembers": "لا يوجد أعضاء فريق بعد.",
+        "name": "الاسم",
+        "role": "الدور/المنصب",
+        "bio": "السيرة الذاتية/الوصف",
+        "image": "الصورة"
+      },
+      "video": {
+        "heading": "قسم الفيديو",
+        "videoUrl": "رابط الفيديو",
+        "videoUrlHelp": "رابط يوتيوب أو فيميو أو رابط فيديو مباشر",
+        "posterUrl": "صورة الغلاف/المصغرة",
+        "description": "وصف الفيديو"
+      }
+    }
+  }
+}
