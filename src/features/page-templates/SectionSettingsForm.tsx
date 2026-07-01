@@ -161,6 +161,30 @@ export function SectionSettingsForm({ storeSlug, schema, settings, onChange }: S
               </div>
             );
 
+          case 'header':
+            return (
+              <div key={setting.id} className="border-b pb-2">
+                <h4 className="text-sm font-semibold text-foreground">
+                  {String(value || setting.label)}
+                </h4>
+                {setting.info && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                    <Info className="h-3 w-3" />
+                    {setting.info}
+                  </p>
+                )}
+              </div>
+            );
+
+          case 'paragraph':
+            return (
+              <div key={setting.id}>
+                <p className="text-xs text-muted-foreground">
+                  {String(value || setting.label)}
+                </p>
+              </div>
+            );
+
           default:
             return (
               <div key={setting.id} className="space-y-2">
