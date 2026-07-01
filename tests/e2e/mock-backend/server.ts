@@ -111,6 +111,18 @@ function nowIso(): string {
   return new Date().toISOString();
 }
 
+function findStoreByUserAndParam(user: MockUser, param: string): MockStore | null {
+  // Try to find by id first
+  const byId = user.stores.find((store) => store.id === Number(param));
+  if (byId) {
+    return byId;
+  }
+  
+  // Then try to find by slug
+  const bySlug = user.stores.find((store) => store.slug === param);
+  return bySlug ?? null;
+}
+
 function createProvisioningState(
   mode: ProvisioningMode,
   overrides: Partial<MockProvisioningState> = {}
@@ -769,12 +781,22 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const productsMatch = pathname.match(/^\/api\/v1\/merchant\/stores\/(\d+)\/products\/?$/);
+  const productsMatch = pathname.match(/^\/api\/v1\/merchant\/stores\/([^/]+)\/products\/?$/);
   if (productsMatch) {
     const user = ensureAuthenticated(request, response);
     if (!user) return;
 
-    const storeId = Number(productsMatch[1]);
+    const store = findStoreByUserAndParam(user, productsMatch[1]);
+    if (!store) {
+      sendJson(response, 404, {
+        success: false,
+        code: 'STR_001',
+        message: 'Store not found',
+        errors: {},
+      });
+      return;
+    }
+    const storeId = store.id;
     if (method === 'GET') {
       const storeProducts = state.products.get(storeId) ?? [];
       sendJson(response, 200, {
@@ -839,12 +861,22 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     }
   }
 
-  const categoriesMatch = pathname.match(/^\/api\/v1\/merchant\/stores\/(\d+)\/categories\/?$/);
+  const categoriesMatch = pathname.match(/^\/api\/v1\/merchant\/stores\/([^/]+)\/categories\/?$/);
   if (categoriesMatch) {
     const user = ensureAuthenticated(request, response);
     if (!user) return;
 
-    const storeId = Number(categoriesMatch[1]);
+    const store = findStoreByUserAndParam(user, categoriesMatch[1]);
+    if (!store) {
+      sendJson(response, 404, {
+        success: false,
+        code: 'STR_001',
+        message: 'Store not found',
+        errors: {},
+      });
+      return;
+    }
+    const storeId = store.id;
     if (method === 'GET') {
       const storeCategories = state.categories.get(storeId) ?? [];
       sendJson(response, 200, {
@@ -1167,15 +1199,14 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const provisioningMatch = pathname.match(/^\/api\/v1\/(?:merchant\/)?stores\/(\d+)\/provisioning-status$/);
+  const provisioningMatch = pathname.match(/^\/api\/v1\/(?:merchant\/)?stores\/([^/]+)\/provisioning-status$/);
   if (provisioningMatch && method === 'GET') {
     const user = ensureAuthenticated(request, response);
     if (!user) {
       return;
     }
 
-    const storeId = Number(provisioningMatch[1]);
-    const store = user.stores.find((candidate) => candidate.id === storeId);
+    const store = findStoreByUserAndParam(user, provisioningMatch[1]);
     if (!store) {
       sendJson(response, 403, {
         success: false,
@@ -1241,15 +1272,14 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const dashboardStatsMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/(\d+)\/dashboard\/stats$/);
+  const dashboardStatsMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/([^/]+)\/dashboard\/stats$/);
   if (dashboardStatsMatch && method === 'GET') {
     const user = ensureAuthenticated(request, response);
     if (!user) {
       return;
     }
 
-    const storeId = Number(dashboardStatsMatch[1]);
-    const store = user.stores.find((candidate) => candidate.id === storeId);
+    const store = findStoreByUserAndParam(user, dashboardStatsMatch[1]);
     if (!store) {
       sendJson(response, 404, {
         success: false,
@@ -1277,15 +1307,14 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const recentOrdersMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/(\d+)\/dashboard\/recent-orders$/);
+  const recentOrdersMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/([^/]+)\/dashboard\/recent-orders$/);
   if (recentOrdersMatch && method === 'GET') {
     const user = ensureAuthenticated(request, response);
     if (!user) {
       return;
     }
 
-    const storeId = Number(recentOrdersMatch[1]);
-    const store = user.stores.find((candidate) => candidate.id === storeId);
+    const store = findStoreByUserAndParam(user, recentOrdersMatch[1]);
     if (!store) {
       sendJson(response, 404, {
         success: false,
@@ -1304,15 +1333,14 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
-  const topProductsMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/(\d+)\/dashboard\/top-products$/);
+  const topProductsMatch = pathname.match(/^\/api\/v1\/(?:admin|merchant)\/stores\/([^/]+)\/dashboard\/top-products$/);
   if (topProductsMatch && method === 'GET') {
     const user = ensureAuthenticated(request, response);
     if (!user) {
       return;
     }
 
-    const storeId = Number(topProductsMatch[1]);
-    const store = user.stores.find((candidate) => candidate.id === storeId);
+    const store = findStoreByUserAndParam(user, topProductsMatch[1]);
     if (!store) {
       sendJson(response, 404, {
         success: false,
