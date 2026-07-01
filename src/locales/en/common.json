@@ -953,7 +953,8 @@
       "errors": {
         "titleRequired": "Title is required in at least one language",
         "slugRequired": "Slug is required in at least one language",
-        "validationFailed": "Please fix the validation errors before saving."
+        "validationFailed": "Please fix the validation errors before saving.",
+        "pageTemplateInvalid": "Please choose a valid page template or leave the template field empty."
       },
       "seo": {
         "metaTitle": "Meta Title",
@@ -1261,9 +1262,12 @@
           "urlWarningTitle": "Page doesn't exist yet",
           "urlWarningMessage": "This URL doesn't point to an existing page. You can create the page now or save anyway.",
           "urlSuggestion": "Suggestion",
+          "createPageSuggestion": "Create a page with slug: {slug}",
           "urlExists": "Page exists",
           "createPage": "Create Page",
           "linkToExisting": "Link to Existing Page",
+          "orCustomUrl": "Or enter a custom URL",
+          "selectPage": "Select a page to link",
           "target": "Link Target",
           "targetSelf": "Same Tab",
           "targetBlank": "New Tab",
@@ -1274,7 +1278,14 @@
           "create": "Create Item",
           "creating": "Creating...",
           "update": "Update Item",
-          "updating": "Updating..."
+          "updating": "Updating...",
+          "or": "OR",
+          "customUrl": "Enter a custom URL",
+          "customUrlPlaceholder": "/about, /contact, /custom-page",
+          "customUrlHelp": "For advanced users: Enter a custom internal path. This won't auto-update if the page changes.",
+          "noPagesInfo": "You haven't created any pages yet. Create your first page in the CMS, then come back to link it here.",
+          "createFirstPage": "Create First Page",
+          "selectFromAbove": "Select from above"
         }
       },
       "resourcePicker": {
@@ -1287,7 +1298,9 @@
           "page": "page",
           "category": "category",
           "product": "product"
-        }
+        },
+        "selectPlaceholder": "Select a {type}...",
+        "noResults": "No matches found."
       },
       "health": {
         "title": "{count} potential issues found",

@@ -14,13 +14,42 @@ import {
 } from '@/components/ui/select';
 import { Info } from 'lucide-react';
 import { LinkListSetting } from './LinkListSetting';
+import { LocalizedInput } from '../dashboard/cms-pages/components/LocalizedInput';
 import type { SectionSchema } from '@/types/theme';
+import type { LocalizedString } from '@/types/marketing-page';
 
 interface SectionSettingsFormProps {
   storeSlug: string;
   schema: SectionSchema | null;
   settings: Record<string, unknown>;
   onChange: (settings: Record<string, unknown>) => void;
+}
+
+function normalizeLocalizedValue(value: unknown, defaultValue?: unknown): LocalizedString {
+  const defaultLocalized =
+    defaultValue && typeof defaultValue === 'object' && !Array.isArray(defaultValue)
+      ? defaultValue as Record<string, unknown>
+      : {};
+
+  const fallback = {
+    en: typeof defaultLocalized.en === 'string' ? defaultLocalized.en : '',
+    ar: typeof defaultLocalized.ar === 'string' ? defaultLocalized.ar : '',
+  };
+
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const localized = value as Record<string, unknown>;
+
+    return {
+      en: typeof localized.en === 'string' ? localized.en : fallback.en,
+      ar: typeof localized.ar === 'string' ? localized.ar : fallback.ar,
+    };
+  }
+
+  if (typeof value === 'string') {
+    return { en: value, ar: fallback.ar };
+  }
+
+  return fallback;
 }
 
 export function SectionSettingsForm({ storeSlug, schema, settings, onChange }: SectionSettingsFormProps) {
@@ -182,6 +211,24 @@ export function SectionSettingsForm({ storeSlug, schema, settings, onChange }: S
                 <p className="text-xs text-muted-foreground">
                   {String(value || setting.label)}
                 </p>
+              </div>
+            );
+
+          case 'localized_text':
+            return (
+              <div key={setting.id} className="space-y-2">
+                <Label htmlFor={setting.id}>{setting.label}</Label>
+                <LocalizedInput
+                  id={setting.id}
+                  value={normalizeLocalizedValue(value, setting.default)}
+                  onChange={(v) => updateSetting(setting.id, v)}
+                />
+                {setting.info && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Info className="h-3 w-3" />
+                    {setting.info}
+                  </p>
+                )}
               </div>
             );
 

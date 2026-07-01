@@ -953,7 +953,8 @@
       "errors": {
         "titleRequired": "العنوان مطلوب بلغة واحدة على الأقل",
         "slugRequired": "المعرّف مطلوب بلغة واحدة على الأقل",
-        "validationFailed": "يرجى إصلاح أخطاء التحقق من الصحة قبل الحفظ."
+        "validationFailed": "يرجى إصلاح أخطاء التحقق من الصحة قبل الحفظ.",
+        "pageTemplateInvalid": "يرجى اختيار قالب صفحة صالح أو ترك حقل القالب فارغاً."
       },
       "seo": {
         "metaTitle": "عنوان Meta",
@@ -1261,9 +1262,12 @@
           "urlWarningTitle": "الصفحة غير موجودة بعد",
           "urlWarningMessage": "هذا الرابط لا يشير إلى صفحة موجودة. يمكنك إنشاء الصفحة الآن أو الحفظ على أي حال.",
           "urlSuggestion": "اقتراح",
+          "createPageSuggestion": "إنشاء صفحة بالمسار: {slug}",
           "urlExists": "الصفحة موجودة",
           "createPage": "إنشاء صفحة",
           "linkToExisting": "الربط بصفحة موجودة",
+          "orCustomUrl": "أو أدخل رابط مخصص",
+          "selectPage": "اختر صفحة للربط",
           "target": "هدف الرابط",
           "targetSelf": "نفس التبويب",
           "targetBlank": "تبويب جديد",
@@ -1274,7 +1278,14 @@
           "create": "إنشاء عنصر",
           "creating": "جاري الإنشاء...",
           "update": "تحديث العنصر",
-          "updating": "جاري التحديث..."
+          "updating": "جاري التحديث...",
+          "or": "أو",
+          "customUrl": "أدخل رابط مخصص",
+          "customUrlPlaceholder": "/about، /contact، /custom-page",
+          "customUrlHelp": "للمستخدمين المتقدمين: أدخل مسار داخلي مخصص. لن يتم تحديثه تلقائيًا إذا تغيرت الصفحة.",
+          "noPagesInfo": "لم تقم بإنشاء أي صفحات بعد. قم بإنشاء صفحتك الأولى في نظام إدارة المحتوى، ثم عد للربط بها هنا.",
+          "createFirstPage": "إنشاء الصفحة الأولى",
+          "selectFromAbove": "اختر من الأعلى"
         }
       },
       "resourcePicker": {
@@ -1287,7 +1298,9 @@
           "page": "صفحة",
           "category": "قسم",
           "product": "منتج"
-        }
+        },
+        "selectPlaceholder": "اختر {type}...",
+        "noResults": "لم يتم العثور على نتائج."
       },
       "health": {
         "title": "تم العثور على {count} مشكلة محتملة",

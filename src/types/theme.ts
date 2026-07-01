@@ -477,7 +477,7 @@ export interface UpdateSystemTemplatePayload {
 
 /** Section schema setting type - all supported setting types */
 export type SettingType =
-  | 'text' | 'textarea' | 'richtext' | 'number' | 'checkbox'
+  | 'text' | 'localized_text' | 'textarea' | 'richtext' | 'number' | 'checkbox'
   | 'select' | 'color' | 'image_picker' | 'url' | 'link_list'
   | 'range' | 'header' | 'paragraph';
 

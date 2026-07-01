@@ -9,6 +9,7 @@ import { useRouter } from '@/lib/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { createMarketingPage } from '@/lib/api/marketing-pages';
+import { formatApiErrorMessage } from '@/lib/api/error-message';
 import { queryKeys } from '@/lib/queryKeys';
 import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
@@ -33,7 +34,14 @@ export function useCreateMarketingPage(storeSlug: string) {
 
     onError: (error) => {
       logger.error('Failed to create marketing page', error);
-      toast.error(error.message ?? t('form.createError'));
+      toast.error(
+        formatApiErrorMessage(error, {
+          fallbackMessage: t('form.createError'),
+          fieldMessages: {
+            page_template_id: t('form.errors.pageTemplateInvalid'),
+          },
+        })
+      );
     },
   });
 }

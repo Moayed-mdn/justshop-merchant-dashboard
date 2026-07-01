@@ -217,7 +217,7 @@ export async function getNavigationResourcePages(
 ): Promise<any[]> {
   const params = search ? { search } : {};
   const response = await clientApi.get<ApiResponse<any[]>>(
-    `/api/v1/merchant/stores/${storeSlug}/theme/navigation/resources/pages`,
+    `/api/v1/merchant/stores/${storeSlug}/navigation/resources/pages`,
     { params },
   );
   return response.data;
@@ -232,7 +232,7 @@ export async function getNavigationResourceCategories(
 ): Promise<any[]> {
   const params = search ? { search } : {};
   const response = await clientApi.get<ApiResponse<any[]>>(
-    `/api/v1/merchant/stores/${storeSlug}/theme/navigation/resources/categories`,
+    `/api/v1/merchant/stores/${storeSlug}/navigation/resources/categories`,
     { params },
   );
   return response.data;
@@ -247,7 +247,7 @@ export async function getNavigationResourceProducts(
 ): Promise<any[]> {
   const params = search ? { search } : {};
   const response = await clientApi.get<ApiResponse<any[]>>(
-    `/api/v1/merchant/stores/${storeSlug}/theme/navigation/resources/products`,
+    `/api/v1/merchant/stores/${storeSlug}/navigation/resources/products`,
     { params },
   );
   return response.data;

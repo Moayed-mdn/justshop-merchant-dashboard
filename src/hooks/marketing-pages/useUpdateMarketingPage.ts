@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { updateMarketingPage } from '@/lib/api/marketing-pages';
+import { formatApiErrorMessage } from '@/lib/api/error-message';
 import { queryKeys } from '@/lib/queryKeys';
 import { logger } from '@/lib/logger';
 import type { UpdateMarketingPagePayload, MarketingPageDetail } from '@/types/marketing-page';
@@ -32,7 +33,14 @@ export function useUpdateMarketingPage(storeSlug: string, pageId: string) {
 
     onError: (error) => {
       logger.error('Failed to update marketing page', error);
-      toast.error(error.message ?? t('form.updateError'));
+      toast.error(
+        formatApiErrorMessage(error, {
+          fallbackMessage: t('form.updateError'),
+          fieldMessages: {
+            page_template_id: t('form.errors.pageTemplateInvalid'),
+          },
+        })
+      );
     },
   });
 }
