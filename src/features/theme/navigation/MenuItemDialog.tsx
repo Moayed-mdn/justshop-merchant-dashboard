@@ -27,7 +27,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { serializeNavigationLabel } from '@/lib/mappers/navigation';
-import { useValidateNavigationUrl } from '@/hooks/navigation/useNavigationResources';
+import { useValidateNavigationUrl, useNavigationPages } from '@/hooks/navigation/useNavigationResources';
 import ResourcePicker from './ResourcePicker';
 import type {
   LocalizedNavigationLabel,
@@ -87,12 +87,16 @@ export default function MenuItemDialog({
     position: 0,
     is_active: true,
   });
-
   // Validate URL for custom links (debounced)
-  const shouldValidateUrl = (formData.type === 'link' || formData.type === 'custom') && 
-                            formData.url.length > 1 && 
-                            !formData.url.startsWith('http');
+  const shouldValidateUrl = formData.url.length > 1 && 
+                            !formData.url.startsWith('http') && (
+                              formData.type === 'link' ||
+                              formData.type === 'custom'
+                            );
   
+  const { data: pages } = useNavigationPages(storeSlug);
+  const hasPages = pages && pages.length > 0;
+
   const { data: urlValidation } = useValidateNavigationUrl(
     storeSlug,
     formData.url,
@@ -300,8 +304,152 @@ export default function MenuItemDialog({
               </div>
             )}
 
-            {/* Manual URL input for 'link', 'custom', 'external' types */}
-            {(formData.type === 'link' || formData.type === 'custom' || formData.type === 'external') && (
+            {/* Page Picker + custom URL for 'link' type */}
+            {formData.type === 'link' && (
+              <div className="space-y-4">
+                {hasPages ? (
+                  <>
+                    {/* Primary Option: Page Selector */}
+                    <div className="space-y-2">
+                      <Label>{t('form.selectPage')}</Label>
+                      <ResourcePicker
+                        storeSlug={storeSlug}
+                        type="page"
+                        selectedId={formData.resource_id || null}
+                        onSelect={(resource) => {
+                          setFormData({
+                            ...formData,
+                            resource_id: resource.id,
+                            resource_type: resource.resourceType,
+                            url: resource.url,
+                            label: formData.label.en === '' && formData.label.ar === ''
+                              ? resource.label
+                              : formData.label,
+                          });
+                        }}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {t('form.typePageHelp')}
+                      </p>
+                    </div>
+
+                    {/* Divider with "OR" */}
+                    <div className="relative">
+                      <Separator />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="bg-background px-2 text-xs text-muted-foreground">
+                          {t('form.or')}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Secondary Option: Custom URL */}
+                    <div className="space-y-2">
+                      <Label htmlFor="url">{t('form.customUrl')}</Label>
+                      <Input
+                        id="url"
+                        value={formData.url}
+                        onChange={(e) => {
+                          setFormData({ ...formData, url: e.target.value, resource_id: null, resource_type: null });
+                        }}
+                        placeholder={t('form.customUrlPlaceholder')}
+                        className={urlValidation && !urlValidation.exists ? 'border-amber-500' : ''}
+                      />
+                      <p className="text-xs text-muted-foreground">{t('form.customUrlHelp')}</p>
+
+                      {/* URL Validation Feedback */}
+                      {urlValidation && !urlValidation.exists && formData.url.length > 1 && (
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                          <div className="flex items-start gap-2">
+                            <span className="text-lg">⚠️</span>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-amber-900">
+                                {t('form.urlWarningTitle')}
+                              </p>
+                              <p className="text-xs text-amber-700 mt-1">
+                                {t('form.urlWarningMessage')}
+                              </p>
+                              {urlValidation.suggestion && (
+                                <p className="text-xs text-amber-600 mt-2">
+                                  💡 {t('form.createPageSuggestion', { slug: urlValidation.suggestion })}
+                                </p>
+                              )}
+                              <div className="mt-3 flex gap-2">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-xs"
+                                  onClick={() => {
+                                    window.open(`/merchant/cms/pages/create?slug=${encodeURIComponent(formData.url)}`, '_blank');
+                                  }}
+                                >
+                                  🆕 {t('form.createPage')}
+                                </Button>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-xs"
+                                  onClick={() => {
+                                    setFormData({ ...formData, url: '', resource_id: null, resource_type: null });
+                                  }}
+                                >
+                                  ↑ {t('form.selectFromAbove')}
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {urlValidation && urlValidation.exists && (
+                        <div className="flex items-center gap-2 text-xs text-green-600">
+                          <span>✅</span>
+                          <span>{t('form.urlExists')}</span>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  /* No pages exist - show simplified custom URL input */
+                  <div className="space-y-2">
+                    <Label htmlFor="url">{t('form.url')}</Label>
+                    <Input
+                      id="url"
+                      value={formData.url}
+                      onChange={(e) => {
+                        setFormData({ ...formData, url: e.target.value });
+                      }}
+                      placeholder={t('form.urlPlaceholder')}
+                      className={urlValidation && !urlValidation.exists ? 'border-amber-500' : ''}
+                    />
+                    <p className="text-xs text-muted-foreground">{t('form.urlHelp')}</p>
+
+                    {/* No pages info box */}
+                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                      <p className="text-sm text-blue-900">
+                        💡 {t('form.noPagesInfo')}
+                      </p>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="mt-2 text-xs"
+                        onClick={() => {
+                          window.open('/merchant/cms/pages/create', '_blank');
+                        }}
+                      >
+                        {t('form.createFirstPage')}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Manual URL for 'custom' (legacy) and 'external' types */}
+            {(formData.type === 'custom' || formData.type === 'external') && (
               <div className="space-y-2">
                 <Label htmlFor="url">{t('form.url')}</Label>
                 <Input
@@ -309,65 +457,8 @@ export default function MenuItemDialog({
                   value={formData.url}
                   onChange={(e) => setFormData({ ...formData, url: e.target.value })}
                   placeholder={formData.type === 'external' ? 'https://example.com' : '/custom-page'}
-                  required={formData.type === 'link' || formData.type === 'external'}
-                  className={urlValidation && !urlValidation.exists ? 'border-amber-500' : ''}
+                  required={formData.type === 'external'}
                 />
-                
-                {/* URL Validation Feedback */}
-                {urlValidation && !urlValidation.exists && formData.url.length > 1 && (
-                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-                    <div className="flex items-start gap-2">
-                      <span className="text-lg">⚠️</span>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-amber-900">
-                          {t('form.urlWarningTitle')}
-                        </p>
-                        <p className="text-xs text-amber-700 mt-1">
-                          {t('form.urlWarningMessage')}
-                        </p>
-                        {urlValidation.suggestion && (
-                          <p className="text-xs text-amber-600 mt-2">
-                            💡 {t('form.urlSuggestion')}: <code className="bg-amber-100 px-1 rounded">{urlValidation.suggestion}</code>
-                          </p>
-                        )}
-                        <div className="mt-3 flex gap-2">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            className="text-xs"
-                            onClick={() => {
-                              // Open CMS to create page (future enhancement)
-                              window.open(`/merchant/cms/pages/create?slug=${encodeURIComponent(formData.url)}`, '_blank');
-                            }}
-                          >
-                            🆕 {t('form.createPage')}
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="ghost"
-                            className="text-xs"
-                            onClick={() => {
-                              // Switch to page type
-                              setFormData({ ...formData, type: 'page', url: '', resource_id: null, resource_type: null });
-                            }}
-                          >
-                            🔗 {t('form.linkToExisting')}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {urlValidation && urlValidation.exists && (
-                  <div className="flex items-center gap-2 text-xs text-green-600">
-                    <span>✅</span>
-                    <span>{t('form.urlExists')}</span>
-                  </div>
-                )}
-                
                 <p className="text-xs text-muted-foreground">{t('form.urlHelp')}</p>
               </div>
             )}

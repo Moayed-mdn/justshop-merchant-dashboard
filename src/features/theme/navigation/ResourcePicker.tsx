@@ -4,17 +4,30 @@
  * Resource Picker Component
  * 
  * Smart picker for selecting pages, categories, or products to link in navigation.
- * Shows search, filtered list, and preview of selected resource.
+ * Shows a proper dropdown/combobox selector interface.
  */
 
 import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Search, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { Search, ExternalLink, CheckCircle2, ChevronsUpDown, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import {
   useNavigationPages,
   useNavigationCategories,
@@ -38,21 +51,12 @@ interface Props {
 export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }: Props) {
   const locale = useLocale();
   const t = useTranslations('theme.navigation.resourcePicker');
-  const [search, setSearch] = useState('');
+  const [open, setOpen] = useState(false);
 
-  // Fetch resources based on type
-  const { data: pages, isLoading: loadingPages } = useNavigationPages(
-    storeSlug,
-    type === 'page' ? search : undefined
-  );
-  const { data: categories, isLoading: loadingCategories } = useNavigationCategories(
-    storeSlug,
-    type === 'category' ? search : undefined
-  );
-  const { data: products, isLoading: loadingProducts } = useNavigationProducts(
-    storeSlug,
-    type === 'product' ? search : undefined
-  );
+  // Fetch resources based on type (no search param - fetch all)
+  const { data: pages, isLoading: loadingPages } = useNavigationPages(storeSlug);
+  const { data: categories, isLoading: loadingCategories } = useNavigationCategories(storeSlug);
+  const { data: products, isLoading: loadingProducts } = useNavigationProducts(storeSlug);
 
   // Get data and loading state based on type
   const resourceData = type === 'page' 
@@ -86,7 +90,23 @@ export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }
       url: resource.url,
       resourceType: getResourceTypeClass(),
     });
+    setOpen(false);
   };
+
+  // Get display label for a resource
+  const getDisplayLabel = (resource: any) => {
+    if (!resource) return '';
+    
+    const label = locale === 'ar'
+      ? (type === 'page' ? resource.title?.ar : resource.name?.ar) || 
+        (type === 'page' ? resource.title?.en : resource.name?.en)
+      : (type === 'page' ? resource.title?.en : resource.name?.en);
+    
+    return label || '';
+  };
+
+  // Find selected resource
+  const selectedResource = resourceData?.find((r: any) => r.id === selectedId);
 
   if (isLoading) {
     return (
@@ -111,80 +131,87 @@ export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }
   }
 
   return (
-    <div className="space-y-4">
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={t('searchPlaceholder', { type: t(`type.${type}`) })}
-          className="pl-9"
-        />
-      </div>
-
-      {/* Resource List */}
-      <ScrollArea className="h-[300px] rounded-lg border">
-        <div className="p-2 space-y-1">
-          {resourceData.map((resource: any) => {
-            const isSelected = resource.id === selectedId;
-            const displayLabel = locale === 'ar'
-              ? (type === 'page' ? resource.title.ar : resource.name?.ar) || 
-                (type === 'page' ? resource.title.en : resource.name?.en)
-              : (type === 'page' ? resource.title.en : resource.name?.en);
-
-            return (
-              <button
-                key={resource.id}
-                onClick={() => handleSelect(resource)}
-                className={cn(
-                  'w-full rounded-md p-3 text-left transition-colors',
-                  'hover:bg-accent',
-                  isSelected && 'bg-primary/10 ring-2 ring-primary'
-                )}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-sm truncate">
-                        {displayLabel}
-                      </p>
-                      {isSelected && (
-                        <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-primary" />
+    <div className="space-y-2">
+      {/* Combobox Selector */}
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger className="w-full">
+          <Button
+            type="button"
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between"
+          >
+            {selectedResource ? (
+              <span className="truncate">{getDisplayLabel(selectedResource)}</span>
+            ) : (
+              <span className="text-muted-foreground">
+                {t('selectPlaceholder', { type: t(`type.${type}`) })}
+              </span>
+            )}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-0" align="start">
+          <Command>
+            <CommandInput 
+              placeholder={t('searchPlaceholder', { type: t(`type.${type}`) })} 
+            />
+            <CommandList>
+              <CommandEmpty>{t('noResults')}</CommandEmpty>
+              <CommandGroup>
+                {resourceData.map((resource: any) => {
+                  const displayLabel = getDisplayLabel(resource);
+                  const isSelected = resource.id === selectedId;
+                  
+                  return (
+                    <CommandItem
+                      key={resource.id}
+                      value={`${resource.id}-${displayLabel}`}
+                      onSelect={() => handleSelect(resource)}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          isSelected ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">
+                          {displayLabel}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {resource.url}
+                        </p>
+                      </div>
+                      {type === 'page' && resource.status && (
+                        <Badge
+                          variant={resource.status === 'published' ? 'default' : 'secondary'}
+                          className="ml-2 text-xs"
+                        >
+                          {resource.status}
+                        </Badge>
                       )}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                      {resource.url}
-                    </p>
-                    {type === 'page' && resource.status && (
-                      <Badge
-                        variant={resource.status === 'published' ? 'default' : 'secondary'}
-                        className="mt-1 text-xs"
-                      >
-                        {resource.status}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </ScrollArea>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
 
-      {/* Selected Resource Preview */}
-      {selectedId && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-          <div className="flex items-start gap-2">
-            <CheckCircle2 className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-green-900">
-                {t('selected')}
-              </p>
-              <p className="text-xs text-green-700 mt-0.5">
-                {resourceData.find((r: any) => r.id === selectedId)?.url}
-              </p>
-            </div>
+      {/* Selected Resource Info */}
+      {selectedResource && (
+        <div className="flex items-start gap-2 rounded-lg border bg-muted/50 p-2">
+          <CheckCircle2 className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium truncate">
+              {getDisplayLabel(selectedResource)}
+            </p>
+            <p className="text-xs text-muted-foreground truncate">
+              {selectedResource.url}
+            </p>
           </div>
         </div>
       )}
