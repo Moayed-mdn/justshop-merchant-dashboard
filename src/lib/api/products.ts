@@ -12,7 +12,7 @@ import type { ProductFilters } from '@/schemas/products';
  * Get products list with filters.
  */
 export async function getProducts(
-  storeId: string,
+  storeSlug: string,
   filters: ProductFilters
 ): Promise<PaginatedResponse<AdminProduct>> {
   const params: Record<string, string | number> = {};
@@ -30,17 +30,17 @@ export async function getProducts(
     params.per_page = filters.perPage;
   }
   
-  return clientApi.get<PaginatedResponse<AdminProduct>>(API_ROUTES.store(storeId).products().list(), { params });
+  return clientApi.get<PaginatedResponse<AdminProduct>>(API_ROUTES.store(storeSlug).products().list(), { params });
 }
 
 /**
  * Get product detail by ID.
  */
 export async function getProductDetail(
-  storeId: string,
+  storeSlug: string,
   productId: string
 ): Promise<AdminProduct> {
-  const response = await clientApi.get<ApiResponse<AdminProduct>>(API_ROUTES.store(storeId).products().detail(productId));
+  const response = await clientApi.get<ApiResponse<AdminProduct>>(API_ROUTES.store(storeSlug).products().detail(productId));
   return response.data;
 }
 
@@ -48,10 +48,10 @@ export async function getProductDetail(
  * Create a new product.
  */
 export async function createProduct(
-  storeId: string,
+  storeSlug: string,
   payload: ProductCreatePayload
 ): Promise<AdminProduct> {
-  const response = await clientApi.post<ApiResponse<AdminProduct>>(API_ROUTES.store(storeId).products().list(), payload);
+  const response = await clientApi.post<ApiResponse<AdminProduct>>(API_ROUTES.store(storeSlug).products().list(), payload);
   return response.data;
 }
 
@@ -59,11 +59,11 @@ export async function createProduct(
  * Update an existing product.
  */
 export async function updateProduct(
-  storeId: string,
+  storeSlug: string,
   productId: string,
   payload: ProductUpdatePayload
 ): Promise<AdminProduct> {
-  const response = await clientApi.patch<ApiResponse<AdminProduct>>(API_ROUTES.store(storeId).products().detail(productId), payload);
+  const response = await clientApi.patch<ApiResponse<AdminProduct>>(API_ROUTES.store(storeSlug).products().detail(productId), payload);
   return response.data;
 }
 
@@ -71,8 +71,8 @@ export async function updateProduct(
  * Delete a product by ID.
  */
 export async function deleteProduct(
-  storeId: string,
+  storeSlug: string,
   productId: string
 ): Promise<void> {
-  await clientApi.delete(API_ROUTES.store(storeId).products().detail(productId));
+  await clientApi.delete(API_ROUTES.store(storeSlug).products().detail(productId));
 }

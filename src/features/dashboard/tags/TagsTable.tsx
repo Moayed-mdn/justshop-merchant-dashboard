@@ -22,13 +22,13 @@ interface Props {
   perPage:         number;
   onPerPageChange: (perPage: number) => void;
   isLoading:       boolean;
-  storeId:         string;
+  storeSlug:         string;
   onDelete:        (tagId: string) => void;
 }
 
 export default function TagsTable({
   tags, pagination, page, onPageChange,
-  perPage, onPerPageChange, isLoading, storeId, onDelete,
+  perPage, onPerPageChange, isLoading, storeSlug, onDelete,
 }: Props) {
   const t = useTranslations('tags');
 

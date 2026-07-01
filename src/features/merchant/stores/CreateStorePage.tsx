@@ -130,9 +130,7 @@ export function CreateStorePage() {
           open={showUpgradeDialog}
           onOpenChange={setShowUpgradeDialog}
           limitType="stores"
-          currentPlan="Current Plan"
-          requiredPlan="Higher Plan"
-          currentCount={quotaCheck.currentCount || 0}
+          current={quotaCheck.currentCount || 0}
           limit={quotaCheck.limit || 0}
         />
       </div>
@@ -147,7 +145,7 @@ export function CreateStorePage() {
         want to override in the future, but for now we follow the 
         instruction not to modify the component itself.
       */}
-      <CreateStoreStep onSuccess={() => setShowProvisioning(true)} />
+      <CreateStoreStep fullPage={false} onSuccess={() => setShowProvisioning(true)} />
     </div>
   );
 }

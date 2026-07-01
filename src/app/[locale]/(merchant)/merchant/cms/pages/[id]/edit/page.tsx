@@ -7,6 +7,7 @@ import EditMarketingPageForm from '@/features/dashboard/cms-pages/EditMarketingP
 import { useMarketingPage } from '@/hooks/marketing-pages/useMarketingPage';
 import { useTranslations } from 'next-intl';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Edit Marketing Page.
@@ -17,9 +18,9 @@ export default function MerchantCmsPagesEditPage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t           = useTranslations('cmsPages');
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
-  const { data: page, isLoading, error } = useMarketingPage(storeId, pageId);
+  const { data: page, isLoading, error } = useMarketingPage(storeSlug, pageId);
 
   if (!activeStore) {
     return (
@@ -27,10 +28,7 @@ export default function MerchantCmsPagesEditPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to edit a marketing page."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -62,7 +60,7 @@ export default function MerchantCmsPagesEditPage() {
   return (
     <div className="space-y-6">
       <EditMarketingPageForm
-        storeId={storeId}
+        storeSlug={storeSlug}
         pageId={pageId}
         page={page}
       />

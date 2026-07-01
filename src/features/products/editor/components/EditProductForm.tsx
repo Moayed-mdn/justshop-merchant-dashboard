@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations }               from 'next-intl';
 import { ArrowLeft } from 'lucide-react';
 import { toast }                         from 'sonner';
+import { ROUTES } from '@/config/routes';
 
 import { mapProductDetail }          from '@/lib/mappers/products';
 import { buildEditorState }          from '@/features/products/editor/state/buildEditorState';
@@ -41,7 +42,7 @@ import type {
 
 interface Props {
   product: ProductDetailView;
-  storeId: string;
+  storeSlug: string;
 }
 
 // ── Exported pure helpers (unit-tested independently) ─────────────────────
@@ -56,9 +57,10 @@ export function buildNextStructureForSave(
 }
 
 export function buildRebasedEditorState(
-  savedProduct: AdminProduct
+  savedProduct: AdminProduct,
+  storeSlug: string = '',
 ): ProductEditorState {
-  return buildEditorState(mapProductDetail(savedProduct));
+  return buildEditorState(mapProductDetail(savedProduct, storeSlug));
 }
 
 export function buildDiscardState(baseline: ProductEditorState) {
@@ -85,7 +87,7 @@ export function isEditorSaveBlocked(params: {
 
 // ── Component ─────────────────────────────────────────────────────────────
 
-export default function EditProductForm({ product, storeId }: Props) {
+export default function EditProductForm({ product, storeSlug }: Props) {
   const t = useTranslations('products');
   const router = useRouter();
 
@@ -116,7 +118,7 @@ export default function EditProductForm({ product, storeId }: Props) {
   const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
 
   const rebaseFromProduct = useCallback((savedProduct: AdminProduct) => {
-    const nextState = buildRebasedEditorState(savedProduct);
+    const nextState = buildRebasedEditorState(savedProduct, storeSlug);
     baselineRef.current = nextState;
     setContent(nextState.content);
     setStructure(nextState.structure);
@@ -127,15 +129,15 @@ export default function EditProductForm({ product, storeId }: Props) {
     setMediaDirty(false);
     setTagsDirty(false);
     setValidationErrors([]);
-  }, []);
+  }, [storeSlug]);
 
-  const saveContent = useSaveProductContent(storeId, String(product.id), {
+  const saveContent = useSaveProductContent(storeSlug, String(product.id), {
     onError: (err) => toast.error(err.message),
   });
-  const saveStructure = useSaveProductStructure(storeId, String(product.id), {
+  const saveStructure = useSaveProductStructure(storeSlug, String(product.id), {
     onError: (err) => toast.error(err.message),
   });
-  const saveMedia = useSaveProductMedia(storeId, String(product.id), {
+  const saveMedia = useSaveProductMedia(storeSlug, String(product.id), {
     onError: (err) => toast.error(err.message),
   });
 
@@ -268,7 +270,7 @@ export default function EditProductForm({ product, storeId }: Props) {
           size="icon"
           onClick={() => {
             bypassNextNavigation();
-            router.back();
+            router.push(ROUTES.merchant.products.list());
           }}
         >
           <ArrowLeft className="h-4 w-4" />
@@ -322,7 +324,7 @@ export default function EditProductForm({ product, storeId }: Props) {
         {/* ── Content ── */}
         <TabsContent value="content">
           <ContentTab
-            storeId={storeId}
+            storeSlug={storeSlug}
             availableLocales={product.availableLocales}
             content={content}
             tags={tags}
@@ -357,7 +359,7 @@ export default function EditProductForm({ product, storeId }: Props) {
               }));
               setStructureDirty(true);
             }}
-            storeId={storeId}
+            storeSlug={storeSlug}
           />
         </TabsContent>
 
@@ -369,7 +371,7 @@ export default function EditProductForm({ product, storeId }: Props) {
               setImages(next);
               setMediaDirty(true);
             }}
-            storeId={storeId}
+            storeSlug={storeSlug}
           />
         </TabsContent>
       </Tabs>
@@ -402,7 +404,7 @@ export default function EditProductForm({ product, storeId }: Props) {
 
       <div className="flex justify-end">
         <DeleteProductButton
-          storeId={storeId}
+          storeSlug={storeSlug}
           productId={String(product.id)}
           productName={product.name}
         />

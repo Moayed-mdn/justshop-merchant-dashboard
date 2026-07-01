@@ -3,10 +3,10 @@ import type {
   PageTemplateView,
 } from '@/types/theme';
 
-export function mapPageTemplate(item: PageTemplate): PageTemplateView {
+export function mapPageTemplate(item: PageTemplate, storeSlug: string): PageTemplateView {
   return {
     id: item.id,
-    storeId: item.store_id,
+    storeSlug,
     name: item.name,
     handle: item.handle,
     type: item.type,

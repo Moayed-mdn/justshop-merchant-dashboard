@@ -4,6 +4,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import UsersContent from '@/features/dashboard/users/UsersContent';
 import { useTranslations } from 'next-intl';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const INITIAL_FILTERS = {
   search: '',
@@ -20,6 +21,7 @@ const INITIAL_FILTERS = {
 export default function MerchantCustomersPage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('nav');
+  const usersT = useTranslations('users');
 
   if (!activeStore) {
     return (
@@ -27,9 +29,9 @@ export default function MerchantCustomersPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('users')}</h1>
         </div>
-        <WorkspaceEmptyState 
-          title="No active store"
-          message="Select a store from the switcher to view its customers."
+        <WorkspaceEmptyState
+          title={usersT('noActiveStore')}
+          message={usersT('noActiveStoreMessage')}
         />
       </div>
     );
@@ -37,7 +39,7 @@ export default function MerchantCustomersPage() {
 
   return (
     <div className="space-y-6">
-      <UsersContent storeId={String(activeStore.id)} initialFilters={INITIAL_FILTERS} />
+      <UsersContent storeSlug={getStoreRouteParam(activeStore)} initialFilters={INITIAL_FILTERS} />
     </div>
   );
 }

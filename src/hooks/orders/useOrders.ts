@@ -14,10 +14,10 @@ import type { PaginatedResponse, ApiError } from '@/types/api';
 import { mapOrderListItem } from '@/lib/mappers/orders';
 import { selectPaginatedList } from '@/lib/mappers/pagination';
 
-export function useOrders(storeId: string, filters: OrderFilters) {
+export function useOrders(storeSlug: string, filters: OrderFilters) {
   return useQuery<PaginatedResponse<AdminOrder>, ApiError, PaginatedResponse<OrderListItemView>>({
-    queryKey: queryKeys.orders(storeId).list(filters),
-    queryFn: () => getOrders(storeId, filters),
+    queryKey: queryKeys.orders(storeSlug).list(filters),
+    queryFn: () => getOrders(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
     select: selectPaginatedList(mapOrderListItem),
   });

@@ -20,10 +20,10 @@ import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface HeroSectionContentProps {
   index: number;
-  storeId: string;
+  storeSlug: string;
 }
 
-export function HeroSectionContent({ index, storeId }: HeroSectionContentProps) {
+export function HeroSectionContent({ index, storeSlug }: HeroSectionContentProps) {
   const t = useTranslations('cmsPages');
   const { watch, setValue, register } = useFormContext<MarketingPageFormValues>();
 
@@ -160,7 +160,7 @@ export function HeroSectionContent({ index, storeId }: HeroSectionContentProps) 
             onChange={(v) =>
               setValue(`${itemPath}.imageUrl` as any, v || null, { shouldDirty: true })
             }
-            storeId={storeId}
+            storeSlug={storeSlug}
             placeholder="https://example.com/hero.jpg"
           />
         </div>

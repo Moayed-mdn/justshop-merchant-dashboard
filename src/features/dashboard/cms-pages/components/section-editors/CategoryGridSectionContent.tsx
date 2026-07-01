@@ -17,7 +17,7 @@ import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface CategoryGridSectionContentProps {
   index: number;
-  storeId: string;
+  storeSlug: string;
 }
 
 type CategoryItem = {
@@ -29,7 +29,7 @@ type CategoryItem = {
   image?: string | null;
 };
 
-export function CategoryGridSectionContent({ index, storeId }: CategoryGridSectionContentProps) {
+export function CategoryGridSectionContent({ index, storeSlug }: CategoryGridSectionContentProps) {
   const t = useTranslations('cmsPages');
   const { watch, setValue, register } = useFormContext<MarketingPageFormValues>();
 
@@ -151,7 +151,7 @@ export function CategoryGridSectionContent({ index, storeId }: CategoryGridSecti
                 onChange={(v) =>
                   setValue(`${basePath}.categories.${itemIndex}.image` as any, v, { shouldDirty: true })
                 }
-                storeId={storeId}
+                storeSlug={storeSlug}
                 placeholder="https://example.com/category-image.jpg"
               />
             </div>

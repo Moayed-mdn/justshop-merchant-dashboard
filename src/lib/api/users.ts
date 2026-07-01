@@ -12,7 +12,7 @@ import type { UserFilters } from '@/schemas/users';
  * Get users list with filters.
  */
 export async function getUsers(
-  storeId: string,
+  storeSlug: string,
   filters: UserFilters
 ): Promise<PaginatedResponse<UserListItem>> {
   const params: Record<string, string | number> = {};
@@ -23,18 +23,18 @@ export async function getUsers(
   if (filters.page !== 1) params.page = filters.page;
   if (filters.perPage !== 10) params.per_page = filters.perPage;
 
-  return clientApi.get<PaginatedResponse<UserListItem>>(API_ROUTES.store(storeId).users().list(), { params });
+  return clientApi.get<PaginatedResponse<UserListItem>>(API_ROUTES.store(storeSlug).users().list(), { params });
 }
 
 /**
  * Create a new merchant user.
  */
 export async function createMerchantUser(
-  storeId: string,
+  storeSlug: string,
   payload: CreateMerchantUserPayload
 ): Promise<UserDetail> {
   const response = await clientApi.post<ApiResponse<UserDetail>>(
-    API_ROUTES.store(storeId).users().create(),
+    API_ROUTES.store(storeSlug).users().create(),
     payload
   );
   return response.data;
@@ -44,10 +44,10 @@ export async function createMerchantUser(
  * Get user detail by ID.
  */
 export async function getUserDetail(
-  storeId: string,
+  storeSlug: string,
   userId: string
 ): Promise<UserDetail> {
-  const response = await clientApi.get<ApiResponse<UserDetail>>(API_ROUTES.store(storeId).users().detail(userId));
+  const response = await clientApi.get<ApiResponse<UserDetail>>(API_ROUTES.store(storeSlug).users().detail(userId));
   return response.data;
 }
 
@@ -55,8 +55,8 @@ export async function getUserDetail(
  * Delete user by ID.
  */
 export async function deleteUser(
-  storeId: string,
+  storeSlug: string,
   userId: string
 ): Promise<void> {
-  await clientApi.delete(API_ROUTES.store(storeId).users().detail(userId));
+  await clientApi.delete(API_ROUTES.store(storeSlug).users().detail(userId));
 }

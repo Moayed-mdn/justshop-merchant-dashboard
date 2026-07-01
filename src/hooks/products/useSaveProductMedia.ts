@@ -18,20 +18,20 @@ export interface UseSaveProductMediaOptions {
 }
 
 export function useSaveProductMedia(
-  storeId:   string,
+  storeSlug:   string,
   productId: string,
   options?:  UseSaveProductMediaOptions
 ) {
   return useMutation<AdminProduct, ApiError, ProductMediaState>({
     mutationFn: (media: ProductMediaState) =>
-      updateProduct(storeId, productId, buildMediaPayload({ media })),
+      updateProduct(storeSlug, productId, buildMediaPayload({ media })),
     retry: 0,
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.products(storeId).lists(),
+        queryKey: queryKeys.products(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.products(storeId).detail(productId),
+        queryKey: queryKeys.products(storeSlug).detail(productId),
       });
       logger.info('Product media saved', { productId: data.id });
       options?.onSuccess?.(data);

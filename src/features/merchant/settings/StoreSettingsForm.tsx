@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const schema = z.object({
   name: z.string().min(3, 'Store name must be at least 3 characters.'),
@@ -32,7 +33,7 @@ interface StoreSettingsFormProps {
 export function StoreSettingsForm({ store }: StoreSettingsFormProps) {
   const t = useTranslations('settings.store');
   const [showSaved, setShowSaved] = useState(false);
-  const updateStoreMutation = useUpdateStore(String(store.id));
+  const updateStoreMutation = useUpdateStore(getStoreRouteParam(store));
 
   const {
     register,

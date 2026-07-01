@@ -12,13 +12,13 @@ import type { TopProductItemView } from '@/types/dashboard';
 
 interface TopProductsListProps {
   products: TopProductItemView[];
-  storeId: string;
+  storeSlug: string;
 }
 
 /**
  * List displaying top products for the dashboard.
  */
-export async function TopProductsList({ products, storeId }: TopProductsListProps) {
+export async function TopProductsList({ products, storeSlug }: TopProductsListProps) {
   const t = await getTranslations('dashboard');
 
   return (

@@ -12,16 +12,16 @@
 //     is not justified; update manually or accept build-time year
 // =============================================================================
 
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import { FOOTER_NAV_GROUPS } from '@/features/marketing/constants/nav-links'
+import LocaleSwitcher from '@/features/marketing/components/LocaleSwitcher'
 
 const CURRENT_YEAR = new Date().getFullYear()
 
 export default async function MarketingFooter() {
   const t = await getTranslations('marketing')
-  const locale = await getLocale()
 
   return (
     <footer
@@ -89,31 +89,7 @@ export default async function MarketingFooter() {
             &copy; {CURRENT_YEAR} LaraTenant Commerce. {t('footer.copyright')}
           </p>
 
-          {/* Locale switcher placeholder */}
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              locale="en"
-              className={cn(
-                'text-xs text-muted-foreground transition-colors hover:text-foreground',
-                locale === 'en' && 'font-semibold text-foreground',
-              )}
-              aria-label="Switch to English"
-            >
-              EN
-            </Link>
-            <Link
-              href="/"
-              locale="ar"
-              className={cn(
-                'text-xs text-muted-foreground transition-colors hover:text-foreground',
-                locale === 'ar' && 'font-semibold text-foreground',
-              )}
-              aria-label="التبديل إلى العربية"
-            >
-              AR
-            </Link>
-          </div>
+          <LocaleSwitcher />
         </div>
       </div>
     </footer>

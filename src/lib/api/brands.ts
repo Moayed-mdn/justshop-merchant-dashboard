@@ -31,7 +31,7 @@ function resolveIsActive(
  * Fetch paginated brands list.
  */
 export async function getBrands(
-  storeId: string,
+  storeSlug: string,
   filters: BrandFilters,
 ): Promise<PaginatedResponse<BrandListItem>> {
   const params: Record<string, string | number> = {};
@@ -42,7 +42,7 @@ export async function getBrands(
   if (filters.perPage !== 15) params.per_page  = filters.perPage;
 
   return clientApi.get<PaginatedResponse<BrandListItem>>(
-    API_ROUTES.store(storeId).brands().list(),
+    API_ROUTES.store(storeSlug).brands().list(),
     { params },
   );
 }
@@ -51,11 +51,11 @@ export async function getBrands(
  * Fetch single brand by ID.
  */
 export async function getBrandDetail(
-  storeId: string,
+  storeSlug: string,
   brandId: string,
 ): Promise<BrandDetail> {
   const response = await clientApi.get<ApiResponse<BrandDetail>>(
-    API_ROUTES.store(storeId).brands().detail(brandId),
+    API_ROUTES.store(storeSlug).brands().detail(brandId),
   );
   return response.data;
 }
@@ -64,11 +64,11 @@ export async function getBrandDetail(
  * Create a new brand.
  */
 export async function createBrand(
-  storeId: string,
+  storeSlug: string,
   payload: CreateBrandPayload,
 ): Promise<BrandDetail> {
   const response = await clientApi.post<ApiResponse<BrandDetail>>(
-    API_ROUTES.store(storeId).brands().create(),
+    API_ROUTES.store(storeSlug).brands().create(),
     payload,
   );
   return response.data;
@@ -78,12 +78,12 @@ export async function createBrand(
  * Update an existing brand.
  */
 export async function updateBrand(
-  storeId: string,
+  storeSlug: string,
   brandId: string,
   payload: UpdateBrandPayload,
 ): Promise<BrandDetail> {
   const response = await clientApi.patch<ApiResponse<BrandDetail>>(
-    API_ROUTES.store(storeId).brands().update(brandId),
+    API_ROUTES.store(storeSlug).brands().update(brandId),
     payload,
   );
   return response.data;
@@ -93,11 +93,11 @@ export async function updateBrand(
  * Soft-delete a brand.
  */
 export async function deleteBrand(
-  storeId: string,
+  storeSlug: string,
   brandId: string,
 ): Promise<void> {
   await clientApi.delete(
-    API_ROUTES.store(storeId).brands().delete(brandId),
+    API_ROUTES.store(storeSlug).brands().delete(brandId),
   );
 }
 
@@ -105,11 +105,11 @@ export async function deleteBrand(
  * Restore a soft-deleted brand.
  */
 export async function restoreBrand(
-  storeId: string,
+  storeSlug: string,
   brandId: string,
 ): Promise<BrandDetail> {
   const response = await clientApi.patch<ApiResponse<BrandDetail>>(
-    API_ROUTES.store(storeId).brands().restore(brandId),
+    API_ROUTES.store(storeSlug).brands().restore(brandId),
   );
   return response.data;
 }

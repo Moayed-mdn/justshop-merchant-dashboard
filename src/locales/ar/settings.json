@@ -1,0 +1,44 @@
+{
+  "title": "الإعدادات",
+  "subtitle": "إدارة تفضيلات عملك وحسابك",
+  "description": "إدارة التكوين لـ {storeName}.",
+  "noActiveStore": "لا يوجد متجر نشط",
+  "noActiveStoreMessage": "حدد متجرًا من المبدل لإدارة إعداداتك.",
+  "tabs": {
+    "general": "عام",
+    "shipping": "الشحن"
+  },
+  "billing": {
+    "title": "الفوترة والاشتراك",
+    "subtitle": "إدارة خطة الاشتراك ومعلومات الفوترة"
+  },
+  "billingCard": {
+    "title": "الفوترة والاشتراك",
+    "loading": "جارٍ تحميل معلومات الاشتراك...",
+    "subtitle": "إدارة خطة الاشتراك والفوترة",
+    "noSubscription": "ليس لديك اشتراك نشط بعد.",
+    "startTrial": "ابدأ الفترة التجريبية المجانية",
+    "currentPlan": "الخطة الحالية",
+    "billedCycle": "فوترة {cycle}",
+    "trialEnds": "تنتهي التجربة في",
+    "renews": "يتجدد في",
+    "manageSubscription": "إدارة الاشتراك",
+    "viewPlans": "عرض الخطط",
+    "opening": "جارٍ الفتح...",
+    "billingPortal": "بوابة الفوترة"
+  },
+  "store": {
+    "title": "تكوين المتجر",
+    "subtitle": "إدارة تفاصيل متجرك وتفضيلاته",
+    "name": "اسم المتجر",
+    "namePlaceholder": "أدخل اسم المتجر",
+    "nameHint": "هذا هو الاسم العام لمتجرك.",
+    "slug": "رابط المتجر",
+    "slugHint": "هذا هو رابط متجرك.",
+    "slugChangeQuestion": "هل تحتاج إلى تغيير رابط متجرك؟",
+    "slugChangeAnswer": "يرجى الاتصال بالدعم لتحديث رابط متجرك.",
+    "saved": "تم الحفظ!",
+    "saving": "جارٍ الحفظ...",
+    "save": "حفظ التغييرات"
+  }
+}

@@ -40,7 +40,7 @@ interface Props {
   perPage: number;
   onPerPageChange: (perPage: number) => void;
   isLoading: boolean;
-  storeId: string;
+  storeSlug: string;
 }
 
 export default function ProductsTable({
@@ -51,7 +51,7 @@ export default function ProductsTable({
   perPage,
   onPerPageChange,
   isLoading,
-  storeId,
+  storeSlug,
 }: Props) {
   const t = useTranslations('products');
 
@@ -76,7 +76,7 @@ export default function ProductsTable({
       <DataTableEmptyState
         icon={Package}
         title={t('table.empty')}
-        explanation="Products you add will appear here. Create your first product to start selling."
+        explanation={t('table.emptyExplanation')}
         actionLabel={t('new')}
         actionHref={ROUTES.merchant.products.new()}
       />

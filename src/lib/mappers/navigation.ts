@@ -49,10 +49,11 @@ export function serializeNavigationLabel(
 /** Map navigation menu list item from API to view */
 export function mapNavigationMenuListItem(
   item: NavigationMenuListItem,
+  storeSlug: string,
 ): NavigationMenuListItemView {
   return {
     id: item.id,
-    storeId: item.store_id,
+    storeSlug,
     name: item.name,
     handle: item.handle,
     description: item.description,
@@ -90,10 +91,11 @@ export function mapNavigationMenuItem(
 /** Map navigation menu detail from API to view */
 export function mapNavigationMenuDetail(
   menu: NavigationMenuDetail,
+  storeSlug: string,
 ): NavigationMenuDetailView {
   return {
     id: menu.id,
-    storeId: menu.store_id,
+    storeSlug,
     name: menu.name,
     handle: menu.handle,
     description: menu.description,

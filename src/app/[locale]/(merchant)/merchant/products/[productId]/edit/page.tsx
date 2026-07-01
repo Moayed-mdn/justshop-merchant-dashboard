@@ -7,6 +7,7 @@ import { useProductDetail } from '@/hooks/products/useProductDetail';
 import { useTranslations } from 'next-intl';
 import { EditProductSkeleton } from '@/features/products/editor/components/EditProductSkeleton';
 import EditProductForm from '@/features/products/editor/components/EditProductForm';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Edit Product Page.
@@ -18,9 +19,9 @@ export default function MerchantProductEditPage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('products');
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
-  const { data: product, isLoading, error } = useProductDetail(storeId, productId);
+  const { data: product, isLoading, error } = useProductDetail(storeSlug, productId);
 
   if (!activeStore) {
     return (
@@ -28,10 +29,7 @@ export default function MerchantProductEditPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to edit a product."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -50,7 +48,7 @@ export default function MerchantProductEditPage() {
 
   return (
     <div className="space-y-6">
-      <EditProductForm product={product} storeId={storeId} />
+      <EditProductForm product={product} storeSlug={storeSlug} />
     </div>
   );
 }

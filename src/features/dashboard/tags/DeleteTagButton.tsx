@@ -9,12 +9,12 @@ import {
   DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
 
-interface Props { storeId: string; tagId: string }
+interface Props { storeSlug: string; tagId: string }
 
-export function DeleteTagButton({ storeId, tagId }: Props) {
+export function DeleteTagButton({ storeSlug, tagId }: Props) {
   const t             = useTranslations('tags');
   const [open, setOpen] = useState(false);
-  const deleteMutation  = useDeleteTag(storeId, tagId);
+  const deleteMutation  = useDeleteTag(storeSlug, tagId);
 
   return (
     <>

@@ -33,7 +33,7 @@ export type StoreAssetListItem = StoreAsset;
 /** Store asset - mapped for UI consumption */
 export interface StoreAssetView {
   id: number;
-  storeId: number;
+  storeSlug: string;
   assetType: AssetType;
   fileName: string;
   filePath: string;

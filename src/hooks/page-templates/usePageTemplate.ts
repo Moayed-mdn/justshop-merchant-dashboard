@@ -8,11 +8,11 @@ import { mapPageTemplate } from '@/lib/mappers/page-templates';
 import type { PageTemplate, PageTemplateView } from '@/types/theme';
 import type { ApiError } from '@/types/api';
 
-export function usePageTemplate(storeId: string, templateId: string) {
+export function usePageTemplate(storeSlug: string, templateId: string) {
   return useQuery<PageTemplate, ApiError, PageTemplateView>({
-    queryKey: queryKeys.pageTemplates(storeId).detail(templateId),
-    queryFn: () => getPageTemplateDetail(storeId, templateId),
+    queryKey: queryKeys.pageTemplates(storeSlug).detail(templateId),
+    queryFn: () => getPageTemplateDetail(storeSlug, templateId),
     staleTime: QUERY_CONFIG.staleTime,
-    select: mapPageTemplate,
+    select: (template) => mapPageTemplate(template, storeSlug),
   });
 }

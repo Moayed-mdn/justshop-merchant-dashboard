@@ -16,26 +16,26 @@ import { TopProductsList } from './TopProductsList';
 import { logger } from '@/lib/logger';
 
 interface DashboardContentProps {
-  storeId: string;
+  storeSlug: string;
 }
 
 /**
  * Main dashboard content with server-side data fetching.
  */
-export default async function DashboardContent({ storeId }: DashboardContentProps) {
+export default async function DashboardContent({ storeSlug }: DashboardContentProps) {
   const t = await getTranslations('dashboard');
 
   try {
     // Fetch all data in parallel
     const [statsRaw, recentOrdersRaw, topProductsRaw] = await Promise.all([
       serverFetch<ApiResponse<DashboardStats>>(
-        API_ROUTES.store(storeId).dashboard().stats()
+        API_ROUTES.store(storeSlug).dashboard().stats()
       ),
       serverFetch<ApiResponse<RecentOrderItem[]>>(
-        API_ROUTES.store(storeId).dashboard().recentOrders()
+        API_ROUTES.store(storeSlug).dashboard().recentOrders()
       ),
       serverFetch<ApiResponse<TopProductItem[]>>(
-        API_ROUTES.store(storeId).dashboard().topProducts()
+        API_ROUTES.store(storeSlug).dashboard().topProducts()
       ),
     ]);
 
@@ -55,8 +55,8 @@ export default async function DashboardContent({ storeId }: DashboardContentProp
         </div>
         <StatsGrid stats={stats} />
         <div className="grid gap-6 md:grid-cols-2">
-          <RecentOrdersTable orders={recentOrders} storeId={storeId} />
-          <TopProductsList products={topProducts} storeId={storeId} />
+          <RecentOrdersTable orders={recentOrders} storeSlug={storeSlug} />
+          <TopProductsList products={topProducts} storeSlug={storeSlug} />
         </div>
       </div>
     );

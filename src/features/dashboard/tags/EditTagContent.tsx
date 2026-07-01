@@ -6,11 +6,11 @@ import { EditTagSkeleton } from './EditTagSkeleton';
 import EditTagForm from './EditTagForm';
 import { DeleteTagButton } from './DeleteTagButton';
 
-interface Props { storeId: string; tagId: string }
+interface Props { storeSlug: string; tagId: string }
 
-export default function EditTagContent({ storeId, tagId }: Props) {
+export default function EditTagContent({ storeSlug, tagId }: Props) {
   const t = useTranslations('tags');
-  const { data: tag, isLoading, error } = useTagDetail(storeId, tagId);
+  const { data: tag, isLoading, error } = useTagDetail(storeSlug, tagId);
 
   if (isLoading) return <EditTagSkeleton />;
 
@@ -24,12 +24,12 @@ export default function EditTagContent({ storeId, tagId }: Props) {
 
   return (
     <div className="space-y-6">
-      <EditTagForm storeId={storeId} tagId={tagId} tag={tag} />
+      <EditTagForm storeSlug={storeSlug} tagId={tagId} tag={tag} />
 
       <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-6">
         <h3 className="font-semibold text-destructive mb-1">{t('form.dangerZone')}</h3>
         <p className="text-sm text-muted-foreground mb-4">{t('form.deleteDescription')}</p>
-        <DeleteTagButton storeId={storeId} tagId={tagId} />
+        <DeleteTagButton storeSlug={storeSlug} tagId={tagId} />
       </div>
     </div>
   );

@@ -24,12 +24,11 @@ import { useCan } from '@/stores/bootstrapStore';
 import { ROUTES } from '@/config/routes';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   userId: string;
-  userName: string;
 }
 
-export default function DeleteUserButton({ storeId, userId, userName }: Props) {
+export default function DeleteUserButton({ storeSlug, userId }: Props) {
   const t = useTranslations('users');
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -38,11 +37,11 @@ export default function DeleteUserButton({ storeId, userId, userName }: Props) {
   const canManageUsers = useCan('canManageUsers');
 
   // Always call useDeleteUser to maintain hook order, disable when no permission
-  const mutation = useDeleteUser(storeId, {
+  const mutation = useDeleteUser(storeSlug, {
     onSuccess: () => {
       toast.success(t('detail.deleteSuccess'));
       setOpen(false);
-      router.push(ROUTES.store(storeId).users.list());
+      router.push(ROUTES.merchant.customers.list());
     },
     onError: () => {
       toast.error(t('detail.deleteError'));

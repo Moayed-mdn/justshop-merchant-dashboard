@@ -21,7 +21,7 @@ import { toast } from 'sonner';
  * Allows uploading and updating user avatar.
  */
 export function ProfileAvatarCard() {
-  const t = useTranslations('settings.profile.avatar');
+  const t = useTranslations('settings');
   const user = useBootstrapStore((state) => state.user);
   const updateAvatarMutation = useUpdateAvatar();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,14 +34,14 @@ export function ProfileAvatarCard() {
     // Validate file type
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!validTypes.includes(file.type)) {
-      toast.error(t('invalidFileType'));
+      toast.error(t('profile.avatar.invalidFileType'));
       return;
     }
 
     // Validate file size (max 2MB)
     const maxSize = 2 * 1024 * 1024; // 2MB
     if (file.size > maxSize) {
-      toast.error(t('fileTooLarge'));
+      toast.error(t('profile.avatar.fileTooLarge'));
       return;
     }
 
@@ -88,9 +88,9 @@ export function ProfileAvatarCard() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <ImageIcon className="h-5 w-5" />
-          <CardTitle>{t('title')}</CardTitle>
+          <CardTitle>{t('profile.avatar.title')}</CardTitle>
         </div>
-        <CardDescription>{t('subtitle')}</CardDescription>
+        <CardDescription>{t('profile.avatar.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-6">
@@ -114,12 +114,12 @@ export function ProfileAvatarCard() {
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t('uploading')}
+                    {t('profile.avatar.uploading')}
                   </>
                 ) : (
                   <>
                     <Upload className="mr-2 h-4 w-4" />
-                    {t('upload')}
+                    {t('profile.avatar.upload')}
                   </>
                 )}
               </Button>
@@ -133,9 +133,9 @@ export function ProfileAvatarCard() {
               />
             </div>
             <div className="text-xs text-muted-foreground">
-              <p>{t('recommended')}</p>
-              <p>{t('maxSize')}</p>
-              <p>{t('supportedFormats')}</p>
+              <p>{t('profile.avatar.recommended')}</p>
+              <p>{t('profile.avatar.maxSize')}</p>
+              <p>{t('profile.avatar.supportedFormats')}</p>
             </div>
           </div>
         </div>

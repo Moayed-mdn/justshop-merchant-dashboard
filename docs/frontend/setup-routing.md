@@ -58,7 +58,9 @@ Store-related API routes are accessed via the `API_ROUTES.merchant.stores` names
 ```ts
 API_ROUTES.merchant.stores.create()                    // POST /api/v1/merchant/stores
 API_ROUTES.merchant.stores.slugCheck(slug)             // GET  /api/v1/merchant/stores/slug-check?slug=
-API_ROUTES.merchant.stores.provisioningStatus(storeId) // GET  /api/v1/merchant/stores/{id}/provisioning-status
+API_ROUTES.merchant.stores.provisioningStatus(store)   // GET  /api/v1/merchant/stores/{store}/provisioning-status
 ```
 
 All legacy `admin` and `users` patterns have been removed. Use the context-aware `merchant` namespace exclusively for merchant operations.
+
+For the planned slug migration, `provisioningStatus(store)` should treat `{store}` as the public store slug while internal provisioning state remains tied to the resolved `store_id`.

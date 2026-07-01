@@ -20,13 +20,13 @@ import { OrderStatusBadge } from './OrderStatusBadge';
 
 interface RecentOrdersTableProps {
   orders: RecentOrderItemView[];
-  storeId: string;
+  storeSlug: string;
 }
 
 /**
  * Table displaying recent orders for the dashboard.
  */
-export async function RecentOrdersTable({ orders, storeId }: RecentOrdersTableProps) {
+export async function RecentOrdersTable({ orders, storeSlug }: RecentOrdersTableProps) {
   const t = await getTranslations('dashboard');
 
   return (

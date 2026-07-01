@@ -11,10 +11,10 @@ import { QUERY_CONFIG } from '@/config/query';
 import type { SectionTypeOption } from '@/types/marketing-page';
 import type { ApiError } from '@/types/api';
 
-export function useMarketingSectionTypes(storeId: string) {
+export function useMarketingSectionTypes(storeSlug: string) {
   return useQuery<SectionTypeOption[], ApiError>({
-    queryKey: queryKeys.marketingSectionTypes(storeId).all(),
-    queryFn:  () => getMarketingSectionTypes(storeId),
+    queryKey: queryKeys.marketingSectionTypes(storeSlug).all(),
+    queryFn:  () => getMarketingSectionTypes(storeSlug),
     staleTime: QUERY_CONFIG.staleTime,
   });
 }

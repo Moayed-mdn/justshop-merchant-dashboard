@@ -5,11 +5,11 @@ import MarketingPageForm from './MarketingPageForm';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
 }
 
-export default function CreateMarketingPageForm({ storeId }: Props) {
-  const create = useCreateMarketingPage(storeId);
+export default function CreateMarketingPageForm({ storeSlug }: Props) {
+  const create = useCreateMarketingPage(storeSlug);
 
   const handleSubmit = async (values: MarketingPageFormValues) => {
     // Normalize published_at: empty string should be null for the backend
@@ -17,7 +17,7 @@ export default function CreateMarketingPageForm({ storeId }: Props) {
       ? values.published_at 
       : null;
 
-    return create.mutateAsync({
+    await create.mutateAsync({
       title:           values.title,
       slug:            values.slug,
       excerpt:         values.excerpt,
@@ -34,7 +34,7 @@ export default function CreateMarketingPageForm({ storeId }: Props) {
 
   return (
     <MarketingPageForm
-      storeId={storeId}
+      storeSlug={storeSlug}
       onSubmit={handleSubmit}
       isLoading={create.isPending}
     />

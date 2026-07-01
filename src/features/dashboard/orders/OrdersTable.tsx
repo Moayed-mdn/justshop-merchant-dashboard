@@ -18,7 +18,7 @@ import { ShoppingCart } from 'lucide-react';
 
 interface OrdersTableProps {
   orders: OrderListItemView[];
-  storeId: string;
+  storeSlug: string;
   pagination?: PaginationMeta;
   page: number;
   onPageChange: (page: number) => void;
@@ -29,7 +29,7 @@ interface OrdersTableProps {
 
 export default function OrdersTable({
   orders,
-  storeId,
+  storeSlug,
   pagination,
   page,
   onPageChange,

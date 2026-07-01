@@ -79,7 +79,7 @@ export interface NavigationMenuItemView {
 /** Navigation menu list item - mapped for UI */
 export interface NavigationMenuListItemView {
   id: number;
-  storeId: number;
+  storeSlug: string;
   name: string;
   handle: string;
   description: string | null;
@@ -91,7 +91,7 @@ export interface NavigationMenuListItemView {
 /** Navigation menu detail - mapped for UI */
 export interface NavigationMenuDetailView {
   id: number;
-  storeId: number;
+  storeSlug: string;
   name: string;
   handle: string;
   description: string | null;

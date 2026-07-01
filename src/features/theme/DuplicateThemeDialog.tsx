@@ -21,6 +21,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import type { ThemeListItemView } from '@/types/theme';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
+import { getThemeRouteParam } from '@/lib/themes/route-param';
 
 interface DuplicateThemeDialogProps {
   theme: ThemeListItemView;
@@ -35,9 +37,9 @@ export function DuplicateThemeDialog({
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const [name, setName] = useState(`${theme.name} (Copy)`);
 
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
 
-  const duplicateMutation = useDuplicateTheme(activeStoreId!);
+  const duplicateMutation = useDuplicateTheme(activeStoreSlug!);
 
   const handleDuplicate = async () => {
     if (!name.trim()) {
@@ -47,7 +49,7 @@ export function DuplicateThemeDialog({
 
     try {
       await duplicateMutation.mutateAsync({
-        themeId: theme.id.toString(),
+        themeSlug: getThemeRouteParam(theme),
         payload: { name: name.trim() },
       });
 

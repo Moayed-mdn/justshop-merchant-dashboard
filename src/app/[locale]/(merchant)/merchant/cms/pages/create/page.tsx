@@ -4,6 +4,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import CreateMarketingPageForm from '@/features/dashboard/cms-pages/CreateMarketingPageForm';
 import { useTranslations } from 'next-intl';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Create Marketing Page.
@@ -18,17 +19,14 @@ export default function MerchantCmsPagesCreatePage() {
         <div>
           <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to create a marketing page."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <CreateMarketingPageForm storeId={String(activeStore.id)} />
+      <CreateMarketingPageForm storeSlug={getStoreRouteParam(activeStore)} />
     </div>
   );
 }

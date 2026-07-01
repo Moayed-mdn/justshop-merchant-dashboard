@@ -18,14 +18,15 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GenericImageUploader } from '@/components/media/GenericImageUploader';
+import { ROUTES } from '@/config/routes';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
 }
 
-export default function CreateBrandForm({ storeId }: Props) {
+export default function CreateBrandForm({ storeSlug }: Props) {
   const t      = useTranslations('brands');
-  const create = useCreateBrand(storeId);
+  const create = useCreateBrand(storeSlug);
   const router = useRouter();
 
   const {
@@ -68,7 +69,7 @@ export default function CreateBrandForm({ storeId }: Props) {
             variant="ghost"
             size="icon"
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push(ROUTES.merchant.brands.list())}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -119,7 +120,7 @@ export default function CreateBrandForm({ storeId }: Props) {
                 value={logoUrl ?? ''}
                 onChange={(path) => setValue('logo_url', path || null, { shouldDirty: true })}
                 context="brands"
-                storeId={storeId}
+                storeSlug={storeSlug}
                 label={t('form.fields.logoUrl')}
               />
               {errors.logo_url && (

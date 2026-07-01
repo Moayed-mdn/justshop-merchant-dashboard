@@ -16,20 +16,20 @@ import type {
 } from '@/types/theme';
 import type { ApiError } from '@/types/api';
 
-export function useCreatePageTemplate(storeId: string) {
+export function useCreatePageTemplate(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<PageTemplate, ApiError, CreatePageTemplatePayload>({
-    mutationFn: (payload) => createPageTemplate(storeId, payload),
+    mutationFn: (payload) => createPageTemplate(storeSlug, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.pageTemplates(storeId).lists(),
+        queryKey: queryKeys.pageTemplates(storeSlug).lists(),
       });
     },
   });
 }
 
-export function useUpdatePageTemplate(storeId: string) {
+export function useUpdatePageTemplate(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<
@@ -38,32 +38,32 @@ export function useUpdatePageTemplate(storeId: string) {
     { templateId: string; payload: UpdatePageTemplatePayload }
   >({
     mutationFn: ({ templateId, payload }) =>
-      updatePageTemplate(storeId, templateId, payload),
+      updatePageTemplate(storeSlug, templateId, payload),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.pageTemplates(storeId).lists(),
+        queryKey: queryKeys.pageTemplates(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.pageTemplates(storeId).detail(variables.templateId),
+        queryKey: queryKeys.pageTemplates(storeSlug).detail(variables.templateId),
       });
     },
   });
 }
 
-export function useDeletePageTemplate(storeId: string) {
+export function useDeletePageTemplate(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<void, ApiError, string>({
-    mutationFn: (templateId) => deletePageTemplate(storeId, templateId),
+    mutationFn: (templateId) => deletePageTemplate(storeSlug, templateId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.pageTemplates(storeId).lists(),
+        queryKey: queryKeys.pageTemplates(storeSlug).lists(),
       });
     },
   });
 }
 
-export function useDuplicatePageTemplate(storeId: string) {
+export function useDuplicatePageTemplate(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<
@@ -72,10 +72,10 @@ export function useDuplicatePageTemplate(storeId: string) {
     { templateId: string; payload: DuplicatePageTemplatePayload }
   >({
     mutationFn: ({ templateId, payload }) =>
-      duplicatePageTemplate(storeId, templateId, payload),
+      duplicatePageTemplate(storeSlug, templateId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.pageTemplates(storeId).lists(),
+        queryKey: queryKeys.pageTemplates(storeSlug).lists(),
       });
     },
   });

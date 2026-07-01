@@ -23,7 +23,7 @@ const DEFAULT_FILTERS: ThemeFilters = {
 };
 
 export function useThemes(
-  storeId: string,
+  storeSlug: string,
   filters: ThemeFilters = DEFAULT_FILTERS,
 ) {
   return useQuery<
@@ -31,11 +31,11 @@ export function useThemes(
     ApiError,
     PaginatedResponse<ThemeListItemView>
   >({
-    queryKey: queryKeys.themes(storeId).list(
+    queryKey: queryKeys.themes(storeSlug).list(
       filters as unknown as Record<string, unknown>,
     ),
-    queryFn: () => getThemes(storeId, filters),
+    queryFn: () => getThemes(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
-    select: selectPaginatedList(mapThemeListItem),
+    select: selectPaginatedList((theme) => mapThemeListItem(theme, storeSlug)),
   });
 }

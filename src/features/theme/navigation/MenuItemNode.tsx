@@ -20,7 +20,7 @@ import type { NavigationMenuItemView } from '@/types/navigation';
 
 interface Props {
   item: NavigationMenuItemView;
-  storeId: string;
+  storeSlug: string;
   menuId: string;
   onAddChild: (parentId: number) => void;
   level?: number;
@@ -28,7 +28,7 @@ interface Props {
 
 export default function MenuItemNode({
   item,
-  storeId,
+  storeSlug,
   menuId,
   onAddChild,
   level = 0,
@@ -38,7 +38,7 @@ export default function MenuItemNode({
   const [isExpanded, setIsExpanded] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const deleteMutation = useDeleteMenuItem(storeId, menuId);
+  const deleteMutation = useDeleteMenuItem(storeSlug, menuId);
 
   const hasChildren = item.children && item.children.length > 0;
   const isGroup = item.type === 'group';
@@ -53,7 +53,7 @@ export default function MenuItemNode({
                          !item.url.startsWith('http');
   
   const { data: urlValidation } = useValidateNavigationUrl(
-    storeId,
+    storeSlug,
     item.url,
     !!shouldValidate
   );
@@ -193,7 +193,7 @@ export default function MenuItemNode({
             <MenuItemNode
               key={child.id}
               item={child}
-              storeId={storeId}
+              storeSlug={storeSlug}
               menuId={menuId}
               onAddChild={onAddChild}
               level={level + 1}
@@ -204,7 +204,7 @@ export default function MenuItemNode({
 
       {/* Edit Dialog */}
       <MenuItemDialog
-        storeId={storeId}
+        storeSlug={storeSlug}
         menuId={menuId}
         item={item}
         open={isEditDialogOpen}

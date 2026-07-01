@@ -80,7 +80,7 @@ function normalizeNavigationMenusResponse(
  * Fetch paginated navigation menus list.
  */
 export async function getNavigationMenus(
-  storeId: string,
+  storeSlug: string,
   filters: NavigationMenuFilters,
 ): Promise<PaginatedResponse<NavigationMenuListItem>> {
   const params: Record<string, string | number> = {};
@@ -89,7 +89,7 @@ export async function getNavigationMenus(
   if (filters.perPage !== 15) params.per_page = filters.perPage;
 
   const response = await clientApi.get<NavigationMenusListResponse>(
-    API_ROUTES.store(storeId).navigation().list(),
+    API_ROUTES.store(storeSlug).navigation().list(),
     { params },
   );
 
@@ -100,11 +100,11 @@ export async function getNavigationMenus(
  * Fetch single navigation menu by ID with all items.
  */
 export async function getNavigationMenuDetail(
-  storeId: string,
+  storeSlug: string,
   menuId: string,
 ): Promise<NavigationMenuDetail> {
   const response = await clientApi.get<ApiResponse<NavigationMenuDetail>>(
-    API_ROUTES.store(storeId).navigation().detail(menuId),
+    API_ROUTES.store(storeSlug).navigation().detail(menuId),
   );
   return response.data;
 }
@@ -113,11 +113,11 @@ export async function getNavigationMenuDetail(
  * Create a new navigation menu.
  */
 export async function createNavigationMenu(
-  storeId: string,
+  storeSlug: string,
   payload: CreateNavigationMenuPayload,
 ): Promise<NavigationMenuDetail> {
   const response = await clientApi.post<ApiResponse<NavigationMenuDetail>>(
-    API_ROUTES.store(storeId).navigation().create(),
+    API_ROUTES.store(storeSlug).navigation().create(),
     payload,
   );
   return response.data;
@@ -127,12 +127,12 @@ export async function createNavigationMenu(
  * Update an existing navigation menu.
  */
 export async function updateNavigationMenu(
-  storeId: string,
+  storeSlug: string,
   menuId: string,
   payload: UpdateNavigationMenuPayload,
 ): Promise<NavigationMenuDetail> {
   const response = await clientApi.put<ApiResponse<NavigationMenuDetail>>(
-    API_ROUTES.store(storeId).navigation().update(menuId),
+    API_ROUTES.store(storeSlug).navigation().update(menuId),
     payload,
   );
   return response.data;
@@ -142,11 +142,11 @@ export async function updateNavigationMenu(
  * Delete a navigation menu.
  */
 export async function deleteNavigationMenu(
-  storeId: string,
+  storeSlug: string,
   menuId: string,
 ): Promise<void> {
   await clientApi.delete(
-    API_ROUTES.store(storeId).navigation().delete(menuId),
+    API_ROUTES.store(storeSlug).navigation().delete(menuId),
   );
 }
 
@@ -154,12 +154,12 @@ export async function deleteNavigationMenu(
  * Create a new menu item.
  */
 export async function createMenuItem(
-  storeId: string,
+  storeSlug: string,
   menuId: string,
   payload: CreateMenuItemPayload,
 ): Promise<NavigationMenuItem> {
   const response = await clientApi.post<ApiResponse<NavigationMenuItem>>(
-    API_ROUTES.store(storeId).navigation().items(menuId).create(),
+    API_ROUTES.store(storeSlug).navigation().items(menuId).create(),
     payload,
   );
   return response.data;
@@ -169,13 +169,13 @@ export async function createMenuItem(
  * Update an existing menu item.
  */
 export async function updateMenuItem(
-  storeId: string,
+  storeSlug: string,
   menuId: string,
   itemId: string,
   payload: UpdateMenuItemPayload,
 ): Promise<NavigationMenuItem> {
   const response = await clientApi.put<ApiResponse<NavigationMenuItem>>(
-    API_ROUTES.store(storeId).navigation().items(menuId).update(itemId),
+    API_ROUTES.store(storeSlug).navigation().items(menuId).update(itemId),
     payload,
   );
   return response.data;
@@ -185,12 +185,12 @@ export async function updateMenuItem(
  * Delete a menu item.
  */
 export async function deleteMenuItem(
-  storeId: string,
+  storeSlug: string,
   menuId: string,
   itemId: string,
 ): Promise<void> {
   await clientApi.delete(
-    API_ROUTES.store(storeId).navigation().items(menuId).delete(itemId),
+    API_ROUTES.store(storeSlug).navigation().items(menuId).delete(itemId),
   );
 }
 
@@ -198,12 +198,12 @@ export async function deleteMenuItem(
  * Reorder menu items (including parent changes for nesting).
  */
 export async function reorderMenuItems(
-  storeId: string,
+  storeSlug: string,
   menuId: string,
   payload: ReorderMenuItemsPayload,
 ): Promise<void> {
   await clientApi.post(
-    API_ROUTES.store(storeId).navigation().items(menuId).reorder(),
+    API_ROUTES.store(storeSlug).navigation().items(menuId).reorder(),
     payload,
   );
 }
@@ -212,12 +212,12 @@ export async function reorderMenuItems(
  * Fetch available pages for linking in navigation.
  */
 export async function getNavigationResourcePages(
-  storeId: string,
+  storeSlug: string,
   search?: string,
 ): Promise<any[]> {
   const params = search ? { search } : {};
   const response = await clientApi.get<ApiResponse<any[]>>(
-    `/api/v1/merchant/stores/${storeId}/theme/navigation/resources/pages`,
+    `/api/v1/merchant/stores/${storeSlug}/theme/navigation/resources/pages`,
     { params },
   );
   return response.data;
@@ -227,12 +227,12 @@ export async function getNavigationResourcePages(
  * Fetch available categories for linking in navigation.
  */
 export async function getNavigationResourceCategories(
-  storeId: string,
+  storeSlug: string,
   search?: string,
 ): Promise<any[]> {
   const params = search ? { search } : {};
   const response = await clientApi.get<ApiResponse<any[]>>(
-    `/api/v1/merchant/stores/${storeId}/theme/navigation/resources/categories`,
+    `/api/v1/merchant/stores/${storeSlug}/theme/navigation/resources/categories`,
     { params },
   );
   return response.data;
@@ -242,12 +242,12 @@ export async function getNavigationResourceCategories(
  * Fetch available products for linking in navigation.
  */
 export async function getNavigationResourceProducts(
-  storeId: string,
+  storeSlug: string,
   search?: string,
 ): Promise<any[]> {
   const params = search ? { search } : {};
   const response = await clientApi.get<ApiResponse<any[]>>(
-    `/api/v1/merchant/stores/${storeId}/theme/navigation/resources/products`,
+    `/api/v1/merchant/stores/${storeSlug}/theme/navigation/resources/products`,
     { params },
   );
   return response.data;
@@ -257,12 +257,12 @@ export async function getNavigationResourceProducts(
  * Validate if a URL/page exists.
  */
 export async function validateNavigationUrl(
-  storeId: string,
+  storeSlug: string,
   url: string,
 ): Promise<{ exists: boolean; suggestion?: string }> {
   try {
     const response = await clientApi.post<ApiResponse<{ exists: boolean; suggestion?: string }>>(
-      `/api/v1/merchant/stores/${storeId}/navigation/validate-url`,
+      `/api/v1/merchant/stores/${storeSlug}/navigation/validate-url`,
       { url },
     );
     return response.data;

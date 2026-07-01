@@ -17,18 +17,19 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ColorPicker } from '@/features/theme/settings/ColorPicker';
+import { ROUTES } from '@/config/routes';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   tagId:   string;
   tag:     TagDetailView;
 }
 
 const LOCALES = ['en', 'ar'] as const;
 
-export default function EditTagForm({ storeId, tagId, tag }: Props) {
+export default function EditTagForm({ storeSlug, tagId, tag }: Props) {
   const t      = useTranslations('tags');
-  const update = useUpdateTag(storeId, tagId);
+  const update = useUpdateTag(storeSlug, tagId);
   const router = useRouter();
 
   const defaultTranslations = LOCALES.map((locale) => {
@@ -95,7 +96,7 @@ export default function EditTagForm({ storeId, tagId, tag }: Props) {
             type="button"
             onClick={() => {
               bypassNextNavigation();
-              router.back();
+              router.push(ROUTES.merchant.tags.list());
             }}
           >
             <ArrowLeft className="h-4 w-4" />

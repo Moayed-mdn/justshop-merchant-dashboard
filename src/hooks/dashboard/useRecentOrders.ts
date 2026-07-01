@@ -15,16 +15,16 @@ import { useStoreStore, selectCurrentStoreCurrency } from '@/stores/storeStore';
 
 /**
  * Fetch recent orders for a store.
- * @param storeId - Store ID from URL params
+ * @param storeSlug - Store ID from URL params
  */
-export function useRecentOrders(storeId: string) {
+export function useRecentOrders(storeSlug: string) {
   // TODO: storeStore currency defaults to 'USD' until store settings
   // endpoint is available. StoreInitializer will populate this later.
   const currency = useStoreStore(selectCurrentStoreCurrency);
 
   return useQuery<RecentOrderItem[], Error, RecentOrderItemView[]>({
-    queryKey: queryKeys.dashboard(storeId).recentOrders(),
-    queryFn: () => getRecentOrders(storeId),
+    queryKey: queryKeys.dashboard(storeSlug).recentOrders(),
+    queryFn: () => getRecentOrders(storeSlug),
     staleTime: QUERY_CONFIG.staleTime,
     select: (data) => data.map((item) => mapRecentOrder(item, currency)),
   });

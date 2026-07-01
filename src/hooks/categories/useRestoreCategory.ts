@@ -12,19 +12,19 @@ import { queryKeys } from '@/lib/queryKeys';
 import { logger } from '@/lib/logger';
 import type { ApiError } from '@/types/api';
 
-export function useRestoreCategory(storeId: string, categoryId: string) {
+export function useRestoreCategory(storeSlug: string, categoryId: string) {
   const queryClient = useQueryClient();
   const t           = useTranslations('categories');
 
   return useMutation<unknown, ApiError, void>({
-    mutationFn: () => restoreCategory(storeId, categoryId),
+    mutationFn: () => restoreCategory(storeSlug, categoryId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.categories(storeId).lists(),
+        queryKey: queryKeys.categories(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.categories(storeId).detail(categoryId),
+        queryKey: queryKeys.categories(storeSlug).detail(categoryId),
       });
       toast.success(t('form.restoreSuccess'));
     },

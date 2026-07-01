@@ -77,8 +77,13 @@ function loadMessages(locale: string): Record<string, unknown> {
         Object.assign(merged, content)
       }
 
-      // Always preserve the file-based namespace for explicit access.
-      merged[namespace] = content
+      // Merge namespace into existing key (e.g. settings.json merges into
+      // settings already flattened from common.json rather than replacing it).
+      if (typeof merged[namespace] === 'object' && merged[namespace] !== null && !Array.isArray(merged[namespace])) {
+        merged[namespace] = { ...merged[namespace], ...content }
+      } else {
+        merged[namespace] = content
+      }
     } catch (e) {
       console.error(`[i18n] Failed to load ${filePath}:`, e)
     }

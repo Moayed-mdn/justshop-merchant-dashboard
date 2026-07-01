@@ -14,6 +14,7 @@ import { queryKeys } from '@/lib/queryKeys';
 import { Button } from '@/components/ui/button';
 import { clearDashboardClientStorage } from '@/lib/auth/storage';
 import { logUXEvent } from '@/lib/ux-events';
+import { useTranslations } from 'next-intl';
 
 interface BootstrapProviderProps {
   children: ReactNode;
@@ -23,13 +24,13 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
   const queryClient = useQueryClient();
   const pathname = usePathname();
   const router = useRouter();
+  const t = useTranslations('nav');
   const [isOnline, setIsOnline] = useState(
     () => typeof navigator === 'undefined' || navigator.onLine
   );
   const strippedPath = useMemo(() => stripLocale(pathname || '/'), [pathname]);
   const isProtectedRoute =
     strippedPath === ROUTES.dashboard.home() ||
-    strippedPath.startsWith('/stores/') ||
     strippedPath.startsWith('/merchant');
   const isSetupRoute =
     strippedPath === ROUTES.setup() ||
@@ -54,7 +55,6 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
   const clearSession = useBootstrapStore((state) => state.clearSession);
   const localeMatch = pathname?.match(/^\/(en|ar)(?:\/|$)/);
   const locale = localeMatch?.[1] ?? 'en';
-  const routeStoreId = strippedPath.startsWith('/stores/') ? strippedPath.split('/')[2] ?? null : null;
   const accessState = useMemo(
     () => resolveBootstrapAccessState(bootstrap, provisioning),
     [bootstrap, provisioning]
@@ -168,16 +168,6 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
         : accessState.redirectPath;
     }
 
-    if (strippedPath.startsWith('/stores/')) {
-      if (accessState.kind !== 'ready') {
-        return accessState.redirectPath;
-      }
-
-      if (!routeStoreId || routeStoreId !== accessState.activeStoreId) {
-        return accessState.redirectPath;
-      }
-    }
-
     return null;
   }, [
     accessState,
@@ -188,7 +178,6 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     isProtectedRoute,
     locale,
     pathname,
-    routeStoreId,
     strippedPath,
   ]);
 
@@ -375,7 +364,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
         <div className="flex flex-col items-center gap-4">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           <p className="text-sm text-muted-foreground">
-            {isAuthBoundary ? 'Preparing your session...' : 'Loading dashboard session...'}
+            {isAuthBoundary ? t('preparingSession') : t('loadingDashboardSession')}
           </p>
         </div>
       </div>

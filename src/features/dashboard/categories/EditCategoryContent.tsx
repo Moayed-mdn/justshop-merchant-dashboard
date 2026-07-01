@@ -12,13 +12,13 @@ import EditCategoryForm from './EditCategoryForm';
 import { DeleteCategoryButton } from './DeleteCategoryButton';
 
 interface Props {
-  storeId:    string;
+  storeSlug:    string;
   categoryId: string;
 }
 
-export default function EditCategoryContent({ storeId, categoryId }: Props) {
+export default function EditCategoryContent({ storeSlug, categoryId }: Props) {
   const t = useTranslations('categories');
-  const { data: category, isLoading, error } = useCategoryDetail(storeId, categoryId);
+  const { data: category, isLoading, error } = useCategoryDetail(storeSlug, categoryId);
 
   if (isLoading) return <EditCategorySkeleton />;
 
@@ -33,7 +33,7 @@ export default function EditCategoryContent({ storeId, categoryId }: Props) {
   return (
     <div className="space-y-6">
       <EditCategoryForm
-        storeId={storeId}
+        storeSlug={storeSlug}
         categoryId={categoryId}
         category={category}
       />
@@ -49,7 +49,7 @@ export default function EditCategoryContent({ storeId, categoryId }: Props) {
             : t('form.deleteDescription')}
         </p>
         <DeleteCategoryButton
-          storeId={storeId}
+          storeSlug={storeSlug}
           categoryId={categoryId}
           isDeleted={Boolean(category.deletedAt)}
         />

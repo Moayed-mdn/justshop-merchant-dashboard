@@ -4,6 +4,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import NavigationMenusContent from '@/features/theme/navigation/NavigationMenusContent';
 import { useTranslations } from 'next-intl';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const INITIAL_FILTERS = {
   page: 1,
@@ -24,10 +25,7 @@ export default function MerchantNavigationMenusPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('title')}</h1>
         </div>
-        <WorkspaceEmptyState 
-          title="No active store"
-          message="Select a store from the switcher to view navigation menus."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -35,7 +33,7 @@ export default function MerchantNavigationMenusPage() {
   return (
     <div className="space-y-6">
       <NavigationMenusContent 
-        storeId={String(activeStore.id)} 
+        storeSlug={getStoreRouteParam(activeStore)} 
         initialFilters={INITIAL_FILTERS} 
       />
     </div>

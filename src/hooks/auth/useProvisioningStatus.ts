@@ -12,8 +12,8 @@ import {
 } from '@/lib/auth/bootstrap-routing';
 import type { ApiError } from '@/types/api';
 import { useRouter } from '@/lib/navigation';
-import { ROUTES } from '@/config/routes';
 import { postAuthChannelMessage } from '@/lib/auth/channel';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const STALLED_PENDING_TIMEOUT_MS = 90 * 1000;
 const SOFT_TIMEOUT_MS = 2 * 60 * 1000;
@@ -66,6 +66,7 @@ export function useProvisioningStatus() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const bootstrap = useBootstrapStore((state) => state.bootstrap);
+  const stores = useBootstrapStore((state) => state.stores);
   const provisioning = useBootstrapStore((state) => state.provisioning);
   const setProvisioning = useBootstrapStore((state) => state.setProvisioning);
   const fetchBootstrap = useBootstrapStore((state) => state.fetchBootstrap);
@@ -81,12 +82,24 @@ export function useProvisioningStatus() {
     () => provisioning?.tracked_store_id ?? resolveProvisioningStoreId(bootstrap),
     [bootstrap, provisioning?.tracked_store_id]
   );
+  const trackedStoreSlug = useMemo(() => {
+    if (provisioning?.tracked_store_slug) {
+      return provisioning.tracked_store_slug;
+    }
+
+    if (!trackedStoreId) {
+      return null;
+    }
+
+    const trackedStore = stores.find((store) => store.id === trackedStoreId);
+    return trackedStore ? getStoreRouteParam(trackedStore) : null;
+  }, [provisioning?.tracked_store_slug, stores, trackedStoreId]);
   const startedAt = provisioning?.started_at;
   const elapsedMs = startedAt ? Math.max(0, now - startedAt) : 0;
   const softTimedOut = Boolean(startedAt && elapsedMs >= SOFT_TIMEOUT_MS);
   const hardTimedOut = Boolean(startedAt && elapsedMs >= HARD_TIMEOUT_MS);
   const shouldPoll =
-    Boolean(trackedStoreId) &&
+    Boolean(trackedStoreSlug) &&
     needsProvisioningFlow(bootstrap, provisioning) &&
     provisioning?.status !== 'completed' &&
     provisioning?.status !== 'failed' &&
@@ -111,10 +124,10 @@ export function useProvisioningStatus() {
   }, []);
 
   const query = useQuery({
-    queryKey: trackedStoreId
-      ? queryKeys.merchant.store(String(trackedStoreId)).provisioning()
+    queryKey: trackedStoreSlug
+      ? queryKeys.merchant.store(trackedStoreSlug).provisioning()
       : ['provisioning-status', 'idle'],
-    queryFn: ({ signal }) => getProvisioningStatus(String(trackedStoreId), { signal }),
+    queryFn: ({ signal }) => getProvisioningStatus(trackedStoreSlug!, { signal }),
     enabled: shouldPoll,
     refetchInterval: () => {
       if (!shouldPoll || !isDocumentVisible || !isOnline) return false;
@@ -139,27 +152,28 @@ export function useProvisioningStatus() {
 
   // Tick clock for timeout calculations
   useEffect(() => {
-    if (!trackedStoreId || !startedAt) return;
+    if (!trackedStoreSlug || !startedAt) return;
     const timer = window.setInterval(() => setNow(Date.now()), 1_000);
     return () => window.clearInterval(timer);
-  }, [startedAt, trackedStoreId]);
+  }, [startedAt, trackedStoreSlug]);
 
   // Refetch when coming back online or tab becomes visible
   useEffect(() => {
-    if (!trackedStoreId || !shouldPoll) return;
+    if (!trackedStoreSlug || !shouldPoll) return;
     if (isDocumentVisible && isOnline) void query.refetch();
-  }, [isDocumentVisible, isOnline, query.refetch, shouldPoll, trackedStoreId]);
+  }, [isDocumentVisible, isOnline, query.refetch, shouldPoll, trackedStoreSlug]);
 
   // Sync timeout flags into provisioning state
   useEffect(() => {
     if (!trackedStoreId) return;
     setProvisioning({
       tracked_store_id: trackedStoreId,
+      tracked_store_slug: trackedStoreSlug,
       started_at: startedAt ?? Date.now(),
       soft_timed_out: softTimedOut,
       hard_timed_out: hardTimedOut,
     });
-  }, [hardTimedOut, setProvisioning, softTimedOut, startedAt, trackedStoreId]);
+  }, [hardTimedOut, setProvisioning, softTimedOut, startedAt, trackedStoreId, trackedStoreSlug]);
 
   // Process provisioning status response
   useEffect(() => {
@@ -169,6 +183,7 @@ export function useProvisioningStatus() {
     if (!isProvisioningPayload(payload)) {
       setProvisioning({
         tracked_store_id: trackedStoreId,
+        tracked_store_slug: trackedStoreSlug,
         status: 'failed',
         progress: provisioning?.progress ?? 0,
         current_step: 'malformed_payload',
@@ -191,6 +206,7 @@ export function useProvisioningStatus() {
     ) {
       setProvisioning({
         tracked_store_id: trackedStoreId,
+        tracked_store_slug: trackedStoreSlug,
         status: 'failed',
         progress: 0,
         current_step: 'provisioning_not_started',
@@ -207,6 +223,7 @@ export function useProvisioningStatus() {
 
     setProvisioning({
       tracked_store_id: trackedStoreId,
+      tracked_store_slug: trackedStoreSlug,
       status: payload.status,
       progress: payload.progress,
       current_step: payload.current_step,
@@ -237,6 +254,7 @@ export function useProvisioningStatus() {
     queryClient,
     setProvisioning,
     trackedStoreId,
+    trackedStoreSlug,
   ]);
 
   // Handle query errors
@@ -271,6 +289,7 @@ export function useProvisioningStatus() {
   return {
     ...query,
     trackedStoreId,
+    trackedStoreSlug,
     softTimedOut,
     hardTimedOut,
     isDocumentVisible,

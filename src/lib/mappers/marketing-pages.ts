@@ -73,10 +73,11 @@ function normalizeSeo(seo: any): MarketingPageSeo {
  */
 export function mapMarketingPageListItem(
   raw: MarketingPageListItem,
+  storeSlug: string,
 ): MarketingPageListItemView {
   return {
     id:             raw.id,
-    storeId:        raw.store_id,
+    storeSlug,
     title:          raw.title,
     slug:           raw.slug,
     template:       raw.template,
@@ -96,10 +97,11 @@ export function mapMarketingPageListItem(
  */
 export function mapMarketingPageDetail(
   raw: MarketingPageDetail,
+  storeSlug: string,
 ): MarketingPageDetailView {
   return {
     id:             raw.id,
-    storeId:        raw.store_id,
+    storeSlug,
     title:          raw.title || { en: '', ar: '' },
     slug:           raw.slug || { en: '', ar: '' },
     excerpt:        raw.excerpt || { en: '', ar: '' },

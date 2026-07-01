@@ -29,7 +29,7 @@ export interface TagRaw {
 
 export interface TagListItemView {
   id:                number;
-  storeId:           number;
+  storeSlug:           string;
   type:              string | null;
   color:             string | null;
   isActive:          boolean;
@@ -40,7 +40,7 @@ export interface TagListItemView {
 
 export interface TagDetailView {
   id:           number;
-  storeId:      number;
+  storeSlug:      string;
   type:         string | null;
   color:        string | null;
   isActive:     boolean;

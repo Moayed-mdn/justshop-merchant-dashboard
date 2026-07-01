@@ -116,7 +116,7 @@ export default function PricingCard({
                 'mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-xs',
                 feature.included
                   ? 'bg-primary/15 text-primary'
-                  : 'bg-muted text-muted-foreground',
+                  : 'bg-muted-bg text-muted-foreground',
               )}
               aria-hidden="true"
             >

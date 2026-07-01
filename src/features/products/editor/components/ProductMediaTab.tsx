@@ -7,14 +7,14 @@ import { ProductImagesManager } from './ProductImagesManager';
 interface Props {
   images: ProductImage[];
   onChange: (next: ProductImage[]) => void;
-  storeId: string;
+  storeSlug: string;
 }
 
-export function ProductMediaTab({ images, onChange, storeId }: Props) {
+export function ProductMediaTab({ images, onChange, storeSlug }: Props) {
   return (
     <Card>
       <CardContent className="pt-6">
-        <ProductImagesManager images={images} onChange={onChange} storeId={storeId} />
+        <ProductImagesManager images={images} onChange={onChange} storeSlug={storeSlug} />
       </CardContent>
     </Card>
   );

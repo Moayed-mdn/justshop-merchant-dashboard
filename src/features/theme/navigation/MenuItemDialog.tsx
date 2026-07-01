@@ -54,7 +54,7 @@ interface MenuItemFormValues {
 const EMPTY_LABEL: LocalizedNavigationLabel = { en: '', ar: '' };
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   menuId: string;
   item?: NavigationMenuItemView; // If provided, edit mode
   parentId?: number | null; // For creating child items
@@ -63,7 +63,7 @@ interface Props {
 }
 
 export default function MenuItemDialog({
-  storeId,
+  storeSlug,
   menuId,
   item,
   parentId,
@@ -73,9 +73,9 @@ export default function MenuItemDialog({
   const t = useTranslations('theme.navigation.itemDialog');
   const isEditMode = !!item;
 
-  const createMutation = useCreateMenuItem(storeId, menuId);
+  const createMutation = useCreateMenuItem(storeSlug, menuId);
   const updateMutation = item
-    ? useUpdateMenuItem(storeId, menuId, String(item.id))
+    ? useUpdateMenuItem(storeSlug, menuId, String(item.id))
     : null;
 
   const [formData, setFormData] = useState<MenuItemFormValues>({
@@ -94,7 +94,7 @@ export default function MenuItemDialog({
                             !formData.url.startsWith('http');
   
   const { data: urlValidation } = useValidateNavigationUrl(
-    storeId,
+    storeSlug,
     formData.url,
     shouldValidateUrl
   );
@@ -281,7 +281,7 @@ export default function MenuItemDialog({
               <div className="space-y-2">
                 <Label>{t('form.selectResource', { type: t(`form.type${formData.type.charAt(0).toUpperCase() + formData.type.slice(1)}`) })}</Label>
                 <ResourcePicker
-                  storeId={storeId}
+                  storeSlug={storeSlug}
                   type={formData.type as 'page' | 'category' | 'product'}
                   selectedId={formData.resource_id || null}
                   onSelect={(resource) => {

@@ -33,15 +33,15 @@ import { Plus } from 'lucide-react';
 import { useCan } from '@/stores/bootstrapStore';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
 }
 
-export default function CreateUserDialog({ storeId }: Props) {
+export default function CreateUserDialog({ storeSlug }: Props) {
   const [open, setOpen] = useState(false);
   const t = useTranslations('users');
   const canManageUsers = useCan('canManageUsers');
   
-  const createMutation = useCreateUser(storeId, {
+  const createMutation = useCreateUser(storeSlug, {
     onSuccess: () => {
       setOpen(false);
       form.reset();

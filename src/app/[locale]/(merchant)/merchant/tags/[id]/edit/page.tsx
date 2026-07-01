@@ -7,6 +7,7 @@ import { useTagDetail } from '@/hooks/tags/useTagDetail';
 import { useTranslations } from 'next-intl';
 import { EditTagSkeleton } from '@/features/dashboard/tags/EditTagSkeleton';
 import EditTagContent from '@/features/dashboard/tags/EditTagContent';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Edit Tag Page.
@@ -18,9 +19,9 @@ export default function MerchantTagEditPage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('tags');
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
-  const { data: tag, isLoading, error } = useTagDetail(storeId, tagId);
+  const { data: tag, isLoading, error } = useTagDetail(storeSlug, tagId);
 
   if (!activeStore) {
     return (
@@ -28,10 +29,7 @@ export default function MerchantTagEditPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to edit a tag."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -50,7 +48,7 @@ export default function MerchantTagEditPage() {
 
   return (
     <div className="space-y-6">
-      <EditTagContent storeId={storeId} tagId={tagId} />
+      <EditTagContent storeSlug={storeSlug} tagId={tagId} />
     </div>
   );
 }

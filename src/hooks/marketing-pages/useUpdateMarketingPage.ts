@@ -13,19 +13,19 @@ import { logger } from '@/lib/logger';
 import type { UpdateMarketingPagePayload, MarketingPageDetail } from '@/types/marketing-page';
 import type { ApiError } from '@/types/api';
 
-export function useUpdateMarketingPage(storeId: string, pageId: string) {
+export function useUpdateMarketingPage(storeSlug: string, pageId: string) {
   const queryClient = useQueryClient();
   const t           = useTranslations('cmsPages');
 
   return useMutation<MarketingPageDetail, ApiError, UpdateMarketingPagePayload>({
-    mutationFn: (payload) => updateMarketingPage(storeId, pageId, payload),
+    mutationFn: (payload) => updateMarketingPage(storeSlug, pageId, payload),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.cmsPages(storeId).lists(),
+        queryKey: queryKeys.cmsPages(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.cmsPages(storeId).detail(pageId),
+        queryKey: queryKeys.cmsPages(storeSlug).detail(pageId),
       });
       toast.success(t('form.updateSuccess'));
     },

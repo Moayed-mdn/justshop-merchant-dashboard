@@ -96,6 +96,7 @@ async function handleProxy(request: Request): Promise<NextResponse> {
   const isFormData = requestContentType?.includes('multipart/form-data');
   
   let body: FormData | string | undefined;
+  const requestUrl = new URL(request.url);
   const headers: Record<string, string> = {
     Accept: 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
@@ -103,6 +104,22 @@ async function handleProxy(request: Request): Promise<NextResponse> {
     Cookie: cookieHeader,
     ...(xsrfToken && method !== 'GET' ? { 'X-XSRF-TOKEN': decodeURIComponent(xsrfToken) } : {}),
   };
+
+  // Forward origin and referer so backend can resolve the frontend URL
+  const origin = request.headers.get('origin');
+  if (origin) {
+    headers['Origin'] = origin;
+  }
+  const referer = request.headers.get('referer');
+  if (referer) {
+    headers['Referer'] = referer;
+  }
+
+  // Forward explicit frontend URL header if set by the client
+  const frontendUrl = request.headers.get('x-frontend-url');
+  if (frontendUrl) {
+    headers['X-Frontend-Url'] = frontendUrl;
+  }
 
   if (method === 'GET' || method === 'DELETE') {
     body = undefined;

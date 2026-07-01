@@ -10,17 +10,17 @@ import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
 import type { ApiError } from '@/types/api';
 
-export function useDeleteTag(storeId: string, tagId: string) {
+export function useDeleteTag(storeSlug: string, tagId: string) {
   const queryClient = useQueryClient();
   const router      = useRouter();
   const t           = useTranslations('tags');
 
   return useMutation<void, ApiError, void>({
-    mutationFn: () => deleteTag(storeId, tagId),
+    mutationFn: () => deleteTag(storeSlug, tagId),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeId).lists() });
-      queryClient.removeQueries({ queryKey: queryKeys.tags(storeId).detail(tagId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeSlug).lists() });
+      queryClient.removeQueries({ queryKey: queryKeys.tags(storeSlug).detail(tagId) });
       toast.success(t('form.deleteSuccess'));
       router.push(ROUTES.merchant.tags.list());
     },

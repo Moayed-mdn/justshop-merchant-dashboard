@@ -14,21 +14,21 @@ import { Separator } from '@/components/ui/separator';
  * Separate from merchant/store settings.
  */
 export default function AccountProfilePage() {
-  const t = useTranslations('settings.profile');
+  const t = useTranslations('settings');
 
   return (
     <div className="space-y-8">
       <MerchantPageHeader
-        title={t('title')}
-        description={t('subtitle')}
+        title={t('profile.title')}
+        description={t('profile.subtitle')}
       />
 
       {/* Profile Picture Section */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold">{t('avatar.title')}</h2>
+          <h2 className="text-lg font-semibold">{t('profile.avatar.title')}</h2>
           <p className="text-sm text-muted-foreground">
-            {t('avatar.subtitle')}
+            {t('profile.avatar.subtitle')}
           </p>
         </div>
         <ProfileAvatarCard />
@@ -39,9 +39,9 @@ export default function AccountProfilePage() {
       {/* Personal Information Section */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold">{t('info.title')}</h2>
+          <h2 className="text-lg font-semibold">{t('profile.info.title')}</h2>
           <p className="text-sm text-muted-foreground">
-            {t('info.subtitle')}
+            {t('profile.info.subtitle')}
           </p>
         </div>
         <ProfileInfoCard />
@@ -52,9 +52,9 @@ export default function AccountProfilePage() {
       {/* Change Password Section */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold">{t('password.title')}</h2>
+          <h2 className="text-lg font-semibold">{t('profile.password.title')}</h2>
           <p className="text-sm text-muted-foreground">
-            {t('password.subtitle')}
+            {t('profile.password.subtitle')}
           </p>
         </div>
         <ProfilePasswordCard />
@@ -65,9 +65,9 @@ export default function AccountProfilePage() {
       {/* Account Status & Connected Services Section */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold">{t('account.title')}</h2>
+          <h2 className="text-lg font-semibold">{t('profile.account.title')}</h2>
           <p className="text-sm text-muted-foreground">
-            {t('account.subtitle')}
+            {t('profile.account.subtitle')}
           </p>
         </div>
         <ProfileAccountCard />

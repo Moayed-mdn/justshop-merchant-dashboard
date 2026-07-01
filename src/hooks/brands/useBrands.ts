@@ -23,7 +23,7 @@ const DEFAULT_FILTERS: BrandFilters = {
 };
 
 export function useBrands(
-  storeId: string,
+  storeSlug: string,
   filters: BrandFilters = DEFAULT_FILTERS,
 ) {
   return useQuery<
@@ -31,11 +31,11 @@ export function useBrands(
     ApiError,
     PaginatedResponse<BrandListItemView>
   >({
-    queryKey: queryKeys.brands(storeId).list(
+    queryKey: queryKeys.brands(storeSlug).list(
       filters as unknown as Record<string, unknown>,
     ),
-    queryFn:   () => getBrands(storeId, filters),
+    queryFn:   () => getBrands(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
-    select:    selectPaginatedList(mapBrandListItem),
+    select:    selectPaginatedList((brand) => mapBrandListItem(brand, storeSlug)),
   });
 }

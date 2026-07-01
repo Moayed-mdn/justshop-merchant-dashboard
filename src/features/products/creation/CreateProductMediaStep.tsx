@@ -16,10 +16,10 @@ import type { CreateProductMediaData } from '@/schemas/products';
 interface Props {
   media:    CreateProductMediaData;
   onChange: (next: CreateProductMediaData) => void;
-  storeId:  string;
+  storeSlug:  string;
 }
 
-export function CreateProductMediaStep({ media, onChange, storeId }: Props) {
+export function CreateProductMediaStep({ media, onChange, storeSlug }: Props) {
   const t = useTranslations('products');
 
   return (
@@ -32,7 +32,7 @@ export function CreateProductMediaStep({ media, onChange, storeId }: Props) {
           <MediaTab
             images={media.media}
             onChange={(next: ProductImage[]) => onChange({ media: next })}
-            storeId={storeId}
+            storeSlug={storeSlug}
           />
         </CardContent>
       </Card>

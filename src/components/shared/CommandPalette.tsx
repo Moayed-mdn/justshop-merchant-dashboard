@@ -33,6 +33,7 @@ import {
   Palette,
   Menu,
   LayoutTemplate,
+  Truck,
 } from "lucide-react";
 
 interface NavItem {
@@ -78,6 +79,13 @@ export function CommandPalette() {
       href: ROUTES.merchant.orders.list(),
       icon: <ShoppingCart className="size-4" />,
       keywords: ["orders", "sales", "transactions"],
+    },
+    {
+      id: "shipping",
+      label: t("shipping"),
+      href: ROUTES.merchant.shipping(),
+      icon: <Truck className="size-4" />,
+      keywords: ["shipping", "delivery", "zones", "methods"],
     },
     {
       id: "products",
@@ -157,12 +165,17 @@ export function CommandPalette() {
   };
 
   return (
-    <CommandDialog open={open} onOpenChange={setCommandPaletteOpen}>
+    <CommandDialog
+      open={open}
+      onOpenChange={setCommandPaletteOpen}
+      title={t('commandPalette')}
+      description={t('commandPaletteDescription')}
+    >
       <Command>
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput placeholder={t('commandPlaceholder')} />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Navigation">
+          <CommandEmpty>{t('noResults')}</CommandEmpty>
+          <CommandGroup heading={t('navigation_heading')}>
             {navItems.map((item) => (
               <CommandItem
                 key={item.id}
@@ -173,7 +186,7 @@ export function CommandPalette() {
                 {item.icon}
                 <span>{item.label}</span>
                 {item.href === pathname && (
-                  <CommandShortcut>Current</CommandShortcut>
+                  <CommandShortcut>{t('current')}</CommandShortcut>
                 )}
               </CommandItem>
             ))}

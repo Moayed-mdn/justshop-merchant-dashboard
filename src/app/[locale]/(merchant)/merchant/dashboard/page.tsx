@@ -7,6 +7,7 @@ import { PostOnboardingChecklist } from '@/features/merchant/components/PostOnbo
 import { WorkspaceDashboardContent } from '@/features/merchant/dashboard/WorkspaceDashboardContent';
 import { useTranslations } from 'next-intl';
 import { LayoutDashboard } from 'lucide-react';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace Dashboard Page.
@@ -40,8 +41,8 @@ export default function MerchantDashboardPage() {
         title={t('title')}
         description={t('subtitle')}
       />
-      <PostOnboardingChecklist key={activeStore.id} />
-      <WorkspaceDashboardContent storeId={String(activeStore.id)} />
+      <PostOnboardingChecklist key={activeStore.slug} />
+      <WorkspaceDashboardContent storeSlug={getStoreRouteParam(activeStore)} />
     </div>
   );
 }

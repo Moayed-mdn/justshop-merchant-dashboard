@@ -16,13 +16,13 @@ import TagFilters from './TagFilters';
 import type { TagFilters as TagFiltersType } from '@/schemas/tags';
 
 interface Props {
-  storeId:        string;
+  storeSlug:        string;
   initialFilters: TagFiltersType;
 }
 
 const STATUS_OPTIONS = ['all', 'true', 'false'] as const;
 
-export default function TagsContent({ storeId, initialFilters }: Props) {
+export default function TagsContent({ storeSlug, initialFilters }: Props) {
   const t = useTranslations('tags');
 
   const [search, setSearch] = useQueryState(
@@ -46,15 +46,15 @@ export default function TagsContent({ storeId, initialFilters }: Props) {
     perPage,
   };
 
-  const { data, isLoading, error } = useTags(storeId, filters);
+  const { data, isLoading, error } = useTags(storeSlug, filters);
   const queryClient = useQueryClient();
 
   if (error) logger.error('Failed to load tags', error);
 
   const deleteMutation = useMutation({
-    mutationFn: (tagId: string) => deleteTag(storeId, tagId),
+    mutationFn: (tagId: string) => deleteTag(storeSlug, tagId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeId).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeSlug).lists() });
       toast.success(t('form.deleteSuccess'));
     },
     onError: (err: any) => {
@@ -108,7 +108,7 @@ export default function TagsContent({ storeId, initialFilters }: Props) {
         perPage={perPage}
         onPerPageChange={setPerPage}
         isLoading={isLoading}
-        storeId={storeId}
+        storeSlug={storeSlug}
         onDelete={handleDelete}
       />
     </div>

@@ -15,14 +15,14 @@ import { useTranslations } from 'next-intl';
 import {
   Breadcrumb,
   BreadcrumbList,
-  BreadcrumbItem,
+  BreadcrumbItem as BreadcrumbItemUI,
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 
-interface BreadcrumbItem {
+export interface BreadcrumbItem {
   label: string;
   href: string;
   isCurrent: boolean;
@@ -70,7 +70,7 @@ function useBreadcrumbItems(): BreadcrumbItem[] {
     currentPath += `/${segment}`;
     const isLast = index === navSegments.length - 1;
     
-    // Handle dynamic segments like [storeId] or [productId], etc.
+    // Handle dynamic segments like [storeSlug] or [productId], etc.
     let label = segmentMap[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
     
     // For dynamic IDs, we could fetch or use placeholder
@@ -127,13 +127,13 @@ export function Breadcrumbs() {
       <BreadcrumbList>
         {items.map((item, index) => (
           <React.Fragment key={item.href}>
-            <BreadcrumbItem>
+            <BreadcrumbItemUI>
               {item.isCurrent ? (
                 <BreadcrumbPage>{item.label}</BreadcrumbPage>
               ) : (
                 <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
               )}
-            </BreadcrumbItem>
+            </BreadcrumbItemUI>
             {index < items.length - 1 && <BreadcrumbSeparator />}
           </React.Fragment>
         ))}

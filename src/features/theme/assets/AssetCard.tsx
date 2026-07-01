@@ -32,6 +32,7 @@ import { MoreVertical, Trash2, Edit, Copy, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { EditAssetDialog } from './EditAssetDialog';
 import type { StoreAssetView } from '@/types/asset';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 interface AssetCardProps {
   asset: StoreAssetView;
@@ -40,11 +41,11 @@ interface AssetCardProps {
 export function AssetCard({ asset }: AssetCardProps) {
   const t = useTranslations();
   const activeStore = useBootstrapStore((state) => state.activeStore);
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const deleteMutation = useDeleteAsset(activeStoreId!);
+  const deleteMutation = useDeleteAsset(activeStoreSlug!);
 
   const handleDelete = async () => {
     try {
@@ -93,7 +94,7 @@ export function AssetCard({ asset }: AssetCardProps) {
             {/* Actions Overlay */}
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger>
                   <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
                     <MoreVertical className="h-4 w-4" />
                   </Button>
@@ -107,15 +108,9 @@ export function AssetCard({ asset }: AssetCardProps) {
                     <Copy className="mr-2 h-4 w-4" />
                     {t('assets.copyUrl')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a
-                      href={asset.fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      {t('assets.viewFull')}
-                    </a>
+                  <DropdownMenuItem onClick={() => window.open(asset.fileUrl, '_blank', 'noopener,noreferrer')}>
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    {t('assets.viewFull')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => setShowDeleteDialog(true)}

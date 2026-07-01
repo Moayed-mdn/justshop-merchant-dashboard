@@ -21,13 +21,13 @@ import CategoryFilters from './CategoryFilters';
 import type { CategoryFilters as CategoryFiltersType } from '@/schemas/categories';
 
 interface Props {
-  storeId:        string;
+  storeSlug:        string;
   initialFilters: CategoryFiltersType;
 }
 
 const STATUS_OPTIONS = ['all', 'true', 'false'] as const;
 
-export default function CategoriesContent({ storeId, initialFilters }: Props) {
+export default function CategoriesContent({ storeSlug, initialFilters }: Props) {
   const t = useTranslations('categories');
 
   const [isActive, setIsActive] = useQueryState(
@@ -49,7 +49,7 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
 
   const filters: CategoryFiltersType = { is_active: isActive, page, perPage };
 
-  const { data, isLoading, error } = useCategories(storeId, filters);
+  const { data, isLoading, error } = useCategories(storeSlug, filters);
   const queryClient = useQueryClient();
 
   if (error) {
@@ -57,9 +57,9 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
   }
 
   const deleteMutation = useMutation({
-    mutationFn: (categoryId: string) => deleteCategory(storeId, categoryId),
+    mutationFn: (categoryId: string) => deleteCategory(storeSlug, categoryId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories(storeId).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories(storeSlug).lists() });
       toast.success(t('form.deleteSuccess'));
     },
     onError: (err: any) => {
@@ -69,9 +69,9 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (categoryId: string) => restoreCategory(storeId, categoryId),
+    mutationFn: (categoryId: string) => restoreCategory(storeSlug, categoryId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories(storeId).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories(storeSlug).lists() });
       toast.success(t('form.restoreSuccess'));
     },
     onError: (err: any) => {
@@ -110,7 +110,7 @@ export default function CategoriesContent({ storeId, initialFilters }: Props) {
         perPage={perPage}
         onPerPageChange={setPerPage}
         isLoading={isLoading}
-        storeId={storeId}
+        storeSlug={storeSlug}
         onDelete={handleDelete}
         onRestore={handleRestore}
       />

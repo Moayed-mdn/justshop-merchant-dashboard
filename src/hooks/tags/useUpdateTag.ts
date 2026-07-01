@@ -9,16 +9,16 @@ import { logger } from '@/lib/logger';
 import type { UpdateTagPayload } from '@/types/tag';
 import type { ApiError } from '@/types/api';
 
-export function useUpdateTag(storeId: string, tagId: string) {
+export function useUpdateTag(storeSlug: string, tagId: string) {
   const queryClient = useQueryClient();
   const t           = useTranslations('tags');
 
   return useMutation<unknown, ApiError, UpdateTagPayload>({
-    mutationFn: (payload) => updateTag(storeId, tagId, payload),
+    mutationFn: (payload) => updateTag(storeSlug, tagId, payload),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeId).lists() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeId).detail(tagId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeSlug).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeSlug).detail(tagId) });
       toast.success(t('form.updateSuccess'));
     },
 

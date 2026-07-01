@@ -8,11 +8,12 @@ import type { Theme, ThemeView, ThemeListItem, ThemeListItemView } from '@/types
 /**
  * Map raw API theme to view type.
  */
-export function mapTheme(theme: Theme): ThemeView {
+export function mapTheme(theme: Theme, storeSlug: string): ThemeView {
   return {
     id: theme.id,
-    storeId: theme.store_id,
+    storeSlug,
     name: theme.name,
+    slug: theme.slug,
     description: theme.description,
     isActive: theme.is_active,
     isPublished: theme.is_published,
@@ -25,15 +26,15 @@ export function mapTheme(theme: Theme): ThemeView {
 /**
  * Map raw API theme list item to view type.
  */
-export function mapThemeListItem(item: ThemeListItem): ThemeListItemView {
+export function mapThemeListItem(item: ThemeListItem, storeSlug: string): ThemeListItemView {
   return {
     id: item.id,
-    storeId: item.store_id,
+    storeSlug,
     name: item.name,
+    slug: item.slug,
     description: item.description,
     isActive: item.is_active,
     isPublished: item.is_published,
-    settings: item.settings,
     sectionsCount: item.sections_count,
     createdAt: item.created_at,
     updatedAt: item.updated_at,

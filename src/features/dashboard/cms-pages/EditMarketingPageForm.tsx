@@ -6,13 +6,13 @@ import type { MarketingPageDetailView } from '@/types/marketing-page';
 import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   pageId:  string;
   page:    MarketingPageDetailView;
 }
 
-export default function EditMarketingPageForm({ storeId, pageId, page }: Props) {
-  const update = useUpdateMarketingPage(storeId, pageId);
+export default function EditMarketingPageForm({ storeSlug, pageId, page }: Props) {
+  const update = useUpdateMarketingPage(storeSlug, pageId);
 
   const handleSubmit = async (values: MarketingPageFormValues) => {
     // Normalize published_at: empty string should be null for the backend
@@ -37,7 +37,7 @@ export default function EditMarketingPageForm({ storeId, pageId, page }: Props) 
 
   return (
     <MarketingPageForm
-      storeId={storeId}
+      storeSlug={storeSlug}
       page={page}
       onSubmit={handleSubmit}
       isLoading={update.isPending}

@@ -18,14 +18,14 @@ import UserFilters from './UserFilters';
 import CreateUserDialog from './CreateUserDialog';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   initialFilters: UserFiltersType;
 }
 
 const ALLOWED_ROLES = ['all', 'store_admin', 'staff'] as const;
 const statusOptions = ['all', 'active', 'inactive'] as const;
 
-export default function UsersContent({ storeId, initialFilters }: Props) {
+export default function UsersContent({ storeSlug, initialFilters }: Props) {
   const t = useTranslations('users');
 
   // Nuqs state management
@@ -58,7 +58,7 @@ export default function UsersContent({ storeId, initialFilters }: Props) {
   };
 
   // Fetch data
-  const { data, isLoading, error } = useUsers(storeId, filters);
+  const { data, isLoading, error } = useUsers(storeSlug, filters);
 
   // Error handling
   if (error) {
@@ -92,7 +92,7 @@ export default function UsersContent({ storeId, initialFilters }: Props) {
           <h1 className="text-2xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground">{t('subtitle')}</p>
         </div>
-        <CreateUserDialog storeId={storeId} />
+        <CreateUserDialog storeSlug={storeSlug} />
       </div>
       
       <UserFilters
@@ -112,7 +112,7 @@ export default function UsersContent({ storeId, initialFilters }: Props) {
         perPage={perPage}
         onPerPageChange={setPerPage}
         isLoading={isLoading}
-        storeId={storeId}
+        storeSlug={storeSlug}
       />
     </div>
   );

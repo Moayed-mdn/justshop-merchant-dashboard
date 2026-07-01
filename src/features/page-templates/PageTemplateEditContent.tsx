@@ -20,6 +20,7 @@ import { Plus, Trash2, ChevronUp, ChevronDown, ArrowLeft, Save, Eye, Loader2, Al
 import { toast } from 'sonner';
 import { ROUTES } from '@/config/routes';
 import type { PageTemplateSection } from '@/types/theme';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 export function PageTemplateEditContent() {
   const t = useTranslations();
@@ -27,11 +28,11 @@ export function PageTemplateEditContent() {
   const params = useParams();
   const templateId = params?.id as string;
   const activeStore = useBootstrapStore((state) => state.activeStore);
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
 
-  const { data: template, isLoading, isError } = usePageTemplate(activeStoreId!, templateId);
-  const { data: schemas, isLoading: schemasLoading } = useSectionSchemas(activeStoreId!);
-  const updateMutation = useUpdatePageTemplate(activeStoreId!);
+  const { data: template, isLoading, isError } = usePageTemplate(activeStoreSlug!, templateId);
+  const { data: schemas, isLoading: schemasLoading } = useSectionSchemas(activeStoreSlug!);
+  const updateMutation = useUpdatePageTemplate(activeStoreSlug!);
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -372,7 +373,7 @@ export function PageTemplateEditContent() {
                       {t('theme.templates.customizer.sectionSettings')}
                     </h3>
                     <SectionSettingsForm
-                      storeId={activeStoreId!}
+                      storeSlug={activeStoreSlug!}
                       schema={schemasByType[selectedSection.type] ?? null}
                       settings={selectedSection.settings as Record<string, unknown>}
                       onChange={(newSettings) => handleSettingsChange(selectedSectionId, newSettings)}

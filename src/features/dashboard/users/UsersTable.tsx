@@ -40,7 +40,7 @@ interface Props {
   perPage: number;
   onPerPageChange: (perPage: number) => void;
   isLoading: boolean;
-  storeId: string;
+  storeSlug: string;
 }
 
 export default function UsersTable({
@@ -51,7 +51,7 @@ export default function UsersTable({
   perPage,
   onPerPageChange,
   isLoading,
-  storeId,
+  storeSlug,
 }: Props) {
   const t = useTranslations('users');
 
@@ -84,7 +84,7 @@ export default function UsersTable({
           {t('subtitle')}
         </p>
         <div className="mt-6">
-          <CreateUserDialog storeId={storeId} />
+          <CreateUserDialog storeSlug={storeSlug} />
         </div>
       </div>
     );
@@ -133,7 +133,7 @@ export default function UsersTable({
                 </TableCell>
                 <TableCell className="text-right">
                   <Link
-                    href={ROUTES.store(storeId).users.detail(String(user.id))}
+                    href={ROUTES.merchant.customers.detail(String(user.id))}
                     className="group/button inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius-md),12px)] border border-transparent bg-clip-padding h-7 gap-1 px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
                   >
                     {t('table.view')}

@@ -12,13 +12,13 @@ interface RequestOptions {
 }
 
 /**
- * Get a store by ID.
+ * Get a store by merchant-facing slug only.
  */
 export async function getStore(
-  storeId: string,
+  storeSlug: string,
   options: RequestOptions = {}
 ): Promise<ApiResponse<Store>> {
-  return clientApi.get(API_ROUTES.merchant.stores.detail(storeId), { signal: options.signal });
+  return clientApi.get(API_ROUTES.merchant.stores.detail(storeSlug), { signal: options.signal });
 }
 
 /**
@@ -35,11 +35,11 @@ export async function createStore(
  * Update a store.
  */
 export async function updateStore(
-  storeId: string,
+  storeSlug: string,
   payload: UpdateStorePayload,
   options: RequestOptions = {}
 ): Promise<ApiResponse<Store>> {
-  return clientApi.put(API_ROUTES.merchant.stores.update(storeId), payload, { signal: options.signal });
+  return clientApi.put(API_ROUTES.merchant.stores.update(storeSlug), payload, { signal: options.signal });
 }
 
 /**
@@ -56,8 +56,8 @@ export async function checkStoreSlug(
  * Get provisioning status for a store.
  */
 export async function getProvisioningStatus(
-  storeId: string,
+  storeSlug: string,
   options: RequestOptions = {}
 ): Promise<ApiResponse<ProvisioningStatus>> {
-  return clientApi.get(API_ROUTES.merchant.stores.provisioningStatus(storeId), { signal: options.signal });
+  return clientApi.get(API_ROUTES.merchant.stores.provisioningStatus(storeSlug), { signal: options.signal });
 }

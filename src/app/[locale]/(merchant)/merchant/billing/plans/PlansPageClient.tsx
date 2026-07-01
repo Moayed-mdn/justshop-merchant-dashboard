@@ -208,7 +208,6 @@ export function PlansPageClient() {
     toast({
       title: 'Downgrade scheduled',
       description: `Your plan will change to ${downgradeDialog.targetPlan} at the end of your billing period. You'll keep full access to your current plan until then.`,
-      duration: 5000,
     });
     
     // Navigate to billing page to show the pending downgrade info

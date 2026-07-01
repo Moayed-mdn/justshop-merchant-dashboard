@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Link } from '@/lib/navigation';
+import { useTranslations } from 'next-intl';
 import type { LucideIcon } from 'lucide-react';
 
 interface DataTableEmptyStateProps {
@@ -18,11 +19,14 @@ interface DataTableEmptyStateProps {
  */
 export function DataTableEmptyState({
   icon: Icon,
-  title = 'No data yet',
-  explanation = 'Items you add will appear here.',
+  title,
+  explanation,
   actionLabel,
   actionHref,
 }: DataTableEmptyStateProps) {
+  const t = useTranslations('nav');
+  const resolvedTitle = title ?? t('noDataYet');
+  const resolvedExplanation = explanation ?? t('itemsWillAppearHere');
   return (
     <div className="flex flex-col items-center justify-center rounded-lg border bg-card p-12 text-center">
       {Icon && (
@@ -30,9 +34,9 @@ export function DataTableEmptyState({
           <Icon className="h-8 w-8 text-muted-foreground" />
         </div>
       )}
-      <h3 className="mt-4 text-base font-semibold">{title}</h3>
+      <h3 className="mt-4 text-base font-semibold">{resolvedTitle}</h3>
       <p className="mx-auto mt-1.5 max-w-sm text-sm text-muted-foreground">
-        {explanation}
+        {resolvedExplanation}
       </p>
       {actionLabel && actionHref && (
         <div className="mt-5">

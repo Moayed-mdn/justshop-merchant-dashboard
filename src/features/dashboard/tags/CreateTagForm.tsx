@@ -14,14 +14,15 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ROUTES } from '@/config/routes';
 
-interface Props { storeId: string }
+interface Props { storeSlug: string }
 
 const LOCALES = ['en', 'ar'] as const;
 
-export default function CreateTagForm({ storeId }: Props) {
+export default function CreateTagForm({ storeSlug }: Props) {
   const t      = useTranslations('tags');
-  const create = useCreateTag(storeId);
+  const create = useCreateTag(storeSlug);
   const router = useRouter();
 
   const {
@@ -63,7 +64,7 @@ export default function CreateTagForm({ storeId }: Props) {
             variant="ghost"
             size="icon"
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push(ROUTES.merchant.tags.list())}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>

@@ -22,6 +22,7 @@ import {
   Bookmark,
   Tag,
   Store,
+  Truck,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -34,14 +35,13 @@ interface NavItem {
 }
 
 interface SidebarNavProps {
-  storeId: string;
   isCollapsed?: boolean;
 }
 
 /**
  * Navigation list component with permission-based item filtering.
  */
-export function SidebarNav({ storeId, isCollapsed: isCollapsedProp }: SidebarNavProps) {
+export function SidebarNav({ isCollapsed: isCollapsedProp }: SidebarNavProps) {
   const pathname = usePathname();
   const canManageUsers = useCan('canManageUsers');
   const canManageProducts = useCan('canManageProducts');
@@ -70,7 +70,7 @@ export function SidebarNav({ storeId, isCollapsed: isCollapsedProp }: SidebarNav
     },
     {
       label: t('users'),
-      href: ROUTES.store(storeId).users.list(),
+      href: ROUTES.merchant.customers.list(),
       icon: Users,
       show: canManageUsers,
     },
@@ -103,6 +103,12 @@ export function SidebarNav({ storeId, isCollapsed: isCollapsedProp }: SidebarNav
       href: ROUTES.merchant.orders.list(),
       icon: ShoppingCart,
       show: canManageOrders,
+    },
+    {
+      label: t('shipping'),
+      href: ROUTES.merchant.shipping(),
+      icon: Truck,
+      show: true,
     },
   ];
 

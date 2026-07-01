@@ -17,12 +17,12 @@ export interface UseCreateProductOptions {
   onError?: (error: ApiError) => void;
 }
 
-export function useCreateProduct(storeId: string, options?: UseCreateProductOptions) {
+export function useCreateProduct(storeSlug: string, options?: UseCreateProductOptions) {
   return useMutation({
-    mutationFn: (payload: ProductCreatePayload) => createProduct(storeId, payload),
+    mutationFn: (payload: ProductCreatePayload) => createProduct(storeSlug, payload),
     retry: 0,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.products(storeId).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.products(storeSlug).lists() });
       logger.info('Product created', { productId: data.id });
       options?.onSuccess?.(data);
     },

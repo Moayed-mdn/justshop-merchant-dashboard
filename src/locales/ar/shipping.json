@@ -1,0 +1,162 @@
+{
+  "title": "إعدادات الشحن",
+  "subtitle": "إدارة مناطق الشحن والطرق والتحقق من العناوين",
+  "tabs": {
+    "methods": "طرق الشحن",
+    "zones": "مناطق الشحن",
+    "settings": "إعدادات العنوان"
+  },
+  "methods": {
+    "title": "طرق الشحن",
+    "subtitle": "إنشاء وإدارة خيارات التوصيل لعملائك",
+    "empty": "لا توجد طرق شحن بعد",
+    "emptyDescription": "أنشئ طريقة الشحن الأولى لتقديم خيارات التوصيل عند الدفع",
+    "addNew": "إضافة طريقة شحن",
+    "edit": "تعديل الطريقة",
+    "delete": "حذف الطريقة",
+    "confirmDelete": "هل أنت متأكد من حذف طريقة الشحن هذه؟",
+    "confirmDeleteDescription": "لا يمكن التراجع عن هذا الإجراء. ستتم إزالة الطريقة من جميع المناطق.",
+    "fields": {
+      "name": "اسم الطريقة",
+      "namePlaceholder": "مثال: الشحن القياسي",
+      "code": "الرمز",
+      "codePlaceholder": "مثال: standard_shipping",
+      "description": "الوصف",
+      "descriptionPlaceholder": "وصف موجز لطريقة الشحن",
+      "price": "السعر الأساسي",
+      "currency": "العملة",
+      "minOrderAmount": "الحد الأدنى للطلب",
+      "maxOrderAmount": "الحد الأقصى للطلب",
+      "estimatedDeliveryDays": "مدة التوصيل المقدرة (أيام)",
+      "minDeliveryDays": "أقل مدة توصيل",
+      "maxDeliveryDays": "أقصى مدة توصيل",
+      "isActive": "نشط",
+      "sortOrder": "ترتيب العرض"
+    },
+    "table": {
+      "name": "الاسم",
+      "price": "السعر",
+      "delivery": "مدة التوصيل",
+      "status": "الحالة",
+      "zones": "المناطق",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    }
+  },
+  "zones": {
+    "title": "مناطق الشحن",
+    "subtitle": "تجميع الدول في مناطق لتسعير مستهدف",
+    "empty": "لا توجد مناطق شحن بعد",
+    "emptyDescription": "أنشئ مناطق لتجميع الدول وتطبيق أسعار مختلفة",
+    "addNew": "إضافة منطقة شحن",
+    "edit": "تعديل المنطقة",
+    "delete": "حذف المنطقة",
+    "confirmDelete": "هل أنت متأكد من حذف منطقة الشحن هذه؟",
+    "confirmDeleteDescription": "ستتم إزالة جميع تعيينات الطرق لهذه المنطقة.",
+    "fields": {
+      "name": "اسم المنطقة",
+      "namePlaceholder": "مثال: أمريكا الشمالية",
+      "countries": "الدول",
+      "countriesPlaceholder": "اختر الدول لهذه المنطقة",
+      "regions": "المناطق الفرعية (اختياري)",
+      "postalCodePatterns": "أنماط الرمز البريدي (اختياري)",
+      "isActive": "نشط"
+    },
+    "table": {
+      "name": "الاسم",
+      "countries": "الدول",
+      "methods": "الطرق",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "countryCount": "{count} دولة",
+    "methodCount": "{count} طريقة",
+    "assignMethod": "تعيين طريقة",
+    "removeMethod": "إزالة الطريقة",
+    "updatePrice": "تحديث السعر المخصص"
+  },
+  "addressSettings": {
+    "title": "إعدادات العنوان",
+    "subtitle": "تكوين التحقق من العنوان والمتطلبات",
+    "allowedCountries": {
+      "label": "الدول المسموح بها",
+      "description": "اختر الدول التي تشحن إليها",
+      "placeholder": "اختر الدول",
+      "all": "جميع الدول"
+    },
+    "requiredFields": {
+      "label": "حقول العنوان المطلوبة",
+      "description": "الحقول التي يجب على العملاء إكمالها"
+    },
+    "options": {
+      "requirePhone": "طلب رقم الهاتف",
+      "requirePhoneDescription": "يجب على العملاء تقديم رقم هاتف",
+      "requireCompany": "طلب اسم الشركة",
+      "requireCompanyDescription": "يجب على العملاء تقديم اسم شركة",
+      "allowPoBoxes": "السماح بصناديق البريد",
+      "allowPoBoxesDescription": "قبول عناوين صناديق البريد"
+    },
+    "fields": {
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "company": "الشركة",
+      "addressLine1": "العنوان السطر 1",
+      "addressLine2": "العنوان السطر 2",
+      "city": "المدينة",
+      "state": "الولاية/المحافظة",
+      "postalCode": "الرمز البريدي",
+      "country": "الدولة",
+      "phone": "الهاتف"
+    }
+  },
+  "zoneMethodPricing": {
+    "title": "جدول أسعار المناطق",
+    "subtitle": "تكوين الأسعار الخاصة بالمنطقة لطرق الشحن",
+    "basePrice": "السعر الأساسي: {price}",
+    "override": "السعر المخصص: {price}",
+    "noOverride": "لا يوجد تخصيص",
+    "setOverride": "تعيين تخصيص",
+    "removeOverride": "إزالة التخصيص",
+    "notAssigned": "غير معين",
+    "assignToZone": "تعيين للمنطقة"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "loading": "جاري التحميل...",
+    "saving": "جاري الحفظ...",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "optional": "اختياري",
+    "required": "مطلوب"
+  },
+  "validation": {
+    "nameRequired": "الاسم مطلوب",
+    "priceRequired": "السعر مطلوب",
+    "priceMin": "يجب أن يكون السعر 0 أو أكثر",
+    "countriesRequired": "مطلوب دولة واحدة على الأقل",
+    "minGreaterThanMax": "يجب أن يكون الحد الأدنى أقل من الحد الأقصى",
+    "invalidDeliveryRange": "يجب أن تكون أقصى مدة توصيل أكبر من أو تساوي الحد الأدنى"
+  },
+  "messages": {
+    "methodCreated": "تم إنشاء طريقة الشحن بنجاح",
+    "methodUpdated": "تم تحديث طريقة الشحن بنجاح",
+    "methodDeleted": "تم حذف طريقة الشحن بنجاح",
+    "zoneCreated": "تم إنشاء منطقة الشحن بنجاح",
+    "zoneUpdated": "تم تحديث منطقة الشحن بنجاح",
+    "zoneDeleted": "تم حذف منطقة الشحن بنجاح",
+    "settingsUpdated": "تم تحديث إعدادات العنوان بنجاح",
+    "methodAssigned": "تم تعيين الطريقة للمنطقة بنجاح",
+    "methodRemoved": "تم إزالة الطريقة من المنطقة بنجاح",
+    "priceUpdated": "تم تحديث أسعار المنطقة بنجاح"
+  }
+}

@@ -85,7 +85,7 @@ export function getDescendantIds(
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 interface ParentCategorySelectProps {
-  storeId: string;
+  storeSlug: string;
   value: number | null;
   onChange: (value: number | null) => void;
   excludeIds?: number[];
@@ -95,7 +95,7 @@ interface ParentCategorySelectProps {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function ParentCategorySelect({
-  storeId,
+  storeSlug,
   value,
   onChange,
   excludeIds = [],
@@ -104,7 +104,7 @@ export function ParentCategorySelect({
   const t = useTranslations('categories');
   const [open, setOpen] = React.useState(false);
 
-  const { data, isLoading, isError, error } = useCategories(storeId, {
+  const { data, isLoading, isError, error } = useCategories(storeSlug, {
     is_active: 'true',
     page: 1,
     perPage: 100,

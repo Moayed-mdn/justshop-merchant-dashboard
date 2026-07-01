@@ -12,16 +12,16 @@ import type { Store, UpdateStorePayload } from '@/types/store';
  * Hook to update a store's settings.
  * Refreshes both the specific store detail and the global bootstrap state on success.
  */
-export function useUpdateStore(storeId: string) {
+export function useUpdateStore(storeSlug: string) {
   const queryClient = useQueryClient();
   const fetchBootstrap = useBootstrapStore((state) => state.fetchBootstrap);
 
   return useMutation<ApiResponse<Store>, ApiError, UpdateStorePayload>({
-    mutationFn: (payload: UpdateStorePayload) => updateStore(storeId, payload),
+    mutationFn: (payload: UpdateStorePayload) => updateStore(storeSlug, payload),
     onSuccess: async (response) => {
       // 1. Invalidate the store detail in the query cache
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.merchant.store(storeId).detail(),
+        queryKey: queryKeys.merchant.store(storeSlug).detail(),
       });
 
       // 2. Refresh global bootstrap state to sync the store name in switcher/sidebar

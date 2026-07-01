@@ -16,14 +16,14 @@ import { MarketingPagesTable } from './MarketingPagesTable';
 import type { MarketingPageFilters } from '@/schemas/marketing-pages';
 
 interface Props {
-  storeId:        string;
+  storeSlug:        string;
   initialFilters: MarketingPageFilters;
 }
 
 const STATUS_OPTIONS  = ['all', 'draft', 'published', 'scheduled'] as const;
 const TEMPLATE_OPTIONS = ['all', 'landing', 'campaign', 'promotion', 'generic'] as const;
 
-export default function MarketingPagesContent({ storeId, initialFilters }: Props) {
+export default function MarketingPagesContent({ storeSlug, initialFilters }: Props) {
   const t = useTranslations('cmsPages');
 
   const [search, setSearch] = useQueryState(
@@ -57,7 +57,7 @@ export default function MarketingPagesContent({ storeId, initialFilters }: Props
 
   const filters: MarketingPageFilters = { search, status, template, page, perPage };
 
-  const { data, isLoading, error } = useMarketingPages(storeId, filters);
+  const { data, isLoading, error } = useMarketingPages(storeSlug, filters);
 
   if (error) {
     logger.error('Failed to load marketing pages', error);

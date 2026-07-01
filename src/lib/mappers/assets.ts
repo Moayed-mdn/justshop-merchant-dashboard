@@ -8,10 +8,10 @@ import type { StoreAsset, StoreAssetView } from '@/types/asset';
 /**
  * Map raw API store asset to view type.
  */
-export function mapStoreAsset(asset: StoreAsset): StoreAssetView {
+export function mapStoreAsset(asset: StoreAsset, storeSlug: string): StoreAssetView {
   return {
     id: asset.id,
-    storeId: asset.store_id,
+    storeSlug,
     assetType: asset.asset_type,
     fileName: asset.file_name,
     filePath: asset.file_path,

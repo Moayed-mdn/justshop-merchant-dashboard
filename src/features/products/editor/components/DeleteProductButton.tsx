@@ -21,13 +21,13 @@ import { useCan }           from '@/stores/bootstrapStore';
 import { ROUTES }           from '@/config/routes';
 
 interface Props {
-  storeId:     string;
+  storeSlug:     string;
   productId:   string;
   productName: string;
 }
 
 export default function DeleteProductButton({
-  storeId,
+  storeSlug,
   productId,
   productName,
 }: Props) {
@@ -37,7 +37,7 @@ export default function DeleteProductButton({
 
   const canManageProducts = useCan('canManageProducts');
 
-  const mutation = useDeleteProduct(storeId, productId, {
+  const mutation = useDeleteProduct(storeSlug, productId, {
     onSuccess: () => {
       toast.success(t('form.deleteSuccess'));
       setOpen(false);

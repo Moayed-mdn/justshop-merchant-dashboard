@@ -4,6 +4,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import BrandsContent from '@/features/dashboard/brands/BrandsContent';
 import { useTranslations } from 'next-intl';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const INITIAL_FILTERS = {
   is_active: 'all' as const,
@@ -25,17 +26,14 @@ export default function MerchantBrandsPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('brands')}</h1>
         </div>
-        <WorkspaceEmptyState 
-          title="No active store"
-          message="Select a store from the switcher to view its brands."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <BrandsContent storeId={String(activeStore.id)} initialFilters={INITIAL_FILTERS} />
+      <BrandsContent storeSlug={getStoreRouteParam(activeStore)} initialFilters={INITIAL_FILTERS} />
     </div>
   );
 }

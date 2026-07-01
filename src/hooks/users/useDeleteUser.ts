@@ -16,14 +16,14 @@ export interface UseDeleteUserOptions {
   onError?: (error: ApiError) => void;
 }
 
-export function useDeleteUser(storeId: string, options?: UseDeleteUserOptions) {
+export function useDeleteUser(storeSlug: string, options?: UseDeleteUserOptions) {
   return useMutation({
-    mutationFn: (userId: string) => deleteUser(storeId, userId),
+    mutationFn: (userId: string) => deleteUser(storeSlug, userId),
     retry: 0,
     onSuccess: () => {
       // Invalidate users list queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.users(storeId).lists() });
-      logger.info('User deleted', { storeId });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users(storeSlug).lists() });
+      logger.info('User deleted', { storeSlug });
       options?.onSuccess?.();
     },
     onError: (error: ApiError) => {

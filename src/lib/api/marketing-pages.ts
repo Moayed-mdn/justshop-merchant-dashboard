@@ -19,7 +19,7 @@ import type { SectionTypeOption } from '@/types/marketing-page';
  * Fetch paginated marketing pages list.
  */
 export async function getMarketingPages(
-  storeId: string,
+  storeSlug: string,
   filters: MarketingPageFilters,
 ): Promise<PaginatedResponse<MarketingPageListItem>> {
   const params: Record<string, string | number> = {};
@@ -31,7 +31,7 @@ export async function getMarketingPages(
   if (filters.perPage !== 15)      params.per_page = filters.perPage;
 
   return clientApi.get<PaginatedResponse<MarketingPageListItem>>(
-    API_ROUTES.store(storeId).cmsPages().list(),
+    API_ROUTES.store(storeSlug).cmsPages().list(),
     { params },
   );
 }
@@ -40,11 +40,11 @@ export async function getMarketingPages(
  * Fetch single marketing page by ID.
  */
 export async function getMarketingPageDetail(
-  storeId: string,
+  storeSlug: string,
   pageId: string,
 ): Promise<MarketingPageDetail> {
   const response = await clientApi.get<ApiResponse<MarketingPageDetail>>(
-    API_ROUTES.store(storeId).cmsPages().detail(pageId),
+    API_ROUTES.store(storeSlug).cmsPages().detail(pageId),
   );
   return response.data;
 }
@@ -82,12 +82,12 @@ function transformPayloadForBackend(payload: CreateMarketingPagePayload | Update
  * Create a new marketing page.
  */
 export async function createMarketingPage(
-  storeId: string,
+  storeSlug: string,
   payload: CreateMarketingPagePayload,
 ): Promise<MarketingPageDetail> {
   const transformedPayload = transformPayloadForBackend(payload);
   const response = await clientApi.post<ApiResponse<MarketingPageDetail>>(
-    API_ROUTES.store(storeId).cmsPages().create(),
+    API_ROUTES.store(storeSlug).cmsPages().create(),
     transformedPayload,
   );
   return response.data;
@@ -97,13 +97,13 @@ export async function createMarketingPage(
  * Update an existing marketing page.
  */
 export async function updateMarketingPage(
-  storeId: string,
+  storeSlug: string,
   pageId: string,
   payload: UpdateMarketingPagePayload,
 ): Promise<MarketingPageDetail> {
   const transformedPayload = transformPayloadForBackend(payload);
   const response = await clientApi.put<ApiResponse<MarketingPageDetail>>(
-    API_ROUTES.store(storeId).cmsPages().update(pageId),
+    API_ROUTES.store(storeSlug).cmsPages().update(pageId),
     transformedPayload,
   );
   return response.data;
@@ -113,11 +113,11 @@ export async function updateMarketingPage(
  * Delete a marketing page by ID.
  */
 export async function deleteMarketingPage(
-  storeId: string,
+  storeSlug: string,
   pageId: string,
 ): Promise<void> {
   await clientApi.delete(
-    API_ROUTES.store(storeId).cmsPages().delete(pageId),
+    API_ROUTES.store(storeSlug).cmsPages().delete(pageId),
   );
 }
 
@@ -127,11 +127,11 @@ export async function deleteMarketingPage(
  * and validates the transition with the marketing.store.publish permission.
  */
 export async function publishMarketingPage(
-  storeId: string,
+  storeSlug: string,
   pageId: string,
 ): Promise<MarketingPageDetail> {
   const response = await clientApi.post<ApiResponse<MarketingPageDetail>>(
-    API_ROUTES.store(storeId).cmsPages().publish(pageId),
+    API_ROUTES.store(storeSlug).cmsPages().publish(pageId),
   );
   return response.data;
 }
@@ -142,11 +142,11 @@ export async function publishMarketingPage(
  * with the marketing.store.publish permission.
  */
 export async function unpublishMarketingPage(
-  storeId: string,
+  storeSlug: string,
   pageId: string,
 ): Promise<MarketingPageDetail> {
   const response = await clientApi.post<ApiResponse<MarketingPageDetail>>(
-    API_ROUTES.store(storeId).cmsPages().unpublish(pageId),
+    API_ROUTES.store(storeSlug).cmsPages().unpublish(pageId),
   );
   return response.data;
 }
@@ -155,10 +155,10 @@ export async function unpublishMarketingPage(
  * Fetch available marketing section types.
  */
 export async function getMarketingSectionTypes(
-  storeId: string,
+  storeSlug: string,
 ): Promise<SectionTypeOption[]> {
   const response = await clientApi.get<ApiResponse<SectionTypeOption[]>>(
-    API_ROUTES.store(storeId).sectionTypes(),
+    API_ROUTES.store(storeSlug).sectionTypes(),
   );
   return response.data;
 }
@@ -168,14 +168,14 @@ export async function getMarketingSectionTypes(
  * Returns the existing homepage info or null.
  */
 export async function checkHomepage(
-  storeId: string,
+  storeSlug: string,
   excludeId?: string,
 ): Promise<{ exists: boolean; page: { id: number; title: Record<string, string>; slug: Record<string, string> } | null }> {
   const params: Record<string, string | number> = {};
   if (excludeId) params.exclude_id = excludeId;
 
   const response = await clientApi.get<ApiResponse<{ exists: boolean; page: any }>>(
-    `${API_ROUTES.store(storeId).cmsPages().list()}/check-homepage`,
+    `${API_ROUTES.store(storeSlug).cmsPages().list()}/check-homepage`,
     { params },
   );
   return response.data;

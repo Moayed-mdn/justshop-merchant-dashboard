@@ -112,6 +112,7 @@ export interface BootstrapSnapshot {
 
 export interface ProvisioningState {
   tracked_store_id: number | null;
+  tracked_store_slug: string | null;
   status: ProvisioningStatus['status'] | null;
   progress: number | null;
   current_step: string | null;

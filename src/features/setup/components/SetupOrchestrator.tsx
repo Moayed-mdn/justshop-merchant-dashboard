@@ -11,6 +11,7 @@ import { VerifyEmailStep } from './VerifyEmailStep';
 import { CreateStoreStep } from './CreateStoreStep';
 import { ProvisioningStep } from './ProvisioningStep';
 import { SetupCompleteStep } from './SetupCompleteStep';
+import { useTranslations } from 'next-intl';
 
 /**
  * SetupOrchestrator
@@ -29,6 +30,7 @@ export function SetupOrchestrator() {
   const bootstrap = useBootstrapStore((state) => state.bootstrap);
   const onboarding = useBootstrapStore((state) => state.onboarding);
   const provisioning = useBootstrapStore((state) => state.provisioning);
+  const t = useTranslations('setup.orchestrator');
 
   // Healing: if email is verified but step is stuck at pending_verification, advance it
   const isEmailVerified = bootstrap?.email_verified || bootstrap?.user?.is_email_verified;
@@ -45,9 +47,9 @@ export function SetupOrchestrator() {
           <div className="flex justify-center">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
-          <h1 className="mt-4 text-2xl font-bold">Let&apos;s get your store ready</h1>
+          <h1 className="mt-4 text-2xl font-bold">{t('title')}</h1>
           <p className="mt-3 text-muted-foreground">
-            We&apos;re picking up where you left off.
+            {t('description')}
           </p>
           <div className="mt-6 flex items-center justify-center gap-3">
             <Button
@@ -56,13 +58,13 @@ export function SetupOrchestrator() {
                 void queryClient.invalidateQueries({ queryKey: queryKeys.merchant.me() })
               }
             >
-              Retry
+              {t('retry')}
             </Button>
             <Link
               href={ROUTES.auth.login()}
               className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline"
             >
-              Back to login
+              {t('backToLogin')}
             </Link>
           </div>
         </div>

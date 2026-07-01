@@ -22,20 +22,20 @@ interface NavigationMenuOption {
 }
 
 interface LinkListSettingProps {
-  storeId: string;
+  storeSlug: string;
   setting: SectionSchemaSetting;
   value: string;
   onChange: (value: string) => void;
 }
 
-export function LinkListSetting({ storeId, setting, value, onChange }: LinkListSettingProps) {
+export function LinkListSetting({ storeSlug, setting, value, onChange }: LinkListSettingProps) {
   const t = useTranslations();
 
   const { data: menus, isLoading, isError } = useQuery({
-    queryKey: ['merchant', storeId, 'navigation-menus', 'all'],
+    queryKey: ['merchant', storeSlug, 'navigation-menus', 'all'],
     queryFn: async () => {
       const response = await clientApi.get<{ data: NavigationMenuOption[] }>(
-        API_ROUTES.store(storeId).navigation().list(),
+        API_ROUTES.store(storeSlug).navigation().list(),
         { params: { per_page: 100 } }
       );
 
@@ -45,7 +45,7 @@ export function LinkListSetting({ storeId, setting, value, onChange }: LinkListS
         handle: menu.handle,
       }));
     },
-    enabled: !!storeId,
+    enabled: !!storeSlug,
     staleTime: 5 * 60 * 1000,
   });
 

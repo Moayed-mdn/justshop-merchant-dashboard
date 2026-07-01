@@ -27,21 +27,21 @@ import { useBrands } from '@/hooks/brands/useBrands';
 import { useBrandDetail } from '@/hooks/brands/useBrandDetail';
 
 interface Props {
-  storeId:  string;
+  storeSlug:  string;
   value:    number | null;
   onChange: (change: { id: number | null; name: string | null }) => void;
 }
 
 const NO_BRAND = '__none__';
 
-export function BrandSelect({ storeId, value, onChange }: Props) {
+export function BrandSelect({ storeSlug, value, onChange }: Props) {
   const t = useTranslations('products');
 
-  const { data, isLoading } = useBrands(storeId);
+  const { data, isLoading } = useBrands(storeSlug);
   const brands = data?.data ?? [];
   const selectedBrand = brands.find((brand) => brand.id === value);
   const { data: selectedBrandDetail } = useBrandDetail(
-    storeId,
+    storeSlug,
     value !== null && !selectedBrand ? String(value) : '',
   );
 

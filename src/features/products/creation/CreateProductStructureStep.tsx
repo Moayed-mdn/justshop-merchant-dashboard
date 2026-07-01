@@ -33,10 +33,10 @@ import type { CreateProductStructureData } from '@/schemas/products';
 interface Props {
   structure: CreateProductStructureData;
   onChange:  (next: CreateProductStructureData) => void;
-  storeId:   string;
+  storeSlug:   string;
 }
 
-export function CreateProductStructureStep({ structure, onChange, storeId }: Props) {
+export function CreateProductStructureStep({ structure, onChange, storeSlug }: Props) {
   const t = useTranslations('products');
 
   const handleOptionsChange = (options: ProductOption[]) => {
@@ -90,7 +90,7 @@ export function CreateProductStructureStep({ structure, onChange, storeId }: Pro
             <VariantsTable
               variants={structure.variants}
               onChange={handleVariantsChange}
-              storeId={storeId}
+              storeSlug={storeSlug}
             />
           </CardContent>
         </Card>

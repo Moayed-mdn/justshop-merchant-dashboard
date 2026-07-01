@@ -163,7 +163,7 @@ export interface ProductListItemView {
 
 export interface ProductDetailView {
   id:              number;
-  storeId:         number;
+  storeSlug:         string;
   categoryId:      number | null;
   brandId:         number | null;
   name:            string;

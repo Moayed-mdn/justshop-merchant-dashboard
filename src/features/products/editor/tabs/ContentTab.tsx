@@ -15,7 +15,7 @@ import { BrandSelect }       from '@/features/products/creation/BrandSelect';
 import { TagSelect }         from '@/features/products/creation/TagSelect';
 
 interface Props {
-  storeId:         string;
+  storeSlug:         string;
   availableLocales: Locale[];
   content:         ProductContentFormValues;
   tags:            number[];
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export function ContentTab({
-  storeId,
+  storeSlug,
   availableLocales,
   content,
   tags,
@@ -48,7 +48,7 @@ export function ContentTab({
           />
 
           <CategorySelect
-            storeId={storeId}
+            storeSlug={storeSlug}
             value={content.categoryId}
             onChange={({ id }) =>
               onContentChange({ ...content, categoryId: id })
@@ -56,7 +56,7 @@ export function ContentTab({
           />
 
           <BrandSelect
-            storeId={storeId}
+            storeSlug={storeSlug}
             value={content.brandId}
             onChange={({ id }) =>
               onContentChange({ ...content, brandId: id })
@@ -64,7 +64,7 @@ export function ContentTab({
           />
 
           <TagSelect
-            storeId={storeId}
+            storeSlug={storeSlug}
             value={tags}
             onChange={onTagsChange}
           />

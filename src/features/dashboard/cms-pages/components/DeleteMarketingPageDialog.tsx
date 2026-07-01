@@ -16,14 +16,14 @@ import { Trash2 } from 'lucide-react';
 import { useDeleteMarketingPage } from '@/hooks/marketing-pages/useDeleteMarketingPage';
 
 interface Props {
-  storeId:   string;
+  storeSlug:   string;
   pageId:    string;
   pageTitle: string;
 }
 
-export function DeleteMarketingPageDialog({ storeId, pageId, pageTitle }: Props) {
+export function DeleteMarketingPageDialog({ storeSlug, pageId, pageTitle }: Props) {
   const t      = useTranslations('cmsPages');
-  const remove = useDeleteMarketingPage(storeId, pageId);
+  const remove = useDeleteMarketingPage(storeSlug, pageId);
   const [open, setOpen] = useState(false);
 
   const handleConfirm = async () => {

@@ -9,6 +9,7 @@ import { Package, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const INITIAL_FILTERS = {
   search: '',
@@ -24,30 +25,29 @@ const INITIAL_FILTERS = {
 export default function MerchantProductsPage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('nav');
+  const pt = useTranslations('products');
 
   if (!activeStore) {
     return (
       <div className="flex flex-col gap-6">
         <MerchantPageHeader
           title={t('products')}
-          description="View and manage your products."
+          description={pt('description')}
         />
         <WorkspaceEmptyState 
           icon={Package}
-          title="No active store"
-          message="Select a store from the switcher to view and manage its products."
+          title={t('noActiveStore')}
+          message={t('noActiveStoreMessage')}
         />
       </div>
     );
   }
 
-  const pt = useTranslations('products');
-
   return (
     <div className="space-y-6">
       <MerchantPageHeader
         title={t('products')}
-        description="View and manage your products."
+        description={pt('description')}
       >
         <Link href={ROUTES.merchant.products.new()}>
           <Button>
@@ -56,7 +56,7 @@ export default function MerchantProductsPage() {
           </Button>
         </Link>
       </MerchantPageHeader>
-      <ProductsContent storeId={String(activeStore.id)} initialFilters={INITIAL_FILTERS} />
+      <ProductsContent storeSlug={getStoreRouteParam(activeStore)} initialFilters={INITIAL_FILTERS} />
     </div>
   );
 }

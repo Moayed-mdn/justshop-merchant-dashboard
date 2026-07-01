@@ -33,6 +33,7 @@ import { SeoTab } from './components/SeoTab';
 import { DeleteMarketingPageDialog } from './components/DeleteMarketingPageDialog';
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 import { usePageTemplates } from '@/hooks/page-templates/usePageTemplates';
+import { ROUTES } from '@/config/routes';
 
 // ── Default values ────────────────────────────────────────────────────────
 
@@ -135,7 +136,7 @@ function buildDefaultValues(page?: MarketingPageDetailView): MarketingPageFormVa
 // ── Props ─────────────────────────────────────────────────────────────────
 
 interface Props {
-  storeId:    string;
+  storeSlug:    string;
   page?:      MarketingPageDetailView;
   onSubmit:   (values: MarketingPageFormValues) => Promise<void>;
   isLoading?: boolean;
@@ -143,7 +144,17 @@ interface Props {
 
 // ── Component ─────────────────────────────────────────────────────────────
 
-export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }: Props) {
+/**
+ * Helper to normalize localized values by ensuring no null values
+ */
+function normalizeLocalizedValue(value: Record<string, string | null> | null | undefined): Record<string, string> {
+  if (!value) return { en: '', ar: '' };
+  return Object.fromEntries(
+    Object.entries(value).map(([key, val]) => [key, val ?? ''])
+  ) as Record<string, string>;
+}
+
+export default function MarketingPageForm({ storeSlug, page, onSubmit, isLoading }: Props) {
   const t       = useTranslations('cmsPages');
   const isEdit  = Boolean(page);
   const router  = useRouter();
@@ -164,7 +175,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
 
   const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
 
-  const { data: pageTemplates = [] } = usePageTemplates(storeId);
+  const { data: pageTemplates = [] } = usePageTemplates(storeSlug);
 
   // Sync form state with page data when it loads
   useEffect(() => {
@@ -199,7 +210,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
               size="icon"
               onClick={() => {
                 bypassNextNavigation();
-                router.back();
+                router.push(ROUTES.merchant.cmsPages());
               }}
             >
               <ArrowLeft className="h-4 w-4" />
@@ -216,7 +227,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
           <div className="flex items-center gap-2">
             {isEdit && page && (
               <DeleteMarketingPageDialog
-                storeId={storeId}
+                storeSlug={storeSlug}
                 pageId={String(page.id)}
                 pageTitle={page.title.en ?? `Page #${page.id}`}
               />
@@ -254,7 +265,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
                   </CardHeader>
                   <CardContent>
                     <LocalizedInput
-                      value={watch('title') ?? { en: '', ar: '' }}
+                      value={normalizeLocalizedValue(watch('title'))}
                       onChange={(v) => setValue('title', v, { shouldDirty: true })}
                       placeholder={{ en: 'Page title', ar: 'عنوان الصفحة' }}
                     />
@@ -275,7 +286,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
                   </CardHeader>
                   <CardContent>
                     <LocalizedInput
-                      value={watch('slug') ?? { en: '', ar: '' }}
+                      value={normalizeLocalizedValue(watch('slug'))}
                       onChange={(v) => setValue('slug', v, { shouldDirty: true })}
                       placeholder={{ en: 'page-url-slug', ar: 'معرف-الصفحة' }}
                     />
@@ -296,7 +307,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
                   </CardHeader>
                   <CardContent>
                     <LocalizedInput
-                      value={watch('excerpt') ?? { en: '', ar: '' }}
+                      value={normalizeLocalizedValue(watch('excerpt'))}
                       onChange={(v) => setValue('excerpt', v, { shouldDirty: true })}
                       placeholder={{ en: 'Short description', ar: 'وصف مختصر' }}
                       multiline
@@ -446,7 +457,7 @@ export default function MarketingPageForm({ storeId, page, onSubmit, isLoading }
 
           {/* ── TAB 2: Content Builder ── */}
           <TabsContent value="content" className="mt-6">
-            <SectionsBuilder storeId={storeId} />
+            <SectionsBuilder storeSlug={storeSlug} />
           </TabsContent>
 
           {/* ── TAB 3: SEO ── */}

@@ -67,6 +67,7 @@ export type BootstrapStore = BootstrapState & BootstrapActions;
 
 const emptyProvisioningState = (): ProvisioningState => ({
   tracked_store_id: null,
+  tracked_store_slug: null,
   status: null,
   progress: null,
   current_step: null,
@@ -294,6 +295,17 @@ function isBootstrapDataShape(value: unknown): value is BootstrapData {
   return true;
 }
 
+function resolveProvisioningStoreSlug(
+  bootstrap: BootstrapData,
+  storeId: number
+): string | null {
+  if (bootstrap.active_store?.id === storeId) {
+    return bootstrap.active_store.slug;
+  }
+
+  return bootstrap.stores.find((store) => store.id === storeId)?.slug ?? null;
+}
+
 function deriveProvisioningState(
   bootstrap: BootstrapData | null,
   previous: ProvisioningState | null
@@ -306,7 +318,18 @@ function deriveProvisioningState(
   // a bootstrap refresh — the polling loop and ProvisioningStep own the lifecycle.
   // Only derive a fresh state when there is no existing tracked provisioning.
   if (previous?.tracked_store_id && previous?.status !== null) {
-    return previous;
+    const trackedStoreSlug =
+      previous.tracked_store_slug
+      ?? resolveProvisioningStoreSlug(bootstrap, previous.tracked_store_id);
+
+    if (trackedStoreSlug === previous.tracked_store_slug) {
+      return previous;
+    }
+
+    return {
+      ...previous,
+      tracked_store_slug: trackedStoreSlug,
+    };
   }
 
   const trackedStoreId = resolveProvisioningStoreId(bootstrap);
@@ -314,13 +337,23 @@ function deriveProvisioningState(
     return null;
   }
 
+  const trackedStoreSlug = resolveProvisioningStoreSlug(bootstrap, trackedStoreId);
+
   if (previous?.tracked_store_id === trackedStoreId) {
-    return previous;
+    if (trackedStoreSlug === previous.tracked_store_slug) {
+      return previous;
+    }
+
+    return {
+      ...previous,
+      tracked_store_slug: trackedStoreSlug,
+    };
   }
 
   return {
     ...emptyProvisioningState(),
     tracked_store_id: trackedStoreId,
+    tracked_store_slug: trackedStoreSlug,
     started_at: Date.now(),
   };
 }
@@ -489,23 +522,23 @@ export const useBootstrapStore = create<BootstrapStore>((set, get) => ({
     }
   },
 
-  switchStore: async (storeId) => {
-    logUXEvent('switch:start', { storeId });
+  switchStore: async (storeIdentifier) => {
+    logUXEvent('switch:start', { storeIdentifier });
     try {
-      const response = await switchStoreRequest(storeId);
+      const response = await switchStoreRequest(storeIdentifier);
       const payload = response.data;
 
       if (isBootstrapDataShape(payload)) {
         get().setBootstrap(payload);
-        logUXEvent('switch:complete', { storeId });
+        logUXEvent('switch:complete', { storeIdentifier });
         return get().bootstrap;
       }
 
       await get().fetchBootstrap();
-      logUXEvent('switch:complete', { storeId });
+      logUXEvent('switch:complete', { storeIdentifier });
       return get().bootstrap;
     } catch (error) {
-      logUXEvent('switch:failed', { storeId });
+      logUXEvent('switch:failed', { storeIdentifier });
       throw error;
     }
   },

@@ -12,12 +12,12 @@ import { mapBrandDetail } from '@/lib/mappers/brands';
 import type { BrandDetail, BrandDetailView } from '@/types/brand';
 import type { ApiError } from '@/types/api';
 
-export function useBrandDetail(storeId: string, brandId: string) {
+export function useBrandDetail(storeSlug: string, brandId: string) {
   return useQuery<BrandDetail, ApiError, BrandDetailView>({
-    queryKey:  queryKeys.brands(storeId).detail(brandId),
-    queryFn:   () => getBrandDetail(storeId, brandId),
+    queryKey:  queryKeys.brands(storeSlug).detail(brandId),
+    queryFn:   () => getBrandDetail(storeSlug, brandId),
     staleTime: QUERY_CONFIG.staleTime,
-    select:    mapBrandDetail,
-    enabled:   Boolean(storeId) && Boolean(brandId),
+    select:    (brand) => mapBrandDetail(brand, storeSlug),
+    enabled:   Boolean(storeSlug) && Boolean(brandId),
   });
 }

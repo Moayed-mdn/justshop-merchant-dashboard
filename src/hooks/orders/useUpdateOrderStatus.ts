@@ -17,7 +17,7 @@ export interface UseUpdateOrderStatusOptions {
 }
 
 export function useUpdateOrderStatus(
-  storeId: string,
+  storeSlug: string,
   orderId: string,
   options?: UseUpdateOrderStatusOptions
 ) {
@@ -25,16 +25,16 @@ export function useUpdateOrderStatus(
 
   return useMutation({
     mutationFn: (payload: OrderUpdatePayload) =>
-      updateOrderStatus(storeId, orderId, payload),
+      updateOrderStatus(storeSlug, orderId, payload),
     retry: 0,
     onSuccess: (data) => {
       // Invalidate order list
       queryClient.invalidateQueries({
-        queryKey: queryKeys.orders(storeId).lists(),
+        queryKey: queryKeys.orders(storeSlug).lists(),
       });
       // Invalidate this order's detail
       queryClient.invalidateQueries({
-        queryKey: queryKeys.orders(storeId).detail(orderId),
+        queryKey: queryKeys.orders(storeSlug).detail(orderId),
       });
       logger.info('Order status updated', { orderId, status: data.status });
       options?.onSuccess?.(data);

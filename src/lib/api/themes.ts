@@ -19,7 +19,7 @@ import type {
  * Fetch paginated themes list.
  */
 export async function getThemes(
-  storeId: string,
+  storeSlug: string,
   filters: ThemeFilters,
 ): Promise<PaginatedResponse<ThemeListItem>> {
   const params: Record<string, string | number> = {};
@@ -31,20 +31,20 @@ export async function getThemes(
   }
 
   return clientApi.get<PaginatedResponse<ThemeListItem>>(
-    API_ROUTES.store(storeId).themes().list(),
+    API_ROUTES.store(storeSlug).themes().list(),
     { params },
   );
 }
 
 /**
- * Fetch single theme by ID with full details.
+ * Fetch single theme by identifier with full details.
  */
 export async function getThemeDetail(
-  storeId: string,
-  themeId: string,
+  storeSlug: string,
+  themeSlug: string,
 ): Promise<Theme> {
   const response = await clientApi.get<ApiResponse<Theme>>(
-    API_ROUTES.store(storeId).themes().detail(themeId),
+    API_ROUTES.store(storeSlug).themes().detail(themeSlug),
   );
   return response.data;
 }
@@ -53,11 +53,11 @@ export async function getThemeDetail(
  * Create a new theme.
  */
 export async function createTheme(
-  storeId: string,
+  storeSlug: string,
   payload: CreateThemePayload,
 ): Promise<Theme> {
   const response = await clientApi.post<ApiResponse<Theme>>(
-    API_ROUTES.store(storeId).themes().create(),
+    API_ROUTES.store(storeSlug).themes().create(),
     payload,
   );
   return response.data;
@@ -67,12 +67,12 @@ export async function createTheme(
  * Update an existing theme.
  */
 export async function updateTheme(
-  storeId: string,
-  themeId: string,
+  storeSlug: string,
+  themeSlug: string,
   payload: UpdateThemePayload,
 ): Promise<Theme> {
   const response = await clientApi.put<ApiResponse<Theme>>(
-    API_ROUTES.store(storeId).themes().update(themeId),
+    API_ROUTES.store(storeSlug).themes().update(themeSlug),
     payload,
   );
   return response.data;
@@ -82,21 +82,21 @@ export async function updateTheme(
  * Delete a theme.
  */
 export async function deleteTheme(
-  storeId: string,
-  themeId: string,
+  storeSlug: string,
+  themeSlug: string,
 ): Promise<void> {
-  await clientApi.delete(API_ROUTES.store(storeId).themes().delete(themeId));
+  await clientApi.delete(API_ROUTES.store(storeSlug).themes().delete(themeSlug));
 }
 
 /**
  * Publish a theme (makes it active).
  */
 export async function publishTheme(
-  storeId: string,
-  themeId: string,
+  storeSlug: string,
+  themeSlug: string,
 ): Promise<Theme> {
   const response = await clientApi.post<ApiResponse<Theme>>(
-    API_ROUTES.store(storeId).themes().publish(themeId),
+    API_ROUTES.store(storeSlug).themes().publish(themeSlug),
   );
   return response.data;
 }
@@ -105,12 +105,12 @@ export async function publishTheme(
  * Duplicate a theme with a new name.
  */
 export async function duplicateTheme(
-  storeId: string,
-  themeId: string,
+  storeSlug: string,
+  themeSlug: string,
   payload: DuplicateThemePayload,
 ): Promise<Theme> {
   const response = await clientApi.post<ApiResponse<Theme>>(
-    API_ROUTES.store(storeId).themes().duplicate(themeId),
+    API_ROUTES.store(storeSlug).themes().duplicate(themeSlug),
     payload,
   );
   return response.data;

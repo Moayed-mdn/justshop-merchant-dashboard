@@ -17,7 +17,7 @@ import type {
  * Fetch paginated assets list.
  */
 export async function getAssets(
-  storeId: string,
+  storeSlug: string,
   filters: AssetFilters,
 ): Promise<PaginatedResponse<StoreAsset>> {
   const params: Record<string, string | number> = {};
@@ -29,7 +29,7 @@ export async function getAssets(
   }
 
   return clientApi.get<PaginatedResponse<StoreAsset>>(
-    API_ROUTES.store(storeId).assets().list(),
+    API_ROUTES.store(storeSlug).assets().list(),
     { params },
   );
 }
@@ -39,7 +39,7 @@ export async function getAssets(
  * Sends multipart/form-data with file and metadata.
  */
 export async function uploadAsset(
-  storeId: string,
+  storeSlug: string,
   payload: UploadAssetPayload,
 ): Promise<StoreAsset> {
   const formData = new FormData();
@@ -50,7 +50,7 @@ export async function uploadAsset(
   }
 
   const response = await clientApi.post<ApiResponse<StoreAsset>>(
-    API_ROUTES.store(storeId).assets().upload(),
+    API_ROUTES.store(storeSlug).assets().upload(),
     formData,
     {
       headers: {
@@ -65,12 +65,12 @@ export async function uploadAsset(
  * Update an existing asset's metadata.
  */
 export async function updateAsset(
-  storeId: string,
+  storeSlug: string,
   assetId: string,
   payload: UpdateAssetPayload,
 ): Promise<StoreAsset> {
   const response = await clientApi.patch<ApiResponse<StoreAsset>>(
-    API_ROUTES.store(storeId).assets().update(assetId),
+    API_ROUTES.store(storeSlug).assets().update(assetId),
     payload,
   );
   return response.data;
@@ -80,8 +80,8 @@ export async function updateAsset(
  * Delete an asset.
  */
 export async function deleteAsset(
-  storeId: string,
+  storeSlug: string,
   assetId: string,
 ): Promise<void> {
-  await clientApi.delete(API_ROUTES.store(storeId).assets().delete(assetId));
+  await clientApi.delete(API_ROUTES.store(storeSlug).assets().delete(assetId));
 }

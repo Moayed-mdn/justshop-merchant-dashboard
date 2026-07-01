@@ -41,7 +41,7 @@ export function MobileNav({ nav }: MobileNavProps) {
         {nav ? (
           React.isValidElement(nav) ? React.cloneElement(nav, { isCollapsed: false } as any) : nav
         ) : (
-          activeStore ? <SidebarNav storeId={String(activeStore.id)} isCollapsed={false} /> : null
+          activeStore ? <SidebarNav isCollapsed={false} /> : null
         )}
       </SheetContent>
     </Sheet>

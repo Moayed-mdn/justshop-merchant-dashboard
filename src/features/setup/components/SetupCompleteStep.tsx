@@ -4,17 +4,19 @@ import { CheckCircle2, ChevronRight, LayoutDashboard, Package, Palette } from 'l
 import { useRouter } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
-
-const SETUP_STEPS = [
-  { num: 1, label: 'Verify email' },
-  { num: 2, label: 'Create store' },
-  { num: 3, label: 'Setup' },
-] as const;
+import { useTranslations } from 'next-intl';
 
 function SetupProgress() {
+  const t = useTranslations('setup.complete.steps');
+  const setupSteps = [
+    { num: 1, label: t('verifyEmail') },
+    { num: 2, label: t('createStore') },
+    { num: 3, label: t('setup') },
+  ] as const;
+  
   return (
     <nav aria-label="Setup progress" className="mb-8 flex items-center justify-center gap-3">
-      {SETUP_STEPS.map((step, idx) => (
+      {setupSteps.map((step, idx) => (
         <span key={step.num} className="flex items-center gap-3">
           {idx > 0 && <span className="h-px w-6 bg-primary" />}
           <span
@@ -39,38 +41,32 @@ function SetupProgress() {
   );
 }
 
-interface ActionCard {
-  icon: typeof Package;
-  title: string;
-  description: string;
-  href: string;
-}
-
-const ACTIONS: ActionCard[] = [
-  {
-    icon: Package,
-    title: 'Add your first product',
-    description: 'Start building your catalog with a product listing.',
-    href: ROUTES.merchant.products.new(),
-  },
-  {
-    icon: Palette,
-    title: 'Customize your storefront',
-    description: 'Choose a theme and style that fits your brand.',
-    href: ROUTES.merchant.theme.overview(),
-  },
-  {
-    icon: LayoutDashboard,
-    title: 'Go to dashboard',
-    description: 'View orders, manage products, and explore your workspace.',
-    href: ROUTES.merchant.dashboard(),
-  },
-];
-
 export function SetupCompleteStep() {
   const router = useRouter();
   const bootstrap = useBootstrapStore((state) => state.bootstrap);
   const storeName = bootstrap?.active_store?.name ?? bootstrap?.stores?.[0]?.name ?? 'your store';
+  const t = useTranslations('setup.complete');
+
+  const actions = [
+    {
+      icon: Package,
+      title: t('addFirstProduct'),
+      description: t('addFirstProductDesc'),
+      href: ROUTES.merchant.products.new(),
+    },
+    {
+      icon: Palette,
+      title: t('customizeStorefront'),
+      description: t('customizeStorefrontDesc'),
+      href: ROUTES.merchant.theme.overview(),
+    },
+    {
+      icon: LayoutDashboard,
+      title: t('goToDashboard'),
+      description: t('goToDashboardDesc'),
+      href: ROUTES.merchant.dashboard(),
+    },
+  ];
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
@@ -84,15 +80,15 @@ export function SetupCompleteStep() {
               <CheckCircle2 className="h-14 w-14 text-green-500" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold">{storeName} is ready!</h1>
+          <h1 className="text-2xl font-bold">{t('title', { storeName })}</h1>
           <p className="mx-auto max-w-sm text-muted-foreground">
-            Your store has been set up and is ready for business. What would you like to do first?
+            {t('description')}
           </p>
         </div>
 
         {/* Action cards */}
         <div className="space-y-3">
-          {ACTIONS.map((action) => {
+          {actions.map((action) => {
             const Icon = action.icon;
             return (
               <button
@@ -116,13 +112,13 @@ export function SetupCompleteStep() {
 
         {/* Secondary link */}
         <p className="text-center text-sm text-muted-foreground">
-          Or{' '}
+          {t('or')}{' '}
           <button
             type="button"
             onClick={() => router.push(ROUTES.merchant.settings())}
             className="font-medium text-primary underline underline-offset-2 hover:text-primary/80"
           >
-            explore your store settings
+            {t('exploreStoreSettings')}
           </button>
         </p>
       </div>

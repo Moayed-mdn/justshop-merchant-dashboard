@@ -19,7 +19,7 @@ export function useSwitchStore() {
 
   return useMutation({
     mutationKey: ['store-switch'],
-    mutationFn: (storeId: number | string) => switchStore(storeId),
+    mutationFn: (storeSlug: string) => switchStore(storeSlug),
     onMutate: async () => {
       await queryClient.cancelQueries({
         predicate: (query) =>

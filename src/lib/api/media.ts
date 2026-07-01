@@ -12,7 +12,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
  * Upload an image to a specific context
  */
 export async function uploadImage(
-  storeId: string,
+  storeSlug: string,
   context: MediaContext,
   file: File
 ): Promise<UploadResponse> {
@@ -21,7 +21,7 @@ export async function uploadImage(
   formData.append('image', file);
 
   const response = await fetch(
-    `${API_BASE}/api/v1/merchant/stores/${storeId}/media/upload`,
+    `${API_BASE}/api/v1/merchant/stores/${storeSlug}/media/upload`,
     {
       method: 'POST',
       body: formData,
@@ -65,12 +65,12 @@ export async function uploadImage(
  * Delete an image from a specific context
  */
 export async function deleteImage(
-  storeId: string,
+  storeSlug: string,
   context: MediaContext,
   path: string
 ): Promise<void> {
   const response = await fetch(
-    `${API_BASE}/api/v1/merchant/stores/${storeId}/media/delete`,
+    `${API_BASE}/api/v1/merchant/stores/${storeSlug}/media/delete`,
     {
       method: 'DELETE',
       credentials: 'include',

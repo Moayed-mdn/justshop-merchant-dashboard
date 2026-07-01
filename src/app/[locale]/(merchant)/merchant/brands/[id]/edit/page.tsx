@@ -7,6 +7,7 @@ import { useBrandDetail } from '@/hooks/brands/useBrandDetail';
 import { useTranslations } from 'next-intl';
 import { EditBrandSkeleton } from '@/features/dashboard/brands/EditBrandSkeleton';
 import EditBrandContent from '@/features/dashboard/brands/EditBrandContent';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Edit Brand Page.
@@ -18,9 +19,9 @@ export default function MerchantBrandEditPage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('brands');
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
-  const { data: brand, isLoading, error } = useBrandDetail(storeId, brandId);
+  const { data: brand, isLoading, error } = useBrandDetail(storeSlug, brandId);
 
   if (!activeStore) {
     return (
@@ -28,10 +29,7 @@ export default function MerchantBrandEditPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to edit a brand."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -50,7 +48,7 @@ export default function MerchantBrandEditPage() {
 
   return (
     <div className="space-y-6">
-      <EditBrandContent storeId={storeId} brandId={brandId} />
+      <EditBrandContent storeSlug={storeSlug} brandId={brandId} />
     </div>
   );
 }

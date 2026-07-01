@@ -16,12 +16,12 @@ import MenuItemDialog from './MenuItemDialog';
 import type { NavigationMenuItemView } from '@/types/navigation';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   menuId: string;
   items: NavigationMenuItemView[];
 }
 
-export default function MenuItemsTree({ storeId, menuId, items }: Props) {
+export default function MenuItemsTree({ storeSlug, menuId, items }: Props) {
   const t = useTranslations('theme.navigation.items');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [parentIdForNew, setParentIdForNew] = useState<number | null>(null);
@@ -48,7 +48,7 @@ export default function MenuItemsTree({ storeId, menuId, items }: Props) {
         </div>
 
         <MenuItemDialog
-          storeId={storeId}
+          storeSlug={storeSlug}
           menuId={menuId}
           parentId={parentIdForNew}
           open={isAddDialogOpen}
@@ -72,7 +72,7 @@ export default function MenuItemsTree({ storeId, menuId, items }: Props) {
           <MenuItemNode
             key={item.id}
             item={item}
-            storeId={storeId}
+            storeSlug={storeSlug}
             menuId={menuId}
             onAddChild={handleAddChildItem}
           />
@@ -81,7 +81,7 @@ export default function MenuItemsTree({ storeId, menuId, items }: Props) {
 
       {/* Add/Edit Dialog */}
       <MenuItemDialog
-        storeId={storeId}
+        storeSlug={storeSlug}
         menuId={menuId}
         parentId={parentIdForNew}
         open={isAddDialogOpen}

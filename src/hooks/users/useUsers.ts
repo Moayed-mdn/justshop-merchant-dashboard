@@ -13,14 +13,14 @@ import type { PaginatedResponse, ApiError } from '@/types/api';
 import { mapUserListItem } from '@/lib/mappers/users';
 import { selectPaginatedList } from '@/lib/mappers/pagination';
 
-export function useUsers(storeId: string, filters: UserFilters) {
+export function useUsers(storeSlug: string, filters: UserFilters) {
   return useQuery<
     PaginatedResponse<UserListItem>,
     ApiError,
     PaginatedResponse<UserListItemView>
   >({
-    queryKey: queryKeys.users(storeId).list(filters as unknown as Record<string, unknown>),
-    queryFn: () => getUsers(storeId, filters),
+    queryKey: queryKeys.users(storeSlug).list(filters as unknown as Record<string, unknown>),
+    queryFn: () => getUsers(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
     select: selectPaginatedList(mapUserListItem),
   });

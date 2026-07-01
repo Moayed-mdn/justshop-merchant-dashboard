@@ -30,7 +30,7 @@ import type { Locale, ProductStatus, ProductTranslation } from '@/types/product'
 import type { CreateProductContentData } from '@/schemas/products';
 
 interface Props {
-  storeId:          string;
+  storeSlug:          string;
   availableLocales: Locale[];
   content:          CreateProductContentData;
   tags:             number[];
@@ -39,7 +39,7 @@ interface Props {
 }
 
 export function CreateProductContentStep({
-  storeId,
+  storeSlug,
   availableLocales,
   content,
   tags,
@@ -65,7 +65,7 @@ export function CreateProductContentStep({
 
           {/* Category — captures resolved name alongside ID */}
           <CategorySelect
-            storeId={storeId}
+            storeSlug={storeSlug}
             value={content.categoryId}
             onChange={({ id, name }) =>
               onChange({ ...content, categoryId: id, categoryName: name })
@@ -74,7 +74,7 @@ export function CreateProductContentStep({
 
           {/* Brand — captures resolved name alongside ID */}
           <BrandSelect
-            storeId={storeId}
+            storeSlug={storeSlug}
             value={content.brandId}
             onChange={({ id, name }) =>
               onChange({ ...content, brandId: id, brandName: name })
@@ -83,7 +83,7 @@ export function CreateProductContentStep({
 
           {/* Tags */}
           <TagSelect
-            storeId={storeId}
+            storeSlug={storeSlug}
             value={tags}
             onChange={onTagsChange}
           />

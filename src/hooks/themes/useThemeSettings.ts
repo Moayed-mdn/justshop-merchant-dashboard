@@ -81,28 +81,26 @@ export interface TypographySettings {
   letterSpacing: 'tight' | 'normal' | 'wide';
 }
 
-export function useUpdateThemeSettings(storeId: number, themeId: number) {
+export function useUpdateThemeSettings(storeSlug: string, themeSlug: string) {
   const queryClient = useQueryClient();
-  const storeIdString = String(storeId);
-  const themeIdString = String(themeId);
 
   return useMutation<Theme, ApiError, UpdateThemeSettingsPayload>({
     mutationFn: async (payload: UpdateThemeSettingsPayload) => {
       const response = await apiClient.put<{ data: Theme }>(
-        API_ROUTES.store(storeIdString).themes().updateSettings(themeIdString),
+        API_ROUTES.store(storeSlug).themes().updateSettings(themeSlug),
         payload
       );
       return response.data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.themes(storeIdString).lists(),
+        queryKey: queryKeys.themes(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.themes(storeIdString).detail(themeIdString),
+        queryKey: queryKeys.themes(storeSlug).detail(themeSlug),
       });
       queryClient.setQueryData(
-        queryKeys.themes(storeIdString).detail(themeIdString),
+        queryKeys.themes(storeSlug).detail(themeSlug),
         data
       );
     },

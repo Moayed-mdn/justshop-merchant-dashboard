@@ -16,10 +16,10 @@ import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface ProductsSectionContentProps {
   index: number;
-  storeId: string;
+  storeSlug: string;
 }
 
-export function ProductsSectionContent({ index, storeId }: ProductsSectionContentProps) {
+export function ProductsSectionContent({ index, storeSlug }: ProductsSectionContentProps) {
   const t = useTranslations('cmsPages');
   const { watch, setValue } = useFormContext<MarketingPageFormValues>();
 
@@ -40,7 +40,7 @@ export function ProductsSectionContent({ index, storeId }: ProductsSectionConten
       <div className="space-y-2">
         <Label>{t('sections.editors.products.selectProducts')}</Label>
         <ProductPicker
-          storeId={storeId}
+          storeSlug={storeSlug}
           selectedIds={productIds}
           onChange={(ids) =>
             setValue(`${basePath}.content.product_ids` as any, ids, { shouldDirty: true })

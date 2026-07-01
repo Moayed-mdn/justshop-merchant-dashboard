@@ -22,16 +22,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GenericImageUploader } from '@/components/media/GenericImageUploader';
+import { ROUTES } from '@/config/routes';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   brandId: string;
   brand:   BrandDetailView;
 }
 
-export default function EditBrandForm({ storeId, brandId, brand }: Props) {
+export default function EditBrandForm({ storeSlug, brandId, brand }: Props) {
   const t      = useTranslations('brands');
-  const update = useUpdateBrand(storeId, brandId);
+  const update = useUpdateBrand(storeSlug, brandId);
   const router = useRouter();
 
   const {
@@ -92,7 +93,7 @@ export default function EditBrandForm({ storeId, brandId, brand }: Props) {
             type="button"
             onClick={() => {
               bypassNextNavigation();
-              router.back();
+              router.push(ROUTES.merchant.brands.list());
             }}
           >
             <ArrowLeft className="h-4 w-4" />
@@ -153,7 +154,7 @@ export default function EditBrandForm({ storeId, brandId, brand }: Props) {
                 value={logoUrl ?? ''}
                 onChange={(path) => setValue('logo_url', path || null, { shouldDirty: true })}
                 context="brands"
-                storeId={storeId}
+                storeSlug={storeSlug}
                 label={t('form.fields.logoUrl')}
               />
               {errors.logo_url && (

@@ -10,7 +10,7 @@
  * Reason: 'sync Zustand theme state to DOM class for Tailwind dark mode'
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useUiStore, selectTheme } from '@/stores/uiStore';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,11 @@ export function ThemeToggle() {
   const t = useTranslations('theme');
   const theme = useUiStore(selectTheme);
   const setTheme = useUiStore((state) => state.setTheme);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Sync Zustand theme state to DOM class for Tailwind dark mode
   useEffect(() => {
@@ -51,10 +56,12 @@ export function ThemeToggle() {
       onClick={handleToggle}
       aria-label={t('toggle')}
     >
-      {theme === 'dark' ? (
+      {mounted && theme === 'dark' ? (
         <Sun className="h-4 w-4" aria-hidden="true" />
-      ) : (
+      ) : mounted ? (
         <Moon className="h-4 w-4" aria-hidden="true" />
+      ) : (
+        <span className="block h-4 w-4" aria-hidden="true" />
       )}
     </Button>
   );

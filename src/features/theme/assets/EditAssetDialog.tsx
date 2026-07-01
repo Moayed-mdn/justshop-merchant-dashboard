@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import type { StoreAssetView, AssetType } from '@/types/asset';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 interface EditAssetDialogProps {
   asset: StoreAssetView;
@@ -38,11 +39,11 @@ interface EditAssetDialogProps {
 export function EditAssetDialog({ asset, onClose }: EditAssetDialogProps) {
   const t = useTranslations();
   const activeStore = useBootstrapStore((state) => state.activeStore);
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
   const [assetType, setAssetType] = useState<AssetType>(asset.assetType);
   const [altText, setAltText] = useState(asset.altText || '');
 
-  const updateMutation = useUpdateAsset(activeStoreId!);
+  const updateMutation = useUpdateAsset(activeStoreSlug!);
 
   const handleSave = async () => {
     try {

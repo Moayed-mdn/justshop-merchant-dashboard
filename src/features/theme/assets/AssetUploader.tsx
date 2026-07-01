@@ -30,6 +30,7 @@ import {
 import { Upload, X, ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import type { AssetType } from '@/types/asset';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 interface AssetUploaderProps {
   onClose: () => void;
@@ -44,14 +45,14 @@ export function AssetUploader({
 }: AssetUploaderProps) {
   const t = useTranslations();
   const activeStore = useBootstrapStore((state) => state.activeStore);
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [assetType, setAssetType] = useState<AssetType>(defaultType);
   const [altText, setAltText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
 
-  const uploadMutation = useUploadAsset(activeStoreId!);
+  const uploadMutation = useUploadAsset(activeStoreSlug!);
 
   const handleFileSelect = useCallback((selectedFile: File) => {
     // Validate file type

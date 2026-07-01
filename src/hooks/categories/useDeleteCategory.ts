@@ -14,20 +14,20 @@ import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
 import type { ApiError } from '@/types/api';
 
-export function useDeleteCategory(storeId: string, categoryId: string) {
+export function useDeleteCategory(storeSlug: string, categoryId: string) {
   const queryClient = useQueryClient();
   const router      = useRouter();
   const t           = useTranslations('categories');
 
   return useMutation<void, ApiError, void>({
-    mutationFn: () => deleteCategory(storeId, categoryId),
+    mutationFn: () => deleteCategory(storeSlug, categoryId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.categories(storeId).lists(),
+        queryKey: queryKeys.categories(storeSlug).lists(),
       });
       queryClient.removeQueries({
-        queryKey: queryKeys.categories(storeId).detail(categoryId),
+        queryKey: queryKeys.categories(storeSlug).detail(categoryId),
       });
       toast.success(t('form.deleteSuccess'));
       router.push(ROUTES.merchant.categories.list());

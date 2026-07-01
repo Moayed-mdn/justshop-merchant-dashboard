@@ -47,10 +47,6 @@ export const ROUTES = {
    *
    * IMPORTANT RULE:
    * Merchant-facing UI MUST link to /merchant/* routes ONLY.
-   * ROUTES.store(storeId) is LEGACY and reserved for compatibility fallback.
-   *
-   * Do NOT add new navigation links using ROUTES.store().
-   * If a merchant page needs a route, add it here under the appropriate section.
    */
   merchant: {
     dashboard:  () => '/merchant/dashboard' as const,
@@ -88,7 +84,21 @@ export const ROUTES = {
       assets: {
         list: () => '/merchant/theme/assets' as const,
       },
-      settings: (themeId: string) => `/merchant/themes/${themeId}/settings` as const,
+      settings: (themeIdentifier: string) => `/merchant/themes/${themeIdentifier}/settings` as const,
+      systemTemplates: {
+          list: (themeIdentifier: string) => `/merchant/themes/${themeIdentifier}/system-templates`,
+          edit: (themeIdentifier: string, templateId: string) =>
+            `/merchant/themes/${themeIdentifier}/system-templates/${templateId}`,
+        },
+        sectionGroups: {
+          list: (themeIdentifier: string) => `/merchant/themes/${themeIdentifier}/section-groups`,
+          edit: (themeIdentifier: string, groupId: string) =>
+            `/merchant/themes/${themeIdentifier}/section-groups/${groupId}`,
+        },
+        // Backward compatibility aliases
+        sectionGroupManager: (themeIdentifier: string) => `/merchant/themes/${themeIdentifier}/section-groups`,
+        sectionGroupEditor: (themeIdentifier: string, groupId: string) =>
+          `/merchant/themes/${themeIdentifier}/section-groups/${groupId}`,
     },
     navigation: {
       list: () => '/merchant/navigation' as const,
@@ -102,7 +112,7 @@ export const ROUTES = {
     stores: {
       list:     () => '/merchant/stores' as const,
       create:   () => '/merchant/stores/create' as const,
-      settings: (storeId: string) => `/merchant/stores/${storeId}/settings` as const,
+      settings: (storeSlug: string) => `/merchant/stores/${storeSlug}/settings` as const,
     },
     billing: {
       dashboard: () => '/merchant/billing' as const,
@@ -116,50 +126,8 @@ export const ROUTES = {
       },
     },
     settings:   () => '/merchant/settings' as const,
+    shipping:   () => '/merchant/shipping' as const,
   },
-  store: (storeId: string) => ({
-    dashboard: () => `/stores/${storeId}/dashboard` as const,
-
-    users: {
-      list:   () => `/stores/${storeId}/users` as const,
-      detail: (userId: string) =>
-        `/stores/${storeId}/users/${userId}` as const,
-    },
-
-    products: {
-      list:   () => `/stores/${storeId}/products` as const,
-      new:    () => `/stores/${storeId}/products/new` as const,
-      edit:   (productId: string) =>
-        `/stores/${storeId}/products/${productId}` as const,
-    },
-
-    orders: {
-      list:   () => `/stores/${storeId}/orders` as const,
-      detail: (orderId: string) =>
-        `/stores/${storeId}/orders/${orderId}` as const,
-    },
-
-    categories: {
-      list: () => `/stores/${storeId}/categories` as const,
-      new:  () => `/stores/${storeId}/categories/new` as const,
-      edit: (categoryId: string) =>
-        `/stores/${storeId}/categories/${categoryId}/edit` as const,
-    },
-
-    brands: {
-      list: () => `/stores/${storeId}/brands` as const,
-      new:  () => `/stores/${storeId}/brands/new` as const,
-      edit: (brandId: string) =>
-        `/stores/${storeId}/brands/${brandId}/edit` as const,
-    },
-
-    tags: {
-      list: () => `/stores/${storeId}/tags` as const,
-      new:  () => `/stores/${storeId}/tags/new` as const,
-      edit: (tagId: string) =>
-        `/stores/${storeId}/tags/${tagId}/edit` as const,
-    },
-  }),
 } as const;
 
 export const API_ROUTES = {
@@ -185,11 +153,11 @@ export const API_ROUTES = {
     stores: {
       list:               () => '/api/v1/merchant/stores',
       create:             () => '/api/v1/merchant/stores',
-      detail: (storeId: string) => `/api/v1/merchant/stores/${storeId}`,
-      update: (storeId: string) => `/api/v1/merchant/stores/${storeId}`,
+      detail: (storeSlug: string) => `/api/v1/merchant/stores/${storeSlug}`,
+      update: (storeSlug: string) => `/api/v1/merchant/stores/${storeSlug}`,
       slugCheck: (slug: string) => `/api/v1/merchant/stores/slug-check?slug=${slug}`,
-      provisioningStatus: (storeId: string) =>
-        `/api/v1/merchant/stores/${storeId}/provisioning-status`,
+      provisioningStatus: (storeSlug: string) =>
+        `/api/v1/merchant/stores/${storeSlug}/provisioning-status`,
     },
   },
 
@@ -222,10 +190,10 @@ export const API_ROUTES = {
 
   // ── STOREFRONT CONTEXT ────────────────────────────────────────
   storefront: {
-    stores: (storeId: string) => ({
-      products:           () => `/api/v1/storefront/stores/${storeId}/products`,
-      cart:               () => `/api/v1/storefront/stores/${storeId}/cart`,
-      checkout:           () => `/api/v1/storefront/stores/${storeId}/checkout`,
+    stores: (storeSlug: string) => ({
+      products:           () => `/api/v1/storefront/stores/${storeSlug}/products`,
+      cart:               () => `/api/v1/storefront/stores/${storeSlug}/cart`,
+      checkout:           () => `/api/v1/storefront/stores/${storeSlug}/checkout`,
     }),
   },
 
@@ -244,149 +212,200 @@ export const API_ROUTES = {
 
   // ── MERCHANT OPERATIONAL (STORE-SCOPED) ───────────────────────
   // These are for the merchant dashboard operating WITHIN a store context
-  store: (storeId: string) => ({
+  store: (storeSlug: string) => ({
     dashboard: () => ({
-      stats:        () => `/api/v1/merchant/stores/${storeId}/dashboard/stats`,
-      recentOrders: () => `/api/v1/merchant/stores/${storeId}/dashboard/recent-orders`,
-      topProducts:  () => `/api/v1/merchant/stores/${storeId}/dashboard/top-products`,
+      stats:        () => `/api/v1/merchant/stores/${storeSlug}/dashboard/stats`,
+      recentOrders: () => `/api/v1/merchant/stores/${storeSlug}/dashboard/recent-orders`,
+      topProducts:  () => `/api/v1/merchant/stores/${storeSlug}/dashboard/top-products`,
     }),
     products: () => ({
-      list:    () => `/api/v1/merchant/stores/${storeId}/products`,
+      list:    () => `/api/v1/merchant/stores/${storeSlug}/products`,
       detail:  (productId: string) =>
-        `/api/v1/merchant/stores/${storeId}/products/${productId}`,
+        `/api/v1/merchant/stores/${storeSlug}/products/${productId}`,
       restore: (productId: string) =>
-        `/api/v1/merchant/stores/${storeId}/products/${productId}/restore`,
+        `/api/v1/merchant/stores/${storeSlug}/products/${productId}/restore`,
     }),
     orders: () => ({
-      list:         () => `/api/v1/merchant/stores/${storeId}/orders`,
+      list:         () => `/api/v1/merchant/stores/${storeSlug}/orders`,
       detail:       (orderId: string) =>
-        `/api/v1/merchant/stores/${storeId}/orders/${orderId}`,
+        `/api/v1/merchant/stores/${storeSlug}/orders/${orderId}`,
       updateStatus: (orderId: string) =>
-        `/api/v1/merchant/stores/${storeId}/orders/${orderId}/status`,
+        `/api/v1/merchant/stores/${storeSlug}/orders/${orderId}/status`,
     }),
     categories: () => ({
-      list:    () => `/api/v1/merchant/stores/${storeId}/categories`,
+      list:    () => `/api/v1/merchant/stores/${storeSlug}/categories`,
       detail:  (categoryId: string) =>
-        `/api/v1/merchant/stores/${storeId}/categories/${categoryId}`,
-      create:  () => `/api/v1/merchant/stores/${storeId}/categories`,
+        `/api/v1/merchant/stores/${storeSlug}/categories/${categoryId}`,
+      create:  () => `/api/v1/merchant/stores/${storeSlug}/categories`,
       update:  (categoryId: string) =>
-        `/api/v1/merchant/stores/${storeId}/categories/${categoryId}`,
+        `/api/v1/merchant/stores/${storeSlug}/categories/${categoryId}`,
       delete:  (categoryId: string) =>
-        `/api/v1/merchant/stores/${storeId}/categories/${categoryId}`,
+        `/api/v1/merchant/stores/${storeSlug}/categories/${categoryId}`,
       restore: (categoryId: string) =>
-        `/api/v1/merchant/stores/${storeId}/categories/${categoryId}/restore`,
+        `/api/v1/merchant/stores/${storeSlug}/categories/${categoryId}/restore`,
     }),
     brands: () => ({
-      list:    () => `/api/v1/merchant/stores/${storeId}/brands`,
+      list:    () => `/api/v1/merchant/stores/${storeSlug}/brands`,
       detail:  (brandId: string) =>
-        `/api/v1/merchant/stores/${storeId}/brands/${brandId}`,
-      create:  () => `/api/v1/merchant/stores/${storeId}/brands`,
+        `/api/v1/merchant/stores/${storeSlug}/brands/${brandId}`,
+      create:  () => `/api/v1/merchant/stores/${storeSlug}/brands`,
       update:  (brandId: string) =>
-        `/api/v1/merchant/stores/${storeId}/brands/${brandId}`,
+        `/api/v1/merchant/stores/${storeSlug}/brands/${brandId}`,
       delete:  (brandId: string) =>
-        `/api/v1/merchant/stores/${storeId}/brands/${brandId}`,
+        `/api/v1/merchant/stores/${storeSlug}/brands/${brandId}`,
       restore: (brandId: string) =>
-        `/api/v1/merchant/stores/${storeId}/brands/${brandId}/restore`,
+        `/api/v1/merchant/stores/${storeSlug}/brands/${brandId}/restore`,
     }),
     tags: () => ({
-      list:    () => `/api/v1/merchant/stores/${storeId}/tags`,
+      list:    () => `/api/v1/merchant/stores/${storeSlug}/tags`,
       detail:  (tagId: string) =>
-        `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
-      create:  () => `/api/v1/merchant/stores/${storeId}/tags`,
+        `/api/v1/merchant/stores/${storeSlug}/tags/${tagId}`,
+      create:  () => `/api/v1/merchant/stores/${storeSlug}/tags`,
       update:  (tagId: string) =>
-        `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
+        `/api/v1/merchant/stores/${storeSlug}/tags/${tagId}`,
       delete:  (tagId: string) =>
-        `/api/v1/merchant/stores/${storeId}/tags/${tagId}`,
+        `/api/v1/merchant/stores/${storeSlug}/tags/${tagId}`,
     }),
     navigation: () => ({
-      list:    () => `/api/v1/merchant/stores/${storeId}/navigation`,
+      list:    () => `/api/v1/merchant/stores/${storeSlug}/navigation`,
       detail:  (menuId: string) =>
-        `/api/v1/merchant/stores/${storeId}/navigation/${menuId}`,
-      create:  () => `/api/v1/merchant/stores/${storeId}/navigation`,
+        `/api/v1/merchant/stores/${storeSlug}/navigation/${menuId}`,
+      create:  () => `/api/v1/merchant/stores/${storeSlug}/navigation`,
       update:  (menuId: string) =>
-        `/api/v1/merchant/stores/${storeId}/navigation/${menuId}`,
+        `/api/v1/merchant/stores/${storeSlug}/navigation/${menuId}`,
       delete:  (menuId: string) =>
-        `/api/v1/merchant/stores/${storeId}/navigation/${menuId}`,
+        `/api/v1/merchant/stores/${storeSlug}/navigation/${menuId}`,
       items: (menuId: string) => ({
         create: () =>
-          `/api/v1/merchant/stores/${storeId}/navigation/${menuId}/items`,
+          `/api/v1/merchant/stores/${storeSlug}/navigation/${menuId}/items`,
         update: (itemId: string) =>
-          `/api/v1/merchant/stores/${storeId}/navigation/${menuId}/items/${itemId}`,
+          `/api/v1/merchant/stores/${storeSlug}/navigation/${menuId}/items/${itemId}`,
         delete: (itemId: string) =>
-          `/api/v1/merchant/stores/${storeId}/navigation/${menuId}/items/${itemId}`,
+          `/api/v1/merchant/stores/${storeSlug}/navigation/${menuId}/items/${itemId}`,
         reorder: () =>
-          `/api/v1/merchant/stores/${storeId}/navigation/${menuId}/items/reorder`,
+          `/api/v1/merchant/stores/${storeSlug}/navigation/${menuId}/items/reorder`,
       }),
     }),
     assets: () => ({
-      list:   () => `/api/v1/merchant/stores/${storeId}/assets`,
-      upload: () => `/api/v1/merchant/stores/${storeId}/assets`,
+      list:   () => `/api/v1/merchant/stores/${storeSlug}/assets`,
+      upload: () => `/api/v1/merchant/stores/${storeSlug}/assets`,
       update: (assetId: string) =>
-        `/api/v1/merchant/stores/${storeId}/assets/${assetId}`,
+        `/api/v1/merchant/stores/${storeSlug}/assets/${assetId}`,
       delete: (assetId: string) =>
-        `/api/v1/merchant/stores/${storeId}/assets/${assetId}`,
+        `/api/v1/merchant/stores/${storeSlug}/assets/${assetId}`,
     }),
     themes: () => ({
-      list:   () => `/api/v1/merchant/stores/${storeId}/themes`,
-      detail: (themeId: string) =>
-        `/api/v1/merchant/stores/${storeId}/themes/${themeId}`,
-      create: () => `/api/v1/merchant/stores/${storeId}/themes`,
-      update: (themeId: string) =>
-        `/api/v1/merchant/stores/${storeId}/themes/${themeId}`,
-      delete: (themeId: string) =>
-        `/api/v1/merchant/stores/${storeId}/themes/${themeId}`,
-      publish: (themeId: string) =>
-        `/api/v1/merchant/stores/${storeId}/themes/${themeId}/publish`,
-      duplicate: (themeId: string) =>
-        `/api/v1/merchant/stores/${storeId}/themes/${themeId}/duplicate`,
-      updateSettings: (themeId: string) =>
-        `/api/v1/merchant/stores/${storeId}/themes/${themeId}/settings`,
+      list:   () => `/api/v1/merchant/stores/${storeSlug}/themes`,
+      detail: (themeSlug: string) =>
+        `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}`,
+      create: () => `/api/v1/merchant/stores/${storeSlug}/themes`,
+      update: (themeSlug: string) =>
+        `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}`,
+      delete: (themeSlug: string) =>
+        `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}`,
+      publish: (themeSlug: string) =>
+        `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/publish`,
+      duplicate: (themeSlug: string) =>
+        `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/duplicate`,
+      updateSettings: (themeSlug: string) =>
+        `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/settings`,
+      systemTemplates: {
+        list: (themeSlug: string) =>
+          `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/system-templates`,
+        detail: (themeSlug: string, templateId: string) =>
+          `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/system-templates/${templateId}`,
+        update: (themeSlug: string, templateId: string) =>
+          `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/system-templates/${templateId}`,
+      },
+      sections: (themeSlug: string) => ({
+        blocks: (sectionId: string) => ({
+          list: () =>
+            `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/sections/${sectionId}/blocks`,
+          update: (blockId: string) =>
+            `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/sections/${sectionId}/blocks/${blockId}`,
+        }),
+        blockInstances: (sectionId: string) => ({
+          list: () =>
+            `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/sections/${sectionId}/block-instances`,
+          create: () =>
+            `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/sections/${sectionId}/block-instances`,
+          detail: (blockInstanceId: string) =>
+            `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/sections/${sectionId}/block-instances/${blockInstanceId}`,
+          update: (blockInstanceId: string) =>
+            `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/sections/${sectionId}/block-instances/${blockInstanceId}`,
+          delete: (blockInstanceId: string) =>
+            `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/sections/${sectionId}/block-instances/${blockInstanceId}`,
+          reorder: () =>
+            `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/sections/${sectionId}/block-instances/reorder`,
+        }),
+      }),
+      sectionGroups: {
+        list: (themeSlug: string) =>
+          `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/section-groups`,
+        detail: (themeSlug: string, groupId: string) =>
+          `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/section-groups/${groupId}`,
+        update: (themeSlug: string, groupId: string) =>
+          `/api/v1/merchant/stores/${storeSlug}/themes/${themeSlug}/section-groups/${groupId}`,
+      },
     }),
     templates: () => ({
-      list:      () => `/api/v1/merchant/stores/${storeId}/templates`,
+      list:      () => `/api/v1/merchant/stores/${storeSlug}/templates`,
       detail:    (templateId: string) =>
-        `/api/v1/merchant/stores/${storeId}/templates/${templateId}`,
-      create:    () => `/api/v1/merchant/stores/${storeId}/templates`,
+        `/api/v1/merchant/stores/${storeSlug}/templates/${templateId}`,
+      create:    () => `/api/v1/merchant/stores/${storeSlug}/templates`,
       update:    (templateId: string) =>
-        `/api/v1/merchant/stores/${storeId}/templates/${templateId}`,
+        `/api/v1/merchant/stores/${storeSlug}/templates/${templateId}`,
       delete:    (templateId: string) =>
-        `/api/v1/merchant/stores/${storeId}/templates/${templateId}`,
+        `/api/v1/merchant/stores/${storeSlug}/templates/${templateId}`,
       duplicate: (templateId: string) =>
-        `/api/v1/merchant/stores/${storeId}/templates/${templateId}/duplicate`,
+        `/api/v1/merchant/stores/${storeSlug}/templates/${templateId}/duplicate`,
     }),
     users: () => ({
-      list:   () => `/api/v1/merchant/stores/${storeId}/users`,
-      create: () => `/api/v1/merchant/stores/${storeId}/users`,
+      list:   () => `/api/v1/merchant/stores/${storeSlug}/users`,
+      create: () => `/api/v1/merchant/stores/${storeSlug}/users`,
       detail: (userId: string) =>
-        `/api/v1/merchant/stores/${storeId}/users/${userId}`,
+        `/api/v1/merchant/stores/${storeSlug}/users/${userId}`,
     }),
     cmsPages: () => ({
-      list:      () => `/api/v1/merchant/stores/${storeId}/cms/pages`,
+      list:      () => `/api/v1/merchant/stores/${storeSlug}/cms/pages`,
       detail:    (pageId: string) =>
-        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}`,
-      create:    () => `/api/v1/merchant/stores/${storeId}/cms/pages`,
+        `/api/v1/merchant/stores/${storeSlug}/cms/pages/${pageId}`,
+      create:    () => `/api/v1/merchant/stores/${storeSlug}/cms/pages`,
       update:    (pageId: string) =>
-        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}`,
+        `/api/v1/merchant/stores/${storeSlug}/cms/pages/${pageId}`,
       delete:    (pageId: string) =>
-        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}`,
+        `/api/v1/merchant/stores/${storeSlug}/cms/pages/${pageId}`,
       publish:   (pageId: string) =>
-        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}/publish`,
+        `/api/v1/merchant/stores/${storeSlug}/cms/pages/${pageId}/publish`,
       unpublish: (pageId: string) =>
-        `/api/v1/merchant/stores/${storeId}/cms/pages/${pageId}/unpublish`,
+        `/api/v1/merchant/stores/${storeSlug}/cms/pages/${pageId}/unpublish`,
     }),
-    sectionTypes: () => `/api/v1/merchant/stores/${storeId}/cms/section-types`,
-    sectionSchemas: () => `/api/v1/merchant/stores/${storeId}/section-schemas`,
+    sectionTypes: () => `/api/v1/merchant/stores/${storeSlug}/cms/section-types`,
+    sectionSchemas: () => `/api/v1/merchant/stores/${storeSlug}/section-schemas`,
+    shipping: () => ({
+      addressSettings: {
+        get: () => `/api/v1/merchant/stores/${storeSlug}/shipping/address-settings`,
+        update: () => `/api/v1/merchant/stores/${storeSlug}/shipping/address-settings`,
+      },
+      zones: {
+        list: () => `/api/v1/merchant/stores/${storeSlug}/shipping/zones`,
+        create: () => `/api/v1/merchant/stores/${storeSlug}/shipping/zones`,
+        detail: (zoneId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/zones/${zoneId}`,
+        update: (zoneId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/zones/${zoneId}`,
+        delete: (zoneId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/zones/${zoneId}`,
+        assignMethod: (zoneId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/zones/${zoneId}/methods`,
+        removeMethod: (zoneId: string, methodId: string) => 
+          `/api/v1/merchant/stores/${storeSlug}/shipping/zones/${zoneId}/methods/${methodId}`,
+        updateMethodPrice: (zoneId: string, methodId: string) => 
+          `/api/v1/merchant/stores/${storeSlug}/shipping/zones/${zoneId}/methods/${methodId}`,
+      },
+      methods: {
+        list: () => `/api/v1/merchant/stores/${storeSlug}/shipping/methods`,
+        create: () => `/api/v1/merchant/stores/${storeSlug}/shipping/methods`,
+        detail: (methodId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/methods/${methodId}`,
+        update: (methodId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/methods/${methodId}`,
+        delete: (methodId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/methods/${methodId}`,
+      },
+    }),
   }),
 } as const;
-
-/**
- * Context-aware route helper (LEGACY — compatibility only).
- *
- * Returns ROUTES.store(storeId) for use in legacy store-scoped pages.
- * Do NOT use this for new merchant navigation.
- * Use ROUTES.merchant.* directly in merchant-facing UI instead.
- *
- * Usage in hooks/components:
- * const routes = useActiveStoreRoutes(currentStoreId);
- */
-export const useActiveStoreRoutes = (storeId: string) => ROUTES.store(storeId);

@@ -1,4 +1,4 @@
-// src/app/[locale]/(dashboard)/stores/[storeId]/products/[productId]/_components/ProductImagesManager.tsx
+// src/app/[locale]/(dashboard)/stores/[storeSlug]/products/[productId]/_components/ProductImagesManager.tsx
 'use client';
 
 import { useTranslations } from 'next-intl';
@@ -12,7 +12,7 @@ import type { ProductImage } from '@/types/product';
 interface Props {
   images: ProductImage[];
   onChange: (next: ProductImage[]) => void;
-  storeId: string;
+  storeSlug: string;
 }
 
 /**
@@ -26,7 +26,7 @@ function getNextNegativeImageId(images: ProductImage[]): number {
   return min <= 0 ? min - 1 : -1;
 }
 
-export function ProductImagesManager({ images, onChange, storeId }: Props) {
+export function ProductImagesManager({ images, onChange, storeSlug }: Props) {
   const t = useTranslations('products');
 
   // ── Add via file upload ───────────────────────────────────────────────────
@@ -87,7 +87,7 @@ export function ProductImagesManager({ images, onChange, storeId }: Props) {
         value=""
         onChange={handleUpload}
         context="products"
-        storeId={storeId}
+        storeSlug={storeSlug}
         label={t('editor.media.uploadImage')}
       />
     

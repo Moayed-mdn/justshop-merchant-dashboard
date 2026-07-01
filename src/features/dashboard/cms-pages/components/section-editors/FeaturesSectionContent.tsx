@@ -16,7 +16,7 @@ import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface FeaturesSectionContentProps {
   index: number;
-  storeId: string;
+  storeSlug: string;
 }
 
 type FeatureItem = {
@@ -25,7 +25,7 @@ type FeatureItem = {
   icon?: string;
 };
 
-export function FeaturesSectionContent({ index, storeId }: FeaturesSectionContentProps) {
+export function FeaturesSectionContent({ index, storeSlug }: FeaturesSectionContentProps) {
   const t = useTranslations('cmsPages');
   const { watch, setValue } = useFormContext<MarketingPageFormValues>();
 
@@ -101,7 +101,7 @@ export function FeaturesSectionContent({ index, storeId }: FeaturesSectionConten
                 onChange={(v) =>
                   setValue(`${basePath}.items.${itemIndex}.icon` as any, v, { shouldDirty: true })
                 }
-                storeId={storeId}
+                storeSlug={storeSlug}
                 placeholder="https://example.com/icon.svg or icon-name"
               />
             </div>

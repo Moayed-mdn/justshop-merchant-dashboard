@@ -9,6 +9,7 @@ import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
 import { Settings, ExternalLink, CheckCircle2, Loader2, Clock, Ban, Archive } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const STORE_STATUS_INFO: Record<string, { label: string; description: string }> = {
   pending_setup: { label: 'Pending setup', description: 'Setup has not started yet.' },
@@ -48,7 +49,7 @@ export function StoreListItem({ store }: StoreListItemProps) {
   
   const isReady = store.status === 'active' && store.is_active;
   const isActive = activeStore?.id === store.id;
-  const isSwitching = switchStoreMutation.isPending && switchStoreMutation.variables === String(store.id);
+  const isSwitching = switchStoreMutation.isPending && switchStoreMutation.variables === getStoreRouteParam(store);
   const statusInfo = STORE_STATUS_INFO[store.status];
 
   const getStatusVariant = (status: Store['status']) => {
@@ -69,7 +70,7 @@ export function StoreListItem({ store }: StoreListItemProps) {
 
   const handleSwitch = () => {
     if (isActive || !isReady || switchStoreMutation.isPending) return;
-    switchStoreMutation.mutate(String(store.id));
+    switchStoreMutation.mutate(getStoreRouteParam(store));
   };
 
   return (
@@ -83,7 +84,7 @@ export function StoreListItem({ store }: StoreListItemProps) {
         <div 
           className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
-            isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+            isActive ? "bg-primary text-primary-foreground" : "bg-muted-bg text-muted-foreground"
           )}
         >
           <span className="text-lg font-bold">
@@ -151,7 +152,7 @@ export function StoreListItem({ store }: StoreListItemProps) {
             )}
             
             <Link 
-              href={ROUTES.merchant.stores.settings(String(store.id))}
+              href={ROUTES.merchant.stores.settings(getStoreRouteParam(store))}
               className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
             >
               <Settings className="mr-2 h-4 w-4" />

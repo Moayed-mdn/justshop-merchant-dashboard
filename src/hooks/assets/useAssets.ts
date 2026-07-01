@@ -23,7 +23,7 @@ const DEFAULT_FILTERS: AssetFilters = {
 };
 
 export function useAssets(
-  storeId: string,
+  storeSlug: string,
   filters: AssetFilters = DEFAULT_FILTERS,
 ) {
   return useQuery<
@@ -31,11 +31,11 @@ export function useAssets(
     ApiError,
     PaginatedResponse<StoreAssetView>
   >({
-    queryKey: queryKeys.assets(storeId).list(
+    queryKey: queryKeys.assets(storeSlug).list(
       filters as unknown as Record<string, unknown>,
     ),
-    queryFn: () => getAssets(storeId, filters),
+    queryFn: () => getAssets(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
-    select: selectPaginatedList(mapStoreAsset),
+    select: selectPaginatedList((asset) => mapStoreAsset(asset, storeSlug)),
   });
 }

@@ -11,7 +11,6 @@ import { ROUTES } from '@/config/routes';
 import type { UserDetailView } from '@/types/user';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { UserRoleBadge } from './UserRoleBadge';
@@ -20,17 +19,17 @@ import { ArrowLeft } from 'lucide-react';
 
 interface Props {
   user: UserDetailView;
-  storeId: string;
+  storeSlug: string;
 }
 
-export default function UserDetailCard({ user, storeId }: Props) {
+export default function UserDetailCard({ user, storeSlug }: Props) {
   const t = useTranslations('users');
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link
-          href={ROUTES.store(storeId).users.list()}
+          href={ROUTES.merchant.customers.list()}
           className="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] hover:bg-muted hover:text-foreground"
         >
           <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -114,9 +113,8 @@ export default function UserDetailCard({ user, storeId }: Props) {
 
       <div className="flex justify-end">
         <DeleteUserButton
-          storeId={storeId}
+          storeSlug={storeSlug}
           userId={String(user.id)}
-          userName={user.name}
         />
       </div>
     </div>

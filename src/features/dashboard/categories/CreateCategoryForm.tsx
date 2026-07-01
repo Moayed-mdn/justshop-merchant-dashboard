@@ -19,9 +19,10 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ParentCategorySelect } from '@/components/shared/categories/ParentCategorySelect';
+import { ROUTES } from '@/config/routes';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
 }
 
 const DEFAULT_TRANSLATIONS = [
@@ -29,9 +30,9 @@ const DEFAULT_TRANSLATIONS = [
   { locale: 'ar' as const, name: '', slug: '' },
 ];
 
-export default function CreateCategoryForm({ storeId }: Props) {
+export default function CreateCategoryForm({ storeSlug }: Props) {
   const t      = useTranslations('categories');
-  const create = useCreateCategory(storeId);
+  const create = useCreateCategory(storeSlug);
   const router = useRouter();
 
   const form = useForm<CategoryFormInput, unknown, CategoryFormValues>({
@@ -78,7 +79,7 @@ export default function CreateCategoryForm({ storeId }: Props) {
             variant="ghost"
             size="icon"
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push(ROUTES.merchant.categories.list())}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -207,7 +208,7 @@ export default function CreateCategoryForm({ storeId }: Props) {
             </CardHeader>
             <CardContent>
               <ParentCategorySelect
-                storeId={storeId}
+                storeSlug={storeSlug}
                 value={watch('parent_id') ?? null }
                 onChange={(val) => setValue('parent_id', val, { shouldDirty: true })}
               />

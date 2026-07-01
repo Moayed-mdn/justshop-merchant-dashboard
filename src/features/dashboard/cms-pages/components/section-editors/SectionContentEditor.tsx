@@ -21,37 +21,37 @@ import { CategoryGridSectionContent } from './CategoryGridSectionContent';
 interface SectionContentEditorProps {
   sectionType: string;
   sectionIndex: number;
-  storeId: string;
+  storeSlug: string;
 }
 
 export function SectionContentEditor({
   sectionType,
   sectionIndex,
-  storeId,
+  storeSlug,
 }: SectionContentEditorProps) {
   switch (sectionType) {
     case 'video':
-      return <VideoSectionContent index={sectionIndex} storeId={storeId} />;
+      return <VideoSectionContent index={sectionIndex} storeSlug={storeSlug} />;
     case 'cta':
       return <CtaSectionContent index={sectionIndex} />;
     case 'features':
-      return <FeaturesSectionContent index={sectionIndex} storeId={storeId} />;
+      return <FeaturesSectionContent index={sectionIndex} storeSlug={storeSlug} />;
     case 'faq':
       return <FaqSectionContent index={sectionIndex} />;
     case 'gallery':
-      return <GallerySectionContent index={sectionIndex} storeId={storeId} />;
+      return <GallerySectionContent index={sectionIndex} storeSlug={storeSlug} />;
     case 'testimonials':
-      return <TestimonialsSectionContent index={sectionIndex} storeId={storeId} />;
+      return <TestimonialsSectionContent index={sectionIndex} storeSlug={storeSlug} />;
     case 'content':
       return <ContentSectionContent index={sectionIndex} />;
     case 'pricing':
       return <PricingSectionContent index={sectionIndex} />;
     case 'hero':
-      return <HeroSectionContent index={sectionIndex} storeId={storeId} />;
+      return <HeroSectionContent index={sectionIndex} storeSlug={storeSlug} />;
     case 'products':
-      return <ProductsSectionContent index={sectionIndex} storeId={storeId} />;
+      return <ProductsSectionContent index={sectionIndex} storeSlug={storeSlug} />;
     case 'category_grid':
-      return <CategoryGridSectionContent index={sectionIndex} storeId={storeId} />;
+      return <CategoryGridSectionContent index={sectionIndex} storeSlug={storeSlug} />;
     case 'custom':
     default:
       return <CustomSectionContent index={sectionIndex} />;

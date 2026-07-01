@@ -24,14 +24,14 @@ import type { ApiError } from '@/types/api';
 /**
  * Create theme mutation.
  */
-export function useCreateTheme(storeId: string) {
+export function useCreateTheme(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<Theme, ApiError, CreateThemePayload>({
-    mutationFn: (payload) => createTheme(storeId, payload),
+    mutationFn: (payload) => createTheme(storeSlug, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.themes(storeId).lists(),
+        queryKey: queryKeys.themes(storeSlug).lists(),
       });
     },
   });
@@ -40,21 +40,21 @@ export function useCreateTheme(storeId: string) {
 /**
  * Update theme mutation.
  */
-export function useUpdateTheme(storeId: string) {
+export function useUpdateTheme(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<
     Theme,
     ApiError,
-    { themeId: string; payload: UpdateThemePayload }
+    { themeSlug: string; payload: UpdateThemePayload }
   >({
-    mutationFn: ({ themeId, payload }) => updateTheme(storeId, themeId, payload),
+    mutationFn: ({ themeSlug, payload }) => updateTheme(storeSlug, themeSlug, payload),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.themes(storeId).lists(),
+        queryKey: queryKeys.themes(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.themes(storeId).detail(variables.themeId),
+        queryKey: queryKeys.themes(storeSlug).detail(variables.themeSlug),
       });
     },
   });
@@ -63,14 +63,14 @@ export function useUpdateTheme(storeId: string) {
 /**
  * Delete theme mutation.
  */
-export function useDeleteTheme(storeId: string) {
+export function useDeleteTheme(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<void, ApiError, string>({
-    mutationFn: (themeId) => deleteTheme(storeId, themeId),
+    mutationFn: (themeSlug) => deleteTheme(storeSlug, themeSlug),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.themes(storeId).lists(),
+        queryKey: queryKeys.themes(storeSlug).lists(),
       });
     },
   });
@@ -79,15 +79,15 @@ export function useDeleteTheme(storeId: string) {
 /**
  * Publish theme mutation.
  */
-export function usePublishTheme(storeId: string) {
+export function usePublishTheme(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<Theme, ApiError, string>({
-    mutationFn: (themeId) => publishTheme(storeId, themeId),
+    mutationFn: (themeSlug) => publishTheme(storeSlug, themeSlug),
     onSuccess: () => {
       // Invalidate all theme queries since publishing affects is_active status
       queryClient.invalidateQueries({
-        queryKey: queryKeys.themes(storeId).all(),
+        queryKey: queryKeys.themes(storeSlug).all(),
       });
     },
   });
@@ -96,19 +96,19 @@ export function usePublishTheme(storeId: string) {
 /**
  * Duplicate theme mutation.
  */
-export function useDuplicateTheme(storeId: string) {
+export function useDuplicateTheme(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<
     Theme,
     ApiError,
-    { themeId: string; payload: DuplicateThemePayload }
+    { themeSlug: string; payload: DuplicateThemePayload }
   >({
-    mutationFn: ({ themeId, payload }) =>
-      duplicateTheme(storeId, themeId, payload),
+    mutationFn: ({ themeSlug, payload }) =>
+      duplicateTheme(storeSlug, themeSlug, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.themes(storeId).lists(),
+        queryKey: queryKeys.themes(storeSlug).lists(),
       });
     },
   });

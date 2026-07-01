@@ -39,9 +39,9 @@ export function InvoicesPageClient() {
     router.push(`?${params.toString()}`);
   };
 
-  const handleFilterChange = (key: string, value: string) => {
+  const handleFilterChange = (key: string, value: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (value === 'all') {
+    if (value === 'all' || !value) {
       params.delete(key);
     } else {
       params.set(key, value);

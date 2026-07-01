@@ -5,10 +5,10 @@ import type { TagListItemView } from '@/types/tag';
 import type { PaginatedResponse } from '@/types/api';
 import { getTags } from '@/lib/api/tags';
 
-export function useTags(storeId: string, filters?: TagFilters) {
+export function useTags(storeSlug: string, filters?: TagFilters) {
   return useQuery<PaginatedResponse<TagListItemView>>({
-    queryKey: ['tags', storeId, filters],
-    queryFn:  () => getTags(storeId, filters),
-    enabled:  !!storeId,
+    queryKey: ['tags', storeSlug, filters],
+    queryFn:  () => getTags(storeSlug, filters),
+    enabled:  !!storeSlug,
   });
 }

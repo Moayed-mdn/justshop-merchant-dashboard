@@ -17,15 +17,15 @@ import type { ApiError } from '@/types/api';
 /**
  * Upload asset mutation.
  */
-export function useUploadAsset(storeId: string) {
+export function useUploadAsset(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<StoreAsset, ApiError, UploadAssetPayload>({
-    mutationFn: (payload) => uploadAsset(storeId, payload),
+    mutationFn: (payload) => uploadAsset(storeSlug, payload),
     onSuccess: () => {
       // Invalidate all asset lists
       queryClient.invalidateQueries({
-        queryKey: queryKeys.assets(storeId).lists(),
+        queryKey: queryKeys.assets(storeSlug).lists(),
       });
     },
   });
@@ -34,7 +34,7 @@ export function useUploadAsset(storeId: string) {
 /**
  * Update asset mutation.
  */
-export function useUpdateAsset(storeId: string) {
+export function useUpdateAsset(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<
@@ -43,10 +43,10 @@ export function useUpdateAsset(storeId: string) {
     { assetId: string; payload: UpdateAssetPayload }
   >({
     mutationFn: ({ assetId, payload }) =>
-      updateAsset(storeId, assetId, payload),
+      updateAsset(storeSlug, assetId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.assets(storeId).lists(),
+        queryKey: queryKeys.assets(storeSlug).lists(),
       });
     },
   });
@@ -55,14 +55,14 @@ export function useUpdateAsset(storeId: string) {
 /**
  * Delete asset mutation.
  */
-export function useDeleteAsset(storeId: string) {
+export function useDeleteAsset(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<void, ApiError, string>({
-    mutationFn: (assetId) => deleteAsset(storeId, assetId),
+    mutationFn: (assetId) => deleteAsset(storeSlug, assetId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.assets(storeId).lists(),
+        queryKey: queryKeys.assets(storeSlug).lists(),
       });
     },
   });

@@ -12,12 +12,12 @@ import { mapMarketingPageDetail } from '@/lib/mappers/marketing-pages';
 import type { MarketingPageDetail, MarketingPageDetailView } from '@/types/marketing-page';
 import type { ApiError } from '@/types/api';
 
-export function useMarketingPage(storeId: string, pageId: string) {
+export function useMarketingPage(storeSlug: string, pageId: string) {
   return useQuery<MarketingPageDetail, ApiError, MarketingPageDetailView>({
-    queryKey: queryKeys.cmsPages(storeId).detail(pageId),
-    queryFn:  () => getMarketingPageDetail(storeId, pageId),
+    queryKey: queryKeys.cmsPages(storeSlug).detail(pageId),
+    queryFn:  () => getMarketingPageDetail(storeSlug, pageId),
     staleTime: QUERY_CONFIG.staleTime,
-    select:    mapMarketingPageDetail,
-    enabled:   Boolean(storeId && pageId),
+    select:    (page) => mapMarketingPageDetail(page, storeSlug),
+    enabled:   Boolean(storeSlug && pageId),
   });
 }

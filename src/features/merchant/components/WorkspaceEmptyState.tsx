@@ -6,6 +6,7 @@ import { Link } from '@/lib/navigation';
 import { cn } from '@/lib/utils';
 import { Store } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface WorkspaceEmptyStateProps {
   title?: string;
@@ -20,27 +21,29 @@ interface WorkspaceEmptyStateProps {
  * Used when no active store is selected or a section has no data.
  */
 export function WorkspaceEmptyState({
-  title = 'No active store selected',
-  message = 'Please select a store from the switcher or go to the stores list to manage your businesses.',
-  actionLabel = 'View all stores',
+  title,
+  message,
+  actionLabel,
   actionHref = ROUTES.merchant.stores.list(),
   icon: Icon = Store,
 }: WorkspaceEmptyStateProps) {
+  const t = useTranslations('dashboard');
+
   return (
     <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center animate-in fade-in zoom-in duration-300">
       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
         <Icon className="h-10 w-10 text-muted-foreground" />
       </div>
-      <h3 className="mt-6 text-lg font-semibold">{title}</h3>
+      <h3 className="mt-6 text-lg font-semibold">{title ?? t('noActiveStore')}</h3>
       <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
-        {message}
+        {message ?? t('noActiveStoreMessage')}
       </p>
       <div className="mt-6">
-        <Link 
-          href={actionHref} 
+        <Link
+          href={actionHref}
           className={cn(buttonVariants({ variant: 'default' }))}
         >
-          {actionLabel}
+          {actionLabel ?? t('viewAllStores')}
         </Link>
       </div>
     </div>

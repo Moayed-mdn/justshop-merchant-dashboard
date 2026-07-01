@@ -25,6 +25,7 @@ import {
   CreditCard,
   Menu,
   LayoutTemplate,
+  Truck,
   type LucideIcon,
 } from 'lucide-react';
 import React from 'react';
@@ -90,6 +91,12 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
             icon:  ShoppingCart,
             show:  canManageOrders,
             badgeCount: pendingOrders,
+          },
+          {
+            label: t('shipping'),
+            href:  ROUTES.merchant.shipping(),
+            icon:  Truck,
+            show:  true,
           },
         ],
       },

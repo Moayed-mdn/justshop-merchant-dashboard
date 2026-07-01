@@ -12,13 +12,13 @@ import EditBrandForm from './EditBrandForm';
 import { DeleteBrandButton } from './DeleteBrandButton';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   brandId: string;
 }
 
-export default function EditBrandContent({ storeId, brandId }: Props) {
+export default function EditBrandContent({ storeSlug, brandId }: Props) {
   const t = useTranslations('brands');
-  const { data: brand, isLoading, error } = useBrandDetail(storeId, brandId);
+  const { data: brand, isLoading, error } = useBrandDetail(storeSlug, brandId);
 
   if (isLoading) return <EditBrandSkeleton />;
 
@@ -33,7 +33,7 @@ export default function EditBrandContent({ storeId, brandId }: Props) {
   return (
     <div className="space-y-6">
       <EditBrandForm
-        storeId={storeId}
+        storeSlug={storeSlug}
         brandId={brandId}
         brand={brand}
       />
@@ -49,7 +49,7 @@ export default function EditBrandContent({ storeId, brandId }: Props) {
             : t('form.deleteDescription')}
         </p>
         <DeleteBrandButton
-          storeId={storeId}
+          storeSlug={storeSlug}
           brandId={brandId}
           isDeleted={Boolean(brand.deletedAt)}
         />

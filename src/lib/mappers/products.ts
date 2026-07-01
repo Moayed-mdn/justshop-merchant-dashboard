@@ -99,6 +99,7 @@ function normalizeVariant(raw: AdminProductVariant): ProductVariant {
 
 export function mapProductListItem(
   raw:      AdminProduct,
+  storeSlug: string,
   currency: string = 'USD'
 ): ProductListItemView {
   return {
@@ -120,7 +121,7 @@ export function mapProductListItem(
 
 // ── Detail mapper ─────────────────────────────────────────────────────────
 
-export function mapProductDetail(raw: AdminProduct): ProductDetailView {
+export function mapProductDetail(raw: AdminProduct, storeSlug: string): ProductDetailView {
   const rawTranslations: Record<Locale, ProductTranslation> =
     raw.translations ?? {};
 
@@ -157,7 +158,7 @@ export function mapProductDetail(raw: AdminProduct): ProductDetailView {
 
   return {
     id:             raw.id,
-    storeId:        raw.store_id,
+    storeSlug,
     categoryId:     raw.category_id,
     brandId:        raw.brand_id,
     name:           raw.name,

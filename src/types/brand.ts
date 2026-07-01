@@ -31,7 +31,7 @@ export type BrandDetail = BrandListItem;
 /** Brand list item — mapped for UI consumption */
 export interface BrandListItemView {
   id:            number;
-  storeId:       number;
+  storeSlug:       string;
   name:          string;
   slug:          string;
   description:   string | null;

@@ -23,9 +23,9 @@ export default async function MarketingLayout({
 }: MarketingLayoutProps) {
   const user = await getMe()
   const isAuthenticated = !!user
-  const storeId =
+  const storeSlug =
     user && 'stores' in user && Array.isArray(user.stores)
-      ? (user.stores[0] as { id?: number | string } | undefined)?.id ?? null
+      ? (user.stores[0] as { slug?: string } | undefined)?.slug ?? null
       : null
 
   return (
@@ -53,7 +53,7 @@ export default async function MarketingLayout({
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <MarketingNavbar 
           isAuthenticated={isAuthenticated} 
-          storeId={storeId ? String(storeId) : null} 
+          storeSlug={storeSlug ? String(storeSlug) : null} 
         />
 
         <main

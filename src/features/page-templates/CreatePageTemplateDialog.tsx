@@ -16,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 interface CreatePageTemplateDialogProps {
   onClose: () => void;
@@ -26,9 +27,9 @@ export function CreatePageTemplateDialog({ onClose }: CreatePageTemplateDialogPr
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const [name, setName] = useState('');
 
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
 
-  const createMutation = useCreatePageTemplate(activeStoreId!);
+  const createMutation = useCreatePageTemplate(activeStoreSlug!);
 
   const handleCreate = async () => {
     if (!name.trim()) {

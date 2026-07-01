@@ -27,10 +27,11 @@ function translationsToArray(
 
 export function mapTagListItem(
   locale: string,
+  storeSlug: string,
 ): (raw: TagRaw) => TagListItemView {
   return (raw: TagRaw) => ({
     id:                raw.id,
-    storeId:           raw.store_id,
+    storeSlug,
     type:              raw.type,
     color:             raw.color,
     isActive:          raw.is_active,
@@ -42,10 +43,11 @@ export function mapTagListItem(
 
 export function mapTagDetail(
   locale: string,
+  storeSlug: string,
 ): (raw: TagRaw) => TagDetailView {
   return (raw: TagRaw) => ({
     id:           raw.id,
-    storeId:      raw.store_id,
+    storeSlug,
     type:         raw.type,
     color:        raw.color,
     isActive:     raw.is_active,

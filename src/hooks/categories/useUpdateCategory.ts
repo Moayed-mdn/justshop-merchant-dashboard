@@ -13,19 +13,19 @@ import { logger } from '@/lib/logger';
 import type { UpdateCategoryPayload } from '@/types/category';
 import type { ApiError } from '@/types/api';
 
-export function useUpdateCategory(storeId: string, categoryId: string) {
+export function useUpdateCategory(storeSlug: string, categoryId: string) {
   const queryClient = useQueryClient();
   const t           = useTranslations('categories');
 
   return useMutation<unknown, ApiError, UpdateCategoryPayload>({
-    mutationFn: (payload) => updateCategory(storeId, categoryId, payload),
+    mutationFn: (payload) => updateCategory(storeSlug, categoryId, payload),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.categories(storeId).lists(),
+        queryKey: queryKeys.categories(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.categories(storeId).detail(categoryId),
+        queryKey: queryKeys.categories(storeSlug).detail(categoryId),
       });
       toast.success(t('form.updateSuccess'));
     },

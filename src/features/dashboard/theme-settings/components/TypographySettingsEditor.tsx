@@ -44,6 +44,15 @@ export function TypographySettingsEditor({ value, onChange }: TypographySettings
     onChange({ ...value, [field]: fieldValue });
   };
 
+  const handleSelectChange = <K extends keyof TypographySettings>(
+    field: K,
+    newValue: string | null
+  ) => {
+    if (newValue !== null) {
+      updateField(field, newValue as TypographySettings[K]);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -62,7 +71,7 @@ export function TypographySettingsEditor({ value, onChange }: TypographySettings
             </Label>
             <Select
               value={value.headingFont}
-              onValueChange={(v) => updateField('headingFont', v)}
+              onValueChange={(v) => handleSelectChange('headingFont', v)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -87,7 +96,7 @@ export function TypographySettingsEditor({ value, onChange }: TypographySettings
             </Label>
             <Select
               value={value.bodyFont}
-              onValueChange={(v) => updateField('bodyFont', v)}
+              onValueChange={(v) => handleSelectChange('bodyFont', v)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -112,7 +121,7 @@ export function TypographySettingsEditor({ value, onChange }: TypographySettings
             </Label>
             <Select
               value={value.headingWeight}
-              onValueChange={(v) => updateField('headingWeight', v as TypographySettings['headingWeight'])}
+              onValueChange={(v) => handleSelectChange('headingWeight', v)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -136,7 +145,7 @@ export function TypographySettingsEditor({ value, onChange }: TypographySettings
             </Label>
             <Select
               value={value.bodyWeight}
-              onValueChange={(v) => updateField('bodyWeight', v as TypographySettings['bodyWeight'])}
+              onValueChange={(v) => handleSelectChange('bodyWeight', v)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -160,7 +169,7 @@ export function TypographySettingsEditor({ value, onChange }: TypographySettings
             </Label>
             <Select
               value={value.baseFontSize}
-              onValueChange={(v) => updateField('baseFontSize', v as TypographySettings['baseFontSize'])}
+              onValueChange={(v) => handleSelectChange('baseFontSize', v)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -183,7 +192,7 @@ export function TypographySettingsEditor({ value, onChange }: TypographySettings
             </Label>
             <Select
               value={value.lineHeight}
-              onValueChange={(v) => updateField('lineHeight', v as TypographySettings['lineHeight'])}
+              onValueChange={(v) => handleSelectChange('lineHeight', v)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -206,7 +215,7 @@ export function TypographySettingsEditor({ value, onChange }: TypographySettings
             </Label>
             <Select
               value={value.letterSpacing}
-              onValueChange={(v) => updateField('letterSpacing', v as TypographySettings['letterSpacing'])}
+              onValueChange={(v) => handleSelectChange('letterSpacing', v)}
             >
               <SelectTrigger>
                 <SelectValue />

@@ -19,11 +19,11 @@ import CreateNavigationMenuDialog from './CreateNavigationMenuDialog';
 import type { NavigationMenuFilters } from '@/types/navigation';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   initialFilters: NavigationMenuFilters;
 }
 
-export default function NavigationMenusContent({ storeId, initialFilters }: Props) {
+export default function NavigationMenusContent({ storeSlug, initialFilters }: Props) {
   const t = useTranslations('theme.navigation');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
@@ -39,8 +39,8 @@ export default function NavigationMenusContent({ storeId, initialFilters }: Prop
 
   const filters: NavigationMenuFilters = { page, perPage };
 
-  const { data, isLoading, error } = useNavigationMenus(storeId, filters);
-  const deleteMutation = useDeleteNavigationMenu(storeId);
+  const { data, isLoading, error } = useNavigationMenus(storeSlug, filters);
+  const deleteMutation = useDeleteNavigationMenu(storeSlug);
 
   if (error) {
     logger.error('Failed to load navigation menus', error);
@@ -91,7 +91,7 @@ export default function NavigationMenusContent({ storeId, initialFilters }: Prop
 
       {/* Create Dialog */}
       <CreateNavigationMenuDialog
-        storeId={storeId}
+        storeSlug={storeSlug}
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
       />

@@ -11,16 +11,16 @@ import { logger } from '@/lib/logger';
 import type { CreateTagPayload } from '@/types/tag';
 import type { ApiError } from '@/types/api';
 
-export function useCreateTag(storeId: string) {
+export function useCreateTag(storeSlug: string) {
   const queryClient = useQueryClient();
   const router      = useRouter();
   const t           = useTranslations('tags');
 
   return useMutation<unknown, ApiError, CreateTagPayload>({
-    mutationFn: (payload) => createTag(storeId, payload),
+    mutationFn: (payload) => createTag(storeSlug, payload),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeId).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags(storeSlug).lists() });
       toast.success(t('form.createSuccess'));
       router.push(ROUTES.merchant.tags.list());
     },

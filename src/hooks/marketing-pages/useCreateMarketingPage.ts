@@ -15,17 +15,17 @@ import { logger } from '@/lib/logger';
 import type { CreateMarketingPagePayload, MarketingPageDetail } from '@/types/marketing-page';
 import type { ApiError } from '@/types/api';
 
-export function useCreateMarketingPage(storeId: string) {
+export function useCreateMarketingPage(storeSlug: string) {
   const queryClient = useQueryClient();
   const router      = useRouter();
   const t           = useTranslations('cmsPages');
 
   return useMutation<MarketingPageDetail, ApiError, CreateMarketingPagePayload>({
-    mutationFn: (payload) => createMarketingPage(storeId, payload),
+    mutationFn: (payload) => createMarketingPage(storeSlug, payload),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.cmsPages(storeId).lists(),
+        queryKey: queryKeys.cmsPages(storeSlug).lists(),
       });
       toast.success(t('form.createSuccess'));
       router.push(ROUTES.merchant.cmsPages());

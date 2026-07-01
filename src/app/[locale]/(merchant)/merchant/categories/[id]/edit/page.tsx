@@ -7,6 +7,7 @@ import { useCategoryDetail } from '@/hooks/categories/useCategoryDetail';
 import { useTranslations } from 'next-intl';
 import { EditCategorySkeleton } from '@/features/dashboard/categories/EditCategorySkeleton';
 import EditCategoryContent from '@/features/dashboard/categories/EditCategoryContent';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Edit Category Page.
@@ -18,9 +19,9 @@ export default function MerchantCategoryEditPage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('categories');
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
-  const { data: category, isLoading, error } = useCategoryDetail(storeId, categoryId);
+  const { data: category, isLoading, error } = useCategoryDetail(storeSlug, categoryId);
 
   if (!activeStore) {
     return (
@@ -28,10 +29,7 @@ export default function MerchantCategoryEditPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('form.editTitle')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to edit a category."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -50,7 +48,7 @@ export default function MerchantCategoryEditPage() {
 
   return (
     <div className="space-y-6">
-      <EditCategoryContent storeId={storeId} categoryId={categoryId} />
+      <EditCategoryContent storeSlug={storeSlug} categoryId={categoryId} />
     </div>
   );
 }

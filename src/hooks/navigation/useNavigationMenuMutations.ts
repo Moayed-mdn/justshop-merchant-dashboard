@@ -25,59 +25,59 @@ import type {
 import type { ApiError } from '@/types/api';
 
 /** Create navigation menu */
-export function useCreateNavigationMenu(storeId: string) {
+export function useCreateNavigationMenu(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<unknown, ApiError, CreateNavigationMenuPayload>({
-    mutationFn: (payload) => createNavigationMenu(storeId, payload),
+    mutationFn: (payload) => createNavigationMenu(storeSlug, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.navigation(storeId).all,
+        queryKey: queryKeys.navigation(storeSlug).all(),
       });
     },
   });
 }
 
 /** Update navigation menu */
-export function useUpdateNavigationMenu(storeId: string, menuId: string) {
+export function useUpdateNavigationMenu(storeSlug: string, menuId: string) {
   const queryClient = useQueryClient();
 
   return useMutation<unknown, ApiError, UpdateNavigationMenuPayload>({
-    mutationFn: (payload) => updateNavigationMenu(storeId, menuId, payload),
+    mutationFn: (payload) => updateNavigationMenu(storeSlug, menuId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.navigation(storeId).detail(menuId),
+        queryKey: queryKeys.navigation(storeSlug).detail(menuId),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.navigation(storeId).lists(),
+        queryKey: queryKeys.navigation(storeSlug).lists(),
       });
     },
   });
 }
 
 /** Delete navigation menu */
-export function useDeleteNavigationMenu(storeId: string) {
+export function useDeleteNavigationMenu(storeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<void, ApiError, string>({
-    mutationFn: (menuId) => deleteNavigationMenu(storeId, menuId),
+    mutationFn: (menuId) => deleteNavigationMenu(storeSlug, menuId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.navigation(storeId).all,
+        queryKey: queryKeys.navigation(storeSlug).all(),
       });
     },
   });
 }
 
 /** Create menu item */
-export function useCreateMenuItem(storeId: string, menuId: string) {
+export function useCreateMenuItem(storeSlug: string, menuId: string) {
   const queryClient = useQueryClient();
 
   return useMutation<unknown, ApiError, CreateMenuItemPayload>({
-    mutationFn: (payload) => createMenuItem(storeId, menuId, payload),
+    mutationFn: (payload) => createMenuItem(storeSlug, menuId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.navigation(storeId).detail(menuId),
+        queryKey: queryKeys.navigation(storeSlug).detail(menuId),
       });
     },
   });
@@ -85,45 +85,45 @@ export function useCreateMenuItem(storeId: string, menuId: string) {
 
 /** Update menu item */
 export function useUpdateMenuItem(
-  storeId: string,
+  storeSlug: string,
   menuId: string,
   itemId: string,
 ) {
   const queryClient = useQueryClient();
 
   return useMutation<unknown, ApiError, UpdateMenuItemPayload>({
-    mutationFn: (payload) => updateMenuItem(storeId, menuId, itemId, payload),
+    mutationFn: (payload) => updateMenuItem(storeSlug, menuId, itemId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.navigation(storeId).detail(menuId),
+        queryKey: queryKeys.navigation(storeSlug).detail(menuId),
       });
     },
   });
 }
 
 /** Delete menu item */
-export function useDeleteMenuItem(storeId: string, menuId: string) {
+export function useDeleteMenuItem(storeSlug: string, menuId: string) {
   const queryClient = useQueryClient();
 
   return useMutation<void, ApiError, string>({
-    mutationFn: (itemId) => deleteMenuItem(storeId, menuId, itemId),
+    mutationFn: (itemId) => deleteMenuItem(storeSlug, menuId, itemId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.navigation(storeId).detail(menuId),
+        queryKey: queryKeys.navigation(storeSlug).detail(menuId),
       });
     },
   });
 }
 
 /** Reorder menu items */
-export function useReorderMenuItems(storeId: string, menuId: string) {
+export function useReorderMenuItems(storeSlug: string, menuId: string) {
   const queryClient = useQueryClient();
 
   return useMutation<void, ApiError, ReorderMenuItemsPayload>({
-    mutationFn: (payload) => reorderMenuItems(storeId, menuId, payload),
+    mutationFn: (payload) => reorderMenuItems(storeSlug, menuId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.navigation(storeId).detail(menuId),
+        queryKey: queryKeys.navigation(storeSlug).detail(menuId),
       });
     },
   });

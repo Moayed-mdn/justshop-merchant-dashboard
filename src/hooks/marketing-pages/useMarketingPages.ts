@@ -23,7 +23,7 @@ const DEFAULT_FILTERS: MarketingPageFilters = {
 };
 
 export function useMarketingPages(
-  storeId: string,
+  storeSlug: string,
   filters: MarketingPageFilters = DEFAULT_FILTERS,
 ) {
   return useQuery<
@@ -31,11 +31,11 @@ export function useMarketingPages(
     ApiError,
     PaginatedResponse<MarketingPageListItemView>
   >({
-    queryKey: queryKeys.cmsPages(storeId).list(
+    queryKey: queryKeys.cmsPages(storeSlug).list(
       filters as unknown as Record<string, unknown>,
     ),
-    queryFn:   () => getMarketingPages(storeId, filters),
+    queryFn:   () => getMarketingPages(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
-    select:    selectPaginatedList(mapMarketingPageListItem),
+    select:    selectPaginatedList((page) => mapMarketingPageListItem(page, storeSlug)),
   });
 }

@@ -6,6 +6,7 @@ import { MerchantPageHeader } from '@/features/merchant/components/MerchantPageH
 import OrdersContent from '@/features/dashboard/orders/OrdersContent';
 import { useTranslations } from 'next-intl';
 import { ShoppingCart } from 'lucide-react';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const INITIAL_FILTERS = {
   search: '',
@@ -30,11 +31,7 @@ export default function MerchantOrdersPage() {
           title={t('orders')}
           description="View and manage customer orders."
         />
-        <WorkspaceEmptyState 
-          icon={ShoppingCart}
-          title="No active store"
-          message="Select a store from the switcher to view and fulfil its orders."
-        />
+        <WorkspaceEmptyState icon={ShoppingCart} />
       </div>
     );
   }
@@ -45,7 +42,7 @@ export default function MerchantOrdersPage() {
         title={t('orders')}
         description="View and manage customer orders."
       />
-      <OrdersContent storeId={String(activeStore.id)} initialFilters={INITIAL_FILTERS} />
+      <OrdersContent storeSlug={getStoreRouteParam(activeStore)} initialFilters={INITIAL_FILTERS} />
     </div>
   );
 }

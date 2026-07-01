@@ -17,11 +17,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Pagination } from '@/components/shared/Pagination';
 import { ImageIcon, Upload } from 'lucide-react';
 import type { AssetType, AssetFilters } from '@/types/asset';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 export function AssetsContent() {
   const t = useTranslations();
   const activeStore = useBootstrapStore((state) => state.activeStore);
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
   const [showUploader, setShowUploader] = useState(false);
   const [filters, setFilters] = useState<AssetFilters>({
     page: 1,
@@ -29,7 +30,7 @@ export function AssetsContent() {
     asset_type: 'all',
   });
 
-  const { data, isLoading, error } = useAssets(activeStoreId!, filters);
+  const { data, isLoading, error } = useAssets(activeStoreSlug!, filters);
 
   const handleTypeChange = (type: string) => {
     setFilters((prev) => ({
@@ -128,11 +129,11 @@ export function AssetsContent() {
                 <>
                   <AssetGrid assets={data.data} />
 
-                  {data.meta.last_page > 1 && (
+                  {data.meta.pagination.total_pages > 1 && (
                     <div className="mt-6">
                       <Pagination
-                        currentPage={data.meta.current_page}
-                        totalPages={data.meta.last_page}
+                        currentPage={data.meta.pagination.current_page}
+                        totalPages={data.meta.pagination.total_pages}
                         onPageChange={handlePageChange}
                       />
                     </div>

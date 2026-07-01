@@ -16,10 +16,10 @@ import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface VideoSectionContentProps {
   index: number;
-  storeId: string;
+  storeSlug: string;
 }
 
-export function VideoSectionContent({ index, storeId }: VideoSectionContentProps) {
+export function VideoSectionContent({ index, storeSlug }: VideoSectionContentProps) {
   const t = useTranslations('cmsPages');
   const { register, watch, setValue } = useFormContext<MarketingPageFormValues>();
 
@@ -59,7 +59,7 @@ export function VideoSectionContent({ index, storeId }: VideoSectionContentProps
         onChange={(v) =>
           setValue(`${basePath}.poster_url` as any, v, { shouldDirty: true })
         }
-        storeId={storeId}
+        storeSlug={storeSlug}
         placeholder="https://example.com/thumbnail.jpg"
       />
 

@@ -12,19 +12,19 @@ import { queryKeys } from '@/lib/queryKeys';
 import { logger } from '@/lib/logger';
 import type { ApiError } from '@/types/api';
 
-export function useRestoreBrand(storeId: string, brandId: string) {
+export function useRestoreBrand(storeSlug: string, brandId: string) {
   const queryClient = useQueryClient();
   const t           = useTranslations('brands');
 
   return useMutation<unknown, ApiError, void>({
-    mutationFn: () => restoreBrand(storeId, brandId),
+    mutationFn: () => restoreBrand(storeSlug, brandId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.brands(storeId).lists(),
+        queryKey: queryKeys.brands(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.brands(storeId).detail(brandId),
+        queryKey: queryKeys.brands(storeSlug).detail(brandId),
       });
       toast.success(t('form.restoreSuccess'));
     },

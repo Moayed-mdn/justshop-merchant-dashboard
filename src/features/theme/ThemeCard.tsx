@@ -32,12 +32,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { MoreVertical, Check, Copy, Trash2, Sparkles, Palette } from 'lucide-react';
+import { MoreVertical, Check, Copy, Trash2, Sparkles, Palette, LayoutTemplate, Layers } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from '@/lib/navigation';
 import { DuplicateThemeDialog } from './DuplicateThemeDialog';
 import { ROUTES } from '@/config/routes';
 import type { ThemeListItemView } from '@/types/theme';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
+import { getThemeRouteParam } from '@/lib/themes/route-param';
 
 interface ThemeCardProps {
   theme: ThemeListItemView;
@@ -50,14 +52,15 @@ export function ThemeCard({ theme }: ThemeCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
 
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
 
-  const publishMutation = usePublishTheme(activeStoreId!);
-  const deleteMutation = useDeleteTheme(activeStoreId!);
+  const publishMutation = usePublishTheme(activeStoreSlug!);
+  const deleteMutation = useDeleteTheme(activeStoreSlug!);
+  const themeIdentifier = getThemeRouteParam(theme);
 
   const handlePublish = async () => {
     try {
-      await publishMutation.mutateAsync(theme.id.toString());
+      await publishMutation.mutateAsync(themeIdentifier);
       toast.success(t('common.theme.publishSuccess'));
     } catch (error) {
       toast.error(t('common.theme.publishError'));
@@ -66,7 +69,7 @@ export function ThemeCard({ theme }: ThemeCardProps) {
 
   const handleDelete = async () => {
     try {
-      await deleteMutation.mutateAsync(theme.id.toString());
+      await deleteMutation.mutateAsync(themeIdentifier);
       toast.success(t('common.theme.deleteSuccess'));
     } catch (error) {
       toast.error(t('common.theme.deleteError'));
@@ -76,7 +79,7 @@ export function ThemeCard({ theme }: ThemeCardProps) {
   };
 
   const handleCustomize = () => {
-    router.push(ROUTES.merchant.theme.settings(theme.id.toString()));
+    router.push(ROUTES.merchant.theme.settings(themeIdentifier));
   };
 
   return (
@@ -162,14 +165,32 @@ export function ThemeCard({ theme }: ThemeCardProps) {
           </div>
         </CardContent>
 
-        <CardFooter className="pt-0">
+        <CardFooter className="pt-0 flex flex-wrap gap-2">
           <Button
-            className="w-full"
-            variant={theme.isActive ? "outline" : "default"}
+            className="flex-1 min-w-[100px]"
+            variant={theme.isActive ? "default" : "outline"}
             onClick={handleCustomize}
           >
-            <Palette className="mr-2 h-4 w-4" />
+            <Palette className="h-4 w-4" />
             {t('common.theme.customize')}
+          </Button>
+          <Button
+            className="flex-1 min-w-[100px]"
+            variant={theme.isActive ? "default" : "outline"}
+            size="sm"
+            onClick={() => router.push(ROUTES.merchant.theme.systemTemplates.list(themeIdentifier))}
+          >
+            <LayoutTemplate className="h-4 w-4" />
+            Templates
+          </Button>
+          <Button
+            className="flex-1 min-w-[100px]"
+            variant={theme.isActive ? "default" : "outline"}
+            size="sm"
+            onClick={() => router.push(ROUTES.merchant.theme.sectionGroups.list(themeIdentifier))}
+          >
+            <Layers className="h-4 w-4" />
+            Section Groups
           </Button>
         </CardFooter>
       </Card>

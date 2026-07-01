@@ -114,17 +114,16 @@ export async function verifyEmail(params: {
 
 /**
  * Switch active store.
+ * Accepts either numeric store ID or merchant-facing slug.
  */
 export async function switchStore(
-  storeId: string | number,
+  storeIdentifier: string | number,
   options: RequestOptions = {}
 ): Promise<ApiResponse<SwitchStoreResponse>> {
   await ensureCsrfCookie(options);
-  const normalizedStoreId =
-    typeof storeId === 'string' && /^\d+$/.test(storeId) ? Number(storeId) : storeId;
   return clientApi.patch(
     API_ROUTES.merchant.auth.activeStore(),
-    { store_id: normalizedStoreId },
+    { store_id: storeIdentifier },
     { signal: options.signal }
   );
 }

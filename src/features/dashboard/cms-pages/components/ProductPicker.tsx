@@ -14,14 +14,14 @@ import { Badge } from '@/components/ui/badge';
 import { useProducts } from '@/hooks/products/useProducts';
 
 interface ProductPickerProps {
-  storeId: string;
+  storeSlug: string;
   selectedIds: (string | number)[];
   onChange: (ids: (string | number)[]) => void;
 }
 
-export function ProductPicker({ storeId, selectedIds, onChange }: ProductPickerProps) {
+export function ProductPicker({ storeSlug, selectedIds, onChange }: ProductPickerProps) {
   const [search, setSearch] = useState('');
-  const { data, isLoading } = useProducts(storeId, {
+  const { data, isLoading } = useProducts(storeSlug, {
     page: 1,
     perPage: 50,
     search,

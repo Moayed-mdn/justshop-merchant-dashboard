@@ -122,7 +122,7 @@ export async function parseResponseBody<T>(response: Response): Promise<T> {
   }
 
   const text = await response.text();
-  if (!text) {
+  if (!text.trim()) {
     return undefined as T;
   }
 

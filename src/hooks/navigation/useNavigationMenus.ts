@@ -23,7 +23,7 @@ const DEFAULT_FILTERS: NavigationMenuFilters = {
 };
 
 export function useNavigationMenus(
-  storeId: string,
+  storeSlug: string,
   filters: NavigationMenuFilters = DEFAULT_FILTERS,
 ) {
   return useQuery<
@@ -31,11 +31,11 @@ export function useNavigationMenus(
     ApiError,
     PaginatedResponse<NavigationMenuListItemView>
   >({
-    queryKey: queryKeys.navigation(storeId).list(
+    queryKey: queryKeys.navigation(storeSlug).list(
       filters as unknown as Record<string, unknown>,
     ),
-    queryFn: () => getNavigationMenus(storeId, filters),
+    queryFn: () => getNavigationMenus(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
-    select: selectPaginatedList(mapNavigationMenuListItem),
+    select: selectPaginatedList((menu) => mapNavigationMenuListItem(menu, storeSlug)),
   });
 }

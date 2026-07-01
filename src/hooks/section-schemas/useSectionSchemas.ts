@@ -4,10 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import { getSectionSchemas } from '@/lib/api/section-schemas';
 
-export function useSectionSchemas(storeId: string) {
+export function useSectionSchemas(storeSlug: string) {
   return useQuery({
-    queryKey: queryKeys.sectionSchemas(storeId).all(),
-    queryFn: () => getSectionSchemas(storeId),
-    enabled: !!storeId,
+    queryKey: queryKeys.sectionSchemas(storeSlug).all(),
+    queryFn: () => getSectionSchemas(storeSlug),
+    enabled: !!storeSlug,
   });
 }

@@ -12,10 +12,10 @@ import type { AdminOrder, OrderDetailView } from '@/types/order';
 import type { ApiError } from '@/types/api';
 import { mapOrderDetail } from '@/lib/mappers/orders';
 
-export function useOrderDetail(storeId: string, orderId: string) {
+export function useOrderDetail(storeSlug: string, orderId: string) {
   return useQuery<AdminOrder, ApiError, OrderDetailView>({
-    queryKey: queryKeys.orders(storeId).detail(orderId),
-    queryFn: () => getOrderDetail(storeId, orderId),
+    queryKey: queryKeys.orders(storeSlug).detail(orderId),
+    queryFn: () => getOrderDetail(storeSlug, orderId),
     staleTime: QUERY_CONFIG.staleTime,
     select: (data) => mapOrderDetail(data),
   });

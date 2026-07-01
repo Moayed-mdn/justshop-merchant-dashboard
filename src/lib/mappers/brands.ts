@@ -14,10 +14,10 @@ import { formatDate } from '@/lib/utils/date';
 /**
  * Map brand list item from raw API shape to view shape.
  */
-export function mapBrandListItem(raw: BrandListItem): BrandListItemView {
+export function mapBrandListItem(raw: BrandListItem, storeSlug: string): BrandListItemView {
   return {
     id:            raw.id,
-    storeId:       raw.store_id,
+    storeSlug,
     name:          raw.name,
     slug:          raw.slug,
     description:   raw.description,
@@ -33,10 +33,10 @@ export function mapBrandListItem(raw: BrandListItem): BrandListItemView {
 /**
  * Map brand detail from raw API shape to view shape.
  */
-export function mapBrandDetail(raw: BrandDetail): BrandDetailView {
+export function mapBrandDetail(raw: BrandDetail, storeSlug: string): BrandDetailView {
   return {
     id:            raw.id,
-    storeId:       raw.store_id,
+    storeSlug,
     name:          raw.name,
     slug:          raw.slug,
     description:   raw.description,

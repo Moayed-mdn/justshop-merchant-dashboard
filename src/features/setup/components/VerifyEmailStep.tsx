@@ -10,10 +10,12 @@ import { MailCheck, Loader2, AlertCircle } from 'lucide-react';
 import { checkEmailVerificationStatus, resendVerificationEmail } from '@/lib/api/auth';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import type { ApiError } from '@/types/api';
+import { useTranslations } from 'next-intl';
 
 export function VerifyEmailStep() {
   const queryClient = useQueryClient();
   const fetchBootstrap = useBootstrapStore((state) => state.fetchBootstrap);
+  const t = useTranslations('setup.verifyEmail');
 
   const [isChecking, setIsChecking] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -36,8 +38,7 @@ export function VerifyEmailStep() {
     } catch (err) {
       const apiError = err as ApiError;
       setErrorMessage(
-        apiError?.message ??
-          "Your email hasn't been verified yet. Please check your inbox and click the verification link."
+        apiError?.message ?? t('yourEmailHasntVerifiedYetPleaseCheckYourInboxAndClickTheVerificationLink')
       );
     } finally {
       setIsChecking(false);
@@ -51,10 +52,10 @@ export function VerifyEmailStep() {
 
     try {
       const res = await resendVerificationEmail();
-      setResendMessage(res.message ?? 'Verification email sent. Check your inbox.');
+      setResendMessage(res.message ?? t('resendMessage'));
     } catch (err) {
       const apiError = err as ApiError;
-      setErrorMessage(apiError?.message ?? 'Failed to resend the verification email. Please try again.');
+      setErrorMessage(apiError?.message ?? t('failedToResendVerificationEmailPleaseTryAgain'));
     } finally {
       setIsResending(false);
     }
@@ -67,14 +68,14 @@ export function VerifyEmailStep() {
         <div className="flex items-center justify-center gap-3">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
             <span>1</span>
-            <span className="hidden sm:inline">Verify email</span>
+            <span className="hidden sm:inline">{t('stepIndicator')}</span>
           </span>
           <span className="h-px w-6 bg-border" />
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted-bg text-xs font-medium text-muted-foreground">
             2
           </span>
           <span className="h-px w-6 bg-border" />
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted-bg text-xs font-medium text-muted-foreground">
             3
           </span>
         </div>
@@ -86,16 +87,16 @@ export function VerifyEmailStep() {
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold">Check your inbox</h1>
+          <h1 className="text-2xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground">
-            We sent a verification link to your email address. Click it to unlock your merchant dashboard.
+            {t('description')}
           </p>
         </div>
 
         <div className="rounded-lg border border-border bg-muted/40 p-4 text-left text-sm text-muted-foreground">
-          <p className="font-medium text-foreground">What happens next</p>
+          <p className="font-medium text-foreground">{t('whatHappensNextTitle')}</p>
           <p className="mt-2">
-            After verifying your email, come back here and click the button below. The setup will continue automatically.
+            {t('whatHappensNext')}
           </p>
         </div>
 
@@ -123,10 +124,10 @@ export function VerifyEmailStep() {
             {isChecking ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Checking…
+                {t('checking')}
               </>
             ) : (
-              'I have verified my email'
+              t('iHaveVerified')
             )}
           </Button>
 
@@ -139,10 +140,10 @@ export function VerifyEmailStep() {
             {isResending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending…
+                {t('sending')}
               </>
             ) : (
-              'Resend verification email'
+              t('resendVerificationEmail')
             )}
           </Button>
 
@@ -150,7 +151,7 @@ export function VerifyEmailStep() {
             href={ROUTES.auth.login()}
             className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline"
           >
-            Back to login
+            {t('backToLogin')}
           </Link>
         </div>
       </div>

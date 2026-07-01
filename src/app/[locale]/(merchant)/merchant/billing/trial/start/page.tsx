@@ -7,6 +7,7 @@ import { Metadata } from 'next';
 import { TrialSignupClient } from './TrialSignupClient';
 import { getPlans } from '@/lib/api/billing';
 import { CheckCircle2 } from 'lucide-react';
+import type { Plan } from '@/types/billing/plan';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -16,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TrialStartPage() {
-  let plans;
+  let plans: Plan[];
 
   try {
     plans = await getPlans();

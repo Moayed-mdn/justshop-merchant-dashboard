@@ -18,13 +18,13 @@ import { makeLabelByValue, renderSelectValue, type SelectOption } from '@/lib/se
 
 interface OrderStatusSelectProps {
   currentStatus: OrderStatus;
-  storeId: string;
+  storeSlug: string;
   orderId: string;
 }
 
 export default function OrderStatusSelect({
   currentStatus,
-  storeId,
+  storeSlug,
   orderId,
 }: OrderStatusSelectProps) {
   const canManageOrders = useCan('canManageOrders');
@@ -44,7 +44,7 @@ export default function OrderStatusSelect({
 
   const statusLabelByValue = makeLabelByValue(statusOptions);
 
-  const { mutate, isPending } = useUpdateOrderStatus(storeId, orderId, {
+  const { mutate, isPending } = useUpdateOrderStatus(storeSlug, orderId, {
     onSuccess: () => {
       toast.success(t('detail.statusUpdated'));
     },

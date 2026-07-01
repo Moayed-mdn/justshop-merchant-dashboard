@@ -16,13 +16,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { TrendingUp, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 interface UpgradePromptDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   limitType: 'stores' | 'products' | 'custom';
-  currentPlan?: string;
-  requiredPlan?: string;
   current?: number;
   limit?: number;
   message?: string;
@@ -32,26 +31,29 @@ export function UpgradePromptDialog({
   open,
   onOpenChange,
   limitType,
-  currentPlan = 'Starter',
-  requiredPlan = 'Growth',
   current,
   limit,
   message,
 }: UpgradePromptDialogProps) {
+  const t = useTranslations('billing.upgradePrompt');
+  const tUsage = useTranslations('billing.usage');
+
   const getDefaultMessage = () => {
     if (limitType === 'stores') {
-      return `You've reached your ${currentPlan} plan limit of ${limit} ${limit === 1 ? 'store' : 'stores'}. Upgrade to ${requiredPlan} to create more stores.`;
+      return limit === 1
+        ? t('storesMessageSingular', { limit: limit ?? 0 })
+        : t('storesMessage', { limit: limit ?? 0 });
     }
     if (limitType === 'products') {
-      return `You've reached your ${currentPlan} plan limit of ${limit?.toLocaleString()} products. Upgrade to ${requiredPlan} to add more products.`;
+      return t('productsMessage', { limit: limit?.toLocaleString() ?? '0' });
     }
-    return message || 'Upgrade your plan to access this feature.';
+    return message || t('customMessage');
   };
 
   const getLimitLabel = () => {
-    if (limitType === 'stores') return 'Stores';
-    if (limitType === 'products') return 'Products';
-    return 'Limit';
+    if (limitType === 'stores') return tUsage('stores');
+    if (limitType === 'products') return tUsage('products');
+    return t('limitLabel');
   };
 
   return (
@@ -61,7 +63,7 @@ export function UpgradePromptDialog({
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-950/20">
             <AlertCircle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
           </div>
-          <DialogTitle className="text-center">Upgrade Required</DialogTitle>
+          <DialogTitle className="text-center">{t('title')}</DialogTitle>
           <DialogDescription className="text-center">{getDefaultMessage()}</DialogDescription>
         </DialogHeader>
 
@@ -84,12 +86,12 @@ export function UpgradePromptDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Maybe Later
+            {t('maybeLater')}
           </Button>
           <Link href="/merchant/billing/plans">
             <Button variant="default">
               <TrendingUp className="me-2 h-4 w-4" />
-              View Plans
+              {t('viewPlans')}
             </Button>
           </Link>
         </DialogFooter>

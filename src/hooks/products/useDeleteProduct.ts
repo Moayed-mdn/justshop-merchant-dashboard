@@ -17,16 +17,16 @@ export interface UseDeleteProductOptions {
 }
 
 export function useDeleteProduct(
-  storeId: string,
+  storeSlug: string,
   productId: string,
   options?: UseDeleteProductOptions
 ) {
   return useMutation({
-    mutationFn: () => deleteProduct(storeId, productId),
+    mutationFn: () => deleteProduct(storeSlug, productId),
     retry: 0,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.products(storeId).lists() });
-      logger.info('Product deleted', { productId, storeId });
+      queryClient.invalidateQueries({ queryKey: queryKeys.products(storeSlug).lists() });
+      logger.info('Product deleted', { productId, storeSlug });
       options?.onSuccess?.();
     },
     onError: (error: ApiError) => {

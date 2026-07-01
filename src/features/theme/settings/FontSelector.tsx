@@ -20,8 +20,14 @@ interface FontSelectorProps {
 }
 
 export function FontSelector({ value, onChange }: FontSelectorProps) {
+  const handleChange = (newValue: string | null) => {
+    if (newValue !== null) {
+      onChange(newValue);
+    }
+  };
+
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value} onValueChange={handleChange}>
       <SelectTrigger>
         <SelectValue />
       </SelectTrigger>

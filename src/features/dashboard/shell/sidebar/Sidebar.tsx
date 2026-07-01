@@ -73,7 +73,7 @@ export function Sidebar({ nav }: SidebarProps) {
       {nav ? (
         React.isValidElement(nav) ? React.cloneElement(nav, { isCollapsed } as any) : nav
       ) : (
-        activeStore ? <SidebarNav storeId={String(activeStore.id)} isCollapsed={isCollapsed} /> : null
+        activeStore ? <SidebarNav isCollapsed={isCollapsed} /> : null
       )}
 
       {/* Footer section with user info */}

@@ -8,8 +8,8 @@
  */
 
 import { useUiStore, selectIsRTL } from '@/stores/uiStore';
-import { useLocale } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { useEffect } from 'react';
 import { Sidebar } from './sidebar/Sidebar';
 import { Topbar } from './topbar/Topbar';
 import { MobileNav } from './MobileNav';
@@ -33,6 +33,7 @@ export function DashboardShell({ children, nav, switcher }: DashboardShellProps)
   const locale = useLocale();
   const setDirection = useUiStore((state) => state.setDirection);
   const isSwitchingStore = useIsMutating({ mutationKey: ['store-switch'] }) > 0;
+  const t = useTranslations('nav');
 
   useEffect(() => {
     setDirection(locale as 'en' | 'ar');
@@ -60,7 +61,7 @@ export function DashboardShell({ children, nav, switcher }: DashboardShellProps)
         <div className="pointer-events-none absolute inset-0 z-40 flex items-start justify-center bg-background/40 pt-20 backdrop-blur-[1px]">
           <div className="flex items-center gap-3 rounded-lg border bg-background px-4 py-3 text-sm shadow-lg">
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
-            <span>Switching store...</span>
+            <span>{t('switchingStore')}</span>
           </div>
         </div>
       ) : null}

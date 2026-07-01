@@ -16,19 +16,19 @@ import { logger } from '@/lib/logger';
 import type { MarketingPageDetail } from '@/types/marketing-page';
 import type { ApiError } from '@/types/api';
 
-export function usePublishMarketingPage(storeId: string, pageId: string) {
+export function usePublishMarketingPage(storeSlug: string, pageId: string) {
   const queryClient = useQueryClient();
   const t           = useTranslations('cmsPages');
 
   return useMutation<MarketingPageDetail, ApiError, void>({
-    mutationFn: () => publishMarketingPage(storeId, pageId),
+    mutationFn: () => publishMarketingPage(storeSlug, pageId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.cmsPages(storeId).lists(),
+        queryKey: queryKeys.cmsPages(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.cmsPages(storeId).detail(pageId),
+        queryKey: queryKeys.cmsPages(storeSlug).detail(pageId),
       });
       toast.success(t('form.publishSuccess'));
     },
@@ -40,19 +40,19 @@ export function usePublishMarketingPage(storeId: string, pageId: string) {
   });
 }
 
-export function useUnpublishMarketingPage(storeId: string, pageId: string) {
+export function useUnpublishMarketingPage(storeSlug: string, pageId: string) {
   const queryClient = useQueryClient();
   const t           = useTranslations('cmsPages');
 
   return useMutation<MarketingPageDetail, ApiError, void>({
-    mutationFn: () => unpublishMarketingPage(storeId, pageId),
+    mutationFn: () => unpublishMarketingPage(storeSlug, pageId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.cmsPages(storeId).lists(),
+        queryKey: queryKeys.cmsPages(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.cmsPages(storeId).detail(pageId),
+        queryKey: queryKeys.cmsPages(storeSlug).detail(pageId),
       });
       toast.success(t('form.unpublishSuccess'));
     },

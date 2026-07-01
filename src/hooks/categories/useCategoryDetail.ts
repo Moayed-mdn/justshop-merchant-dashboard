@@ -12,12 +12,12 @@ import { mapCategoryDetail } from '@/lib/mappers/categories';
 import type { CategoryDetail, CategoryDetailView } from '@/types/category';
 import type { ApiError } from '@/types/api';
 
-export function useCategoryDetail(storeId: string, categoryId: string) {
+export function useCategoryDetail(storeSlug: string, categoryId: string) {
   return useQuery<CategoryDetail, ApiError, CategoryDetailView>({
-    queryKey: queryKeys.categories(storeId).detail(categoryId),
-    queryFn:  () => getCategoryDetail(storeId, categoryId),
+    queryKey: queryKeys.categories(storeSlug).detail(categoryId),
+    queryFn:  () => getCategoryDetail(storeSlug, categoryId),
     staleTime: QUERY_CONFIG.staleTime,
-    select:    mapCategoryDetail,
-    enabled:   Boolean(storeId) && Boolean(categoryId),
+    select:    (category) => mapCategoryDetail(category, storeSlug),
+    enabled:   Boolean(storeSlug) && Boolean(categoryId),
   });
 }

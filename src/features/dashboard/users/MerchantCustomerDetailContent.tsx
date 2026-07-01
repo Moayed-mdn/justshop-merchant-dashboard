@@ -7,6 +7,7 @@ import { useUserDetail } from '@/hooks/users/useUserDetail';
 import { useTranslations } from 'next-intl';
 import { UserDetailSkeleton } from '@/features/dashboard/users/UserDetailSkeleton';
 import UserDetailCard from '@/features/dashboard/users/UserDetailCard';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Customer Detail Content (Client Component).
@@ -18,9 +19,9 @@ export default function MerchantCustomerDetailContent() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('users');
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
-  const { data: user, isLoading, error } = useUserDetail(storeId, userId);
+  const { data: user, isLoading, error } = useUserDetail(storeSlug, userId);
 
   if (!activeStore) {
     return (
@@ -48,5 +49,5 @@ export default function MerchantCustomerDetailContent() {
     );
   }
 
-  return <UserDetailCard user={user} storeId={storeId} />;
+  return <UserDetailCard user={user} storeSlug={storeSlug} />;
 }

@@ -20,15 +20,15 @@ import { Loader2, TrendingUp, TrendingDown, DollarSign, ShoppingCart, Users, Pac
 import { cn } from '@/lib/utils';
 
 interface WorkspaceDashboardContentProps {
-  storeId: string;
+  storeSlug: string;
 }
 
-export function WorkspaceDashboardContent({ storeId }: WorkspaceDashboardContentProps) {
+export function WorkspaceDashboardContent({ storeSlug }: WorkspaceDashboardContentProps) {
   const t = useTranslations('dashboard');
   
-  const { data: stats, isLoading: statsLoading, error: statsError, isError: isStatsError } = useDashboardStats(storeId);
-  const { data: orders, isLoading: ordersLoading, error: ordersError, isError: isOrdersError } = useRecentOrders(storeId);
-  const { data: products, isLoading: productsLoading, error: productsError, isError: isProductsError } = useTopProducts(storeId);
+  const { data: stats, isLoading: statsLoading, error: statsError, isError: isStatsError } = useDashboardStats(storeSlug);
+  const { data: orders, isLoading: ordersLoading, error: ordersError, isError: isOrdersError } = useRecentOrders(storeSlug);
+  const { data: products, isLoading: productsLoading, error: productsError, isError: isProductsError } = useTopProducts(storeSlug);
 
   const isLoading = statsLoading || ordersLoading || productsLoading;
   const hasError = (isStatsError || isOrdersError || isProductsError) && !isLoading;
@@ -48,6 +48,11 @@ export function WorkspaceDashboardContent({ storeId }: WorkspaceDashboardContent
         <p className="text-sm text-destructive">{t('error')}</p>
       </div>
     );
+  }
+
+  // Ensure stats is defined before rendering
+  if (!stats) {
+    return null;
   }
 
   return (
@@ -91,7 +96,7 @@ export function WorkspaceDashboardContent({ storeId }: WorkspaceDashboardContent
             <CardTitle>{t('recentOrders.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            {orders.length === 0 ? (
+            {!orders || orders.length === 0 ? (
               <p className="text-sm text-muted-foreground">{t('recentOrders.empty')}</p>
             ) : (
               <Table>
@@ -131,7 +136,7 @@ export function WorkspaceDashboardContent({ storeId }: WorkspaceDashboardContent
             <CardTitle>{t('topProducts.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            {products.length === 0 ? (
+            {!products || products.length === 0 ? (
               <p className="text-sm text-muted-foreground">{t('topProducts.empty')}</p>
             ) : (
               <div className="space-y-4">

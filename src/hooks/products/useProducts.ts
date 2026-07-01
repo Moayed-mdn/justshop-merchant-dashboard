@@ -14,11 +14,11 @@ import type { PaginatedResponse, ApiError } from '@/types/api';
 import { mapProductListItem } from '@/lib/mappers/products';
 import { selectPaginatedList } from '@/lib/mappers/pagination';
 
-export function useProducts(storeId: string, filters: ProductFilters) {
+export function useProducts(storeSlug: string, filters: ProductFilters) {
   return useQuery<PaginatedResponse<AdminProduct>, ApiError, PaginatedResponse<ProductListItemView>>({
-    queryKey: queryKeys.products(storeId).list(filters),
-    queryFn: () => getProducts(storeId, filters),
+    queryKey: queryKeys.products(storeSlug).list(filters),
+    queryFn: () => getProducts(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
-    select: selectPaginatedList(mapProductListItem),
+    select: selectPaginatedList((product) => mapProductListItem(product, storeSlug)),
   });
 }

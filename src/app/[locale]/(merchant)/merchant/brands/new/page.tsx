@@ -4,6 +4,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import CreateBrandForm from '@/features/dashboard/brands/CreateBrandForm';
 import { useTranslations } from 'next-intl';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Create Brand Page.
@@ -11,13 +12,13 @@ import { useTranslations } from 'next-intl';
  * 
  * This is the workspace-level brand creation page that uses the active store
  * from the merchant's context. For direct store-scoped access, use the route:
- * /stores/[storeId]/brands/new
+ * /stores/[storeSlug]/brands/new
  */
 export default function MerchantBrandCreatePage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('brands');
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
   if (!activeStore) {
     return (
@@ -25,17 +26,14 @@ export default function MerchantBrandCreatePage() {
         <div>
           <h1 className="text-2xl font-bold">{t('form.createTitle', { default: 'Create Brand' })}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to create a brand."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <CreateBrandForm storeId={storeId} />
+      <CreateBrandForm storeSlug={storeSlug} />
     </div>
   );
 }

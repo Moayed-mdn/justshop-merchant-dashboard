@@ -26,19 +26,19 @@ import { Label } from '@/components/ui/label';
 import type { CreateNavigationMenuPayload } from '@/types/navigation';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export default function CreateNavigationMenuDialog({
-  storeId,
+  storeSlug,
   open,
   onOpenChange,
 }: Props) {
   const t = useTranslations('theme.navigation.createDialog');
   const router = useRouter();
-  const createMutation = useCreateNavigationMenu(storeId);
+  const createMutation = useCreateNavigationMenu(storeSlug);
 
   const [formData, setFormData] = useState<CreateNavigationMenuPayload>({
     name: '',

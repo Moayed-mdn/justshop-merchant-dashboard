@@ -27,21 +27,21 @@ import { useCategories } from '@/hooks/categories/useCategories';
 import { useCategoryDetail } from '@/hooks/categories/useCategoryDetail';
 
 interface Props {
-  storeId:  string;
+  storeSlug:  string;
   value:    number | null;
   onChange: (change: { id: number | null; name: string | null }) => void;
 }
 
 const NO_CATEGORY = '__none__';
 
-export function CategorySelect({ storeId, value, onChange }: Props) {
+export function CategorySelect({ storeSlug, value, onChange }: Props) {
   const t = useTranslations('products');
 
-  const { data, isLoading } = useCategories(storeId);
+  const { data, isLoading } = useCategories(storeSlug);
   const categories = data?.data ?? [];
   const selectedCategory = categories.find((category) => category.id === value);
   const { data: selectedCategoryDetail } = useCategoryDetail(
-    storeId,
+    storeSlug,
     value !== null && !selectedCategory ? String(value) : '',
   );
 

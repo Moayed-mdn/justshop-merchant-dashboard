@@ -19,17 +19,17 @@ import {
 } from '@/components/ui/dialog';
 
 interface Props {
-  storeId:    string;
+  storeSlug:    string;
   categoryId: string;
   isDeleted:  boolean;
 }
 
-export function DeleteCategoryButton({ storeId, categoryId, isDeleted }: Props) {
+export function DeleteCategoryButton({ storeSlug, categoryId, isDeleted }: Props) {
   const t       = useTranslations('categories');
   const [open, setOpen] = useState(false);
 
-  const deleteMutation  = useDeleteCategory(storeId, categoryId);
-  const restoreMutation = useRestoreCategory(storeId, categoryId);
+  const deleteMutation  = useDeleteCategory(storeSlug, categoryId);
+  const restoreMutation = useRestoreCategory(storeSlug, categoryId);
 
   if (isDeleted) {
     return (

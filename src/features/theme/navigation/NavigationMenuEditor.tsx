@@ -24,14 +24,14 @@ import NavigationHealthWidget from './NavigationHealthWidget';
 import type { UpdateNavigationMenuPayload } from '@/types/navigation';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   menuId: string;
 }
 
-export default function NavigationMenuEditor({ storeId, menuId }: Props) {
+export default function NavigationMenuEditor({ storeSlug, menuId }: Props) {
   const t = useTranslations('theme.navigation.editor');
-  const { data: menu, isLoading, error } = useNavigationMenu(storeId, menuId);
-  const updateMutation = useUpdateNavigationMenu(storeId, menuId);
+  const { data: menu, isLoading, error } = useNavigationMenu(storeSlug, menuId);
+  const updateMutation = useUpdateNavigationMenu(storeSlug, menuId);
 
   const [formData, setFormData] = useState<UpdateNavigationMenuPayload | null>(null);
 
@@ -165,7 +165,7 @@ export default function NavigationMenuEditor({ storeId, menuId }: Props) {
               <CardDescription>{t('items.description')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <MenuItemsTree storeId={storeId} menuId={menuId} items={menu.items} />
+              <MenuItemsTree storeSlug={storeSlug} menuId={menuId} items={menu.items} />
             </CardContent>
           </Card>
         </div>

@@ -31,7 +31,7 @@ function resolveIsActive(
  * Fetch paginated categories list.
  */
 export async function getCategories(
-  storeId: string,
+  storeSlug: string,
   filters: CategoryFilters,
 ): Promise<PaginatedResponse<CategoryListItem>> {
   const params: Record<string, string | number> = {};
@@ -42,7 +42,7 @@ export async function getCategories(
   if (filters.perPage !== 15) params.per_page  = filters.perPage;
 
   const response = await clientApi.get<PaginatedResponse<CategoryListItem>>(
-    API_ROUTES.store(storeId).categories().list(),
+    API_ROUTES.store(storeSlug).categories().list(),
     { params },
   );
   return response;
@@ -52,11 +52,11 @@ export async function getCategories(
  * Fetch single category by ID.
  */
 export async function getCategoryDetail(
-  storeId: string,
+  storeSlug: string,
   categoryId: string,
 ): Promise<CategoryDetail> {
   const response = await clientApi.get<ApiResponse<CategoryDetail>>(
-    API_ROUTES.store(storeId).categories().detail(categoryId),
+    API_ROUTES.store(storeSlug).categories().detail(categoryId),
   );
   return response.data;
 }
@@ -65,11 +65,11 @@ export async function getCategoryDetail(
  * Create a new category.
  */
 export async function createCategory(
-  storeId: string,
+  storeSlug: string,
   payload: CreateCategoryPayload,
 ): Promise<CategoryDetail> {
   const response = await clientApi.post<ApiResponse<CategoryDetail>>(
-    API_ROUTES.store(storeId).categories().create(),
+    API_ROUTES.store(storeSlug).categories().create(),
     payload,
   );
   return response.data;
@@ -79,12 +79,12 @@ export async function createCategory(
  * Update an existing category.
  */
 export async function updateCategory(
-  storeId: string,
+  storeSlug: string,
   categoryId: string,
   payload: UpdateCategoryPayload,
 ): Promise<CategoryDetail> {
   const response = await clientApi.patch<ApiResponse<CategoryDetail>>(
-    API_ROUTES.store(storeId).categories().update(categoryId),
+    API_ROUTES.store(storeSlug).categories().update(categoryId),
     payload,
   );
   return response.data;
@@ -94,11 +94,11 @@ export async function updateCategory(
  * Soft-delete a category.
  */
 export async function deleteCategory(
-  storeId: string,
+  storeSlug: string,
   categoryId: string,
 ): Promise<void> {
   await clientApi.delete(
-    API_ROUTES.store(storeId).categories().delete(categoryId),
+    API_ROUTES.store(storeSlug).categories().delete(categoryId),
   );
 }
 
@@ -106,11 +106,11 @@ export async function deleteCategory(
  * Restore a soft-deleted category.
  */
 export async function restoreCategory(
-  storeId: string,
+  storeSlug: string,
   categoryId: string,
 ): Promise<CategoryDetail> {
   const response = await clientApi.patch<ApiResponse<CategoryDetail>>(
-    API_ROUTES.store(storeId).categories().restore(categoryId),
+    API_ROUTES.store(storeSlug).categories().restore(categoryId),
   );
   return response.data;
 }

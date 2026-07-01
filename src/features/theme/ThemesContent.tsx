@@ -18,6 +18,7 @@ import { Pagination } from '@/components/shared/Pagination';
 import { ROUTES } from '@/config/routes';
 import { Plus } from 'lucide-react';
 import type { ThemeFilters } from '@/types/theme';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 export function ThemesContent() {
   const t = useTranslations();
@@ -29,9 +30,9 @@ export function ThemesContent() {
     perPage: 12,
   });
 
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
 
-  const { data, isLoading, error } = useThemes(activeStoreId!, filters);
+  const { data, isLoading, error } = useThemes(activeStoreSlug!, filters);
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));

@@ -57,44 +57,44 @@ export interface NavigationResourceProduct {
 /**
  * Fetch all available pages for the store
  */
-export function useNavigationPages(storeId: string, search?: string) {
+export function useNavigationPages(storeSlug: string, search?: string) {
   return useQuery({
-    queryKey: ['navigation-resources', 'pages', storeId, search],
-    queryFn: () => getNavigationResourcePages(storeId, search),
-    enabled: !!storeId,
+    queryKey: ['navigation-resources', 'pages', storeSlug, search],
+    queryFn: () => getNavigationResourcePages(storeSlug, search),
+    enabled: !!storeSlug,
   });
 }
 
 /**
  * Fetch all available categories for the store
  */
-export function useNavigationCategories(storeId: string, search?: string) {
+export function useNavigationCategories(storeSlug: string, search?: string) {
   return useQuery({
-    queryKey: ['navigation-resources', 'categories', storeId, search],
-    queryFn: () => getNavigationResourceCategories(storeId, search),
-    enabled: !!storeId,
+    queryKey: ['navigation-resources', 'categories', storeSlug, search],
+    queryFn: () => getNavigationResourceCategories(storeSlug, search),
+    enabled: !!storeSlug,
   });
 }
 
 /**
  * Fetch all available products for the store
  */
-export function useNavigationProducts(storeId: string, search?: string) {
+export function useNavigationProducts(storeSlug: string, search?: string) {
   return useQuery({
-    queryKey: ['navigation-resources', 'products', storeId, search],
-    queryFn: () => getNavigationResourceProducts(storeId, search),
-    enabled: !!storeId,
+    queryKey: ['navigation-resources', 'products', storeSlug, search],
+    queryFn: () => getNavigationResourceProducts(storeSlug, search),
+    enabled: !!storeSlug,
   });
 }
 
 /**
  * Validate if a URL exists (debounced for real-time validation)
  */
-export function useValidateNavigationUrl(storeId: string, url: string, enabled: boolean = true) {
+export function useValidateNavigationUrl(storeSlug: string, url: string, enabled: boolean = true) {
   return useQuery({
-    queryKey: ['navigation-validate-url', storeId, url],
-    queryFn: () => validateNavigationUrl(storeId, url),
-    enabled: enabled && !!storeId && !!url && url.length > 1,
+    queryKey: ['navigation-validate-url', storeSlug, url],
+    queryFn: () => validateNavigationUrl(storeSlug, url),
+    enabled: enabled && !!storeSlug && !!url && url.length > 1,
     staleTime: 30000, // Cache for 30 seconds
   });
 }

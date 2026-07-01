@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import type { PageTemplateView } from '@/types/theme';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 export function PageTemplatesContent() {
   const t = useTranslations();
@@ -21,10 +22,10 @@ export function PageTemplatesContent() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<string | null>(null);
 
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
 
-  const { data: templates, isLoading, error } = usePageTemplates(activeStoreId!);
-  const deleteMutation = useDeletePageTemplate(activeStoreId!);
+  const { data: templates, isLoading, error } = usePageTemplates(activeStoreSlug!);
+  const deleteMutation = useDeletePageTemplate(activeStoreSlug!);
 
   const handleDelete = async (templateId: string) => {
     try {

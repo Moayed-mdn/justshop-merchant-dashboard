@@ -23,7 +23,7 @@ const DEFAULT_FILTERS: CategoryFilters = {
 };
 
 export function useCategories(
-  storeId: string,
+  storeSlug: string,
   filters: CategoryFilters = DEFAULT_FILTERS,
 ) {
   return useQuery<
@@ -31,11 +31,11 @@ export function useCategories(
     ApiError,
     PaginatedResponse<CategoryListItemView>
   >({
-    queryKey: queryKeys.categories(storeId).list(
+    queryKey: queryKeys.categories(storeSlug).list(
       filters as unknown as Record<string, unknown>,
     ),
-    queryFn:   () => getCategories(storeId, filters),
+    queryFn:   () => getCategories(storeSlug, filters),
     staleTime: QUERY_CONFIG.staleTime,
-    select:    selectPaginatedList(mapCategoryListItem),
+    select:    selectPaginatedList((category) => mapCategoryListItem(category, storeSlug)),
   });
 }

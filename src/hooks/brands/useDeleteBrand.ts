@@ -14,20 +14,20 @@ import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
 import type { ApiError } from '@/types/api';
 
-export function useDeleteBrand(storeId: string, brandId: string) {
+export function useDeleteBrand(storeSlug: string, brandId: string) {
   const queryClient = useQueryClient();
   const router      = useRouter();
   const t           = useTranslations('brands');
 
   return useMutation<void, ApiError, void>({
-    mutationFn: () => deleteBrand(storeId, brandId),
+    mutationFn: () => deleteBrand(storeSlug, brandId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.brands(storeId).lists(),
+        queryKey: queryKeys.brands(storeSlug).lists(),
       });
       queryClient.removeQueries({
-        queryKey: queryKeys.brands(storeId).detail(brandId),
+        queryKey: queryKeys.brands(storeSlug).detail(brandId),
       });
       toast.success(t('form.deleteSuccess'));
       router.push(ROUTES.merchant.brands.list());

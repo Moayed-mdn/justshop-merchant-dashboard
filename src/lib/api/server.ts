@@ -11,7 +11,7 @@ export interface ServerFetchOptions {
 }
 
 async function parseResponseBody<T>(response: Response): Promise<T> {
-  if (response.status === 204) {
+  if (response.status === 204 || response.status === 205) {
     return undefined as T;
   }
 
@@ -21,7 +21,7 @@ async function parseResponseBody<T>(response: Response): Promise<T> {
   }
 
   const text = await response.text();
-  if (!text) {
+  if (!text.trim()) {
     return undefined as T;
   }
 

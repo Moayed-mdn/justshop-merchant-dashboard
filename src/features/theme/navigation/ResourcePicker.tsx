@@ -24,7 +24,7 @@ import type { NavigationMenuItem } from '@/types/navigation';
 import { cn } from '@/lib/utils';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   type: 'page' | 'category' | 'product';
   selectedId: number | null;
   onSelect: (resource: {
@@ -35,22 +35,22 @@ interface Props {
   }) => void;
 }
 
-export default function ResourcePicker({ storeId, type, selectedId, onSelect }: Props) {
+export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }: Props) {
   const locale = useLocale();
   const t = useTranslations('theme.navigation.resourcePicker');
   const [search, setSearch] = useState('');
 
   // Fetch resources based on type
   const { data: pages, isLoading: loadingPages } = useNavigationPages(
-    storeId,
+    storeSlug,
     type === 'page' ? search : undefined
   );
   const { data: categories, isLoading: loadingCategories } = useNavigationCategories(
-    storeId,
+    storeSlug,
     type === 'category' ? search : undefined
   );
   const { data: products, isLoading: loadingProducts } = useNavigationProducts(
-    storeId,
+    storeSlug,
     type === 'product' ? search : undefined
   );
 

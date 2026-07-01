@@ -14,20 +14,20 @@ import { ROUTES } from '@/config/routes';
 import { logger } from '@/lib/logger';
 import type { ApiError } from '@/types/api';
 
-export function useDeleteMarketingPage(storeId: string, pageId: string) {
+export function useDeleteMarketingPage(storeSlug: string, pageId: string) {
   const queryClient = useQueryClient();
   const router      = useRouter();
   const t           = useTranslations('cmsPages');
 
   return useMutation<void, ApiError, void>({
-    mutationFn: () => deleteMarketingPage(storeId, pageId),
+    mutationFn: () => deleteMarketingPage(storeSlug, pageId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.cmsPages(storeId).lists(),
+        queryKey: queryKeys.cmsPages(storeSlug).lists(),
       });
       queryClient.removeQueries({
-        queryKey: queryKeys.cmsPages(storeId).detail(pageId),
+        queryKey: queryKeys.cmsPages(storeSlug).detail(pageId),
       });
       toast.success(t('form.deleteSuccess'));
       router.push(ROUTES.merchant.cmsPages());

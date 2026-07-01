@@ -18,16 +18,16 @@ interface UseCreateUserOptions {
   onError?: (error: ApiError) => void;
 }
 
-export function useCreateUser(storeId: string, options?: UseCreateUserOptions) {
+export function useCreateUser(storeSlug: string, options?: UseCreateUserOptions) {
   const queryClient = useQueryClient();
   const t = useTranslations('users');
 
   return useMutation<UserDetail, ApiError, CreateMerchantUserPayload>({
-    mutationFn: (payload) => createMerchantUser(storeId, payload),
+    mutationFn: (payload) => createMerchantUser(storeSlug, payload),
     onSuccess: (user) => {
       // Invalidate users list query to refresh table
       queryClient.invalidateQueries({
-        queryKey: queryKeys.users(storeId).lists(),
+        queryKey: queryKeys.users(storeSlug).lists(),
       });
 
       toast.success(t('createSuccess'));

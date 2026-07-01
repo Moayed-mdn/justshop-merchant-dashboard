@@ -15,16 +15,16 @@ import { useStoreStore, selectCurrentStoreCurrency } from '@/stores/storeStore';
 
 /**
  * Fetch dashboard stats for a store.
- * @param storeId - Store ID from URL params
+ * @param storeSlug - Store ID from URL params
  */
-export function useDashboardStats(storeId: string) {
+export function useDashboardStats(storeSlug: string) {
   // TODO: storeStore currency defaults to 'USD' until store settings
   // endpoint is available. StoreInitializer will populate this later.
   const currency = useStoreStore(selectCurrentStoreCurrency);
 
   return useQuery<DashboardStats, Error, DashboardStatsView>({
-    queryKey: queryKeys.dashboard(storeId).stats(),
-    queryFn: () => getDashboardStats(storeId),
+    queryKey: queryKeys.dashboard(storeSlug).stats(),
+    queryFn: () => getDashboardStats(storeSlug),
     staleTime: QUERY_CONFIG.staleTime,
     select: (data) => mapDashboardStats(data, currency),
   });

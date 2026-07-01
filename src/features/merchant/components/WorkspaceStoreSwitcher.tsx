@@ -15,6 +15,7 @@ import { ROUTES } from '@/config/routes';
 import { useRouter } from '@/lib/navigation';
 import { needsProvisioningFlow } from '@/lib/auth/bootstrap-routing';
 import { cn } from '@/lib/utils';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Maps backend store-status values to human-readable labels and explanations.
@@ -48,7 +49,7 @@ export function WorkspaceStoreSwitcher() {
   // the Select as uncontrolled until bootstrap resolves. An empty string value
   // causes Base UI to fire onValueChange when the value later becomes a real
   // store ID, which incorrectly triggers a store switch and redirects the user.
-  const selectValue = activeStore ? String(activeStore.id) : undefined;
+  const selectValue = activeStore ? getStoreRouteParam(activeStore) : undefined;
 
   const handleValueChange = (value: string | null) => {
     if (!value) return;
@@ -97,7 +98,7 @@ export function WorkspaceStoreSwitcher() {
             return (
               <SelectItem
                 key={store.id}
-                value={String(store.id)}
+                value={getStoreRouteParam(store)}
                 disabled={!isStoreActive}
                 className={cn(!isStoreActive && 'opacity-50')}
                 title={!isStoreActive && statusInfo ? statusInfo.description : undefined}

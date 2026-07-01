@@ -13,21 +13,21 @@ import { getTranslations } from 'next-intl/server';
 import EditProductForm from './EditProductForm';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   productId: string;
 }
 
-export default async function EditProductContent({ storeId, productId }: Props) {
+export default async function EditProductContent({ storeSlug, productId }: Props) {
   const t = await getTranslations('products');
 
   try {
     const response = await serverFetch<ApiResponse<AdminProduct>>(
-      API_ROUTES.store(storeId).products().detail(productId)
+      API_ROUTES.store(storeSlug).products().detail(productId)
     );
 
-    const product = mapProductDetail(response.data);
+    const product = mapProductDetail(response.data, storeSlug);
 
-    return <EditProductForm product={product} storeId={storeId} />;
+    return <EditProductForm product={product} storeSlug={storeSlug} />;
   } catch (error) {
     logger.error('Failed to load product detail', error);
 

@@ -22,16 +22,16 @@ import { useTags } from '@/hooks/tags/useTags';
 import { cn } from '@/lib/utils';
 
 interface Props {
-  storeId:  string;
+  storeSlug:  string;
   value:    number[];
   onChange: (next: number[]) => void;
 }
 
-export function TagSelect({ storeId, value, onChange }: Props) {
+export function TagSelect({ storeSlug, value, onChange }: Props) {
   const t = useTranslations('products');
   const [open, setOpen] = useState(false);
 
-  const { data, isLoading } = useTags(storeId);
+  const { data, isLoading } = useTags(storeSlug);
   const tags = data?.data ?? [];
 
   const toggle = (id: number) => {

@@ -5,32 +5,30 @@
  * Consistent header with breadcrumbs, title, and primary actions.
  */
 
-import { Breadcrumbs, BreadcrumbItem } from './Breadcrumbs';
+import { Breadcrumbs } from './Breadcrumbs';
 import { cn } from '@/lib/utils';
 
 interface PageHeaderProps {
-  breadcrumbs?: BreadcrumbItem[];
   title: string;
   description?: string;
   actions?: React.ReactNode;
   tabs?: React.ReactNode;
   className?: string;
+  showBreadcrumbs?: boolean;
 }
 
 export function PageHeader({
-  breadcrumbs,
   title,
   description,
   actions,
   tabs,
   className,
+  showBreadcrumbs = true,
 }: PageHeaderProps) {
   return (
     <div className={cn('space-y-4 mb-6', className)}>
       {/* Breadcrumbs */}
-      {breadcrumbs && breadcrumbs.length > 0 && (
-        <Breadcrumbs items={breadcrumbs} />
-      )}
+      {showBreadcrumbs && <Breadcrumbs />}
 
       {/* Title and Actions */}
       <div className="flex items-start justify-between gap-4">

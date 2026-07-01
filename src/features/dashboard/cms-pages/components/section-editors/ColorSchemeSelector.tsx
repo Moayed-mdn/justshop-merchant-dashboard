@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useThemes } from '@/hooks/themes/useThemes';
 import type { ColorScheme } from '@/types/theme';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 interface ColorSchemeSelectorProps {
   /** Path to the color_scheme field in form, e.g., "sections.0.settings.color_scheme" */
@@ -31,8 +32,8 @@ export function ColorSchemeSelector({
   const activeStore = useBootstrapStore((state) => state.activeStore);
 
   // Fetch themes to get color schemes
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
-  const { data: themesData } = useThemes(activeStoreId!, {
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
+  const { data: themesData } = useThemes(activeStoreSlug!, {
     page: 1,
     perPage: 100,
   });

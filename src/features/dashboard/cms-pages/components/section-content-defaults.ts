@@ -130,6 +130,23 @@ export function defaultContentFor(type: string): {
         settings: {},
       };
 
+    case 'announcement_bar':
+      return {
+        content: {},
+        settings: {
+          enabled: true,
+          text: 'Free shipping on orders over $50!',
+          phone: '+001234567890',
+          offer_text: 'Free shipping on orders over $50!',
+          shop_now_text: 'Shop Now',
+          shop_now_link: '/en/shop',
+          show_language_switcher: true,
+          dismissible: true,
+          bg_color: '#1F2937',
+          text_color: '#FFFFFF',
+        },
+      };
+
     case 'custom':
     default:
       return {

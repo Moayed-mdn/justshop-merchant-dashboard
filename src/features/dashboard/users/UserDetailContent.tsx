@@ -13,17 +13,17 @@ import { getTranslations } from 'next-intl/server';
 import UserDetailCard from './UserDetailCard';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   userId: string;
 }
 
-export default async function UserDetailContent({ storeId, userId }: Props) {
+export default async function UserDetailContent({ storeSlug, userId }: Props) {
   const t = await getTranslations('users');
 
   let user;
   try {
     const response = await serverFetch<ApiResponse<UserDetail>>(
-      API_ROUTES.store(storeId).users().detail(userId)
+      API_ROUTES.store(storeSlug).users().detail(userId)
     );
     user = mapUserDetail(response.data);
   } catch (error) {
@@ -38,5 +38,5 @@ export default async function UserDetailContent({ storeId, userId }: Props) {
     );
   }
 
-  return <UserDetailCard user={user} storeId={storeId} />;
+  return <UserDetailCard user={user} storeSlug={storeSlug} />;
 }

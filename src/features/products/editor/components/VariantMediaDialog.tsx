@@ -34,7 +34,7 @@ interface Props {
   variantLabel: string;
   images:       ProductImage[];
   onChange:     (next: ProductImage[]) => void;
-  storeId:      string;
+  storeSlug:      string;
   /** A single React element rendered as the dialog trigger button. */
   trigger:      React.ReactElement;
 }
@@ -48,7 +48,7 @@ export function VariantMediaDialog({
   variantLabel,
   images,
   onChange,
-  storeId,
+  storeSlug,
   trigger,
 }: Props) {
   const t = useTranslations('products');
@@ -113,7 +113,7 @@ export function VariantMediaDialog({
           value=""
           onChange={handleUpload}
           context="variants"
-          storeId={storeId}
+          storeSlug={storeSlug}
           label={t('editor.media.uploadImage')}
         />
 

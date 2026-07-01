@@ -4,6 +4,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useParams } from 'next/navigation';
 import { StoreSettingsForm } from '@/features/merchant/settings/StoreSettingsForm';
 import { useTranslations } from 'next-intl';
+import { matchesStoreIdentifier } from '@/lib/stores/route-param';
 
 /**
  * Store Settings Page.
@@ -13,13 +14,12 @@ export default function MerchantStoreSettingsPage() {
   const params = useParams();
   const stores = useBootstrapStore((state) => state.stores);
   const t = useTranslations('nav');
+  const tSettings = useTranslations('settings');
 
-  const storeIdentifier = params.store as string;
-  
-  // Find the store by ID or slug
-  const store = stores.find(
-    (s) => String(s.id) === storeIdentifier || s.slug === storeIdentifier
-  );
+  const storeSlug = params.store as string;
+
+  // Match store identifier via slug only.
+  const store = stores.find((s) => matchesStoreIdentifier(s, storeSlug));
 
   if (!store) {
     return (
@@ -40,9 +40,9 @@ export default function MerchantStoreSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{store.name} Settings</h1>
+        <h1 className="text-2xl font-bold">{store.name} {tSettings('title')}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Manage configuration for {store.name}.
+          {tSettings('description', { storeName: store.name })}
         </p>
       </div>
 

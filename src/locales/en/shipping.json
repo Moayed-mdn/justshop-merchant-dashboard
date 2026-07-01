@@ -1,0 +1,162 @@
+{
+  "title": "Shipping Settings",
+  "subtitle": "Manage shipping zones, methods, and address validation",
+  "tabs": {
+    "methods": "Shipping Methods",
+    "zones": "Shipping Zones",
+    "settings": "Address Settings"
+  },
+  "methods": {
+    "title": "Shipping Methods",
+    "subtitle": "Create and manage delivery options for your customers",
+    "empty": "No shipping methods yet",
+    "emptyDescription": "Create your first shipping method to offer delivery options at checkout",
+    "addNew": "Add Shipping Method",
+    "edit": "Edit Method",
+    "delete": "Delete Method",
+    "confirmDelete": "Are you sure you want to delete this shipping method?",
+    "confirmDeleteDescription": "This action cannot be undone. The method will be removed from all zones.",
+    "fields": {
+      "name": "Method Name",
+      "namePlaceholder": "e.g., Standard Shipping",
+      "code": "Code",
+      "codePlaceholder": "e.g., standard_shipping",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description of this shipping method",
+      "price": "Base Price",
+      "currency": "Currency",
+      "minOrderAmount": "Minimum Order Amount",
+      "maxOrderAmount": "Maximum Order Amount",
+      "estimatedDeliveryDays": "Estimated Delivery (days)",
+      "minDeliveryDays": "Min Delivery Days",
+      "maxDeliveryDays": "Max Delivery Days",
+      "isActive": "Active",
+      "sortOrder": "Sort Order"
+    },
+    "table": {
+      "name": "Name",
+      "price": "Price",
+      "delivery": "Delivery Time",
+      "status": "Status",
+      "zones": "Zones",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
+  },
+  "zones": {
+    "title": "Shipping Zones",
+    "subtitle": "Group countries into zones for targeted pricing",
+    "empty": "No shipping zones yet",
+    "emptyDescription": "Create zones to group countries and apply different pricing",
+    "addNew": "Add Shipping Zone",
+    "edit": "Edit Zone",
+    "delete": "Delete Zone",
+    "confirmDelete": "Are you sure you want to delete this shipping zone?",
+    "confirmDeleteDescription": "All method assignments for this zone will be removed.",
+    "fields": {
+      "name": "Zone Name",
+      "namePlaceholder": "e.g., North America",
+      "countries": "Countries",
+      "countriesPlaceholder": "Select countries for this zone",
+      "regions": "Regions (optional)",
+      "postalCodePatterns": "Postal Code Patterns (optional)",
+      "isActive": "Active"
+    },
+    "table": {
+      "name": "Name",
+      "countries": "Countries",
+      "methods": "Methods",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "countryCount": "{count} countries",
+    "methodCount": "{count} methods",
+    "assignMethod": "Assign Method",
+    "removeMethod": "Remove Method",
+    "updatePrice": "Update Price Override"
+  },
+  "addressSettings": {
+    "title": "Address Settings",
+    "subtitle": "Configure address validation and requirements",
+    "allowedCountries": {
+      "label": "Allowed Countries",
+      "description": "Select countries you ship to",
+      "placeholder": "Select countries",
+      "all": "All Countries"
+    },
+    "requiredFields": {
+      "label": "Required Address Fields",
+      "description": "Fields that customers must complete"
+    },
+    "options": {
+      "requirePhone": "Require Phone Number",
+      "requirePhoneDescription": "Customers must provide a phone number",
+      "requireCompany": "Require Company Name",
+      "requireCompanyDescription": "Customers must provide a company name",
+      "allowPoBoxes": "Allow P.O. Boxes",
+      "allowPoBoxesDescription": "Accept P.O. Box addresses"
+    },
+    "fields": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "company": "Company",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "city": "City",
+      "state": "State/Province",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "phone": "Phone"
+    }
+  },
+  "zoneMethodPricing": {
+    "title": "Zone Pricing Matrix",
+    "subtitle": "Configure zone-specific pricing for your shipping methods",
+    "basePrice": "Base: {price}",
+    "override": "Override: {price}",
+    "noOverride": "No override",
+    "setOverride": "Set Override",
+    "removeOverride": "Remove Override",
+    "notAssigned": "Not assigned",
+    "assignToZone": "Assign to zone"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "optional": "Optional",
+    "required": "Required"
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "priceRequired": "Price is required",
+    "priceMin": "Price must be 0 or greater",
+    "countriesRequired": "At least one country is required",
+    "minGreaterThanMax": "Minimum must be less than maximum",
+    "invalidDeliveryRange": "Max delivery days must be greater than or equal to min"
+  },
+  "messages": {
+    "methodCreated": "Shipping method created successfully",
+    "methodUpdated": "Shipping method updated successfully",
+    "methodDeleted": "Shipping method deleted successfully",
+    "zoneCreated": "Shipping zone created successfully",
+    "zoneUpdated": "Shipping zone updated successfully",
+    "zoneDeleted": "Shipping zone deleted successfully",
+    "settingsUpdated": "Address settings updated successfully",
+    "methodAssigned": "Method assigned to zone successfully",
+    "methodRemoved": "Method removed from zone successfully",
+    "priceUpdated": "Zone pricing updated successfully"
+  }
+}

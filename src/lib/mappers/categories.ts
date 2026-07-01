@@ -24,10 +24,10 @@ function resolveName(
 /**
  * Map category list item from raw API shape to view shape.
  */
-export function mapCategoryListItem(raw: CategoryListItem): CategoryListItemView {
+export function mapCategoryListItem(raw: CategoryListItem, storeSlug: string): CategoryListItemView {
   return {
     id:            raw.id,
-    storeId:       raw.store_id,
+    storeSlug,
     slug:          raw.slug,
     parentId:      raw.parent_id,
     sortOrder:     raw.sort_order,
@@ -42,10 +42,10 @@ export function mapCategoryListItem(raw: CategoryListItem): CategoryListItemView
 /**
  * Map category detail from raw API shape to view shape.
  */
-export function mapCategoryDetail(raw: CategoryDetail): CategoryDetailView {
+export function mapCategoryDetail(raw: CategoryDetail, storeSlug: string): CategoryDetailView {
   return {
     id:            raw.id,
-    storeId:       raw.store_id,
+    storeSlug,
     slug:          raw.slug,
     parentId:      raw.parent_id,
     sortOrder:     raw.sort_order,
@@ -57,7 +57,7 @@ export function mapCategoryDetail(raw: CategoryDetail): CategoryDetailView {
     deletedAt:     raw.deleted_at,
     translations:  raw.translations,
     parent:        raw.parent,
-    children:      raw.children.map(mapCategoryListItem),
+    children:      raw.children.map((child) => mapCategoryListItem(child, storeSlug)),
     breadcrumb:    raw.breadcrumb,
   };
 }

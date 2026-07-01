@@ -23,13 +23,13 @@ import BrandFilters from './BrandFilters';
 import type { BrandFilters as BrandFiltersType } from '@/schemas/brands';
 
 interface Props {
-  storeId:        string;
+  storeSlug:        string;
   initialFilters: BrandFiltersType;
 }
 
 const STATUS_OPTIONS = ['all', 'true', 'false'] as const;
 
-export default function BrandsContent({ storeId, initialFilters }: Props) {
+export default function BrandsContent({ storeSlug, initialFilters }: Props) {
   const t = useTranslations('brands');
 
   const [isActive, setIsActive] = useQueryState(
@@ -51,7 +51,7 @@ export default function BrandsContent({ storeId, initialFilters }: Props) {
 
   const filters: BrandFiltersType = { is_active: isActive, page, perPage };
 
-  const { data, isLoading, error } = useBrands(storeId, filters);
+  const { data, isLoading, error } = useBrands(storeSlug, filters);
   const queryClient = useQueryClient();
 
   if (error) {
@@ -59,9 +59,9 @@ export default function BrandsContent({ storeId, initialFilters }: Props) {
   }
 
   const deleteMutation = useMutation({
-    mutationFn: (brandId: string) => deleteBrand(storeId, brandId),
+    mutationFn: (brandId: string) => deleteBrand(storeSlug, brandId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.brands(storeId).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.brands(storeSlug).lists() });
       toast.success(t('form.deleteSuccess'));
     },
     onError: (err: any) => {
@@ -71,9 +71,9 @@ export default function BrandsContent({ storeId, initialFilters }: Props) {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (brandId: string) => restoreBrand(storeId, brandId),
+    mutationFn: (brandId: string) => restoreBrand(storeSlug, brandId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.brands(storeId).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.brands(storeSlug).lists() });
       toast.success(t('form.restoreSuccess'));
     },
     onError: (err: any) => {
@@ -127,7 +127,7 @@ export default function BrandsContent({ storeId, initialFilters }: Props) {
         perPage={perPage}
         onPerPageChange={setPerPage}
         isLoading={isLoading}
-        storeId={storeId}
+        storeSlug={storeSlug}
         onDelete={handleDelete}
         onRestore={handleRestore}
       />

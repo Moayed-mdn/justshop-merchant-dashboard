@@ -11,19 +11,22 @@ import {
 } from '@/components/ui/select';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useSwitchStore } from '@/hooks/auth/useSwitchStore';
+import { useTranslations } from 'next-intl';
 import { Loader2, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 export function StoreSwitcher() {
   const router = useRouter();
+  const t = useTranslations('nav');
   const stores = useBootstrapStore((state) => state.stores);
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const switchStoreMutation = useSwitchStore();
 
   const isDisabled = switchStoreMutation.isPending;
-  const selectValue = activeStore ? String(activeStore.id) : '';
+  const selectValue = getStoreRouteParam(activeStore);
 
   const selectableStores = useMemo(
     () => stores.filter((store) => store.status === 'active' && store.is_active),
@@ -59,12 +62,12 @@ export function StoreSwitcher() {
             {switchStoreMutation.isPending ? (
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             ) : null}
-            <SelectValue placeholder="Select store" />
+            <SelectValue placeholder={t('selectStore')} />
           </div>
         </SelectTrigger>
         <SelectContent>
           {selectableStores.map((store) => (
-            <SelectItem key={store.id} value={String(store.id)}>
+            <SelectItem key={store.id} value={getStoreRouteParam(store)}>
               {store.name}
             </SelectItem>
           ))}
@@ -74,13 +77,13 @@ export function StoreSwitcher() {
           <SelectItem value="__create_store__" className="text-primary focus:text-primary">
             <div className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              <span>Add store</span>
+              <span>{t('addStore')}</span>
             </div>
           </SelectItem>
         </SelectContent>
       </Select>
       {switchStoreMutation.isPending ? (
-        <Badge variant="outline" className="text-[10px] uppercase">Switching</Badge>
+        <Badge variant="outline" className="text-[10px] uppercase">{t('switching')}</Badge>
       ) : null}
     </div>
   );

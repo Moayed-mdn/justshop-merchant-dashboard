@@ -5,6 +5,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import NavigationMenuEditor from '@/features/theme/navigation/NavigationMenuEditor';
 import { useTranslations } from 'next-intl';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 interface Props {
   params: Promise<{
@@ -27,10 +28,7 @@ export default function NavigationMenuEditorPage({ params }: Props) {
         <div>
           <h1 className="text-2xl font-bold">{t('editor.title')}</h1>
         </div>
-        <WorkspaceEmptyState 
-          title="No active store"
-          message="Select a store from the switcher to edit navigation menus."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -38,7 +36,7 @@ export default function NavigationMenuEditorPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <NavigationMenuEditor 
-        storeId={String(activeStore.id)} 
+        storeSlug={getStoreRouteParam(activeStore)} 
         menuId={menuId}
       />
     </div>

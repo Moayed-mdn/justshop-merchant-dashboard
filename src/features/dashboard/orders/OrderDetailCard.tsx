@@ -6,10 +6,10 @@ import type { OrderDetailView } from '@/types/order'
 
 interface Props {
   order: OrderDetailView
-  storeId: string
+  storeSlug: string
 }
 
-export default function OrderDetailCard({ order, storeId }: Props) {
+export default function OrderDetailCard({ order, storeSlug }: Props) {
   const t = useTranslations('orders')
 
   return (

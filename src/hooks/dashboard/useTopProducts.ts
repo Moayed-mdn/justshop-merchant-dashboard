@@ -15,16 +15,16 @@ import { useStoreStore, selectCurrentStoreCurrency } from '@/stores/storeStore';
 
 /**
  * Fetch top products for a store.
- * @param storeId - Store ID from URL params
+ * @param storeSlug - Store ID from URL params
  */
-export function useTopProducts(storeId: string) {
+export function useTopProducts(storeSlug: string) {
   // TODO: storeStore currency defaults to 'USD' until store settings
   // endpoint is available. StoreInitializer will populate this later.
   const currency = useStoreStore(selectCurrentStoreCurrency);
 
   return useQuery<TopProductItem[], Error, TopProductItemView[]>({
-    queryKey: queryKeys.dashboard(storeId).topProducts(),
-    queryFn: () => getTopProducts(storeId),
+    queryKey: queryKeys.dashboard(storeSlug).topProducts(),
+    queryFn: () => getTopProducts(storeSlug),
     staleTime: QUERY_CONFIG.staleTime,
     select: (data) => data.map((item) => mapTopProduct(item, currency)),
   });

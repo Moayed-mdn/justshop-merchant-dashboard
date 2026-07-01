@@ -17,13 +17,13 @@ import { LinkListSetting } from './LinkListSetting';
 import type { SectionSchema } from '@/types/theme';
 
 interface SectionSettingsFormProps {
-  storeId: string;
+  storeSlug: string;
   schema: SectionSchema | null;
   settings: Record<string, unknown>;
   onChange: (settings: Record<string, unknown>) => void;
 }
 
-export function SectionSettingsForm({ storeId, schema, settings, onChange }: SectionSettingsFormProps) {
+export function SectionSettingsForm({ storeSlug, schema, settings, onChange }: SectionSettingsFormProps) {
   const t = useTranslations();
 
   const updateSetting = (id: string, value: unknown) => {
@@ -126,7 +126,7 @@ export function SectionSettingsForm({ storeId, schema, settings, onChange }: Sec
             return (
               <LinkListSetting
                 key={setting.id}
-                storeId={storeId}
+                storeSlug={storeSlug}
                 setting={setting}
                 value={String(value)}
                 onChange={(v) => updateSetting(setting.id, v)}

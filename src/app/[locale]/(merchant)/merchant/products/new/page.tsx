@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ROUTES } from '@/config/routes';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Create Product Page.
@@ -28,7 +29,7 @@ export default function MerchantProductCreatePage() {
   } | null>(null);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
   useEffect(() => {
     async function checkQuota() {
@@ -51,10 +52,7 @@ export default function MerchantProductCreatePage() {
         <div>
           <h1 className="text-2xl font-bold">{t('form.createTitle')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to create a product."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -128,9 +126,7 @@ export default function MerchantProductCreatePage() {
           open={showUpgradeDialog}
           onOpenChange={setShowUpgradeDialog}
           limitType="products"
-          currentPlan="Current Plan"
-          requiredPlan="Higher Plan"
-          currentCount={quotaCheck.currentCount || 0}
+          current={quotaCheck.currentCount || 0}
           limit={quotaCheck.limit || 0}
         />
       </div>
@@ -139,7 +135,7 @@ export default function MerchantProductCreatePage() {
 
   return (
     <div className="space-y-6">
-      <CreateProductForm storeId={storeId} />
+      <CreateProductForm storeSlug={storeSlug} />
     </div>
   );
 }

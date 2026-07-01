@@ -5,6 +5,7 @@
 
 import { getSubscription } from '@/lib/api/billing';
 import { TrialBanner, GracePeriodBanner } from '@/components/billing';
+import { BillingBannersClient } from './BillingBannersClient';
 
 export async function BillingBanners() {
   let subscription = null;
@@ -36,7 +37,7 @@ export async function BillingBanners() {
 
       {/* Grace Period Banner */}
       {showGraceBanner && subscription.grace_period_ends_at && (
-        <GracePeriodBanner gracePeriodEndsAt={subscription.grace_period_ends_at} />
+        <BillingBannersClient gracePeriodEndsAt={subscription.grace_period_ends_at} />
       )}
     </div>
   );

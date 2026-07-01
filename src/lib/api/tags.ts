@@ -22,13 +22,13 @@ import type { TagFilters } from '@/schemas/tags';
  *
  * Translation priority: 'en' → first available locale → empty string.
  */
-function mapTagRaw(raw: TagRaw): TagListItemView {
+function mapTagRaw(raw: TagRaw, storeSlug: string): TagListItemView {
   const locales   = Object.keys(raw.translations);
   const preferred = raw.translations['en'] ?? raw.translations[locales[0]];
 
   return {
     id:                raw.id,
-    storeId:           raw.store_id,
+    storeSlug,
     type:              raw.type,
     color:             raw.color,
     isActive:          raw.is_active,
@@ -52,10 +52,10 @@ function resolveActive(
 
 /**
  * Fetch a paginated list of tags.
- * filters is optional so TagSelect (no filters needed) can call useTags(storeId).
+ * filters is optional so TagSelect (no filters needed) can call useTags(storeSlug).
  */
 export async function getTags(
-  storeId: string,
+  storeSlug: string,
   filters?: TagFilters,
 ): Promise<PaginatedResponse<TagListItemView>> {
   const params: Record<string, string | number> = {};
@@ -70,54 +70,54 @@ export async function getTags(
   }
 
   const raw = await clientApi.get<PaginatedResponse<TagRaw>>(
-    API_ROUTES.store(storeId).tags().list(),
+    API_ROUTES.store(storeSlug).tags().list(),
     { params },
   );
 
   return {
     ...raw,
-    data: raw.data.map(mapTagRaw),
+    data: raw.data.map((item) => mapTagRaw(item, storeSlug)),
   };
 }
 
 export async function getTagDetail(
-  storeId: string,
+  storeSlug: string,
   tagId:   string,
 ): Promise<TagRaw> {
   const response = await clientApi.get<ApiResponse<TagRaw>>(
-    API_ROUTES.store(storeId).tags().detail(tagId),
+    API_ROUTES.store(storeSlug).tags().detail(tagId),
   );
   return response.data;
 }
 
 export async function createTag(
-  storeId:  string,
+  storeSlug:  string,
   payload:  CreateTagPayload,
 ): Promise<TagRaw> {
   const response = await clientApi.post<ApiResponse<TagRaw>>(
-    API_ROUTES.store(storeId).tags().create(),
+    API_ROUTES.store(storeSlug).tags().create(),
     payload,
   );
   return response.data;
 }
 
 export async function updateTag(
-  storeId:  string,
+  storeSlug:  string,
   tagId:    string,
   payload:  UpdateTagPayload,
 ): Promise<TagRaw> {
   const response = await clientApi.patch<ApiResponse<TagRaw>>(
-    API_ROUTES.store(storeId).tags().update(tagId),
+    API_ROUTES.store(storeSlug).tags().update(tagId),
     payload,
   );
   return response.data;
 }
 
 export async function deleteTag(
-  storeId: string,
+  storeSlug: string,
   tagId:   string,
 ): Promise<void> {
   await clientApi.delete(
-    API_ROUTES.store(storeId).tags().delete(tagId),
+    API_ROUTES.store(storeSlug).tags().delete(tagId),
   );
 }

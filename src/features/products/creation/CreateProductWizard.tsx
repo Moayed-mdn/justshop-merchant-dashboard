@@ -90,7 +90,7 @@ function buildDefaultMedia(): CreateProductMediaData {
 // ── Props ───────────────────────────────────────────────────────────────────
 
 interface Props {
-  storeId:           string;
+  storeSlug:           string;
   availableLocales?: Locale[];
   onSuccess:         (productId: number) => void;
 }
@@ -98,7 +98,7 @@ interface Props {
 // ── Component ───────────────────────────────────────────────────────────────
 
 export function CreateProductWizard({
-  storeId,
+  storeSlug,
   availableLocales = ['en'], // Default if not provided
   onSuccess,
 }: Props) {
@@ -118,7 +118,7 @@ export function CreateProductWizard({
   const isFirstStep = stepIndex === 0;
   const isLastStep  = stepIndex === STEPS.length - 1;
 
-  const mutation = useCreateProduct(storeId, {
+  const mutation = useCreateProduct(storeSlug, {
     onSuccess: (product) => {
       toast.success(t('form.createSuccess'));
       onSuccess(product.id);
@@ -213,7 +213,7 @@ export function CreateProductWizard({
                   ? 'bg-primary text-primary-foreground'
                   : i < stepIndex
                     ? 'bg-primary/20 text-primary'
-                    : 'bg-muted text-muted-foreground',
+                    : 'bg-muted-bg text-muted-foreground',
               ].join(' ')}
             >
               {i + 1}
@@ -236,7 +236,7 @@ export function CreateProductWizard({
       {/* Step content */}
       {step === 'content' && (
         <CreateProductContentStep
-          storeId={storeId}
+          storeSlug={storeSlug}
           availableLocales={availableLocales}
           content={content}
           tags={tags}
@@ -249,7 +249,7 @@ export function CreateProductWizard({
         <CreateProductStructureStep
           structure={structure}
           onChange={setStructure}
-          storeId={storeId}
+          storeSlug={storeSlug}
         />
       )}
 
@@ -257,7 +257,7 @@ export function CreateProductWizard({
         <CreateProductMediaStep
           media={media}
           onChange={setMedia}
-          storeId={storeId}
+          storeSlug={storeSlug}
         />
       )}
 

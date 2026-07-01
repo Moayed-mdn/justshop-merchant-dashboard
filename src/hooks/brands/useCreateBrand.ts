@@ -15,17 +15,17 @@ import { logger } from '@/lib/logger';
 import type { CreateBrandPayload } from '@/types/brand';
 import type { ApiError } from '@/types/api';
 
-export function useCreateBrand(storeId: string) {
+export function useCreateBrand(storeSlug: string) {
   const queryClient = useQueryClient();
   const router      = useRouter();
   const t           = useTranslations('brands');
 
   return useMutation<unknown, ApiError, CreateBrandPayload>({
-    mutationFn: (payload) => createBrand(storeId, payload),
+    mutationFn: (payload) => createBrand(storeSlug, payload),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.brands(storeId).lists(),
+        queryKey: queryKeys.brands(storeSlug).lists(),
       });
       toast.success(t('form.createSuccess'));
       router.push(ROUTES.merchant.brands.list());

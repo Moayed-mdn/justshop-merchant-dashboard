@@ -73,7 +73,7 @@ export type MarketingPageDetail = MarketingPageListItem;
 /** Marketing page list item — mapped for UI consumption */
 export interface MarketingPageListItemView {
   id:             number;
-  storeId:        number;
+  storeSlug:        string;
   title:          LocalizedString;
   slug:           LocalizedString;
   template:       MarketingPageTemplate;
@@ -90,7 +90,7 @@ export interface MarketingPageListItemView {
 /** Marketing page detail — mapped for UI consumption */
 export interface MarketingPageDetailView {
   id:              number;
-  storeId:         number;
+  storeSlug:         string;
   title:           LocalizedString;
   slug:            LocalizedString;
   excerpt:         LocalizedString;

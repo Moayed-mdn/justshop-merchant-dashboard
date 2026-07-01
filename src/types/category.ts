@@ -51,7 +51,7 @@ export interface CategoryDetail extends CategoryListItem {
 /** Category list item — mapped for UI consumption */
 export interface CategoryListItemView {
   id:            number;
-  storeId:       number;
+  storeSlug:       string;
   slug:          string;
   parentId:      number | null;
   sortOrder:     number;
@@ -66,7 +66,7 @@ export interface CategoryListItemView {
 /** Category detail — mapped for UI consumption */
 export interface CategoryDetailView {
   id:            number;
-  storeId:       number;
+  storeSlug:       string;
   slug:          string;
   parentId:      number | null;
   sortOrder:     number;

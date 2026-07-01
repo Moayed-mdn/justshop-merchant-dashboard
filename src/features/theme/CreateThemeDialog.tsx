@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 interface CreateThemeDialogProps {
   onClose: () => void;
@@ -32,9 +33,9 @@ export function CreateThemeDialog({ onClose }: CreateThemeDialogProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
 
-  const createMutation = useCreateTheme(activeStoreId!);
+  const createMutation = useCreateTheme(activeStoreSlug!);
 
   const handleCreate = async () => {
     if (!name.trim()) {

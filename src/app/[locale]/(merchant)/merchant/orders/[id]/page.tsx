@@ -10,6 +10,7 @@ import OrderDetailCard from '@/features/dashboard/orders/OrderDetailCard';
 import OrderLineItemsTable from '@/features/dashboard/orders/OrderLineItemsTable';
 import OrderStatusSelect from '@/features/dashboard/orders/OrderStatusSelect';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 /**
  * Merchant Workspace — Order Detail Page.
@@ -21,9 +22,9 @@ export default function MerchantOrderDetailPage() {
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const t = useTranslations('orders');
 
-  const storeId = activeStore ? String(activeStore.id) : '';
+  const storeSlug = getStoreRouteParam(activeStore);
 
-  const { data: order, isLoading, error } = useOrderDetail(storeId, orderId);
+  const { data: order, isLoading, error } = useOrderDetail(storeSlug, orderId);
 
   if (!activeStore) {
     return (
@@ -31,10 +32,7 @@ export default function MerchantOrderDetailPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('detail.title')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to view order details."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -57,7 +55,7 @@ export default function MerchantOrderDetailPage() {
         <h1 className="text-2xl font-bold">{t('detail.title')}</h1>
       </div>
 
-      <OrderDetailCard order={order} storeId={storeId} />
+      <OrderDetailCard order={order} storeSlug={storeSlug} />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
@@ -71,7 +69,7 @@ export default function MerchantOrderDetailPage() {
             </CardHeader>
             <CardContent>
               <OrderStatusSelect
-                storeId={storeId}
+                storeSlug={storeSlug}
                 orderId={String(order.id)}
                 currentStatus={order.status}
               />

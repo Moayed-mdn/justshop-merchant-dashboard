@@ -39,7 +39,7 @@ type PasswordFormData = z.infer<typeof schema>;
  * Allows changing user password.
  */
 export function ProfilePasswordCard() {
-  const t = useTranslations('settings.profile.password');
+  const t = useTranslations('settings');
   const [showSaved, setShowSaved] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -93,23 +93,23 @@ export function ProfilePasswordCard() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <Lock className="h-5 w-5" />
-          <CardTitle>{t('title')}</CardTitle>
+          <CardTitle>{t('profile.password.title')}</CardTitle>
         </div>
         <CardDescription>
-          {t('subtitle')}
+          {t('profile.password.subtitle')}
         </CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-6">
           {/* Current Password */}
           <div className="space-y-2">
-            <Label htmlFor="current-password">{t('currentPassword')}</Label>
+            <Label htmlFor="current-password">{t('profile.password.currentPassword')}</Label>
             <div className="relative">
               <Input
                 id="current-password"
                 type={showCurrentPassword ? 'text' : 'password'}
                 {...register('current_password')}
-                placeholder={t('currentPasswordPlaceholder')}
+                placeholder={t('profile.password.currentPasswordPlaceholder')}
                 disabled={isPending}
                 className="pe-10"
               />
@@ -133,13 +133,13 @@ export function ProfilePasswordCard() {
 
           {/* New Password */}
           <div className="space-y-2">
-            <Label htmlFor="new-password">{t('newPassword')}</Label>
+            <Label htmlFor="new-password">{t('profile.password.newPassword')}</Label>
             <div className="relative">
               <Input
                 id="new-password"
                 type={showNewPassword ? 'text' : 'password'}
                 {...register('password')}
-                placeholder={t('newPasswordPlaceholder')}
+                placeholder={t('profile.password.newPasswordPlaceholder')}
                 disabled={isPending}
                 className="pe-10"
               />
@@ -160,19 +160,19 @@ export function ProfilePasswordCard() {
               <p className="text-sm text-destructive">{errors.password.message}</p>
             )}
             <p className="text-xs text-muted-foreground">
-              {t('requirements')}
+              {t('profile.password.requirements')}
             </p>
           </div>
 
           {/* Confirm New Password */}
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">{t('confirmPassword')}</Label>
+            <Label htmlFor="confirm-password">{t('profile.password.confirmPassword')}</Label>
             <div className="relative">
               <Input
                 id="confirm-password"
                 type={showConfirmPassword ? 'text' : 'password'}
                 {...register('password_confirmation')}
-                placeholder={t('confirmPasswordPlaceholder')}
+                placeholder={t('profile.password.confirmPasswordPlaceholder')}
                 disabled={isPending}
                 className="pe-10"
               />
@@ -200,7 +200,7 @@ export function ProfilePasswordCard() {
               {showSaved ? (
                 <span className="flex items-center gap-1.5 text-sm text-green-600">
                   <CheckCircle2 className="h-4 w-4" />
-                  {t('passwordUpdated')}
+                  {t('profile.password.passwordUpdated')}
                 </span>
               ) : null}
             </div>
@@ -212,10 +212,10 @@ export function ProfilePasswordCard() {
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('updating')}
+                  {t('profile.password.updating')}
                 </>
               ) : (
-                t('updatePassword')
+                t('profile.password.updatePassword')
               )}
             </Button>
           </div>

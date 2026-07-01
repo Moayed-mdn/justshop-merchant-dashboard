@@ -18,21 +18,23 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
-import { Link } from '@/lib/navigation'
+import { Link, usePathname } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
+import { ROUTES } from '@/config/routes'
 import { PRIMARY_NAV_LINKS } from '@/features/marketing/constants/nav-links'
 import { CTA_LOGIN, CTA_GET_STARTED } from '@/features/marketing/constants/cta-links'
 
 interface MarketingNavbarProps {
   isAuthenticated?: boolean
-  storeId?: string | null
+  storeSlug?: string | null
 }
 
 export default function MarketingNavbar({ 
   isAuthenticated = false, 
-  storeId = null 
+  storeSlug = null 
 }: MarketingNavbarProps) {
   const t = useTranslations('marketing')
+  const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
@@ -85,27 +87,32 @@ export default function MarketingNavbar({
           className="hidden items-center gap-1 md:flex"
           role="list"
         >
-          {PRIMARY_NAV_LINKS.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className={cn(
-                  'rounded-md px-3 py-2 text-sm font-medium text-muted-foreground',
-                  'transition-colors duration-150 hover:bg-muted hover:text-foreground',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                )}
-              >
-                {t(link.label)}
-              </Link>
-            </li>
-          ))}
+          {PRIMARY_NAV_LINKS.map((link) => {
+            const isActive = pathname === link.href
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={cn(
+                    'rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    isActive
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                  )}
+                >
+                  {t(link.label)}
+                </Link>
+              </li>
+            )
+          })}
         </ul>
 
         {/* Desktop CTAs */}
         <div className="hidden items-center gap-3 md:flex">
           {isAuthenticated ? (
             <Link
-              href={storeId ? `/stores/${storeId}/dashboard` : '/onboarding'}
+              href={storeSlug ? ROUTES.merchant.dashboard() : '/onboarding'}
               className={cn(
                 'rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground',
                 'transition-colors duration-150 hover:bg-primary/90',
@@ -194,27 +201,32 @@ export default function MarketingNavbar({
       >
         <div className="mx-auto max-w-[1280px] px-4 pb-6 pt-4 sm:px-6">
           <ul className="flex flex-col gap-1" role="list">
-            {PRIMARY_NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={cn(
-                    'block rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground',
-                    'transition-colors duration-150 hover:bg-muted hover:text-foreground',
-                  )}
-                  onClick={closeMenu}
-                >
-                  {t(link.label)}
-                </Link>
-              </li>
-            ))}
+            {PRIMARY_NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={cn(
+                      'block rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150',
+                      isActive
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                    )}
+                    onClick={closeMenu}
+                  >
+                    {t(link.label)}
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
 
           {/* Mobile CTAs */}
           <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4">
             {isAuthenticated ? (
               <Link
-                href={storeId ? `/stores/${storeId}/dashboard` : '/onboarding'}
+                href={storeSlug ? ROUTES.merchant.dashboard() : '/onboarding'}
                 className={cn(
                   'block rounded-lg bg-primary px-4 py-2.5 text-center',
                   'text-sm font-semibold text-primary-foreground',

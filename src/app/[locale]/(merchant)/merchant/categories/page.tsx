@@ -9,6 +9,7 @@ import { FolderTree, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/lib/navigation';
 import { ROUTES } from '@/config/routes';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const INITIAL_FILTERS = {
   is_active: 'all' as const,
@@ -31,11 +32,7 @@ export default function MerchantCategoriesPage() {
           title={t('categories')}
           description="Organise your products with categories."
         />
-        <WorkspaceEmptyState 
-          icon={FolderTree}
-          title="No active store"
-          message="Select a store from the switcher to organise its product categories."
-        />
+        <WorkspaceEmptyState icon={FolderTree} />
       </div>
     );
   }
@@ -55,7 +52,7 @@ export default function MerchantCategoriesPage() {
           </Button>
         </Link>
       </MerchantPageHeader>
-      <CategoriesContent storeId={String(activeStore.id)} initialFilters={INITIAL_FILTERS} />
+      <CategoriesContent storeSlug={getStoreRouteParam(activeStore)} initialFilters={INITIAL_FILTERS} />
     </div>
   );
 }

@@ -19,17 +19,17 @@ import {
 } from '@/components/ui/dialog';
 
 interface Props {
-  storeId:   string;
+  storeSlug:   string;
   brandId:   string;
   isDeleted: boolean;
 }
 
-export function DeleteBrandButton({ storeId, brandId, isDeleted }: Props) {
+export function DeleteBrandButton({ storeSlug, brandId, isDeleted }: Props) {
   const t       = useTranslations('brands');
   const [open, setOpen] = useState(false);
 
-  const deleteMutation  = useDeleteBrand(storeId, brandId);
-  const restoreMutation = useRestoreBrand(storeId, brandId);
+  const deleteMutation  = useDeleteBrand(storeSlug, brandId);
+  const restoreMutation = useRestoreBrand(storeSlug, brandId);
 
   if (isDeleted) {
     return (

@@ -1,0 +1,44 @@
+{
+  "title": "Settings",
+  "subtitle": "Manage your business and account preferences",
+  "description": "Manage configuration for {storeName}.",
+  "noActiveStore": "No Active Store",
+  "noActiveStoreMessage": "Select a store from the switcher to manage your settings.",
+  "tabs": {
+    "general": "General",
+    "shipping": "Shipping"
+  },
+  "billing": {
+    "title": "Billing & Subscription",
+    "subtitle": "Manage your subscription plan and billing information"
+  },
+  "billingCard": {
+    "title": "Billing & Subscription",
+    "loading": "Loading subscription information...",
+    "subtitle": "Manage your subscription plan and billing",
+    "noSubscription": "You don't have an active subscription yet.",
+    "startTrial": "Start Free Trial",
+    "currentPlan": "Current Plan",
+    "billedCycle": "Billed {cycle}",
+    "trialEnds": "Trial ends",
+    "renews": "Renews on",
+    "manageSubscription": "Manage Subscription",
+    "viewPlans": "View Plans",
+    "opening": "Opening...",
+    "billingPortal": "Billing Portal"
+  },
+  "store": {
+    "title": "Store Configuration",
+    "subtitle": "Manage your store details and preferences",
+    "name": "Store Name",
+    "namePlaceholder": "Enter store name",
+    "nameHint": "This is your store's public name.",
+    "slug": "Store Slug",
+    "slugHint": "This is your store's URL.",
+    "slugChangeQuestion": "Need to change your slug?",
+    "slugChangeAnswer": "Please contact support to update your store slug.",
+    "saved": "Saved!",
+    "saving": "Saving...",
+    "save": "Save Changes"
+  }
+}

@@ -16,13 +16,13 @@ import ProductsTable from './ProductsTable';
 import ProductFiltersComponent from './ProductFilters';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   initialFilters: ProductFiltersType;
 }
 
 const statusOptions = ['all', 'active', 'draft'] as const;
 
-export default function ProductsContent({ storeId, initialFilters }: Props) {
+export default function ProductsContent({ storeSlug, initialFilters }: Props) {
   const t = useTranslations('products');
 
   const [search, setSearch] = useQueryState(
@@ -50,7 +50,7 @@ export default function ProductsContent({ storeId, initialFilters }: Props) {
     perPage,
   };
 
-  const { data, isLoading, error } = useProducts(storeId, filters);
+  const { data, isLoading, error } = useProducts(storeSlug, filters);
 
   if (error) {
     logger.error('Failed to load products', error);
@@ -85,7 +85,7 @@ export default function ProductsContent({ storeId, initialFilters }: Props) {
         perPage={perPage}
         onPerPageChange={setPerPage}
         isLoading={isLoading}
-        storeId={storeId}
+        storeSlug={storeSlug}
       />
     </div>
   );

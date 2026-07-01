@@ -18,7 +18,7 @@ type Mode = 'url' | 'upload';
 interface ImageUrlOrUploadProps {
   value: string;
   onChange: (value: string) => void;
-  storeId: string;
+  storeSlug: string;
   context?: MediaContext;
   label?: string;
   placeholder?: string;
@@ -28,7 +28,7 @@ interface ImageUrlOrUploadProps {
 export function ImageUrlOrUpload({
   value,
   onChange,
-  storeId,
+  storeSlug,
   context = 'cms',
   label,
   placeholder = 'https://example.com/image.jpg',
@@ -91,7 +91,7 @@ export function ImageUrlOrUpload({
         <GenericImageUploader
           value={value}
           onChange={onChange}
-          storeId={storeId}
+          storeSlug={storeSlug}
           context={context}
           disabled={disabled}
         />

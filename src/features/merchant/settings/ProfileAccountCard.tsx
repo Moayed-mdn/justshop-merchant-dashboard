@@ -29,7 +29,7 @@ import { ShieldAlert, Trash2, CheckCircle2, XCircle } from 'lucide-react';
  * Shows account status and dangerous actions like account deletion.
  */
 export function ProfileAccountCard() {
-  const t = useTranslations('settings.profile.account');
+  const t = useTranslations('settings');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const user = useBootstrapStore((state) => state.user);
 
@@ -48,10 +48,10 @@ export function ProfileAccountCard() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <ShieldAlert className="h-5 w-5" />
-            <CardTitle>{t('title')}</CardTitle>
+            <CardTitle>{t('profile.account.title')}</CardTitle>
           </div>
           <CardDescription>
-            {t('subtitle')}
+            {t('profile.account.subtitle')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -59,21 +59,21 @@ export function ProfileAccountCard() {
           <div className="rounded-lg border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium">{t('statusTitle')}</p>
+                <p className="text-sm font-medium">{t('profile.account.statusTitle')}</p>
                 <p className="text-xs text-muted-foreground">
-                  {t('statusDescription')}
+                  {t('profile.account.statusDescription')}
                 </p>
               </div>
               <Badge variant="default">
                 <CheckCircle2 className="me-1 h-3 w-3" />
-                {t('statusActive')}
+                {t('profile.account.statusActive')}
               </Badge>
             </div>
           </div>
 
           {/* Connected Services */}
           <div className="space-y-3">
-            <h4 className="text-sm font-medium">{t('connectedServices')}</h4>
+            <h4 className="text-sm font-medium">{t('profile.account.connectedServices')}</h4>
             
             {/* Password Status */}
             <div className="flex items-center justify-between rounded-lg border p-3">
@@ -82,19 +82,20 @@ export function ProfileAccountCard() {
                   <ShieldAlert className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{t('passwordAuth')}</p>
+                  <p className="text-sm font-medium">{t('profile.account.passwordAuth')}</p>
                   <p className="text-xs text-muted-foreground">
-                    {t('passwordAuthDesc')}
+                    {t('profile.account.passwordAuthDesc')}
                   </p>
                 </div>
               </div>
               <Badge variant="secondary">
                 <CheckCircle2 className="me-1 h-3 w-3" />
-                {t('enabled')}
+                {t('profile.account.enabled')}
               </Badge>
             </div>
 
-            {/* Google Status - placeholder */}
+            {/* Google Status - Commented out: has_google_linked not available in BootstrapUser */}
+            {/* 
             <div className="flex items-center justify-between rounded-lg border p-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
@@ -112,14 +113,15 @@ export function ProfileAccountCard() {
                 {t('notConnected')}
               </Badge>
             </div>
+            */}
           </div>
 
           {/* Danger Zone */}
           <div className="space-y-3 rounded-lg border border-destructive/50 bg-destructive/5 p-4">
             <div>
-              <h4 className="text-sm font-medium text-destructive">{t('dangerZone')}</h4>
+              <h4 className="text-sm font-medium text-destructive">{t('profile.account.dangerZone')}</h4>
               <p className="mt-1 text-xs text-muted-foreground">
-                {t('dangerZoneDesc')}
+                {t('profile.account.dangerZoneDesc')}
               </p>
             </div>
             <Button
@@ -128,7 +130,7 @@ export function ProfileAccountCard() {
               onClick={() => setShowDeleteDialog(true)}
             >
               <Trash2 className="me-2 h-4 w-4" />
-              {t('deleteAccountButton')}
+              {t('profile.account.deleteAccountButton')}
             </Button>
           </div>
         </CardContent>
@@ -138,32 +140,32 @@ export function ProfileAccountCard() {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
+            <AlertDialogTitle>{t('profile.account.deleteConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-2">
                 <p>
-                  {t('deleteConfirmWarning')}
+                  {t('profile.account.deleteConfirmWarning')}
                 </p>
-                <p className="text-sm font-medium">{t('deleteIncludesTitle')}</p>
+                <p className="text-sm font-medium">{t('profile.account.deleteIncludesTitle')}</p>
                 <ul className="list-inside list-disc space-y-1 text-sm">
-                  <li>{t('deleteIncludesStores')}</li>
-                  <li>{t('deleteIncludesProducts')}</li>
-                  <li>{t('deleteIncludesBilling')}</li>
-                  <li>{t('deleteIncludesThemes')}</li>
+                  <li>{t('profile.account.deleteIncludesStores')}</li>
+                  <li>{t('profile.account.deleteIncludesProducts')}</li>
+                  <li>{t('profile.account.deleteIncludesBilling')}</li>
+                  <li>{t('profile.account.deleteIncludesThemes')}</li>
                 </ul>
                 <div className="mt-3 rounded-lg border border-destructive bg-destructive/10 p-3 text-sm font-medium text-destructive">
-                  {t('deleteIrreversible')}
+                  {t('profile.account.deleteIrreversible')}
                 </div>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogCancel>{t('profile.account.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteAccount}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {t('deleteConfirmButton')}
+              {t('profile.account.deleteConfirmButton')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -15,27 +15,27 @@ import type {
 
 /**
  * Fetch dashboard stats for a store.
- * @param storeId - Store ID from URL params
+ * @param storeSlug - Store ID from URL params
  */
-export async function getDashboardStats(storeId: string): Promise<DashboardStats> {
-  const response = await clientApi.get<ApiResponse<DashboardStats>>(API_ROUTES.store(storeId).dashboard().stats());
+export async function getDashboardStats(storeSlug: string): Promise<DashboardStats> {
+  const response = await clientApi.get<ApiResponse<DashboardStats>>(API_ROUTES.store(storeSlug).dashboard().stats());
   return response.data;
 }
 
 /**
  * Fetch recent orders for a store.
- * @param storeId - Store ID from URL params
+ * @param storeSlug - Store ID from URL params
  */
-export async function getRecentOrders(storeId: string): Promise<RecentOrderItem[]> {
-  const response = await clientApi.get<ApiResponse<RecentOrderItem[]>>(API_ROUTES.store(storeId).dashboard().recentOrders());
+export async function getRecentOrders(storeSlug: string): Promise<RecentOrderItem[]> {
+  const response = await clientApi.get<ApiResponse<RecentOrderItem[]>>(API_ROUTES.store(storeSlug).dashboard().recentOrders());
   return response.data;
 }
 
 /**
  * Fetch top products for a store.
- * @param storeId - Store ID from URL params
+ * @param storeSlug - Store ID from URL params
  */
-export async function getTopProducts(storeId: string): Promise<TopProductItem[]> {
-  const response = await clientApi.get<ApiResponse<TopProductItem[]>>(API_ROUTES.store(storeId).dashboard().topProducts());
+export async function getTopProducts(storeSlug: string): Promise<TopProductItem[]> {
+  const response = await clientApi.get<ApiResponse<TopProductItem[]>>(API_ROUTES.store(storeSlug).dashboard().topProducts());
   return response.data;
 }

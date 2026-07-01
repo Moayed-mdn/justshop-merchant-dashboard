@@ -11,7 +11,7 @@ interface GenericImageUploaderProps {
   value: string; // image path or URL
   onChange: (path: string) => void;
   context: MediaContext;
-  storeId: string;
+  storeSlug: string;
   label?: string;
   disabled?: boolean;
   maxSizeMB?: number;
@@ -24,7 +24,7 @@ export function GenericImageUploader({
   value,
   onChange,
   context,
-  storeId,
+  storeSlug,
   label = 'Image',
   disabled = false,
   maxSizeMB = DEFAULT_MAX_SIZE_MB,
@@ -80,7 +80,7 @@ export function GenericImageUploader({
           setUploadProgress((prev) => (prev < 90 ? prev + 10 : prev));
         }, 100);
 
-        const response = await uploadImage(storeId, context, file);
+        const response = await uploadImage(storeSlug, context, file);
 
         clearInterval(progressInterval);
         setUploadProgress(100);
@@ -99,7 +99,7 @@ export function GenericImageUploader({
         setUploadProgress(0);
       }
     },
-    [storeId, context, onChange, validateFile]
+    [storeSlug, context, onChange, validateFile]
   );
 
   // Handle file selection
@@ -163,13 +163,13 @@ export function GenericImageUploader({
     }
 
     try {
-      await deleteImage(storeId, context, value);
+      await deleteImage(storeSlug, context, value);
       onChange('');
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed. Please try again.');
     }
-  }, [value, disabled, storeId, context, onChange]);
+  }, [value, disabled, storeSlug, context, onChange]);
 
   return (
     <div className="space-y-3">

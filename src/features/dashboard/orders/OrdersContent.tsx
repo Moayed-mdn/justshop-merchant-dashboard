@@ -18,7 +18,7 @@ import OrdersTable from './OrdersTable';
 import { OrdersSkeleton } from './OrdersSkeleton';
 
 interface Props {
-  storeId: string;
+  storeSlug: string;
   initialFilters: OrderFiltersType;
 }
 
@@ -26,7 +26,7 @@ interface Props {
 const statusOptions = ['all', 'pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'] as const;
 const paymentStatusOptions = ['all', 'pending', 'paid', 'failed', 'refunded'] as const;
 
-export default function OrdersContent({ storeId, initialFilters }: Props) {
+export default function OrdersContent({ storeSlug, initialFilters }: Props) {
   const t = useTranslations('orders');
 
   // URL state with nuqs - payment_status uses underscore to match API
@@ -61,7 +61,7 @@ export default function OrdersContent({ storeId, initialFilters }: Props) {
   };
 
   // Fetch orders
-  const { data, isLoading, error, isError } = useOrders(storeId, filters);
+  const { data, isLoading, error, isError } = useOrders(storeSlug, filters);
 
   // Handler functions - reset page on filter change
   const handleSearchChange = (value: string) => {
@@ -120,7 +120,7 @@ export default function OrdersContent({ storeId, initialFilters }: Props) {
       ) : (
         <OrdersTable
           orders={data?.data ?? []}
-          storeId={storeId}
+          storeSlug={storeSlug}
           pagination={data?.meta.pagination}
           page={filters.page}
           onPageChange={handlePageChange}

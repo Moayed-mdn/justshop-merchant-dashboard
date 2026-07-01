@@ -36,7 +36,7 @@ type ProfileInfoFormData = z.infer<typeof schema>;
  * Allows editing basic user information (name, email, phone).
  */
 export function ProfileInfoCard() {
-  const t = useTranslations('settings.profile.info');
+  const t = useTranslations('settings');
   const [showSaved, setShowSaved] = useState(false);
   const user = useBootstrapStore((state) => state.user);
   const updateProfileMutation = useUpdateProfile();
@@ -91,21 +91,21 @@ export function ProfileInfoCard() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <User className="h-5 w-5" />
-          <CardTitle>{t('title')}</CardTitle>
+          <CardTitle>{t('profile.info.title')}</CardTitle>
         </div>
         <CardDescription>
-          {t('subtitle')}
+          {t('profile.info.subtitle')}
         </CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-6">
           {/* Name */}
           <div className="space-y-2">
-            <Label htmlFor="profile-name">{t('name')}</Label>
+            <Label htmlFor="profile-name">{t('profile.info.name')}</Label>
             <Input
               id="profile-name"
               {...register('name')}
-              placeholder={t('namePlaceholder')}
+              placeholder={t('profile.info.namePlaceholder')}
               disabled={isPending}
             />
             {errors.name && (
@@ -115,14 +115,14 @@ export function ProfileInfoCard() {
 
           {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="profile-email">{t('email')}</Label>
+            <Label htmlFor="profile-email">{t('profile.info.email')}</Label>
             <div className="flex gap-2">
               <div className="flex-1">
                 <Input
                   id="profile-email"
                   type="email"
                   {...register('email')}
-                  placeholder={t('emailPlaceholder')}
+                  placeholder={t('profile.info.emailPlaceholder')}
                   disabled={isPending}
                 />
                 {errors.email && (
@@ -132,40 +132,40 @@ export function ProfileInfoCard() {
               {isEmailVerified ? (
                 <Badge variant="default" className="self-start">
                   <CheckCircle2 className="me-1 h-3 w-3" />
-                  {t('emailVerified')}
+                  {t('profile.info.emailVerified')}
                 </Badge>
               ) : (
                 <Badge variant="secondary" className="self-start">
                   <AlertCircle className="me-1 h-3 w-3" />
-                  {t('emailNotVerified')}
+                  {t('profile.info.emailNotVerified')}
                 </Badge>
               )}
             </div>
             {!isEmailVerified && (
               <p className="text-xs text-muted-foreground">
-                {t('emailVerificationPrompt')}
+                {t('profile.info.emailVerificationPrompt')}
               </p>
             )}
             <p className="text-xs text-muted-foreground">
-              {t('emailChangeNote')}
+              {t('profile.info.emailChangeNote')}
             </p>
           </div>
 
           {/* Phone */}
           <div className="space-y-2">
-            <Label htmlFor="profile-phone">{t('phoneOptional')}</Label>
+            <Label htmlFor="profile-phone">{t('profile.info.phoneOptional')}</Label>
             <Input
               id="profile-phone"
               type="tel"
               {...register('phone')}
-              placeholder={t('phonePlaceholder')}
+              placeholder={t('profile.info.phonePlaceholder')}
               disabled={isPending}
             />
             {errors.phone && (
               <p className="text-sm text-destructive">{errors.phone.message}</p>
             )}
             <p className="text-xs text-muted-foreground">
-              {t('phoneNote')}
+              {t('profile.info.phoneNote')}
             </p>
           </div>
         </CardContent>
@@ -175,7 +175,7 @@ export function ProfileInfoCard() {
               {showSaved ? (
                 <span className="flex items-center gap-1.5 text-sm text-green-600">
                   <CheckCircle2 className="h-4 w-4" />
-                  {t('saved')}
+                  {t('profile.info.saved')}
                 </span>
               ) : null}
             </div>
@@ -187,10 +187,10 @@ export function ProfileInfoCard() {
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('saving')}
+                  {t('profile.info.saving')}
                 </>
               ) : (
-                t('save')
+                t('profile.info.save')
               )}
             </Button>
           </div>

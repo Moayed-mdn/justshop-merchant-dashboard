@@ -22,21 +22,23 @@ import { ArrowLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { DEFAULT_COLORS, DEFAULT_FONTS } from '@/lib/fonts';
 import type { ThemeSettings, ColorScheme } from '@/types/theme';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
+import { getThemeRouteParam, matchesThemeIdentifier } from '@/lib/themes/route-param';
 
-export function ThemeSettingsContent({ themeId }: { themeId: string }) {
+export function ThemeSettingsContent({ themeIdentifier }: { themeIdentifier: string }) {
   const t = useTranslations();
   const router = useRouter();
   const activeStore = useBootstrapStore((state) => state.activeStore);
   
   // Fetch themes to get the specific theme
-  const activeStoreId = activeStore ? String(activeStore.id) : null;
-  const { data: themesData } = useThemes(activeStoreId!, {
+  const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
+  const { data: themesData } = useThemes(activeStoreSlug!, {
     page: 1,
     perPage: 100, // Get all themes
   });
 
-  const currentTheme = themesData?.data.find((theme) => theme.id.toString() === themeId);
-  const updateMutation = useUpdateTheme(activeStoreId!);
+  const currentTheme = themesData?.data.find((theme) => matchesThemeIdentifier(theme, themeIdentifier));
+  const updateMutation = useUpdateTheme(activeStoreSlug!);
 
   // Settings state
   const [colors, setColors] = useState({
@@ -97,15 +99,16 @@ export function ThemeSettingsContent({ themeId }: { themeId: string }) {
   useEffect(() => {
     if (currentTheme) {
       const settings = currentTheme as unknown as { settings?: ThemeSettings };
-      if (settings.settings) {
-        if (settings.settings.colors) {
-          setColors((prev) => ({ ...prev, ...settings.settings.colors }));
+      const themeSettings = settings.settings;
+      if (themeSettings) {
+        if (themeSettings.colors) {
+          setColors((prev) => ({ ...prev, ...themeSettings.colors }));
         }
-        if (settings.settings.fonts) {
-          setFonts((prev) => ({ ...prev, ...settings.settings.fonts }));
+        if (themeSettings.fonts) {
+          setFonts((prev) => ({ ...prev, ...themeSettings.fonts }));
         }
-        if (settings.settings.color_schemes) {
-          setColorSchemes(settings.settings.color_schemes);
+        if (themeSettings.color_schemes) {
+          setColorSchemes(themeSettings.color_schemes);
         }
       }
     }
@@ -133,8 +136,10 @@ export function ThemeSettingsContent({ themeId }: { themeId: string }) {
     }
 
     try {
+      const themeIdentifier = getThemeRouteParam(currentTheme);
+
       await updateMutation.mutateAsync({
-        themeId: currentTheme.id.toString(),
+        themeSlug: themeIdentifier,
         payload: {
           settings: {
             colors,

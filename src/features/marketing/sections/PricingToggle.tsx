@@ -79,7 +79,7 @@ export default function PricingToggle({
                   'text-[10px] font-semibold',
                   interval === 'annual'
                     ? 'bg-primary/15 text-primary'
-                    : 'bg-muted-foreground/15 text-muted-foreground',
+                    : 'bg-muted-bg text-muted-foreground',
                 )}
               >
                 {labels.badge}

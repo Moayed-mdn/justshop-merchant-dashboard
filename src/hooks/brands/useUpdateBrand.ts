@@ -13,19 +13,19 @@ import { logger } from '@/lib/logger';
 import type { UpdateBrandPayload } from '@/types/brand';
 import type { ApiError } from '@/types/api';
 
-export function useUpdateBrand(storeId: string, brandId: string) {
+export function useUpdateBrand(storeSlug: string, brandId: string) {
   const queryClient = useQueryClient();
   const t           = useTranslations('brands');
 
   return useMutation<unknown, ApiError, UpdateBrandPayload>({
-    mutationFn: (payload) => updateBrand(storeId, brandId, payload),
+    mutationFn: (payload) => updateBrand(storeSlug, brandId, payload),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.brands(storeId).lists(),
+        queryKey: queryKeys.brands(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.brands(storeId).detail(brandId),
+        queryKey: queryKeys.brands(storeSlug).detail(brandId),
       });
       toast.success(t('form.updateSuccess'));
     },

@@ -24,24 +24,24 @@ export interface SaveContentInput {
 }
 
 export function useSaveProductContent(
-  storeId:   string,
+  storeSlug:   string,
   productId: string,
   options?:  UseSaveProductContentOptions
 ) {
   return useMutation<AdminProduct, ApiError, SaveContentInput>({
     mutationFn: ({ content, tags }) =>
       updateProduct(
-        storeId,
+        storeSlug,
         productId,
         buildContentPayload({ content, tags })
       ),
     retry: 0,
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.products(storeId).lists(),
+        queryKey: queryKeys.products(storeSlug).lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.products(storeId).detail(productId),
+        queryKey: queryKeys.products(storeSlug).detail(productId),
       });
       logger.info('Product content saved', { productId: data.id });
       options?.onSuccess?.(data);

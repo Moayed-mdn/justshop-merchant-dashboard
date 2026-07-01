@@ -17,7 +17,7 @@ import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface GallerySectionContentProps {
   index: number;
-  storeId: string;
+  storeSlug: string;
 }
 
 type MemberItem = {
@@ -27,7 +27,7 @@ type MemberItem = {
   image: string;
 };
 
-export function GallerySectionContent({ index, storeId }: GallerySectionContentProps) {
+export function GallerySectionContent({ index, storeSlug }: GallerySectionContentProps) {
   const t = useTranslations('cmsPages');
   const { watch, setValue } = useFormContext<MarketingPageFormValues>();
 
@@ -132,7 +132,7 @@ export function GallerySectionContent({ index, storeId }: GallerySectionContentP
                 onChange={(v) =>
                   setValue(`${basePath}.members.${memberIndex}.image` as any, v, { shouldDirty: true })
                 }
-                storeId={storeId}
+                storeSlug={storeSlug}
                 placeholder="https://example.com/photo.jpg"
               />
             </div>

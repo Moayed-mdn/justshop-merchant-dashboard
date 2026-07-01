@@ -64,10 +64,10 @@ function getOptionLabel(
 }
 
 interface SectionsBuilderProps {
-  storeId: string;
+  storeSlug: string;
 }
 
-export function SectionsBuilder({ storeId }: SectionsBuilderProps) {
+export function SectionsBuilder({ storeSlug }: SectionsBuilderProps) {
   const t = useTranslations('cmsPages');
   const { control, register, watch, setValue, formState: { errors } } =
     useFormContext<MarketingPageFormValues>();
@@ -77,10 +77,10 @@ export function SectionsBuilder({ storeId }: SectionsBuilderProps) {
     name: 'sections',
   });
 
-  const { data: sectionTypes = [], isLoading } = useMarketingSectionTypes(storeId);
+  const { data: sectionTypes = [], isLoading } = useMarketingSectionTypes(storeSlug);
 
   // Fetch active theme to get color schemes
-  const { data: themes } = useTheme(storeId, '', { enabled: !!storeId });
+  const { data: themes } = useTheme(storeSlug, '', { enabled: !!storeSlug });
   const activeTheme = Array.isArray(themes) ? themes.find((t: any) => t.isActive) : null;
   const colorSchemes = (activeTheme?.settings as any)?.color_schemes || {};
 
@@ -334,7 +334,7 @@ export function SectionsBuilder({ storeId }: SectionsBuilderProps) {
                 <SectionContentEditor
                   sectionType={sectionType}
                   sectionIndex={index}
-                  storeId={storeId}
+                  storeSlug={storeSlug}
                 />
 
                 {/* Active toggle */}

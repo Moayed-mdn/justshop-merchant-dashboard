@@ -4,6 +4,7 @@ import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmptyState';
 import MarketingPagesContent from '@/features/dashboard/cms-pages/MarketingPagesContent';
 import { useTranslations } from 'next-intl';
+import { getStoreRouteParam } from '@/lib/stores/route-param';
 
 const INITIAL_FILTERS = {
   search:   '',
@@ -27,10 +28,7 @@ export default function MerchantCmsPagesPage() {
         <div>
           <h1 className="text-2xl font-bold">{t('title')}</h1>
         </div>
-        <WorkspaceEmptyState
-          title="No active store"
-          message="Select a store from the switcher to view its marketing pages."
-        />
+        <WorkspaceEmptyState />
       </div>
     );
   }
@@ -38,7 +36,7 @@ export default function MerchantCmsPagesPage() {
   return (
     <div className="space-y-6">
       <MarketingPagesContent
-        storeId={String(activeStore.id)}
+        storeSlug={getStoreRouteParam(activeStore)}
         initialFilters={INITIAL_FILTERS}
       />
     </div>

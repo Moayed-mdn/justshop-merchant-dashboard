@@ -13,63 +13,63 @@ interface TemplateListResponse {
 }
 
 export async function getPageTemplates(
-  storeId: string,
+  storeSlug: string,
 ): Promise<PageTemplate[]> {
   const response = await clientApi.get<ApiResponse<TemplateListResponse>>(
-    API_ROUTES.store(storeId).templates().list(),
+    API_ROUTES.store(storeSlug).templates().list(),
   );
   return response.data.data;
 }
 
 export async function getPageTemplateDetail(
-  storeId: string,
+  storeSlug: string,
   templateId: string,
 ): Promise<PageTemplate> {
   const response = await clientApi.get<ApiResponse<PageTemplate>>(
-    API_ROUTES.store(storeId).templates().detail(templateId),
+    API_ROUTES.store(storeSlug).templates().detail(templateId),
   );
   return response.data;
 }
 
 export async function createPageTemplate(
-  storeId: string,
+  storeSlug: string,
   payload: CreatePageTemplatePayload,
 ): Promise<PageTemplate> {
   const response = await clientApi.post<ApiResponse<PageTemplate>>(
-    API_ROUTES.store(storeId).templates().create(),
+    API_ROUTES.store(storeSlug).templates().create(),
     payload,
   );
   return response.data;
 }
 
 export async function updatePageTemplate(
-  storeId: string,
+  storeSlug: string,
   templateId: string,
   payload: UpdatePageTemplatePayload,
 ): Promise<PageTemplate> {
   const response = await clientApi.put<ApiResponse<PageTemplate>>(
-    API_ROUTES.store(storeId).templates().update(templateId),
+    API_ROUTES.store(storeSlug).templates().update(templateId),
     payload,
   );
   return response.data;
 }
 
 export async function deletePageTemplate(
-  storeId: string,
+  storeSlug: string,
   templateId: string,
 ): Promise<void> {
   await clientApi.delete(
-    API_ROUTES.store(storeId).templates().delete(templateId),
+    API_ROUTES.store(storeSlug).templates().delete(templateId),
   );
 }
 
 export async function duplicatePageTemplate(
-  storeId: string,
+  storeSlug: string,
   templateId: string,
   payload: DuplicatePageTemplatePayload,
 ): Promise<PageTemplate> {
   const response = await clientApi.post<ApiResponse<PageTemplate>>(
-    API_ROUTES.store(storeId).templates().duplicate(templateId),
+    API_ROUTES.store(storeSlug).templates().duplicate(templateId),
     payload,
   );
   return response.data;

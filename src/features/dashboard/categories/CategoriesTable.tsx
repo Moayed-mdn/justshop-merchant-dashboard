@@ -39,7 +39,7 @@ interface Props {
   perPage:         number;
   onPerPageChange: (perPage: number) => void;
   isLoading:       boolean;
-  storeId:         string;
+  storeSlug:         string;
   onDelete:        (categoryId: string) => void;
   onRestore:       (categoryId: string) => void;
 }
@@ -52,7 +52,7 @@ export default function CategoriesTable({
   perPage,
   onPerPageChange,
   isLoading,
-  storeId,
+  storeSlug,
   onDelete,
   onRestore,
 }: Props) {

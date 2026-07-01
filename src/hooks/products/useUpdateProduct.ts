@@ -18,17 +18,17 @@ export interface UseUpdateProductOptions {
 }
 
 export function useUpdateProduct(
-  storeId: string,
+  storeSlug: string,
   productId: string,
   options?: UseUpdateProductOptions
 ) {
   return useMutation({
-    mutationFn: (payload: ProductUpdatePayload) => updateProduct(storeId, productId, payload),
+    mutationFn: (payload: ProductUpdatePayload) => updateProduct(storeSlug, productId, payload),
     retry: 0,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.products(storeId).lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.products(storeSlug).lists() });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.products(storeId).detail(productId),
+        queryKey: queryKeys.products(storeSlug).detail(productId),
       });
       logger.info('Product updated', { productId: data.id });
       options?.onSuccess?.(data);

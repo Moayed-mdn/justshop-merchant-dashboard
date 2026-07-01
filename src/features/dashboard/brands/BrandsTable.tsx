@@ -41,7 +41,7 @@ interface Props {
   perPage:         number;
   onPerPageChange: (perPage: number) => void;
   isLoading:       boolean;
-  storeId:         string;
+  storeSlug:         string;
   onDelete:        (brandId: string) => void;
   onRestore:       (brandId: string) => void;
 }
@@ -54,7 +54,7 @@ export default function BrandsTable({
   perPage,
   onPerPageChange,
   isLoading,
-  storeId,
+  storeSlug,
   onDelete,
   onRestore,
 }: Props) {

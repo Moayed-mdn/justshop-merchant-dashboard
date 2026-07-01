@@ -24,21 +24,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ParentCategorySelect, getDescendantIds } from '@/components/shared/categories/ParentCategorySelect';
+import { ROUTES } from '@/config/routes';
 
 
 interface Props {
-  storeId:    string;
+  storeSlug:    string;
   categoryId: string;
   category:   CategoryDetailView;
 }
 
-export default function EditCategoryForm({ storeId, categoryId, category }: Props) {
+export default function EditCategoryForm({ storeSlug, categoryId, category }: Props) {
   const t      = useTranslations('categories');
-  const update = useUpdateCategory(storeId, categoryId);
+  const update = useUpdateCategory(storeSlug, categoryId);
   const router = useRouter();
 
   // Fetch all categories to compute descendant exclusion
-  const { data: allCategoriesData, isLoading: isAllLoading } = useCategories(storeId, {
+  const { data: allCategoriesData, isLoading: isAllLoading } = useCategories(storeSlug, {
     is_active: 'all',
     page: 1,
     perPage: 100,
@@ -122,7 +123,7 @@ export default function EditCategoryForm({ storeId, categoryId, category }: Prop
             type="button"
             onClick={() => {
               bypassNextNavigation();
-              router.back();
+              router.push(ROUTES.merchant.categories.list());
             }}
           >
             <ArrowLeft className="h-4 w-4" />
@@ -257,7 +258,7 @@ export default function EditCategoryForm({ storeId, categoryId, category }: Prop
                 <Skeleton className="h-10 w-full" />
               ) : (
                 <ParentCategorySelect
-                  storeId={storeId}
+                  storeSlug={storeSlug}
                   value={watch('parent_id') ?? null}
                   onChange={(val) => setValue('parent_id', val, { shouldDirty: true })}
                   excludeIds={excludeIds}

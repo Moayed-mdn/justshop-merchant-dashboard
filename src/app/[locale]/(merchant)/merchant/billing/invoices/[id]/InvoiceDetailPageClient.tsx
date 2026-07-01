@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { ROUTES } from '@/config/routes';
 import { formatCurrency, formatDate } from '@/lib/billing/billing-utils';
 
 interface InvoiceDetailPageClientProps {
@@ -38,7 +39,7 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
           <h1 className="text-3xl font-bold">Invoice Not Found</h1>
           <p className="text-muted-foreground">The requested invoice could not be found.</p>
         </div>
-        <Link href="/merchant/billing/invoices">
+        <Link href={ROUTES.merchant.billing.invoices.list()}>
           <Button variant="outline">
             <ArrowLeft className="me-2 h-4 w-4" />
             Back to Invoices
@@ -51,7 +52,7 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
   return (
     <div className="space-y-8">
       {/* Back Button */}
-      <Link href="/merchant/billing/invoices">
+      <Link href={ROUTES.merchant.billing.invoices.list()}>
         <Button variant="ghost" size="sm">
           <ArrowLeft className="me-2 h-4 w-4" />
           Back to Invoices

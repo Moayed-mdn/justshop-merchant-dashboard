@@ -20,7 +20,7 @@ import type { MarketingPageFormValues } from '@/schemas/marketing-pages';
 
 interface TestimonialsSectionContentProps {
   index: number;
-  storeId: string;
+  storeSlug: string;
 }
 
 type TestimonialItem = {
@@ -31,7 +31,7 @@ type TestimonialItem = {
   avatar?: string;
 };
 
-export function TestimonialsSectionContent({ index, storeId }: TestimonialsSectionContentProps) {
+export function TestimonialsSectionContent({ index, storeSlug }: TestimonialsSectionContentProps) {
   const t = useTranslations('cmsPages');
   const { watch, setValue, register } = useFormContext<MarketingPageFormValues>();
 
@@ -144,7 +144,7 @@ export function TestimonialsSectionContent({ index, storeId }: TestimonialsSecti
                 onChange={(v) =>
                   setValue(`${basePath}.testimonials.${itemIndex}.avatar` as any, v, { shouldDirty: true })
                 }
-                storeId={storeId}
+                storeSlug={storeSlug}
                 placeholder="https://example.com/avatar.jpg"
               />
             </div>

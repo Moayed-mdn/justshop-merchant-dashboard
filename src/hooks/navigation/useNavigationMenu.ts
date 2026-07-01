@@ -15,11 +15,11 @@ import type {
 } from '@/types/navigation';
 import type { ApiError } from '@/types/api';
 
-export function useNavigationMenu(storeId: string, menuId: string) {
+export function useNavigationMenu(storeSlug: string, menuId: string) {
   return useQuery<NavigationMenuDetail, ApiError, NavigationMenuDetailView>({
-    queryKey: queryKeys.navigation(storeId).detail(menuId),
-    queryFn: () => getNavigationMenuDetail(storeId, menuId),
+    queryKey: queryKeys.navigation(storeSlug).detail(menuId),
+    queryFn: () => getNavigationMenuDetail(storeSlug, menuId),
     staleTime: QUERY_CONFIG.staleTime,
-    select: mapNavigationMenuDetail,
+    select: (menu) => mapNavigationMenuDetail(menu, storeSlug),
   });
 }

@@ -18,28 +18,18 @@ import {
   RefreshCcw,
   WifiOff,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 /**
  * Maps backend current_step values to human-readable lifecycle labels.
  * Steps are shown as a progressive checklist during provisioning.
  */
-const LIFECYCLE_STEPS = [
-  { key: 'initializing_store',        label: 'Creating your store' },
-  { key: 'provisioning_workspace',    label: 'Setting up your workspace' },
-  { key: 'applying_configuration',    label: 'Applying your starter settings' },
-  { key: 'finalizing_setup',          label: 'Almost done' },
-] as const;
-
-function resolveLifecycleIndex(currentStep: string | null): number {
-  if (!currentStep) return 0;
-  const idx = LIFECYCLE_STEPS.findIndex((s) => s.key === currentStep);
-  return idx >= 0 ? idx : 0;
-}
 
 export function ProvisioningStep() {
   const queryClient = useQueryClient();
   const completedRefreshRef = useRef(false);
   const hasLoggedMount = useRef(false);
+  const t = useTranslations('setup.provisioning');
 
   const provisioning = useBootstrapStore((state) => state.provisioning);
   const bootstrap = useBootstrapStore((state) => state.bootstrap);
@@ -60,24 +50,37 @@ export function ProvisioningStep() {
   const message = provisioning?.message ?? null;
   const currentStep = provisioning?.current_step ?? null;
 
+  const lifecycleSteps = [
+    { key: 'initializing_store',        label: t('creatingStore') },
+    { key: 'provisioning_workspace',    label: t('settingUpWorkspace') },
+    { key: 'applying_configuration',    label: t('applyingSettings') },
+    { key: 'finalizing_setup',          label: t('almostDone') },
+  ] as const;
+
+  function resolveLifecycleIndex(currentStep: string | null): number {
+    if (!currentStep) return 0;
+    const idx = lifecycleSteps.findIndex((s) => s.key === currentStep);
+    return idx >= 0 ? idx : 0;
+  }
+
   const lifecycleIndex = resolveLifecycleIndex(currentStep);
 
   const heading = useMemo(() => {
-    if (status === 'completed') return 'Your store is ready!';
-    if (status === 'failed') return 'We hit a small snag';
-    if (storeName) return `Setting up ${storeName}...`;
-    return 'Setting up your store...';
-  }, [status, storeName]);
+    if (status === 'completed') return t('storeReady');
+    if (status === 'failed') return t('weHitSnag');
+    if (storeName) return t('settingUpName', { storeName });
+    return t('settingUp');
+  }, [status, storeName, t]);
 
   const subheading = useMemo(() => {
-    if (!isOnline) return 'You are offline. Setup will resume when your connection returns.';
-    if (isError) return error?.message ?? 'We couldn\u2019t check the latest status. You can safely try again.';
-    if (status === 'failed') return message || 'Setup stopped before the store became ready. You can try again below.';
-    if (hardTimedOut) return 'Setup is taking a bit longer than usual. You can check again whenever you\u2019re ready.';
-    if (softTimedOut) return 'Still setting things up. We\u2019ll keep checking for you.';
-    if (status === 'completed') return 'Everything is set up and ready to go.';
-    return message ?? 'This usually takes less than a minute.';
-  }, [error?.message, hardTimedOut, isError, isOnline, message, softTimedOut, status]);
+    if (!isOnline) return t('offlineMessage');
+    if (isError) return error?.message ?? t('checkError');
+    if (status === 'failed') return message || t('setupStopped');
+    if (hardTimedOut) return t('takingLonger');
+    if (softTimedOut) return t('stillSettingUp');
+    if (status === 'completed') return t('everythingReady');
+    return message ?? t('settingUp');
+  }, [error?.message, hardTimedOut, isError, isOnline, message, softTimedOut, status, t]);
 
   // Log provisioning mount once
   useEffect(() => {
@@ -130,7 +133,7 @@ export function ProvisioningStep() {
           <span className="h-px w-6 bg-primary" />
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
             <span>3</span>
-            <span className="hidden sm:inline">Setup</span>
+            <span className="hidden sm:inline">{t('stepIndicator')}</span>
           </span>
         </div>
 
@@ -164,7 +167,7 @@ export function ProvisioningStep() {
         {status !== 'completed' && status !== 'failed' && !isError ? (
           <div className="space-y-2">
             <Progress value={progress} className="h-2" />
-            <p className="text-center text-xs text-muted-foreground">{progress}% complete</p>
+            <p className="text-center text-xs text-muted-foreground">{t('percentComplete', { progress })}</p>
           </div>
         ) : null}
 
@@ -172,7 +175,7 @@ export function ProvisioningStep() {
         {status !== 'failed' && !isError ? (
           <div className="rounded-xl border bg-card p-5 shadow-sm">
             <ul className="space-y-3">
-              {LIFECYCLE_STEPS.map((step, idx) => {
+              {lifecycleSteps.map((step, idx) => {
                 const isDone = status === 'completed' || idx < lifecycleIndex;
                 const isActive = idx === lifecycleIndex && status !== 'completed';
                 return (
@@ -208,19 +211,19 @@ export function ProvisioningStep() {
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Button type="button" variant="outline" onClick={() => void refetch()}>
             <RefreshCcw className="mr-2 h-4 w-4" />
-            Check again
+            {t('checkAgain')}
           </Button>
         </div>
 
         {/* Recovery help — shown only when something needs attention */}
         {(softTimedOut || hardTimedOut || status === 'failed' || isError) ? (
           <div className="rounded-xl border border-border bg-muted/40 p-4 text-left">
-            <h3 className="font-semibold text-foreground">Need help?</h3>
+            <h3 className="font-semibold text-foreground">{t('needHelpTitle')}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li>Click &ldquo;Check again&rdquo; to see if setup has finished.</li>
-              <li>Your store creation is being processed — no need to resubmit it.</li>
-              <li>Once setup finishes, your dashboard will open automatically.</li>
-              <li>If things don&rsquo;t progress after a few attempts, reach out to our support team.</li>
+              <li>{t('helpCheckAgain')}</li>
+              <li>{t('helpProcessing')}</li>
+              <li>{t('helpAutoOpen')}</li>
+              <li>{t('helpContact')}</li>
             </ul>
           </div>
         ) : null}
