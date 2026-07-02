@@ -13,6 +13,7 @@ import { useUsers } from '@/hooks/users/useUsers';
 import type { UserFilters as UserFiltersType } from '@/schemas/users';
 import { useTranslations } from 'next-intl';
 import { logger } from '@/lib/logger';
+import { ShieldOff } from 'lucide-react';
 import UsersTable from './UsersTable';
 import UserFilters from './UserFilters';
 import CreateUserDialog from './CreateUserDialog';
@@ -60,8 +61,23 @@ export default function UsersContent({ storeSlug, initialFilters }: Props) {
   // Fetch data
   const { data, isLoading, error } = useUsers(storeSlug, filters);
 
-  // Error handling
+  // Error handling — 403 means the user lacks permission to list users,
+  // show a graceful empty state instead of logging noisy console errors.
   if (error) {
+    const httpStatus = (error as { status?: number }).status;
+    if (httpStatus === 403) {
+      return (
+        <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+            <ShieldOff className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <h3 className="mt-6 text-lg font-semibold">{t('accessDenied')}</h3>
+          <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+            {t('accessDeniedMessage')}
+          </p>
+        </div>
+      );
+    }
     logger.error('Failed to load users', error);
   }
 

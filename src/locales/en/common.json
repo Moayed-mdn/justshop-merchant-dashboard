@@ -242,6 +242,8 @@
     "loading": "Loading...",
     "create": "Create User",
     "createSuccess": "User created successfully",
+    "accessDenied": "Access Restricted",
+    "accessDeniedMessage": "You don't have permission to view the users list. Contact your store admin if you need access.",
     "form": {
       "createTitle": "Create User",
       "createDescription": "Add a new staff member or store admin to your store.",
