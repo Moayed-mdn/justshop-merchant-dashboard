@@ -5,11 +5,28 @@ import { logger } from '@/lib/logger';
 import { TENANT_CONFIG } from '@/lib/tenant/resolver';
 
 function resolveRequestLocale(cookieStore: Awaited<ReturnType<typeof cookies>>, request: Request): string {
+  // Priority 1: Extract locale from Referer URL path (e.g., /en/merchant/... or /ar/merchant/...)
+  const referer = request.headers.get('referer');
+  if (referer) {
+    try {
+      const refererUrl = new URL(referer);
+      const pathSegments = refererUrl.pathname.split('/').filter(Boolean);
+      const firstSegment = pathSegments[0];
+      if (firstSegment && APP_CONFIG.supportedLocales.includes(firstSegment as (typeof APP_CONFIG.supportedLocales)[number])) {
+        return firstSegment;
+      }
+    } catch {
+      // Invalid referer URL, continue to next priority
+    }
+  }
+
+  // Priority 2: NEXT_LOCALE cookie
   const localeFromCookie = cookieStore.get(APP_CONFIG.sessionCookieName)?.value;
   if (localeFromCookie && APP_CONFIG.supportedLocales.includes(localeFromCookie as (typeof APP_CONFIG.supportedLocales)[number])) {
     return localeFromCookie;
   }
 
+  // Priority 3: Accept-Language header
   const acceptLanguage = request.headers.get('accept-language');
   if (!acceptLanguage) {
     return APP_CONFIG.defaultLocale;
@@ -21,7 +38,7 @@ function resolveRequestLocale(cookieStore: Awaited<ReturnType<typeof cookies>>, 
     .find((locale): locale is string =>
       Boolean(locale) && APP_CONFIG.supportedLocales.includes(locale as (typeof APP_CONFIG.supportedLocales)[number])
     );
-
+    
   return preferredLocale ?? APP_CONFIG.defaultLocale;
 }
 

@@ -172,8 +172,10 @@ export function SystemTemplateEditContent() {
 
       setIsDirty(false);
       toast.success('Template saved successfully');
-    } catch {
-      toast.error('Failed to save template');
+    } catch (error: any) {
+      // ApiError has message directly on the error object
+      const errorMessage = error?.message || 'Failed to save template';
+      toast.error(errorMessage);
     }
   }, [template, updateMutation, formData, sections, sectionOverrides]);
 

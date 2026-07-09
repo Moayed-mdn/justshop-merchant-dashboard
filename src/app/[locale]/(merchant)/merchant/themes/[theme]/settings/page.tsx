@@ -229,7 +229,12 @@ export default function ThemeSettingsPage() {
       });
       toast.success(t('saved'));
     } catch (error) {
-      toast.error(t('error'));
+      console.log('here its' ,{error})
+      // Display the actual error message from the backend
+      const errorMessage = error instanceof Error && 'message' in error 
+        ? error.message 
+        : t('error');
+      toast.error(errorMessage);
       console.error('Failed to update theme settings:', error);
     }
   };

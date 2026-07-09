@@ -110,7 +110,7 @@ export default function MenuItemDialog({
         parent_id: item.parentId,
         label: item.label,
         type: item.type,
-        url: item.url,
+        url: item.url ?? '',
         target: item.target,
         position: item.position,
         resource_id: item.resourceId,

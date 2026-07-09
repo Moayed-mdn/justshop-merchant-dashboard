@@ -148,8 +148,10 @@ export function PageTemplateEditContent() {
 
       setIsDirty(false);
       toast.success(t('theme.templates.customizer.saveSuccess'));
-    } catch (_err) {
-      toast.error(t('theme.templates.customizer.saveError'));
+    } catch (error: any) {
+      // ApiError has message directly on the error object
+      const errorMessage = error?.message || t('theme.templates.customizer.saveError');
+      toast.error(errorMessage);
     }
   }, [template, updateMutation, name, description, sections, sectionOrder, t]);
 
