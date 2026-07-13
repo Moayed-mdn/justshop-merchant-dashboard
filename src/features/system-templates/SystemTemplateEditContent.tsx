@@ -109,8 +109,8 @@ export function SystemTemplateEditContent() {
       );
       await updateBlock(activeStoreSlug!, themeIdentifier, sectionId.toString(), blockId.toString(), { is_enabled: isEnabled });
       toast.success(isEnabled ? 'Block enabled' : 'Block disabled');
-    } catch {
-      toast.error('Failed to update block');
+    } catch (error: any) {
+      toast.error(error?.message ?? 'Failed to update block');
       setSections((prev) => prev.map((s) => ({ ...s, blocks: [...s.blocks] })));
     }
   }, [activeStoreSlug, themeIdentifier]);
@@ -134,8 +134,8 @@ export function SystemTemplateEditContent() {
           updateBlock(activeStoreSlug!, themeIdentifier, sectionId.toString(), b.id.toString(), { position: b.position }),
         ),
       );
-    } catch {
-      toast.error('Failed to reorder blocks');
+    } catch (error: any) {
+      toast.error(error?.message ?? 'Failed to reorder blocks');
     }
   }, [activeStoreSlug, themeIdentifier, sections]);
 

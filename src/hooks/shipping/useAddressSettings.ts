@@ -3,7 +3,9 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
+import type { ApiError } from '@/types/api';
 import type {
   StoreAddressSetting,
   UpdateStoreAddressSettingsPayload,
@@ -12,21 +14,14 @@ import {
   getAddressSettings,
   updateAddressSettings,
 } from '@/lib/api/shipping';
-
-/**
- * Query key factory for address settings.
- */
-export const addressSettingsKeys = {
-  all: ['address-settings'] as const,
-  detail: (storeSlug: string) => [...addressSettingsKeys.all, { storeSlug }] as const,
-};
+import { queryKeys } from '@/lib/queryKeys';
 
 /**
  * Fetch store address settings.
  */
 export function useAddressSettings(storeSlug: string) {
   return useQuery({
-    queryKey: addressSettingsKeys.detail(storeSlug),
+    queryKey: queryKeys.shipping.addressSettings(storeSlug).detail(),
     queryFn: () => getAddressSettings(storeSlug),
     enabled: !!storeSlug,
   });
@@ -37,24 +32,16 @@ export function useAddressSettings(storeSlug: string) {
  */
 export function useUpdateAddressSettings(storeSlug: string) {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
-  return useMutation({
-    mutationFn: (payload: UpdateStoreAddressSettingsPayload) =>
-      updateAddressSettings(storeSlug, payload),
+  return useMutation<StoreAddressSetting, ApiError, UpdateStoreAddressSettingsPayload>({
+    mutationFn: (payload) => updateAddressSettings(storeSlug, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: addressSettingsKeys.all });
-      toast({
-        title: 'Success',
-        description: 'Address settings updated successfully.',
-      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shipping.addressSettings(storeSlug).all() });
+      toast.success('Address settings updated successfully.');
     },
-    onError: (error: any) => {
-      toast({
-        title: 'Error',
-        description: error?.response?.data?.message || 'Failed to update address settings.',
-        variant: 'destructive',
-      });
+    onError: (error) => {
+      logger.error('Failed to update address settings', error);
+      toast.error(error.message || 'Failed to update address settings.');
     },
   });
 }

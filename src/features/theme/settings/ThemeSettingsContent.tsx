@@ -151,8 +151,8 @@ export function ThemeSettingsContent({ themeIdentifier }: { themeIdentifier: str
 
       toast.success(t('common.theme.settings.saveSuccess'));
       setHasChanges(false);
-    } catch (error) {
-      toast.error(t('common.theme.settings.saveError'));
+    } catch (error: any) {
+      toast.error(error?.message ?? t('common.theme.settings.saveError'));
     }
   };
 

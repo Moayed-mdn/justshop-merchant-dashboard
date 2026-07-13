@@ -3,7 +3,9 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
+import type { ApiError } from '@/types/api';
 import type {
   ShippingMethod,
   CreateShippingMethodPayload,
@@ -15,24 +17,14 @@ import {
   updateShippingMethod,
   deleteShippingMethod,
 } from '@/lib/api/shipping';
-
-/**
- * Query key factory for shipping methods.
- */
-export const shippingMethodsKeys = {
-  all: ['shipping-methods'] as const,
-  lists: () => [...shippingMethodsKeys.all, 'list'] as const,
-  list: (storeSlug: string) => [...shippingMethodsKeys.lists(), { storeSlug }] as const,
-  detail: (storeSlug: string, methodId: string) => 
-    [...shippingMethodsKeys.all, 'detail', { storeSlug, methodId }] as const,
-};
+import { queryKeys } from '@/lib/queryKeys';
 
 /**
  * Fetch all shipping methods for a store.
  */
 export function useShippingMethods(storeSlug: string) {
   return useQuery({
-    queryKey: shippingMethodsKeys.list(storeSlug),
+    queryKey: queryKeys.shipping.methods(storeSlug).lists(),
     queryFn: () => getShippingMethods(storeSlug),
     enabled: !!storeSlug,
   });
@@ -43,24 +35,16 @@ export function useShippingMethods(storeSlug: string) {
  */
 export function useCreateShippingMethod(storeSlug: string) {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
-  return useMutation({
-    mutationFn: (payload: CreateShippingMethodPayload) =>
-      createShippingMethod(storeSlug, payload),
+  return useMutation<ShippingMethod, ApiError, CreateShippingMethodPayload>({
+    mutationFn: (payload) => createShippingMethod(storeSlug, payload),
     onSuccess: (newMethod) => {
-      queryClient.invalidateQueries({ queryKey: shippingMethodsKeys.lists() });
-      toast({
-        title: 'Success',
-        description: `Shipping method "${newMethod.name}" created successfully.`,
-      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shipping.methods(storeSlug).lists() });
+      toast.success(`Shipping method "${newMethod.name}" created successfully.`);
     },
-    onError: (error: any) => {
-      toast({
-        title: 'Error',
-        description: error?.response?.data?.message || 'Failed to create shipping method.',
-        variant: 'destructive',
-      });
+    onError: (error) => {
+      logger.error('Failed to create shipping method', error);
+      toast.error(error.message || 'Failed to create shipping method.');
     },
   });
 }
@@ -70,24 +54,16 @@ export function useCreateShippingMethod(storeSlug: string) {
  */
 export function useUpdateShippingMethod(storeSlug: string, methodId: string) {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
-  return useMutation({
-    mutationFn: (payload: UpdateShippingMethodPayload) =>
-      updateShippingMethod(storeSlug, methodId, payload),
+  return useMutation<ShippingMethod, ApiError, UpdateShippingMethodPayload>({
+    mutationFn: (payload) => updateShippingMethod(storeSlug, methodId, payload),
     onSuccess: (updatedMethod) => {
-      queryClient.invalidateQueries({ queryKey: shippingMethodsKeys.lists() });
-      toast({
-        title: 'Success',
-        description: `Shipping method "${updatedMethod.name}" updated successfully.`,
-      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shipping.methods(storeSlug).lists() });
+      toast.success(`Shipping method "${updatedMethod.name}" updated successfully.`);
     },
-    onError: (error: any) => {
-      toast({
-        title: 'Error',
-        description: error?.response?.data?.message || 'Failed to update shipping method.',
-        variant: 'destructive',
-      });
+    onError: (error) => {
+      logger.error('Failed to update shipping method', error);
+      toast.error(error.message || 'Failed to update shipping method.');
     },
   });
 }
@@ -97,23 +73,16 @@ export function useUpdateShippingMethod(storeSlug: string, methodId: string) {
  */
 export function useDeleteShippingMethod(storeSlug: string) {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
-  return useMutation({
-    mutationFn: (methodId: string) => deleteShippingMethod(storeSlug, methodId),
+  return useMutation<void, ApiError, string>({
+    mutationFn: (methodId) => deleteShippingMethod(storeSlug, methodId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: shippingMethodsKeys.lists() });
-      toast({
-        title: 'Success',
-        description: 'Shipping method deleted successfully.',
-      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shipping.methods(storeSlug).lists() });
+      toast.success('Shipping method deleted successfully.');
     },
-    onError: (error: any) => {
-      toast({
-        title: 'Error',
-        description: error?.response?.data?.message || 'Failed to delete shipping method.',
-        variant: 'destructive',
-      });
+    onError: (error) => {
+      logger.error('Failed to delete shipping method', error);
+      toast.error(error.message || 'Failed to delete shipping method.');
     },
   });
 }

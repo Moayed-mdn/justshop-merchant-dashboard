@@ -43,8 +43,8 @@ export default function DeleteUserButton({ storeSlug, userId }: Props) {
       setOpen(false);
       router.push(ROUTES.merchant.customers.list());
     },
-    onError: () => {
-      toast.error(t('detail.deleteError'));
+    onError: (error) => {
+      toast.error(error.message ?? t('detail.deleteError'));
     },
   });
 

@@ -188,6 +188,24 @@ export const queryKeys = {
     all: () => ['merchant', storeSlug, 'section-schemas'] as const,
   }),
 
+  // ── SHIPPING ──────────────────────────────────────────────────
+  shipping: {
+    methods: (storeSlug: string) => ({
+      all:    () => ['merchant', storeSlug, 'shipping', 'methods'] as const,
+      lists:  () => ['merchant', storeSlug, 'shipping', 'methods', 'list'] as const,
+      detail: (methodId: string) => ['merchant', storeSlug, 'shipping', 'methods', 'detail', methodId] as const,
+    }),
+    zones: (storeSlug: string) => ({
+      all:    () => ['merchant', storeSlug, 'shipping', 'zones'] as const,
+      lists:  () => ['merchant', storeSlug, 'shipping', 'zones', 'list'] as const,
+      detail: (zoneId: string) => ['merchant', storeSlug, 'shipping', 'zones', 'detail', zoneId] as const,
+    }),
+    addressSettings: (storeSlug: string) => ({
+      all: () => ['merchant', storeSlug, 'shipping', 'address-settings'] as const,
+      detail: () => ['merchant', storeSlug, 'shipping', 'address-settings', 'detail'] as const,
+    }),
+  },
+
   // ── BILLING ───────────────────────────────────────────────────
   billing: {
     all:          () => ['billing'] as const,

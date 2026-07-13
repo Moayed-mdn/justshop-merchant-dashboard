@@ -55,8 +55,8 @@ export function DuplicateThemeDialog({
 
       toast.success(t('common.theme.duplicateSuccess'));
       onClose();
-    } catch (error) {
-      toast.error(t('common.theme.duplicateError'));
+    } catch (error: any) {
+      toast.error(error?.message ?? t('common.theme.duplicateError'));
     }
   };
 

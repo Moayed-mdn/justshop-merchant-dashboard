@@ -51,8 +51,8 @@ export function CreateThemeDialog({ onClose }: CreateThemeDialogProps) {
 
       toast.success(t('common.theme.createSuccess'));
       onClose();
-    } catch (error) {
-      toast.error(t('common.theme.createError'));
+    } catch (error: any) {
+      toast.error(error?.message ?? t('common.theme.createError'));
     }
   };
 

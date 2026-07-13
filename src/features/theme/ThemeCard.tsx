@@ -62,8 +62,8 @@ export function ThemeCard({ theme }: ThemeCardProps) {
     try {
       await publishMutation.mutateAsync(themeIdentifier);
       toast.success(t('common.theme.publishSuccess'));
-    } catch (error) {
-      toast.error(t('common.theme.publishError'));
+    } catch (error: any) {
+      toast.error(error?.message ?? t('common.theme.publishError'));
     }
   };
 
@@ -71,8 +71,8 @@ export function ThemeCard({ theme }: ThemeCardProps) {
     try {
       await deleteMutation.mutateAsync(themeIdentifier);
       toast.success(t('common.theme.deleteSuccess'));
-    } catch (error) {
-      toast.error(t('common.theme.deleteError'));
+    } catch (error: any) {
+      toast.error(error?.message ?? t('common.theme.deleteError'));
     } finally {
       setShowDeleteDialog(false);
     }

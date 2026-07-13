@@ -74,8 +74,8 @@ export function BlockSettingsDialog({
 
       toast.success('Block settings updated');
       onOpenChange(false);
-    } catch {
-      toast.error('Failed to update block settings');
+    } catch (error: any) {
+      toast.error(error?.message ?? 'Failed to update block settings');
     }
   };
 

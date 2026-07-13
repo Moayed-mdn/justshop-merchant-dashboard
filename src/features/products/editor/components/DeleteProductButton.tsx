@@ -43,8 +43,8 @@ export default function DeleteProductButton({
       setOpen(false);
       router.push(ROUTES.merchant.products.list());
     },
-    onError: () => {
-      toast.error(t('form.deleteError'));
+    onError: (error) => {
+      toast.error(error.message ?? t('form.deleteError'));
     },
   });
 

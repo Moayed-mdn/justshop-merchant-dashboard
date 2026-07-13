@@ -50,8 +50,8 @@ export function SectionGroupEditContent() {
         order: localOrder,
       });
       toast.success('Section group saved');
-    } catch {
-      toast.error('Failed to save section group');
+    } catch (error: any) {
+      toast.error(error?.message ?? 'Failed to save section group');
     } finally {
       setSaving(false);
     }
