@@ -381,9 +381,10 @@ export interface CreatePageTemplatePayload {
   handle: string;
   type: string;
   description?: string | null;
-  sections?: Record<string, PageTemplateSection>;
-  section_order?: string[];
+  sections: Record<string, PageTemplateSection>;
+  section_order: string[];
   section_settings?: Record<string, unknown>;
+  is_default?: boolean;
 }
 
 /** Update page template payload */

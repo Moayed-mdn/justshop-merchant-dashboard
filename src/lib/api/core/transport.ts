@@ -22,13 +22,8 @@ export class ApiErrorClass extends Error implements ApiError {
   public readonly action?: string;
 
   constructor(apiError: ApiError) {
-    // Create a more descriptive error message
-    const detailedMessage = apiError.message + 
-      (Object.keys(apiError.errors).length > 0 
-        ? `\nValidation errors: ${JSON.stringify(apiError.errors, null, 2)}`
-        : '');
-    
-    super(detailedMessage);
+    // Keep the original backend message for UI/toast messages
+    super(apiError.message);
     this.name = 'ApiError';
     this.status = apiError.status;
     this.code = apiError.code;
@@ -55,13 +50,13 @@ export class ApiErrorClass extends Error implements ApiError {
     };
   }
 
-  // Custom toString for better console output
+  // Custom toString for better console output (includes validation errors)
   toString() {
-    return `${this.name} [${this.status}]: ${this.message}${
-      Object.keys(this.errors).length > 0 
-        ? '\nErrors: ' + JSON.stringify(this.errors, null, 2)
-        : ''
-    }`;
+    const detailedMessage = this.message + 
+      (Object.keys(this.errors).length > 0 
+        ? `\nValidation errors: ${JSON.stringify(this.errors, null, 2)}`
+        : '');
+    return `${this.name} [${this.status}]: ${detailedMessage}`;
   }
 
   // Custom inspect for Node.js console

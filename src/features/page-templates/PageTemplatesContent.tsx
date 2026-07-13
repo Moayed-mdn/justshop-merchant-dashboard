@@ -13,8 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
-import type { PageTemplateView } from '@/types/theme';
 import { getStoreRouteParam } from '@/lib/stores/route-param';
+import type { ApiError } from '@/types/api';
 
 export function PageTemplatesContent() {
   const t = useTranslations();
@@ -31,8 +31,8 @@ export function PageTemplatesContent() {
     try {
       await deleteMutation.mutateAsync(templateId);
       toast.success(t('theme.templates.deleteSuccess'));
-    } catch (err) {
-      toast.error(t('theme.templates.deleteError'));
+    } catch (error) {
+      toast.error((error as ApiError).message ?? t('theme.templates.deleteError'));
     } finally {
       setShowDeleteDialog(null);
     }

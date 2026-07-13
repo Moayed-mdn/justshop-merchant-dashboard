@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import type { PageTemplateView } from '@/types/theme';
 import { getStoreRouteParam } from '@/lib/stores/route-param';
+import type { ApiError } from '@/types/api';
 
 interface DuplicatePageTemplateDialogProps {
   template: PageTemplateView;
@@ -45,7 +46,7 @@ export function DuplicatePageTemplateDialog({ template, onClose }: DuplicatePage
       toast.success(t('theme.templates.duplicateSuccess'));
       onClose();
     } catch (error) {
-      toast.error(t('theme.templates.duplicateError'));
+      toast.error((error as ApiError).message ?? t('theme.templates.duplicateError'));
     }
   };
 
