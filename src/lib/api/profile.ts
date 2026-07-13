@@ -116,5 +116,6 @@ export async function deleteAccount(
     headers: {
       'Content-Type': 'application/json',
     },
+    data: { password },
   });
 }

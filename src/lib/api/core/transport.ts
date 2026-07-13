@@ -139,8 +139,26 @@ export async function toApiError(
   console.log('Fallback message:', fallbackMessage);
   console.log('======================');
 
+  // Determine the best error message: prefer specific validation errors > generic message > fallback
+  let errorMessage = fallbackMessage;
+  let foundValidationError = false;
+
+  // Check for Laravel validation errors first (more specific)
+  if (payload.errors && typeof payload.errors === 'object') {
+    const firstErrorArray = Object.values(payload.errors)[0];
+    if (Array.isArray(firstErrorArray) && firstErrorArray.length > 0) {
+      errorMessage = firstErrorArray[0];
+      foundValidationError = true;
+    }
+  } 
+
+  // If no validation error found, fall back to payload.message if it's not "Validation failed."
+  if (!foundValidationError && payload.message && payload.message !== 'Validation failed.') {
+    errorMessage = payload.message;
+  }
+
   const apiError: ApiError = {
-    message: payload.message ?? fallbackMessage,
+    message: errorMessage,
     errors: payload.errors ?? {},
     status: response.status,
     code: payload.code ?? String(response.status),

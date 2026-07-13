@@ -3,6 +3,13 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
+import { useRouter } from '@/lib/navigation';
+import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
+import { useMutation } from '@tanstack/react-query';
+import { deleteAccount } from '@/lib/api/profile';
+import { logoutSession } from '@/lib/api/auth';
+import { ROUTES } from '@/config/routes';
 import {
   Card,
   CardContent,
@@ -22,7 +29,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ShieldAlert, Trash2, CheckCircle2, XCircle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ShieldAlert, Trash2, CheckCircle2 } from 'lucide-react';
 
 /**
  * Profile Account Management Card.
@@ -30,16 +39,32 @@ import { ShieldAlert, Trash2, CheckCircle2, XCircle } from 'lucide-react';
  */
 export function ProfileAccountCard() {
   const t = useTranslations('settings');
+  const tCommon = useTranslations();
+  const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const user = useBootstrapStore((state) => state.user);
+  const [password, setPassword] = useState('');
 
-  // Note: Account deletion would require implementing the backend endpoint properly
-  // and handling the logout flow. For now, we'll show the UI structure.
+  const deleteMutation = useMutation({
+    mutationFn: (pwd: string) => deleteAccount(pwd),
+    onSuccess: async () => {
+      toast.success(t('profile.account.deleteSuccess'));
+      setShowDeleteDialog(false);
+      setPassword('');
+      await logoutSession();
+      router.push(ROUTES.auth.login());
+    },
+    onError: (error: any) => {
+      logger.error('Account deletion failed', error);
+      toast.error(error.message || t('profile.account.deleteError'));
+    },
+  });
+
   const handleDeleteAccount = () => {
-    // TODO: Implement account deletion with password confirmation
-    // This would call the deleteAccount API and then logout
-    console.log('Account deletion requested');
-    setShowDeleteDialog(false);
+    if (!password.trim()) {
+      toast.error(t('profile.account.passwordRequired'));
+      return;
+    }
+    deleteMutation.mutate(password);
   };
 
   return (
@@ -127,7 +152,10 @@ export function ProfileAccountCard() {
             <Button
               variant="destructive"
               size="sm"
-              onClick={() => setShowDeleteDialog(true)}
+              onClick={() => {
+                setPassword('');
+                setShowDeleteDialog(true);
+              }}
             >
               <Trash2 className="me-2 h-4 w-4" />
               {t('profile.account.deleteAccountButton')}
@@ -142,30 +170,51 @@ export function ProfileAccountCard() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t('profile.account.deleteConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription asChild>
-              <div className="space-y-2">
-                <p>
-                  {t('profile.account.deleteConfirmWarning')}
-                </p>
-                <p className="text-sm font-medium">{t('profile.account.deleteIncludesTitle')}</p>
-                <ul className="list-inside list-disc space-y-1 text-sm">
-                  <li>{t('profile.account.deleteIncludesStores')}</li>
-                  <li>{t('profile.account.deleteIncludesProducts')}</li>
-                  <li>{t('profile.account.deleteIncludesBilling')}</li>
-                  <li>{t('profile.account.deleteIncludesThemes')}</li>
-                </ul>
-                <div className="mt-3 rounded-lg border border-destructive bg-destructive/10 p-3 text-sm font-medium text-destructive">
-                  {t('profile.account.deleteIrreversible')}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <p>
+                    {t('profile.account.deleteConfirmWarning')}
+                  </p>
+                  <p className="text-sm font-medium">{t('profile.account.deleteIncludesTitle')}</p>
+                  <ul className="list-inside list-disc space-y-1 text-sm">
+                    <li>{t('profile.account.deleteIncludesStores')}</li>
+                    <li>{t('profile.account.deleteIncludesProducts')}</li>
+                    <li>{t('profile.account.deleteIncludesBilling')}</li>
+                    <li>{t('profile.account.deleteIncludesThemes')}</li>
+                  </ul>
+                  <div className="mt-3 rounded-lg border border-destructive bg-destructive/10 p-3 text-sm font-medium text-destructive">
+                    {t('profile.account.deleteIrreversible')}
+                  </div>
+                </div>
+                
+                {/* Password Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="delete-password">{t('profile.account.enterPassword') || 'Enter your password to confirm'}</Label>
+                  <Input
+                    id="delete-password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={t('profile.account.passwordPlaceholder') || 'Your password'}
+                    autoFocus
+                  />
                 </div>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('profile.account.cancel')}</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setPassword('')}>
+              {t('profile.account.cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteAccount}
+              disabled={deleteMutation.isPending}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {t('profile.account.deleteConfirmButton')}
+              {deleteMutation.isPending 
+                ? tCommon('loading') 
+                : t('profile.account.deleteConfirmButton')
+              }
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
