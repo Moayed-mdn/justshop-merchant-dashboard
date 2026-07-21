@@ -110,12 +110,11 @@ export async function deleteAccount(
   options: RequestOptions = {}
 ): Promise<ApiResponse<null>> {
   await ensureCsrfCookie(options);
-  return clientApi.delete('/api/v1/merchant/profile', {
+  return clientApi.delete('/api/v1/merchant/profile', { password }, {
     ...options,
     // Send password in body for DELETE request
     headers: {
       'Content-Type': 'application/json',
     },
-    data: { password },
   });
 }

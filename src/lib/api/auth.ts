@@ -37,8 +37,26 @@ export async function login(
   credentials: LoginPayload,
   options: RequestOptions = {}
 ): Promise<ApiResponse<{ user: AuthTransportUser }>> {
-  await ensureCsrfCookie(options);
-  return clientApi.post(API_ROUTES.merchant.auth.login(), credentials, { signal: options.signal });
+  return loginWithRetry(credentials, options, false);
+}
+
+async function loginWithRetry(
+  credentials: LoginPayload,
+  options: RequestOptions,
+  retried: boolean
+): Promise<ApiResponse<{ user: AuthTransportUser }>> {
+  try {
+    await ensureCsrfCookie(options);
+    return await clientApi.post(API_ROUTES.merchant.auth.login(), credentials, { signal: options.signal });
+  } catch (error) {
+    const apiError = error as ApiError;
+    if (apiError.status === 419 && !retried) {
+      await ensureCsrfCookie(options);
+      return loginWithRetry(credentials, options, true);
+    }
+
+    throw error;
+  }
 }
 
 /**

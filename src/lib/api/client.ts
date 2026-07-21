@@ -77,6 +77,6 @@ export const clientApi = {
     clientFetch<T>(path, { ...options, method: 'PUT', body }),
   patch: <T>(path: string, body?: unknown, options: Omit<ClientFetchOptions, 'method' | 'body'> = {}) =>
     clientFetch<T>(path, { ...options, method: 'PATCH', body }),
-  delete: <T>(path: string, options: Omit<ClientFetchOptions, 'method' | 'body'> = {}) =>
-    clientFetch<T>(path, { ...options, method: 'DELETE' }),
+  delete: <T>(path: string, body?: unknown, options: Omit<ClientFetchOptions, 'method' | 'body'> = {}) =>
+    clientFetch<T>(path, { ...options, method: 'DELETE', body }),
 };
