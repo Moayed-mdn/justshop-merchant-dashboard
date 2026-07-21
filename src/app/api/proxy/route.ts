@@ -102,8 +102,24 @@ async function handleProxy(request: Request): Promise<NextResponse> {
   }
 
   const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
+  // Get raw cookie header from request (more reliable than cookieStore.toString())
+  const cookieHeader = request.headers.get('cookie') || cookieStore.toString();
   const xsrfToken = cookieStore.get('XSRF-TOKEN')?.value;
+  
+  // DEBUG: Log cookie handling for all requests
+  console.log('[PROXY DEBUG] Endpoint:', endpoint);
+  console.log('[PROXY DEBUG] Cookie header from request:', request.headers.get('cookie')?.substring(0, 100) + '...');
+  console.log('[PROXY DEBUG] Cookie store toString:', cookieStore.toString().substring(0, 100) + '...');
+  console.log('[PROXY DEBUG] Final cookieHeader:', cookieHeader.substring(0, 100) + '...');
+  console.log('[PROXY DEBUG] Has ecommerce_session:', cookieHeader.includes('ecommerce_session'));
+  console.log('[PROXY DEBUG] Has XSRF-TOKEN:', cookieHeader.includes('XSRF-TOKEN'));
+  
+  // DEBUG: Log cookie handling
+  if (request.method !== 'GET') {
+    console.log('[CSRF DEBUG] Method:', request.method);
+    console.log('[CSRF DEBUG] Cookie header length:', cookieHeader?.length || 0);
+    console.log('[CSRF DEBUG] XSRF-TOKEN present:', xsrfToken ? 'YES' : 'NO');
+  }
   const requestLocale = resolveRequestLocale(cookieStore, request);
   logger.debug('Proxy request locale resolved', { requestLocale });
   const method = request.method.toUpperCase();
@@ -138,7 +154,7 @@ async function handleProxy(request: Request): Promise<NextResponse> {
     headers['X-Frontend-Url'] = frontendUrl;
   }
 
-  if (method === 'GET' || method === 'DELETE') {
+  if (method === 'GET') {
     body = undefined;
     headers['Content-Type'] = 'application/json';
   } else if (isFormData) {
@@ -146,7 +162,7 @@ async function handleProxy(request: Request): Promise<NextResponse> {
     body = await request.formData();
     // Don't set Content-Type header - fetch will set it automatically with the correct boundary
   } else {
-    // For JSON and other content types
+    // For JSON and other content types (including DELETE with body)
     const rawBody = await request.text();
     body = rawBody && rawBody.length > 0 ? rawBody : undefined;
     headers['Content-Type'] = 'application/json';
@@ -164,6 +180,7 @@ async function handleProxy(request: Request): Promise<NextResponse> {
   const contentType = upstream.headers.get('content-type');
   const bodyText = await upstream.text();
   const hasBody = ![204, 205, 304].includes(status) && bodyText.length > 0;
+  const setCookies = (upstream.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie?.() ?? [];
 
   const responseHeaders = new Headers();
   if (contentType && hasBody) {
@@ -175,7 +192,6 @@ async function handleProxy(request: Request): Promise<NextResponse> {
     headers: responseHeaders,
   });
 
-  const setCookies = (upstream.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie?.() ?? [];
   setCookies.forEach((value) => response.headers.append('set-cookie', normalizeDevSetCookie(value, request)));
 
   return response;

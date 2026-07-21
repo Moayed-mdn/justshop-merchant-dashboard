@@ -32,6 +32,12 @@ export async function serverFetch<T>(path: string, options: ServerFetchOptions =
   const cookieStore = await cookies();
   const cookieHeader = cookieStore.toString();
   const requestLocale = cookieStore.get(APP_CONFIG.sessionCookieName)?.value ?? 'en';
+  
+  // DEBUG: Log cookie info
+  console.log('[serverFetch] Path:', path);
+  console.log('[serverFetch] Cookie header:', cookieHeader.substring(0, 100) + '...');
+  console.log('[serverFetch] Has ecommerce_session:', cookieHeader.includes('ecommerce_session'));
+  
   const response = await fetch(`${APP_CONFIG.apiBaseUrl}${path}`, {
     method: options.method ?? 'GET',
     credentials: 'include',

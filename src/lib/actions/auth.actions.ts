@@ -69,8 +69,10 @@ export async function getMe(): Promise<User | null> {
       cache: 'no-store',
     });
 
+    console.log('[getMe] Success:', { userId: response.data.id, email: response.data.email });
     return response.data;
-  } catch {
+  } catch (error) {
+    console.log('[getMe] Failed:', error);
     return null;
   }
 }
