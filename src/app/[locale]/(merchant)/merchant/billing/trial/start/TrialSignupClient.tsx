@@ -11,7 +11,9 @@ import { Label } from '@/components/ui/label';
 import { PlanCard } from '@/components/billing/PlanCard';
 import { useToast } from '@/hooks/use-toast';
 import { useStartTrial } from '@/hooks/billing/useStartTrial';
+import { formatApiErrorMessage } from '@/lib/api/error-message';
 import type { Plan, BillingCycle } from '@/types/billing/plan';
+import type { ApiError } from '@/types/api';
 
 interface TrialSignupClientProps {
   plans: Plan[];
@@ -40,9 +42,12 @@ export function TrialSignupClient({ plans }: TrialSignupClientProps) {
       // Redirect to Stripe Checkout
       window.location.href = url;
     } catch (error) {
+      const apiError = error as ApiError;
+      const errorMessage = formatApiErrorMessage(apiError, { fallbackMessage: 'Failed to start trial. Please try again.' });
+      
       toast({
         title: 'Error',
-        description: 'Failed to start trial. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     }
