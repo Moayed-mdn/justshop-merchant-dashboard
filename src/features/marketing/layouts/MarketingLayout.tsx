@@ -9,10 +9,9 @@
 // Does not own data — it is a pure structural wrapper.
 // =============================================================================
 
-import MarketingNavbar from '@/features/marketing/components/MarketingNavbar'
 import MarketingFooter from '@/features/marketing/components/MarketingFooter'
 import { buildOrgJsonLd } from '@/lib/seo/cms-seo'
-import { getMe } from '@/lib/actions/auth.actions'
+import { MarketingAuthChecker } from './MarketingAuthChecker'
 
 interface MarketingLayoutProps {
   children: React.ReactNode
@@ -21,13 +20,6 @@ interface MarketingLayoutProps {
 export default async function MarketingLayout({
   children,
 }: MarketingLayoutProps) {
-  const user = await getMe()
-  const isAuthenticated = !!user
-  const storeSlug =
-    user && 'stores' in user && Array.isArray(user.stores)
-      ? (user.stores[0] as { slug?: string } | undefined)?.slug ?? null
-      : null
-
   return (
     <>
       {/* Organization structured data — injected once per marketing page */}
@@ -51,10 +43,7 @@ export default async function MarketingLayout({
       </a>
 
       <div className="flex min-h-screen flex-col bg-background text-foreground">
-        <MarketingNavbar 
-          isAuthenticated={isAuthenticated} 
-          storeSlug={storeSlug ? String(storeSlug) : null} 
-        />
+        <MarketingAuthChecker />
 
         <main
           id="main-content"
