@@ -178,14 +178,6 @@ export const API_ROUTES = {
     analytics:            () => '/api/v1/platform/analytics',
     stores:               () => '/api/v1/platform/stores',
     users:                () => '/api/v1/platform/users',
-    cmsPages: () => ({
-      list:    () => '/api/v1/platform/cms/pages/platform',
-      create:  () => '/api/v1/platform/cms/pages/platform',
-      detail:  (pageId: string) => `/api/v1/platform/cms/pages/platform/${pageId}`,
-      update:  (pageId: string) => `/api/v1/platform/cms/pages/platform/${pageId}`,
-      delete:  (pageId: string) => `/api/v1/platform/cms/pages/platform/${pageId}`,
-      publish: (pageId: string) => `/api/v1/platform/cms/pages/platform/${pageId}/publish`,
-    }),
   },
 
   // ── STOREFRONT CONTEXT ────────────────────────────────────────
