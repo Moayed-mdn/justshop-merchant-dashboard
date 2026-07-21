@@ -31,7 +31,8 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
   const strippedPath = useMemo(() => stripLocale(pathname || '/'), [pathname]);
   const isProtectedRoute =
     strippedPath === ROUTES.dashboard.home() ||
-    strippedPath.startsWith('/merchant');
+    strippedPath.startsWith('/merchant') ||
+    strippedPath.startsWith('/account');
   const isSetupRoute =
     strippedPath === ROUTES.setup() ||
     strippedPath === ROUTES.onboarding.home() ||
