@@ -166,8 +166,8 @@ export function VariantsTable({ variants, onChange, storeSlug }: Props) {
                         <ImageIcon className="h-3.5 w-3.5" />
                         {mediaCount > 0 ? (
                           <Badge
-                            variant="secondary"
-                            className="px-1.5 py-0 text-xs"
+                            variant="default"
+                            className="px-1.5 py-0 text-xs bg-primary text-primary-foreground"
                           >
                             {mediaCount}
                           </Badge>
