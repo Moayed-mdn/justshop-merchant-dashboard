@@ -41,7 +41,7 @@ export default function MerchantProductEditPage() {
   if (error || !product) {
     return (
       <div className="rounded-lg border border-destructive bg-destructive/10 p-8 text-center">
-        <p className="text-destructive">{t('table.empty')}</p>
+        <p className="text-destructive">{t('detail.loadError')}</p>
       </div>
     );
   }

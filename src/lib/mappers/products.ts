@@ -114,7 +114,7 @@ export function mapProductListItem(
     quantity:   raw.quantity,
     sku:        raw.sku,
     firstImage: raw.media?.[0]?.url ?? null,
-    category:   null,
+    category:   raw.category ?? null,
     createdAt:  formatDate(raw.created_at),
   };
 }

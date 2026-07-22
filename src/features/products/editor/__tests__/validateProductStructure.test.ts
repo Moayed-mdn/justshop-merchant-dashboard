@@ -269,6 +269,29 @@ describe('validateProductStructure', () => {
     expect(result.isValid).toBe(true);
   });
 
+  // ── Duplicate option values ───────────────────────────────────────────────
+
+  it('fails for duplicate values within the same option', () => {
+    const state: ProductStructureState = {
+      options: [
+        {
+          id: 1,
+          name: 'Color',
+          position: 1,
+          values: [
+            { id: 10, value: 'Red' },
+            { id: 11, value: 'red' },
+          ],
+        },
+      ],
+      variants: [],
+    };
+
+    const result = validateProductStructure(state);
+    expect(result.isValid).toBe(false);
+    expect(result.errors.some((e) => e.field.includes('options.0.values'))).toBe(true);
+  });
+
   // ── Empty state ───────────────────────────────────────────────────────────
 
   it('passes for empty variants array', () => {

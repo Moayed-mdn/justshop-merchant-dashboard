@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/lib/navigation';
 import { useTranslations }               from 'next-intl';
 import { ArrowLeft } from 'lucide-react';
 import { toast }                         from 'sonner';
@@ -56,11 +56,32 @@ export function buildNextStructureForSave(
   };
 }
 
+export type SaveScope = 'content' | 'structure' | 'media';
+
 export function buildRebasedEditorState(
   savedProduct: AdminProduct,
   storeSlug: string = '',
 ): ProductEditorState {
   return buildEditorState(mapProductDetail(savedProduct, storeSlug));
+}
+
+export function mergeScopedRebase(
+  baseline: ProductEditorState,
+  savedProduct: AdminProduct,
+  storeSlug: string,
+  scope: SaveScope,
+): ProductEditorState {
+  const nextState = buildRebasedEditorState(savedProduct, storeSlug);
+
+  if (scope === 'content') {
+    return { ...baseline, content: nextState.content, tags: nextState.tags };
+  }
+
+  if (scope === 'structure') {
+    return { ...baseline, structure: nextState.structure };
+  }
+
+  return { ...baseline, media: nextState.media };
 }
 
 export function buildDiscardState(baseline: ProductEditorState) {
@@ -117,17 +138,28 @@ export default function EditProductForm({ product, storeSlug }: Props) {
 
   const { bypassNextNavigation } = useUnsavedChangesGuard({ isDirty });
 
-  const rebaseFromProduct = useCallback((savedProduct: AdminProduct) => {
-    const nextState = buildRebasedEditorState(savedProduct, storeSlug);
-    baselineRef.current = nextState;
-    setContent(nextState.content);
-    setStructure(nextState.structure);
-    setImages(nextState.media.images ?? []);
-    setTags(nextState.tags);
-    setContentDirty(false);
-    setStructureDirty(false);
-    setMediaDirty(false);
-    setTagsDirty(false);
+  const rebaseFromProduct = useCallback((savedProduct: AdminProduct, scope: SaveScope) => {
+    const nextBaseline = mergeScopedRebase(
+      baselineRef.current,
+      savedProduct,
+      storeSlug,
+      scope,
+    );
+    baselineRef.current = nextBaseline;
+
+    if (scope === 'content') {
+      setContent(nextBaseline.content);
+      setTags(nextBaseline.tags);
+      setContentDirty(false);
+      setTagsDirty(false);
+    } else if (scope === 'structure') {
+      setStructure(nextBaseline.structure);
+      setStructureDirty(false);
+    } else if (scope === 'media') {
+      setImages(nextBaseline.media.images ?? []);
+      setMediaDirty(false);
+    }
+
     setValidationErrors([]);
   }, [storeSlug]);
 
@@ -192,7 +224,7 @@ export default function EditProductForm({ product, storeSlug }: Props) {
         {
           onSuccess: (savedProduct) => {
             if (token !== contentSaveTokenRef.current) return;
-            rebaseFromProduct(savedProduct);
+            rebaseFromProduct(savedProduct, 'content');
             toast.success(t('form.updateSuccess'));
           },
         }
@@ -202,17 +234,8 @@ export default function EditProductForm({ product, storeSlug }: Props) {
 
     // ── Structure tab ────────────────────────────────────────────
     if (tab === 'structure') {
-      console.log('[EditProductForm] Before buildNextStructureForSave:', {
-        options: structure.options,
-        variants: structure.variants,
-      });
-      
       const nextStructure = buildNextStructureForSave(structure);
-      
-      console.log('[EditProductForm] After buildNextStructureForSave:', {
-        nextStructure,
-      });
-      
+
       setStructure(nextStructure);
 
       const result = validateProductStructure(nextStructure);
@@ -225,7 +248,7 @@ export default function EditProductForm({ product, storeSlug }: Props) {
       saveStructure.mutate(nextStructure, {
         onSuccess: (savedProduct) => {
           if (token !== structureSaveTokenRef.current) return;
-          rebaseFromProduct(savedProduct);
+          rebaseFromProduct(savedProduct, 'structure');
           toast.success(t('form.updateSuccess'));
         },
       });
@@ -240,7 +263,7 @@ export default function EditProductForm({ product, storeSlug }: Props) {
         {
           onSuccess: (savedProduct) => {
             if (token !== mediaSaveTokenRef.current) return;
-            rebaseFromProduct(savedProduct);
+            rebaseFromProduct(savedProduct, 'media');
             toast.success(t('form.updateSuccess'));
           },
         }

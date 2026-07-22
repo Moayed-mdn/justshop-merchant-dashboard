@@ -18,6 +18,21 @@ export function validateProductStructure(
   const errors: ValidationError[] = [];
   const skus = new Set<string>();
 
+  (state.options ?? []).forEach((option, optIndex) => {
+    const seen = new Set<string>();
+    option.values.forEach((val, valIndex) => {
+      const normalized = val.value.trim().toLowerCase();
+      if (!normalized) return;
+      if (seen.has(normalized)) {
+        errors.push({
+          field: `options.${optIndex}.values.${valIndex}`,
+          message: `Duplicate value "${val.value}" in option "${option.name}".`,
+        });
+      }
+      seen.add(normalized);
+    });
+  });
+
   (state.variants ?? []).forEach((v, index) => {
     const prefix = `variants.${index}`;
 

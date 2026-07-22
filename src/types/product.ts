@@ -137,6 +137,7 @@ export interface AdminProduct {
   options?:         AdminProductOption[] | null;
   category_id:      number | null;
   brand_id:         number | null;
+  category?:        string | null;
   /** Backend returns tag stubs — mapper extracts IDs. */
   tags?:            Array<{ id: number }>;
   available_locales?: Locale[];

@@ -39,7 +39,6 @@ export function VariantsTable({ variants, onChange, storeSlug }: Props) {
     onChange(variants.map((v) => (v.id === id ? { ...v, ...next } : v)));
 
   const patchMedia = (id: ProductVariant['id'], media: ProductImage[]) => {
-    console.log('[VariantsTable] patchMedia called:', { variantId: id, media });
     patch(id, { media });
   };
 

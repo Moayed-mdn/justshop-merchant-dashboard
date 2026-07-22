@@ -30,7 +30,7 @@ export default function CreateProductForm({ storeSlug }: Props) {
       storeSlug={storeSlug}
       availableLocales={EDITOR_LOCALES}
       onSuccess={(productId) => {
-        router.push(`/merchant/products/${productId}/edit`);
+        router.push(ROUTES.merchant.products.edit(String(productId)));
       }}
     />
   );

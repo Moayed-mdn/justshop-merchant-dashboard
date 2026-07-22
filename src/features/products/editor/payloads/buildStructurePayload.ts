@@ -28,11 +28,6 @@ export function buildStructurePayload(
 ): ProductUpdatePayload & { sync_variants: true } {
   const { structure } = input;
 
-  console.log('[buildStructurePayload] Input structure:', {
-    options: structure.options,
-    variants: structure.variants,
-  });
-
   // ── Canonical options ──────────────────────────────────────────
   const options = (structure.options ?? [])
     .filter((o) => o.name.trim() !== '' && o.values.length > 0)
@@ -47,7 +42,10 @@ export function buildStructurePayload(
 
   // ── Variants ───────────────────────────────────────────────────
   const variants = (structure.variants ?? []).map((v) => {
-    // Semantic option map
+    // Write shape: {optionName: value}. Read shape from
+    // AdminProductDetailResource::buildVariantOptions() is an array of
+    // {option_id, option_name, value_id, value} objects — see mapProductDetail's
+    // normalizeVariant() for where these are reconciled.
     const optionsMap: Record<string, string> = {};
     for (const opt of v.options ?? []) {
       const name  = opt.option_name?.trim();
@@ -92,8 +90,6 @@ export function buildStructurePayload(
     options,
     variants,
   };
-
-  console.log('[buildStructurePayload] Output payload:', JSON.stringify(payload, null, 2));
 
   return payload;
 }

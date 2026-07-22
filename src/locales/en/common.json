@@ -373,6 +373,7 @@
       "next": "Next",
       "page": "Page {current} of {total}"
     },
+
     "form": {
       "createTitle": "New Product",
       "editTitle": "Edit Product",
@@ -537,7 +538,8 @@
       }
     },
     "detail": {
-      "back": "Back to products"
+      "back": "Back to products",
+      "loadError": "Failed to load this product"
     },
     "create": {
       "back": "Back",

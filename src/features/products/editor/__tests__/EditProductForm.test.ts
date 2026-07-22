@@ -35,6 +35,7 @@ import {
   buildDiscardState,
   buildRebasedEditorState,
   isEditorSaveBlocked,
+  mergeScopedRebase,
 } from '@/features/products/editor/components/EditProductForm';
 
 function makeAdminProduct(
@@ -214,5 +215,52 @@ describe('EditProductForm helpers', () => {
       makeAdminProduct({ tags: [{ id: 1 }, { id: 7 }, { id: 42 }] })
     );
     expect(rebasedState.tags).toEqual([1, 7, 42]);
+  });
+
+  it('scoped rebase preserves unsaved tabs when only one tab was saved', () => {
+    const baseline = buildRebasedEditorState(makeAdminProduct());
+    const editedBaseline: typeof baseline = {
+      ...baseline,
+      content: {
+        ...baseline.content,
+        translations: {
+          ...baseline.content.translations,
+          en: {
+            ...baseline.content.translations.en,
+            name: 'Unsaved name edit',
+          },
+        },
+      },
+    };
+
+    const structureOnlySave = mergeScopedRebase(
+      editedBaseline,
+      makeAdminProduct({
+        variants: [
+          {
+            id:        999,
+            sku:       'NEW-SKU',
+            price:     50,
+            quantity:  3,
+            is_active: true,
+            options:   [{ option_name: 'Color', option_value: 'Green' }],
+          },
+        ],
+        options: [
+          {
+            id:       2,
+            name:     'Color',
+            position: 1,
+            values:   [{ id: 20, value: 'Green' }],
+          },
+        ],
+      }),
+      '',
+      'structure',
+    );
+
+    expect(structureOnlySave.content.translations.en.name).toBe('Unsaved name edit');
+    expect(structureOnlySave.structure.variants[0].sku).toBe('NEW-SKU');
+    expect(structureOnlySave.media).toEqual(editedBaseline.media);
   });
 });
