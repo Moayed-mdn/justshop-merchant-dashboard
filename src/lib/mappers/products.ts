@@ -38,7 +38,9 @@ export function normalizeProductOptions(
     const name =
       typeof option.name === 'string' ? option.name.trim() : '';
     const position =
-      typeof option.position === 'number' ? option.position : index + 1;
+      typeof option.position === 'number' && option.position >= 1
+        ? option.position
+        : index + 1;
 
     const values = (option.values ?? [])
       .map((v) => normalizeOptionValue(v))

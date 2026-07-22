@@ -33,7 +33,7 @@ export function buildStructurePayload(
     .filter((o) => o.name.trim() !== '' && o.values.length > 0)
     .map((o, index) => ({
       name:     o.name.trim(),
-      position: typeof o.position === 'number' ? o.position : index + 1,
+      position: index + 1, // always recompute from current order — never trust a stored value
       values:   o.values
         .map((v) => v.value.trim())
         .filter((v) => v !== ''),
