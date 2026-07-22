@@ -10,8 +10,10 @@ import { VariantsTable } from '@/features/products/editor/components/VariantsTab
 interface Props {
   options: ProductOption[];
   variants: ProductVariant[];
+  defaultVariantId: number | null;
   onOptionsChange: (options: ProductOption[]) => void;
   onVariantsChange: (variants: ProductVariant[]) => void;
+  onDefaultVariantChange: (variantId: number | null) => void;
   onGenerateCombinations: () => void;
   storeSlug: string;
 }
@@ -19,8 +21,10 @@ interface Props {
 export function StructureTab({
   options,
   variants,
+  defaultVariantId,
   onOptionsChange,
   onVariantsChange,
+  onDefaultVariantChange,
   onGenerateCombinations,
   storeSlug,
 }: Props) {
@@ -45,7 +49,13 @@ export function StructureTab({
           <CardTitle>{t('variantEditor.tabs.variants')}</CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <VariantsTable variants={variants} onChange={onVariantsChange} storeSlug={storeSlug} />
+          <VariantsTable 
+            variants={variants} 
+            defaultVariantId={defaultVariantId}
+            onChange={onVariantsChange} 
+            onDefaultVariantChange={onDefaultVariantChange}
+            storeSlug={storeSlug} 
+          />
         </CardContent>
       </Card>
     </div>

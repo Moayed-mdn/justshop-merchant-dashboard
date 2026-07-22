@@ -87,6 +87,7 @@ export function buildStructurePayload(
 
   const payload = {
     sync_variants: true as const,
+    default_variant_id: structure.defaultVariantId,
     options,
     variants,
   };

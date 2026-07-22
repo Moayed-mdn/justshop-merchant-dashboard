@@ -22,11 +22,12 @@ export interface ProductContentFormValues {
 }
 
 /**
- * Structure tab state — canonical options + generated variants.
+ * Structure tab state — canonical options + generated variants + default variant.
  */
 export interface ProductStructureState {
   options:  ProductOption[];
   variants: ProductVariant[];
+  defaultVariantId: number | null;
 }
 
 /**

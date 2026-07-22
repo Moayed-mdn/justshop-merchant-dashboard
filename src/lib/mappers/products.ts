@@ -161,6 +161,7 @@ export function mapProductDetail(raw: AdminProduct, storeSlug: string): ProductD
   return {
     id:             raw.id,
     storeSlug,
+    defaultVariantId: raw.default_variant_id ?? null,
     categoryId:     raw.category_id,
     brandId:        raw.brand_id,
     name:           raw.name,

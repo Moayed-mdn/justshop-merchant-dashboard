@@ -27,6 +27,7 @@ export function buildEditorState(
     structure: {
       options:  product.options,
       variants: product.variants,
+      defaultVariantId: product.defaultVariantId,
     },
 
     media: {

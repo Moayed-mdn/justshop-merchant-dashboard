@@ -488,6 +488,13 @@
         "addVariant": "Add variant",
         "active": "Active"
       },
+      "defaultVariant": {
+        "info": "The default variant's first image will be used as the product thumbnail in listings and initially on the product page.",
+        "tooltip": "Choose which variant represents this product by default. Its first image becomes the product thumbnail that customers see in search results and product listings.",
+        "columnTooltip": "Default variant - its first image is the product thumbnail",
+        "setDefault": "Set as default variant",
+        "unsetDefault": "Remove as default"
+      },
       "attributes": {
         "attributeName": "Attribute name",
         "value": "Value",

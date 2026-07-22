@@ -339,9 +339,9 @@ export default function EditProductForm({ product, storeSlug }: Props) {
           <TabsTrigger value="structure">
             {t('editor.tabs.structure')}
           </TabsTrigger>
-          <TabsTrigger value="media">
+          {/* <TabsTrigger value="media">
             {t('editor.tabs.media')}
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         {/* ── Content ── */}
@@ -367,12 +367,17 @@ export default function EditProductForm({ product, storeSlug }: Props) {
           <StructureTab
             options={structure.options}
             variants={structure.variants}
+            defaultVariantId={structure.defaultVariantId}
             onOptionsChange={(options) => {
               setStructure((prev) => ({ ...prev, options }));
               setStructureDirty(true);
             }}
             onVariantsChange={(variants) => {
               setStructure((prev) => ({ ...prev, variants }));
+              setStructureDirty(true);
+            }}
+            onDefaultVariantChange={(defaultVariantId) => {
+              setStructure((prev) => ({ ...prev, defaultVariantId }));
               setStructureDirty(true);
             }}
             onGenerateCombinations={() => {

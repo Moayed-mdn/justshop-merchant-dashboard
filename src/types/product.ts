@@ -118,6 +118,7 @@ export interface ProductVariant {
 export interface AdminProduct {
   id:               number;
   store_id:         number;
+  default_variant_id?: number | null;
   name:             string;
   slug:             string;
   description:      string | null;
@@ -164,7 +165,8 @@ export interface ProductListItemView {
 
 export interface ProductDetailView {
   id:              number;
-  storeSlug:         string;
+  storeSlug:       string;
+  defaultVariantId: number | null;
   categoryId:      number | null;
   brandId:         number | null;
   name:            string;
@@ -198,6 +200,7 @@ export interface ProductUpdatePayload {
   brand_id?:     number | null;
   is_active?:    boolean | null;
   is_featured?:  boolean | null;
+  default_variant_id?: number | null;
   translations?: Array<{
     locale:          string;
     name:            string;
