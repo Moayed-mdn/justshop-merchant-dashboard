@@ -94,11 +94,13 @@ export function VariantsTable({
   return (
     <div className="space-y-3">
       {/* Info banner */}
-      <TooltipProvider>
-        <div className="flex items-start gap-2 rounded-md bg-muted/50 p-3 text-sm">
+      <div className="flex items-start gap-2 rounded-md bg-muted/50 p-3 text-sm">
+        <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Star className="h-4 w-4 mt-0.5 text-muted-foreground cursor-help" />
+              <button type="button" className="flex-shrink-0">
+                <Star className="h-4 w-4 mt-0.5 text-muted-foreground cursor-help" />
+              </button>
             </TooltipTrigger>
             <TooltipContent className="max-w-xs">
               <p>
@@ -106,11 +108,11 @@ export function VariantsTable({
               </p>
             </TooltipContent>
           </Tooltip>
-          <p className="text-muted-foreground">
-            {t('variantEditor.defaultVariant.info')}
-          </p>
-        </div>
-      </TooltipProvider>
+        </TooltipProvider>
+        <p className="text-muted-foreground">
+          {t('variantEditor.defaultVariant.info')}
+        </p>
+      </div>
 
       <div className="rounded-md border overflow-x-auto">
       <Table>
@@ -120,7 +122,9 @@ export function VariantsTable({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Star className="h-4 w-4 text-muted-foreground cursor-help" />
+                    <button type="button" className="inline-flex items-center">
+                      <Star className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>{t('variantEditor.defaultVariant.columnTooltip')}</p>
