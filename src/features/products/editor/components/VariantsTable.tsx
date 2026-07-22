@@ -97,10 +97,8 @@ export function VariantsTable({
       <div className="flex items-start gap-2 rounded-md bg-muted/50 p-3 text-sm">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <button type="button" className="flex-shrink-0">
-                <Star className="h-4 w-4 mt-0.5 text-muted-foreground cursor-help" />
-              </button>
+            <TooltipTrigger className="flex-shrink-0">
+              <Star className="h-4 w-4 mt-0.5 text-muted-foreground cursor-help" />
             </TooltipTrigger>
             <TooltipContent className="max-w-xs">
               <p>
@@ -121,10 +119,8 @@ export function VariantsTable({
             <TableHead className="w-12">
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button type="button" className="inline-flex items-center">
-                      <Star className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </button>
+                  <TooltipTrigger className="inline-flex items-center">
+                    <Star className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>{t('variantEditor.defaultVariant.columnTooltip')}</p>
@@ -155,22 +151,19 @@ export function VariantsTable({
                 <TableCell className="text-center">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
-                          onClick={() => onDefaultVariantChange(
-                            isDefault ? null : variant.id
-                          )}
-                        >
-                          <Star 
-                            className={`h-4 w-4 ${
-                              isDefault 
-                                ? 'fill-yellow-500 text-yellow-500' 
-                                : 'text-muted-foreground'
-                            }`}
-                          />
-                        </button>
+                      <TooltipTrigger
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                        onClick={() => onDefaultVariantChange(
+                          isDefault ? null : variant.id
+                        )}
+                      >
+                        <Star 
+                          className={`h-4 w-4 ${
+                            isDefault 
+                              ? 'fill-yellow-500 text-yellow-500' 
+                              : 'text-muted-foreground'
+                          }`}
+                        />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
