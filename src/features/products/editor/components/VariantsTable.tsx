@@ -152,11 +152,9 @@ export function VariantsTable({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
+                        <button
                           type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
                           onClick={() => onDefaultVariantChange(
                             isDefault ? null : variant.id
                           )}
@@ -168,7 +166,7 @@ export function VariantsTable({
                                 : 'text-muted-foreground'
                             }`}
                           />
-                        </Button>
+                        </button>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
