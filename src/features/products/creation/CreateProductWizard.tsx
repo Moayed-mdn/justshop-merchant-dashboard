@@ -80,7 +80,7 @@ function buildDefaultContent(locales: Locale[]): CreateProductContentData {
 }
 
 function buildDefaultStructure(): CreateProductStructureData {
-  return { options: [], variants: [] };
+  return { options: [], variants: [], defaultVariantId: null };
 }
 
 function buildDefaultMedia(): CreateProductMediaData {

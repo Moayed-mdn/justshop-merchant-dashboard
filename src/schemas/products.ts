@@ -77,6 +77,7 @@ export const CreateProductOptionValidationSchema = z.object({
 export interface CreateProductStructureData {
   options:  ProductOption[];
   variants: ProductVariant[];
+  defaultVariantId: number | null;
 }
 
 // ── Create wizard — Step 3: Media ───────────────────────────────────────────

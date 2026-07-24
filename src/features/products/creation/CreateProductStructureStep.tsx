@@ -47,6 +47,10 @@ export function CreateProductStructureStep({ structure, onChange, storeSlug }: P
     onChange({ ...structure, variants });
   };
 
+  const handleDefaultVariantChange = (defaultVariantId: number | null) => {
+    onChange({ ...structure, defaultVariantId });
+  };
+
   const handleGenerate = () => {
     const regenerated = generateVariants(
       structure.options,
@@ -89,7 +93,9 @@ export function CreateProductStructureStep({ structure, onChange, storeSlug }: P
           <CardContent className="pt-0">
             <VariantsTable
               variants={structure.variants}
+              defaultVariantId={structure.defaultVariantId}
               onChange={handleVariantsChange}
+              onDefaultVariantChange={handleDefaultVariantChange}
               storeSlug={storeSlug}
             />
           </CardContent>

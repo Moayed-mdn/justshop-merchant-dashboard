@@ -4,7 +4,7 @@
  */
 
 import { clientApi } from '@/lib/api/client';
-import type { ApiResponse } from '@/types/api';
+import type { ApiResponse, ApiError } from '@/types/api';
 import type {
   AuthTransportUser,
   LoginPayload,
