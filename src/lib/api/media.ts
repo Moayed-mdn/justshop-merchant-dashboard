@@ -6,8 +6,6 @@
 
 import type { MediaContext, UploadResponse } from '@/types/media';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
-
 /**
  * Upload an image to a specific context
  */
@@ -20,12 +18,15 @@ export async function uploadImage(
   formData.append('context', context);
   formData.append('image', file);
 
+  const endpoint = `/api/v1/merchant/stores/${storeSlug}/media/upload`;
+  
+  // Use the proxy route to ensure proper authentication
   const response = await fetch(
-    `${API_BASE}/api/v1/merchant/stores/${storeSlug}/media/upload`,
+    `/api/proxy?endpoint=${encodeURIComponent(endpoint)}`,
     {
       method: 'POST',
       body: formData,
-      credentials: 'include', // Include cookies for auth
+      credentials: 'include',
       headers: {
         // Note: Don't set Content-Type - browser will set it with boundary for FormData
         'Accept': 'application/json',
@@ -69,8 +70,11 @@ export async function deleteImage(
   context: MediaContext,
   path: string
 ): Promise<void> {
+  const endpoint = `/api/v1/merchant/stores/${storeSlug}/media/delete`;
+  
+  // Use the proxy route to ensure proper authentication
   const response = await fetch(
-    `${API_BASE}/api/v1/merchant/stores/${storeSlug}/media/delete`,
+    `/api/proxy?endpoint=${encodeURIComponent(endpoint)}`,
     {
       method: 'DELETE',
       credentials: 'include',
