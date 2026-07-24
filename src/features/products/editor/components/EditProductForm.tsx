@@ -339,9 +339,7 @@ export default function EditProductForm({ product, storeSlug }: Props) {
           <TabsTrigger value="structure">
             {t('editor.tabs.structure')}
           </TabsTrigger>
-          {/* <TabsTrigger value="media">
-            {t('editor.tabs.media')}
-          </TabsTrigger> */}
+
         </TabsList>
 
         {/* ── Content ── */}
