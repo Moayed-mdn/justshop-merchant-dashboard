@@ -133,7 +133,7 @@ export const ROUTES = {
 export const API_ROUTES = {
   // ── AUTH & IDENTITY ──────────────────────────────────────────
   // Shared identity endpoints
-  csrfCookie: () => '/api/sanctum/csrf-cookie',
+  csrfCookie: () => '/sanctum/csrf-cookie',
 
   // ── MERCHANT CONTEXT ──────────────────────────────────────────
   merchant: {
