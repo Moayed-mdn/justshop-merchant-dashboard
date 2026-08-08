@@ -57,6 +57,7 @@
     "customers": "العملاء",
     "settings": "الإعدادات",
     "billing": "الفواتير",
+    "billingAndPlan": "الفوترة والخطة",
     "templates": "قوالب الصفحات",
     "shipping": "الشحن",
     "mainNav": "التنقل الرئيسي",
@@ -87,6 +88,7 @@
       "onlineStore": "المتجر الإلكتروني",
       "storefront": "واجهة المتجر",
       "customers": "العملاء",
+      "billing": "الفوترة والخطة",
       "settings": "الإعدادات"
     }
   },

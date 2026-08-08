@@ -57,6 +57,7 @@
     "customers": "Customers",
     "settings": "Settings",
     "billing": "Billing",
+    "billingAndPlan": "Billing & Plan",
     "templates": "Page Templates",
     "shipping": "Shipping",
     "mainNav": "Main navigation",
@@ -87,6 +88,7 @@
       "onlineStore": "Online Store",
       "storefront": "Storefront",
       "customers": "Customers",
+      "billing": "Billing & Plan",
       "settings": "Settings"
     }
   },

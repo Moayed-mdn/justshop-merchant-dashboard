@@ -26,6 +26,7 @@ import {
   Menu,
   LayoutTemplate,
   Truck,
+  Receipt,
   type LucideIcon,
 } from 'lucide-react';
 import React from 'react';
@@ -167,6 +168,17 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
             href:  ROUTES.merchant.customers.list(),
             icon:  Users,
             show:  canManageUsers,
+          },
+        ],
+      },
+      {
+        title: t('groups.billing'),
+        items: [
+          {
+            label: t('billingAndPlan'),
+            href:  ROUTES.merchant.billing.dashboard(),
+            icon:  Receipt,
+            show:  true,
           },
         ],
       },

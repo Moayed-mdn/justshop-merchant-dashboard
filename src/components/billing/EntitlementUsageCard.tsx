@@ -26,9 +26,21 @@ export function EntitlementUsageCard({
 }: EntitlementUsageCardProps) {
   const t = useTranslations('billing.usage');
   
+  // Safety check: ensure features exist
+  if (!entitlement || !entitlement.features) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Usage & Limits</CardTitle>
+          <CardDescription>No entitlement data available</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+  
   // Extract limits from features
-  const storesMax = entitlement.features['stores.max'] as number || 1;
-  const productsMax = entitlement.features['products.max'] as number || 100;
+  const storesMax = (entitlement.features['stores.max'] as number) || 1;
+  const productsMax = (entitlement.features['products.max'] as number) || 100;
 
   const storePercentage = (currentStores / storesMax) * 100;
   const productPercentage = (currentProducts / productsMax) * 100;

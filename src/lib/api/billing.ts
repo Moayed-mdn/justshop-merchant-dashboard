@@ -17,7 +17,7 @@ import type {
   ChangeBillingCyclePayload,
 } from '@/types/billing/subscription';
 import type { Invoice, InvoiceFilters } from '@/types/billing/invoice';
-import type { StoreEntitlement } from '@/types/billing/entitlement';
+import type { StoreEntitlement, EntitlementStatus } from '@/types/billing/entitlement';
 
 const BILLING_BASE = '/api/v1/merchant/billing';
 const PUBLIC_BASE = '/api/v1/merchant/public';
@@ -200,10 +200,36 @@ export async function createPortalSession(
  */
 export async function getEntitlements(): Promise<StoreEntitlement> {
   try {
-    const response = await clientApi.get<ApiResponse<StoreEntitlement>>(
+    const response = await clientApi.get<ApiResponse<{ usage: {
+      stores: { count: number; limit: number };
+      products: { count: number; limit: number };
+    } }>>(
       `${BILLING_BASE}/subscription/usage`
     );
-    return response.data;
+    
+    // Transform the response to match StoreEntitlement structure
+    const usage = response.data.usage;
+    
+    return {
+      id: 0,
+      store_id: 0,
+      billing_account_id: 0,
+      subscription_id: null,
+      plan_id: null,
+      entitlement_status: 'TRIALING' as EntitlementStatus,
+      features: {
+        'stores.max': usage.stores.limit,
+        'products.max': usage.products.limit,
+      },
+      limits: {
+        'stores.count': usage.stores.count,
+        'products.count': usage.products.count,
+      },
+      expires_at: null,
+      refreshed_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
   } catch (error) {
     console.error('getEntitlements failed:', {
       endpoint: `${BILLING_BASE}/subscription/usage`,

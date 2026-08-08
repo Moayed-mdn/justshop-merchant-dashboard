@@ -6,6 +6,7 @@
 'use client';
 
 import { useSubscription } from '@/hooks/billing/useSubscription';
+import { useEntitlements } from '@/hooks/billing/useEntitlements';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { SubscriptionStatusCard, EntitlementUsageCard } from '@/components/billing';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,6 +27,7 @@ export function BillingPageClient() {
   const { toast } = useToast();
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const { data: subscription, isLoading, error } = useSubscription();
+  const { data: entitlement, isLoading: entitlementLoading } = useEntitlements(activeStore?.id?.toString() || '');
   const createPortal = useCreatePortalSession();
   const [waitingForWebhook, setWaitingForWebhook] = useState(false);
 
@@ -108,33 +110,9 @@ export function BillingPageClient() {
     return null;
   }
 
-  // Mock entitlement data (would come from API)
-  const entitlement = {
-    id: 1,
-    store_id: activeStore?.id || 1,
-    billing_account_id: 1,
-    subscription_id: subscription.id,
-    plan_id: subscription.plan_id,
-    entitlement_status: 'ENTITLED' as const,
-    features: {
-      'stores.max': 3,
-      'products.max': 10000,
-      'advanced_analytics': true,
-      'multi_currency': true,
-      'priority_support': false,
-    },
-    limits: {
-      stores_count: 2,
-      products_count: 450,
-    },
-    expires_at: null,
-    refreshed_at: new Date().toISOString(),
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
-
-  const currentStoreCount = 2;
-  const currentProductCount = 450;
+  // Calculate real usage from entitlement data
+  const currentStoreCount = entitlement?.limits?.['stores.count'] ?? 1;
+  const currentProductCount = entitlement?.limits?.['products.count'] ?? 0;
 
   const handleOpenPortal = async () => {
     try {
@@ -165,11 +143,27 @@ export function BillingPageClient() {
 
       {/* Usage & Limits */}
       <section>
-        <EntitlementUsageCard
-          entitlement={entitlement}
-          currentStores={currentStoreCount}
-          currentProducts={currentProductCount}
-        />
+        {entitlementLoading ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Usage & Limits</CardTitle>
+              <CardDescription>Loading usage data...</CardDescription>
+            </CardHeader>
+          </Card>
+        ) : entitlement && entitlement.features ? (
+          <EntitlementUsageCard
+            entitlement={entitlement}
+            currentStores={currentStoreCount}
+            currentProducts={currentProductCount}
+          />
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle>Usage & Limits</CardTitle>
+              <CardDescription>Unable to load usage data. Please refresh the page.</CardDescription>
+            </CardHeader>
+          </Card>
+        )}
       </section>
 
       {/* Billing & Payment */}
