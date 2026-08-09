@@ -5,7 +5,6 @@
 
 'use client';
 
-import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useInvoices } from '@/hooks/billing/useInvoices';
 import { InvoiceTable } from '@/components/billing';
@@ -16,6 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { ROUTES } from '@/config/routes';
 import type { InvoiceStatus } from '@/types/billing/invoice';
 
 export function InvoicesPageClient() {
@@ -67,9 +69,18 @@ export function InvoicesPageClient() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Invoices</h1>
-        <p className="text-muted-foreground">View and download your billing invoices</p>
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => router.push(ROUTES.merchant.billing.dashboard())}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          <h1 className="text-3xl font-bold">Invoices</h1>
+          <p className="text-muted-foreground">View and download your billing invoices</p>
+        </div>
       </div>
 
       {/* Filters */}
