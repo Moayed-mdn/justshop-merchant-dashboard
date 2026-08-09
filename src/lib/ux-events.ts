@@ -16,8 +16,6 @@ export type UXEventName =
   | 'loader:fullscreen'
   | 'loader:soft'
   | 'redirect:bootstrap'
-  | 'redirect:legacy-layout'
-  | 'redirect:legacy-route'
   | 'switch:start'
   | 'switch:complete'
   | 'switch:failed'
@@ -56,7 +54,7 @@ export function getUXSessionSummary(): string {
   const fullscreen = buffer.filter((e) => e.name === 'loader:fullscreen');
   const soft = buffer.filter((e) => e.name === 'loader:soft');
   const redirects = buffer.filter(
-    (e) => e.name === 'redirect:bootstrap' || e.name === 'redirect:legacy-layout' || e.name === 'redirect:legacy-route',
+    (e) => e.name === 'redirect:bootstrap',
   );
   const switches = buffer.filter(
     (e) => e.name === 'switch:start' || e.name === 'switch:complete',
@@ -86,7 +84,7 @@ export function getUXSessionSummary(): string {
     `UX Session Summary (${duration}s, ${buffer.length} events)`,
     `  Full-screen loaders:        ${fullscreen.length}`,
     `  Soft (in-shell) loaders:    ${soft.length}`,
-    `  Legacy redirects:           ${redirects.length}`,
+    `  Bootstrap redirects:        ${redirects.length}`,
     `  Store switches:             ${switches.length > 0 ? Math.floor(switches.length / 2) : 0}`,
   ];
 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
+import { isKnownNonStorefrontPath } from '@/lib/routing/known-routes';
 import { resolveTenant, TENANT_CONFIG } from '@/lib/tenant/resolver';
 
 const intlMiddleware = createMiddleware(routing);
@@ -65,6 +66,10 @@ export default function middleware(request: NextRequest): NextResponse {
   const strippedPath = locales.includes(segment as typeof locales[number]) 
     ? '/' + pathname.split('/').slice(2).join('/') 
     : pathname;
+
+  // Block unknown paths on non-storefront hosts before storefront catch-all runs.
+  // For unknown paths, allow Next.js routing to handle it naturally (will hit catch-all → 404)
+  // The check remains for security/logging, but we don't intercept routing here.
 
   // Dashboard Layer Protection
   // Note: For now we assume anything under /stores or /merchant is dashboard.

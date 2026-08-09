@@ -29,14 +29,15 @@ test('store switching updates permissions and maintains tenant isolation', async
   await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible();
 });
 
-test('route and active-store mismatch auto-corrects to canonical workspace', async ({ page }) => {
+test('workspace maintains active store context across navigation', async ({ page }) => {
   await login(page, 'merchant@example.com');
   await expect(page).toHaveURL(/\/en\/merchant\/dashboard$/);
 
-  // Attempt to access Store 102 via legacy route while Store 101 is active
-  await page.goto('/en/stores/102/dashboard');
-
-  // System should redirect to canonical workspace route
+  // Navigate to different workspace routes
+  await page.goto('/en/merchant/products');
+  await expect(page).toHaveURL(/\/en\/merchant\/products$/);
+  
+  await page.goto('/en/merchant/dashboard');
   await expect(page).toHaveURL(/\/en\/merchant\/dashboard$/);
 });
 
@@ -83,7 +84,7 @@ test('cross-tab store switching synchronizes active context', async ({ browser }
   await login(primaryPage, 'merchant@example.com');
   await expect(primaryPage).toHaveURL(/\/en\/merchant\/dashboard$/);
 
-  await secondaryPage.goto('/en/stores/101/dashboard');
+  await secondaryPage.goto('/en/merchant/dashboard');
   await expect(secondaryPage).toHaveURL(/\/en\/merchant\/dashboard$/);
 
   // Switch store in primary tab

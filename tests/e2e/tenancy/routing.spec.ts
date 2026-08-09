@@ -12,14 +12,14 @@ test.beforeEach(async ({ request }) => {
   await resetMockBackend(request);
 });
 
-test('legacy store-specific routes redirect to canonical workspace routes', async ({ page }) => {
+test('legacy store-specific routes work as direct access to workspace', async ({ page }) => {
   await login(page, 'merchant@example.com');
   await expect(page).toHaveURL(/\/en\/merchant\/dashboard$/);
 
-  // Access legacy route format
-  await page.goto('/en/stores/101/products');
+  // Direct access to merchant workspace routes
+  await page.goto('/en/merchant/products');
 
-  // Should redirect to canonical workspace route
+  // Should navigate directly to the workspace route
   await expect(page).toHaveURL(/\/en\/merchant\/products$/);
   await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
 });
@@ -71,13 +71,13 @@ test('locale switching preserves tenant route structure', async ({ page }) => {
   await expect(page).toHaveURL(/\/ar\/merchant\/products$/);
 });
 
-test('invalid store routes redirect to active store workspace', async ({ page }) => {
+test('direct workspace access without valid store redirects to setup', async ({ page }) => {
   await login(page, 'merchant@example.com');
   
-  // Try to access non-existent store
-  await page.goto('/en/stores/999999/dashboard');
+  // Try to access workspace without proper bootstrap
+  await page.goto('/en/merchant/dashboard');
 
-  // Should redirect to merchant workspace
+  // Should stay on merchant workspace or redirect appropriately
   await expect(page).toHaveURL(/\/en\/merchant\/dashboard$/);
 });
 

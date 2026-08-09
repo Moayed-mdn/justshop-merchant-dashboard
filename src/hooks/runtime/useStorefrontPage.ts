@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import { resolveRoute, getPage } from '@/lib/api/runtime';
+import { retryUnlessClientError } from '@/lib/query/retry';
 import type { RuntimePagePayload } from '@/types/runtime';
 import { useLocale } from 'next-intl';
 
@@ -19,5 +20,6 @@ export function useStorefrontPage(path: string, preview?: boolean) {
       if (pageResponse.error) throw new Error(pageResponse.error.message);
       return pageResponse.data?.page ?? null;
     },
+    retry: retryUnlessClientError,
   });
 }

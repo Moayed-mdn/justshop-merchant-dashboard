@@ -17,7 +17,7 @@ test('successful checkout completes purchase and shows confirmation', async ({ p
   await expect(page).toHaveURL(/\/en\/merchant\/dashboard$/);
 
   // Navigate to storefront (simulating customer view)
-  await page.goto('/en/stores/101/shop');
+  await page.goto('/en/shop');
 
   // Add product to cart
   await page.getByTestId('product-101').click();
@@ -52,7 +52,7 @@ test('successful checkout completes purchase and shows confirmation', async ({ p
 
 test('checkout with invalid payment card shows error and allows retry', async ({ page }) => {
   await login(page, 'merchant@example.com');
-  await page.goto('/en/stores/101/shop');
+  await page.goto('/en/shop');
 
   await page.getByTestId('product-101').click();
   await page.getByTestId('add-to-cart-button').click();
@@ -84,7 +84,7 @@ test('checkout with invalid payment card shows error and allows retry', async ({
 
 test('checkout with insufficient inventory shows error', async ({ page }) => {
   await login(page, 'merchant@example.com');
-  await page.goto('/en/stores/101/shop');
+  await page.goto('/en/shop');
 
   // Intercept checkout submission to simulate out-of-stock
   await page.route(
@@ -131,7 +131,7 @@ test('checkout with insufficient inventory shows error', async ({ page }) => {
 
 test('empty cart prevents checkout access', async ({ page }) => {
   await login(page, 'merchant@example.com');
-  await page.goto('/en/stores/101/checkout');
+  await page.goto('/en/checkout');
 
   // Should redirect to cart or shop
   await expect(page).toHaveURL(/\/en\/stores\/101\/(shop|cart)$/);

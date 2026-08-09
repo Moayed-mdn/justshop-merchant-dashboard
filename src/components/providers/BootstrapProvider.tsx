@@ -33,10 +33,7 @@ export function BootstrapProvider({ children }: BootstrapProviderProps) {
     strippedPath === ROUTES.dashboard.home() ||
     strippedPath.startsWith('/merchant') ||
     strippedPath.startsWith('/account');
-  const isSetupRoute =
-    strippedPath === ROUTES.setup() ||
-    strippedPath === ROUTES.onboarding.home() ||
-    strippedPath === ROUTES.onboarding.createStore();
+  const isSetupRoute = strippedPath === ROUTES.setup();
   const isGuestRoute =
     strippedPath === ROUTES.auth.login() ||
     strippedPath === ROUTES.auth.signup() ||

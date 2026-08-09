@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import { getNavigation } from '@/lib/api/runtime';
+import { retryUnlessClientError } from '@/lib/query/retry';
 import type { NavigationPayload } from '@/types/runtime';
 
 export function useRuntimeNavigation() {
@@ -12,5 +13,6 @@ export function useRuntimeNavigation() {
       return response.data ?? null;
     },
     staleTime: 5 * 60 * 1000,
+    retry: retryUnlessClientError,
   });
 }

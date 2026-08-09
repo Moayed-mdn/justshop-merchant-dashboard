@@ -73,17 +73,15 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <div lang={locale} dir={dir} className="min-h-full flex flex-col bg-background">
-      <NuqsAdapter>
-        <QueryProvider>
-          <NextIntlClientProvider messages={messages}>
-            <BootstrapProvider>
-              {children}
-            </BootstrapProvider>
-            <Toaster />
-          </NextIntlClientProvider>
-        </QueryProvider>
-      </NuqsAdapter>
-    </div>
+    <NuqsAdapter>
+      <QueryProvider>
+        <NextIntlClientProvider messages={messages}>
+          <BootstrapProvider>
+            {children}
+          </BootstrapProvider>
+          <Toaster />
+        </NextIntlClientProvider>
+      </QueryProvider>
+    </NuqsAdapter>
   );
 }

@@ -61,7 +61,7 @@ test('order confirmation page is accessible only to order owner', async ({ page 
   await login(page, 'merchant@example.com');
 
   // Try to access non-existent order
-  await page.goto('/en/stores/101/order/99999/confirmation');
+  await page.goto('/en/order/99999/confirmation');
 
   // Should show not found or redirect
   await expect(page).toHaveURL(/\/en\/(merchant|stores\/101)/);

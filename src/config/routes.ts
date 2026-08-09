@@ -32,17 +32,6 @@ export const ROUTES = {
    */
   setup: () => '/setup' as const,
   /**
-   * Legacy aliases — kept for redirect compatibility only.
-   * Do not use these for new navigation. Use ROUTES.setup() instead.
-   */
-  onboarding: {
-    home: () => '/onboarding' as const,
-    createStore: () => '/create-store' as const,
-  },
-  stores: {
-    new: () => '/setup' as const,
-  },
-  /**
    * CANONICAL MERCHANT WORKSPACE ROUTES.
    *
    * IMPORTANT RULE:

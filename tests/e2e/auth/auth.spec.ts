@@ -37,7 +37,7 @@ test('login failure rejects invalid credentials', async ({ page }) => {
 });
 
 test('login preserves protected route redirect target', async ({ page }) => {
-  await page.goto('/en/stores/101/orders');
+  await page.goto('/en/merchant/orders');
   await expect(page).toHaveURL(/\/en\/login\?redirect=/);
 
   await page.getByTestId('login-email').fill('merchant@example.com');

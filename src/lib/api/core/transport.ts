@@ -131,14 +131,6 @@ export async function toApiError(
   const payload =
     (await parseResponseBody<ApiErrorPayload>(response).catch(() => undefined)) ?? {};
 
-  console.log('=== API ERROR DEBUG ===');
-  console.log('Response Status:', response.status);
-  console.log('Response Status Text:', response.statusText);
-  console.log('Payload:', JSON.stringify(payload, null, 2));
-  console.log('Payload.message:', payload.message);
-  console.log('Fallback message:', fallbackMessage);
-  console.log('======================');
-
   // Determine the best error message: prefer specific validation errors > generic message > fallback
   let errorMessage = fallbackMessage;
   let foundValidationError = false;
@@ -166,10 +158,6 @@ export async function toApiError(
     logoutUrl: payload.logoutUrl,
     action: payload.action,
   };
-
-  console.log('=== FINAL API ERROR ===');
-  console.log('Final message:', apiError.message);
-  console.log('======================');
 
   return new ApiErrorClass(apiError);
 }

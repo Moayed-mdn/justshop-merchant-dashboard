@@ -20,10 +20,10 @@ test.beforeEach(async ({ request }) => {
 });
 
 test('protected routes redirect unauthenticated users to login with redirect preservation', async ({ page }) => {
-  await page.goto('/en/stores/101/dashboard');
+  await page.goto('/en/merchant/dashboard');
 
   await expect(page).toHaveURL(/\/en\/login\?redirect=/);
-  expect(decodeURIComponent(page.url())).toContain('/en/stores/101/dashboard');
+  expect(decodeURIComponent(page.url())).toContain('/en/merchant/dashboard');
 });
 
 test('cross-tab logout synchronizes session termination', async ({ browser }) => {

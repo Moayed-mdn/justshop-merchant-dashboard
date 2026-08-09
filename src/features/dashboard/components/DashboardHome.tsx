@@ -22,7 +22,7 @@ function StorePickerContent() {
     }
 
     if (stores.length === 0) {
-      router.replace(ROUTES.stores.new());
+      router.replace(ROUTES.setup());
       return;
     }
 
@@ -52,7 +52,7 @@ function StorePickerContent() {
             {t('noStores')}
           </p>
           <Link
-            href={ROUTES.stores.new()}
+            href={ROUTES.setup()}
             className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-white font-medium hover:bg-primary/90"
           >
             {t('createFirst')}

@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { APP_CONFIG } from '@/config/app';
+import { RUNTIME_CONFIG } from '@/config/runtime';
 import { logger } from '@/lib/logger';
 import { TENANT_CONFIG } from '@/lib/tenant/resolver';
 
@@ -105,21 +106,6 @@ async function handleProxy(request: Request): Promise<NextResponse> {
   // Get raw cookie header from request (more reliable than cookieStore.toString())
   const cookieHeader = request.headers.get('cookie') || cookieStore.toString();
   const xsrfToken = cookieStore.get('XSRF-TOKEN')?.value;
-  
-  // DEBUG: Log cookie handling for all requests
-  console.log('[PROXY DEBUG] Endpoint:', endpoint);
-  console.log('[PROXY DEBUG] Cookie header from request:', request.headers.get('cookie')?.substring(0, 100) + '...');
-  console.log('[PROXY DEBUG] Cookie store toString:', cookieStore.toString().substring(0, 100) + '...');
-  console.log('[PROXY DEBUG] Final cookieHeader:', cookieHeader.substring(0, 100) + '...');
-  console.log('[PROXY DEBUG] Has ecommerce_session:', cookieHeader.includes('ecommerce_session'));
-  console.log('[PROXY DEBUG] Has XSRF-TOKEN:', cookieHeader.includes('XSRF-TOKEN'));
-  
-  // DEBUG: Log cookie handling
-  if (request.method !== 'GET') {
-    console.log('[CSRF DEBUG] Method:', request.method);
-    console.log('[CSRF DEBUG] Cookie header length:', cookieHeader?.length || 0);
-    console.log('[CSRF DEBUG] XSRF-TOKEN present:', xsrfToken ? 'YES' : 'NO');
-  }
   const requestLocale = resolveRequestLocale(cookieStore, request);
   logger.debug('Proxy request locale resolved', { requestLocale });
   const method = request.method.toUpperCase();
@@ -133,9 +119,12 @@ async function handleProxy(request: Request): Promise<NextResponse> {
   const headers: Record<string, string> = {
     Accept: 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
-    'locale': requestLocale,
+    locale: requestLocale,
     Cookie: cookieHeader,
     ...(xsrfToken && method !== 'GET' ? { 'X-XSRF-TOKEN': decodeURIComponent(xsrfToken) } : {}),
+    ...(endpoint.startsWith('/api/v1/storefront/runtime')
+      ? { [RUNTIME_CONFIG.versionHeader]: RUNTIME_CONFIG.version }
+      : {}),
   };
 
   // Forward origin and referer so backend can resolve the frontend URL

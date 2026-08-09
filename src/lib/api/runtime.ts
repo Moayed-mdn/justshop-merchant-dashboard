@@ -22,9 +22,6 @@ export interface GetPageParams {
 export async function resolveRoute(
   params: ResolveRouteParams
 ): Promise<RuntimeResponse<RouteResolution>> {
-
-  console.log('this is :::::',params.locale)
-
   return clientApi.get<RuntimeResponse<RouteResolution>>(
     `${RUNTIME_API}/resolve`,
     { params: { path: params.path, locale: params.locale, ...(params.preview ? { preview: '1' } : {}) } }

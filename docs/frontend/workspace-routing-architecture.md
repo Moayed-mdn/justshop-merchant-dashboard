@@ -1,25 +1,23 @@
 # Workspace Routing Architecture
 
-The Merchant Workspace has transitioned from a store-centric routing model to a workspace-centric architecture. This ensures a coherent, single-application experience for merchants managing multiple stores.
+The Merchant Workspace has a workspace-centric architecture where merchants operate within a unified workspace (`/merchant/*`), and the "Active Store" is managed as internal application context rather than being part of the URL.
 
 ## Core Principle
 
-The merchant operates within **one** workspace (`/merchant/*`), while the "Active Store" is treated as internal application context.
+The merchant operates within **one** workspace (`/merchant/*`), while the "Active Store" is resolved from state/session.
 
-- **Old Model**: `/stores/{storeId}/products` (Store identity is in the URL).
-- **New Model**: `/merchant/products` (Active store is resolved from state/session).
+- **Current Model**: `/merchant/products` (Active store is resolved from state/session)
 
 ## Benefits
 
-- **Consistency**: Unified sidebar and topbar across all operational tasks.
-- **Context Preservation**: Switching stores doesn't break the application shell or navigation state.
-- **Deep Linking**: Operational URLs are stable and represent capabilities rather than specific instances.
+- **Consistency**: Unified sidebar and topbar across all operational tasks
+- **Context Preservation**: Switching stores doesn't break the application shell or navigation state
+- **Deep Linking**: Operational URLs are stable and represent capabilities rather than specific instances
 
 ## Route Categories
 
-1. **Workspace Routes (`/merchant/*`)**: Canonical routes for merchant operations (Dashboard, Orders, Products, etc.). These react to the `activeStore` context.
-2. **Management Routes (`/merchant/stores/:id/settings`)**: Routes for managing specific store metadata or configuration.
-3. **Legacy Routes (`/stores/:id/*`)**: Kept for backward compatibility, these routes now serve as redirect adapters that hydrate the workspace context.
+1. **Workspace Routes (`/merchant/*`)**: Routes for merchant operations (Dashboard, Orders, Products, etc.) that react to the `activeStore` context
+2. **Management Routes (`/merchant/stores/:id/settings`)**: Routes for managing specific store metadata or configuration
 
 ## Navigation Flow
 
