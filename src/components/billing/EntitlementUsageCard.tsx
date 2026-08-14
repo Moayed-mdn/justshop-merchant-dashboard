@@ -38,12 +38,12 @@ export function EntitlementUsageCard({
     );
   }
   
-  // Extract limits from features
-  const storesMax = (entitlement.features['stores.max'] as number) || 1;
-  const productsMax = (entitlement.features['products.max'] as number) || 100;
+  // Extract limits from features (null = unlimited)
+  const storesMax = entitlement.features['stores.max'] as number | null;
+  const productsMax = entitlement.features['products.max'] as number | null;
 
-  const storePercentage = (currentStores / storesMax) * 100;
-  const productPercentage = (currentProducts / productsMax) * 100;
+  const storePercentage = storesMax !== null ? (currentStores / storesMax) * 100 : 0;
+  const productPercentage = productsMax !== null ? (currentProducts / productsMax) * 100 : 0;
 
   const getProgressColor = (percentage: number) => {
     if (percentage >= 90) return 'bg-red-500';
@@ -72,13 +72,21 @@ export function EntitlementUsageCard({
               <span className="text-sm font-medium">Stores</span>
             </div>
             <span className="text-sm tabular-nums">
-              {currentStores} / {storesMax}
+              {currentStores} / {storesMax !== null ? storesMax : '∞'}
             </span>
           </div>
-          <Progress value={storePercentage} className="h-2" />
-          {storePercentage >= 90 && (
-            <p className="text-xs text-amber-600 dark:text-amber-400">
-              You&apos;re approaching your store limit
+          {storesMax !== null ? (
+            <>
+              <Progress value={storePercentage} className="h-2" />
+              {storePercentage >= 90 && (
+                <p className="text-xs text-amber-600 dark:text-amber-400">
+                  You&apos;re approaching your store limit
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Unlimited stores
             </p>
           )}
         </div>
@@ -91,10 +99,16 @@ export function EntitlementUsageCard({
               <span className="text-sm font-medium">Products</span>
             </div>
             <span className="text-sm tabular-nums">
-              {currentProducts} / {productsMax}
+              {currentProducts} / {productsMax !== null ? productsMax : '∞'}
             </span>
           </div>
-          <Progress value={productPercentage} className="h-2" />
+          {productsMax !== null ? (
+            <Progress value={productPercentage} className="h-2" />
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Unlimited products
+            </p>
+          )}
         </div>
 
         {/* Features */}

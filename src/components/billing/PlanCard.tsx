@@ -44,8 +44,23 @@ export function PlanCard({
   };
 
   const handleSelect = () => {
+    console.log('[PlanCard] handleSelect called', {
+      planCode: plan.code,
+      billingCycle,
+      isCurrent,
+      disabled,
+      hasOnSelect: !!onSelect,
+    });
+    
     if (onSelect && !isCurrent && !disabled) {
+      console.log('[PlanCard] Calling onSelect');
       onSelect(plan.code, billingCycle);
+    } else {
+      console.log('[PlanCard] Not calling onSelect', {
+        onSelect: !!onSelect,
+        isCurrent,
+        disabled,
+      });
     }
   };
 

@@ -43,6 +43,8 @@
   "nav": {
     "appName": "Admin Dashboard",
     "dashboard": "Dashboard",
+    "platformDashboard": "Platform Dashboard",
+    "subscriptions": "Subscriptions",
     "users": "Customers",
     "products": "Products",
     "orders": "Orders",
@@ -58,6 +60,7 @@
     "settings": "Settings",
     "billing": "Billing",
     "billingAndPlan": "Billing & Plan",
+    "payments": "Payments",
     "templates": "Page Templates",
     "shipping": "Shipping",
     "mainNav": "Main navigation",

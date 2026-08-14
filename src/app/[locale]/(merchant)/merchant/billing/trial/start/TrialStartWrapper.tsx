@@ -8,7 +8,10 @@ import type { Plan } from '@/types/billing/plan';
 
 export function TrialStartWrapper({ plans }: { plans: Plan[] }) {
   const router = useRouter();
-  const { data: subscription, isLoading } = useSubscription();
+  const { data: subscriptionData, isLoading } = useSubscription();
+
+  // Extract subscription from response
+  const subscription = subscriptionData?.subscription;
 
   if (isLoading) {
     return (

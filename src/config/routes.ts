@@ -32,6 +32,19 @@ export const ROUTES = {
    */
   setup: () => '/setup' as const,
   /**
+   * PLATFORM ADMIN ROUTES.
+   * For super admin / platform-level operations.
+   */
+  platform: {
+    dashboard: () => '/platform/dashboard' as const,
+    billing: {
+      subscriptions: {
+        list: () => '/platform/billing/subscriptions' as const,
+        detail: (id: number) => `/platform/billing/subscriptions/${id}` as const,
+      },
+    },
+  },
+  /**
    * CANONICAL MERCHANT WORKSPACE ROUTES.
    *
    * IMPORTANT RULE:
@@ -116,6 +129,18 @@ export const ROUTES = {
     },
     settings:   () => '/merchant/settings' as const,
     shipping:   () => '/merchant/shipping' as const,
+    /**
+     * Stripe Connect return-trip pages. These exact paths (no locale prefix,
+     * no store slug segment) are hardcoded on the backend as the Stripe
+     * AccountLink refresh_url/return_url — see
+     * app/Actions/Store/OnboardMerchantToStripeAction.php on laratenant-backend.
+     * Do not rename without updating STRIPE_CONNECT_RETURN_BASE_URL usage there.
+     * Store context on return is resolved from bootstrapStore, not the URL.
+     */
+    stripeConnect: {
+      onboard: () => '/merchant/settings/payments/stripe/onboard' as const,
+      success: () => '/merchant/settings/payments/stripe/success' as const,
+    },
   },
 } as const;
 
@@ -167,6 +192,15 @@ export const API_ROUTES = {
     analytics:            () => '/api/v1/platform/analytics',
     stores:               () => '/api/v1/platform/stores',
     users:                () => '/api/v1/platform/users',
+    billing: {
+      subscriptions: {
+        list: () => '/api/v1/platform/billing/subscriptions',
+        detail: (id: number) => `/api/v1/platform/billing/subscriptions/${id}`,
+      },
+      plans: {
+        list: () => '/api/v1/platform/billing/plans',
+      },
+    },
   },
 
   // ── STOREFRONT CONTEXT ────────────────────────────────────────
@@ -387,6 +421,10 @@ export const API_ROUTES = {
         update: (methodId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/methods/${methodId}`,
         delete: (methodId: string) => `/api/v1/merchant/stores/${storeSlug}/shipping/methods/${methodId}`,
       },
+    }),
+    stripeConnect: () => ({
+      status:  () => `/api/v1/merchant/stores/${storeSlug}/stripe-connect/status`,
+      onboard: () => `/api/v1/merchant/stores/${storeSlug}/stripe-connect/onboard`,
     }),
   }),
 } as const;

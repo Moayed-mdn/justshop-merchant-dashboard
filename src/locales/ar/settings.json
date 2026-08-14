@@ -27,6 +27,40 @@
     "opening": "جارٍ الفتح...",
     "billingPortal": "بوابة الفوترة"
   },
+  "payments": {
+    "title": "المدفوعات",
+    "subtitle": "اربط متجرك بـ Stripe لاستقبال المدفوعات من العملاء"
+  },
+  "stripeConnectCard": {
+    "title": "Stripe Connect",
+    "loading": "جارٍ تحميل بيانات إعداد الدفع...",
+    "subtitle": "استقبل مدفوعات العملاء مباشرة إلى حسابك البنكي",
+    "notConnected": "متجرك غير مربوط بـ Stripe بعد. اربط حسابك لتبدأ باستقبال مدفوعات العملاء.",
+    "connectButton": "الربط مع Stripe",
+    "connecting": "جارٍ الربط...",
+    "statusActive": "مفعّل",
+    "statusIncomplete": "الإعداد غير مكتمل",
+    "incompleteMessage": "إعداد حساب Stripe الخاص بك لم يكتمل بعد. أكمل من حيث توقفت لتبدأ باستقبال المدفوعات.",
+    "continueSetupButton": "إكمال الإعداد",
+    "activeMessage": "متجرك قادر على استقبال مدفوعات العملاء.",
+    "payoutsPending": "التحويلات إلى حسابك البنكي ما زالت قيد المراجعة من Stripe. هذا لا يؤثر على قدرتك على البيع.",
+    "subscriptionRequired": "تحتاج اشتراكًا نشطًا قبل ربط Stripe.",
+    "goToBilling": "الذهاب للفوترة",
+    "connectFailed": "حدث خطأ أثناء الربط مع Stripe. يرجى المحاولة مرة أخرى."
+  },
+  "stripeConnectReturn": {
+    "verifyingTitle": "جارٍ التحقق من الإعداد",
+    "verifyingMessage": "يرجى الانتظار بينما نتأكد من حالة حساب Stripe الخاص بك...",
+    "successTitle": "تم ربط Stripe!",
+    "successMessage": "متجرك الآن قادر على استقبال مدفوعات العملاء.",
+    "pendingTitle": "الإعداد لم يكتمل بعد",
+    "pendingMessage": "لم نتمكن من تأكيد اكتمال إعداد حساب Stripe الخاص بك. يمكنك التحقق من الحالة أو إكمال الإعداد من إعدادات الدفع.",
+    "goToSettings": "الذهاب للإعدادات",
+    "redirectingTitle": "جارٍ التوجيه إلى Stripe",
+    "redirectingMessage": "يرجى الانتظار بينما نكمل إعداد حسابك...",
+    "refreshFailedTitle": "تعذّر إكمال الإعداد",
+    "refreshFailed": "حدث خطأ أثناء استئناف إعداد Stripe. يرجى المحاولة مرة أخرى من إعدادات الدفع."
+  },
   "store": {
     "title": "تكوين المتجر",
     "subtitle": "إدارة تفاصيل متجرك وتفضيلاته",

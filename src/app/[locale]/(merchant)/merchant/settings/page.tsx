@@ -5,6 +5,7 @@ import { WorkspaceEmptyState } from '@/features/merchant/components/WorkspaceEmp
 import { MerchantPageHeader } from '@/features/merchant/components/MerchantPageHeader';
 import { StoreSettingsForm } from '@/features/merchant/settings/StoreSettingsForm';
 import { BillingSettingsCard } from '@/features/merchant/settings/BillingSettingsCard';
+import { StripeConnectSettingsCard } from '@/features/merchant/settings/StripeConnectSettingsCard';
 import { useTranslations } from 'next-intl';
 import { Settings } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -50,6 +51,19 @@ export default function MerchantSettingsPage() {
           </p>
         </div>
         <BillingSettingsCard />
+      </div>
+
+      <Separator />
+
+      {/* Payments Section */}
+      <div id="payments" className="space-y-4 scroll-mt-20">
+        <div>
+          <h2 className="text-lg font-semibold">{t('payments.title')}</h2>
+          <p className="text-sm text-muted-foreground">
+            {t('payments.subtitle')}
+          </p>
+        </div>
+        <StripeConnectSettingsCard storeSlug={activeStore.slug} />
       </div>
 
       <Separator />

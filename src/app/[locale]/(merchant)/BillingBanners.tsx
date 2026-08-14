@@ -8,15 +8,17 @@ import { TrialBanner, GracePeriodBanner } from '@/components/billing';
 import { BillingBannersClient } from './BillingBannersClient';
 
 export async function BillingBanners() {
-  let subscription = null;
+  let subscriptionData = null;
   
   try {
-    subscription = await getSubscription();
+    subscriptionData = await getSubscription();
   } catch (error) {
     // Silently fail if subscription fetch fails
     // User might not have a subscription yet
     return null;
   }
+
+  const subscription = subscriptionData?.subscription;
 
   if (!subscription) {
     return null;

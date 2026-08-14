@@ -26,10 +26,13 @@ export function BillingPageClient() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const activeStore = useBootstrapStore((state) => state.activeStore);
-  const { data: subscription, isLoading, error } = useSubscription();
+  const { data: subscriptionData, isLoading, error } = useSubscription();
   const { data: entitlement, isLoading: entitlementLoading } = useEntitlements(activeStore?.id?.toString() || '');
   const createPortal = useCreatePortalSession();
   const [waitingForWebhook, setWaitingForWebhook] = useState(false);
+
+  // Extract subscription from response
+  const subscription = subscriptionData?.subscription;
 
   // Check if we just came back from successful trial signup
   const trialSuccess = searchParams.get('trial') === 'success';

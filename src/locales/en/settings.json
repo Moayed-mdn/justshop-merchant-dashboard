@@ -27,6 +27,40 @@
     "opening": "Opening...",
     "billingPortal": "Billing Portal"
   },
+  "payments": {
+    "title": "Payments",
+    "subtitle": "Connect your store to Stripe to receive payments from customers"
+  },
+  "stripeConnectCard": {
+    "title": "Stripe Connect",
+    "loading": "Loading payment setup...",
+    "subtitle": "Accept payments from customers directly to your bank account",
+    "notConnected": "Your store isn't connected to Stripe yet. Connect your account to start accepting customer payments.",
+    "connectButton": "Connect with Stripe",
+    "connecting": "Connecting...",
+    "statusActive": "Active",
+    "statusIncomplete": "Setup incomplete",
+    "incompleteMessage": "Your Stripe account setup isn't finished yet. Continue where you left off to start accepting payments.",
+    "continueSetupButton": "Continue setup",
+    "activeMessage": "Your store can accept customer payments.",
+    "payoutsPending": "Payouts to your bank account are still under review by Stripe. This doesn't affect your ability to sell.",
+    "subscriptionRequired": "You need an active subscription plan before connecting Stripe.",
+    "goToBilling": "Go to Billing",
+    "connectFailed": "Something went wrong while connecting to Stripe. Please try again."
+  },
+  "stripeConnectReturn": {
+    "verifyingTitle": "Verifying Setup",
+    "verifyingMessage": "Please wait while we confirm your Stripe account status...",
+    "successTitle": "Stripe Connected!",
+    "successMessage": "Your store can now accept customer payments.",
+    "pendingTitle": "Setup Not Finished Yet",
+    "pendingMessage": "We couldn't confirm your Stripe account is fully set up yet. You can check its status or continue setup from your payment settings.",
+    "goToSettings": "Go to Settings",
+    "redirectingTitle": "Redirecting to Stripe",
+    "redirectingMessage": "Please wait while we continue your account setup...",
+    "refreshFailedTitle": "Couldn't Continue Setup",
+    "refreshFailed": "Something went wrong while resuming your Stripe setup. Please try again from your payment settings."
+  },
   "store": {
     "title": "Store Configuration",
     "subtitle": "Manage your store details and preferences",

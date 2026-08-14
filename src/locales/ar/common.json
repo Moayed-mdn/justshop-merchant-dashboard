@@ -43,6 +43,8 @@
   "nav": {
     "appName": "لوحة التحكم",
     "dashboard": "الرئيسية",
+    "platformDashboard": "لوحة تحكم المنصة",
+    "subscriptions": "الاشتراكات",
     "users": "العملاء",
     "products": "المنتجات",
     "orders": "الطلبات",
@@ -58,6 +60,7 @@
     "settings": "الإعدادات",
     "billing": "الفواتير",
     "billingAndPlan": "الفوترة والخطة",
+    "payments": "المدفوعات",
     "templates": "قوالب الصفحات",
     "shipping": "الشحن",
     "mainNav": "التنقل الرئيسي",

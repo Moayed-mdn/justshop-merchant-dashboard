@@ -27,6 +27,7 @@ import {
   LayoutTemplate,
   Truck,
   Receipt,
+  Landmark,
   type LucideIcon,
 } from 'lucide-react';
 import React from 'react';
@@ -180,6 +181,12 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
             icon:  Receipt,
             show:  true,
           },
+          {
+            label: t('payments'),
+            href:  `${ROUTES.merchant.settings()}#payments`,
+            icon:  Landmark,
+            show:  true,
+          },
         ],
       },
     ];
@@ -202,9 +209,10 @@ export function WorkspaceSidebarNav({ isCollapsed: isCollapsedProp }: { isCollap
             isCollapsed={isCollapsed}
           >
             {group.items.map((item) => {
+              const hrefPath = item.href.split('#')[0];
               const isActive = item.exact
-                ? pathname === item.href
-                : pathname.startsWith(item.href);
+                ? pathname === hrefPath
+                : pathname.startsWith(hrefPath);
 
               return (
                 <SidebarNavItem

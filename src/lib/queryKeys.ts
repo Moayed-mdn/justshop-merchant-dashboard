@@ -23,6 +23,14 @@ export const queryKeys = {
   // ── PLATFORM ──────────────────────────────────────────────────
   platform: {
     dashboard: () => ['platform', 'dashboard'] as const,
+    subscriptions: {
+      all:    () => ['platform', 'subscriptions'] as const,
+      lists:  () => ['platform', 'subscriptions', 'list'] as const,
+      list:   (filters: Record<string, unknown>) =>
+        ['platform', 'subscriptions', 'list', filters] as const,
+      detail: (id: number) =>
+        ['platform', 'subscriptions', 'detail', id] as const,
+    },
   },
 
   // ── STOREFRONT ────────────────────────────────────────────────
@@ -205,6 +213,12 @@ export const queryKeys = {
       detail: () => ['merchant', storeSlug, 'shipping', 'address-settings', 'detail'] as const,
     }),
   },
+
+  // ── STRIPE CONNECT ────────────────────────────────────────────
+  stripeConnect: (storeSlug: string) => ({
+    all:    () => ['merchant', storeSlug, 'stripe-connect'] as const,
+    status: () => ['merchant', storeSlug, 'stripe-connect', 'status'] as const,
+  }),
 
   // ── BILLING ───────────────────────────────────────────────────
   billing: {

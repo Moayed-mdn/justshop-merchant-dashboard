@@ -19,8 +19,11 @@ import { useLocale, useTranslations } from 'next-intl';
 export function BillingSettingsCard() {
   const t = useTranslations('settings.billingCard');
   const locale = useLocale();
-  const { data: subscription, isLoading } = useSubscription();
+  const { data: subscriptionData, isLoading } = useSubscription();
   const createPortal = useCreatePortalSession();
+
+  // Extract subscription from response
+  const subscription = subscriptionData?.subscription;
 
   const handleOpenPortal = async () => {
     try {

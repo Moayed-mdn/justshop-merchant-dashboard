@@ -24,7 +24,7 @@ export interface StoreEntitlement {
   subscription_id: number | null;
   plan_id: number | null;
   entitlement_status: EntitlementStatus;
-  features: Record<string, boolean | number>;
+  features: Record<string, boolean | number | null>;
   limits: Record<string, number> | null;
   expires_at: string | null;
   refreshed_at: string;
@@ -42,7 +42,7 @@ export interface StoreEntitlementView {
   subscriptionId: number | null;
   planId: number | null;
   entitlementStatus: EntitlementStatus;
-  features: Record<string, boolean | number>;
+  features: Record<string, boolean | number | null>;
   limits: Record<string, number> | null;
   expiresAt: string | null;
   refreshedAt: string;

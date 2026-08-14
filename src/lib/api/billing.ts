@@ -10,6 +10,7 @@ import type { ApiResponse, PaginatedResponse } from '@/types/api';
 import type { Plan } from '@/types/billing/plan';
 import type {
   Subscription,
+  SubscriptionResponse,
   StartTrialPayload,
   StartTrialResponse,
   UpgradeSubscriptionPayload,
@@ -57,24 +58,23 @@ export async function startTrial(
  * Get current subscription for the authenticated account.
  * GET /api/v1/billing/subscription
  */
-interface SubscriptionResponse {
-  subscription: Subscription | null;
-  has_active_subscription: boolean;
-}
-
-export async function getSubscription(): Promise<Subscription | null> {
+export async function getSubscription(): Promise<SubscriptionResponse> {
   try {
     const response = await clientApi.get<ApiResponse<SubscriptionResponse>>(
       `${BILLING_BASE}/subscription`
     );
-    return response.data.subscription;
+    return response.data;
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
-      return null;
+      return {
+        subscription: null,
+        has_active_subscription: false,
+      };
     }
     throw error;
   }
 }
+
 
 /**
  * Upgrade to a higher-tier plan (immediate, prorated).
@@ -102,6 +102,17 @@ export async function downgradeSubscription(
     payload
   );
   return response.data;
+}
+
+/**
+ * Move subscription to current plan version (for legacy plans).
+ * POST /api/v1/merchant/billing/subscription/move-to-current-version
+ */
+export async function moveToCurrentPlanVersion(): Promise<Subscription> {
+  const response = await clientApi.post<ApiResponse<{ subscription: Subscription; usage: any }>>(
+    `${BILLING_BASE}/subscription/move-to-current-version`
+  );
+  return response.data.subscription;
 }
 
 /**
@@ -201,8 +212,8 @@ export async function createPortalSession(
 export async function getEntitlements(): Promise<StoreEntitlement> {
   try {
     const response = await clientApi.get<ApiResponse<{ usage: {
-      stores: { count: number; limit: number };
-      products: { count: number; limit: number };
+      stores: { count: number; limit: number | null };
+      products: { count: number; limit: number | null };
     } }>>(
       `${BILLING_BASE}/subscription/usage`
     );
