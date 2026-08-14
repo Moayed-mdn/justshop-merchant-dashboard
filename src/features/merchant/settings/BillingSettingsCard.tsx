@@ -125,7 +125,7 @@ export function BillingSettingsCard() {
             <p className="text-sm font-medium">{t('currentPlan')}</p>
             <p className="text-2xl font-bold">{getPlanName(subscription.plan?.name)}</p>
             <p className="text-sm capitalize text-muted-foreground">
-              {t('billedCycle', { cycle: subscription.billing_cycle })}
+              {t('billedCycle', { cycle: subscription.billing_cycle || 'monthly' })}
             </p>
           </div>
           {currentPrice && subscription.current_period_ends_at && (

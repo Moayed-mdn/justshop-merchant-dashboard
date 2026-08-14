@@ -40,7 +40,9 @@ export function TrialSignupClient({ plans }: TrialSignupClientProps) {
       });
 
       // Redirect to Stripe Checkout
-      window.location.href = url;
+      if (url) {
+        window.location.href = url;
+      }
     } catch (error) {
       const apiError = error as ApiError;
       const errorMessage = formatApiErrorMessage(apiError, { fallbackMessage: 'Failed to start trial. Please try again.' });

@@ -41,7 +41,7 @@ export function SubscriptionStatusCard({ subscription, onOpenPortal }: Subscript
   const isTrialing = subscription.status === 'trialing';
   const isCanceled = subscription.cancel_at_period_end;
   const isPastDue = subscription.status === 'past_due';
-  const hasPendingDowngrade = !!subscription.pending_plan_id;
+  const hasPendingDowngrade = !!subscription.pending_plan;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {

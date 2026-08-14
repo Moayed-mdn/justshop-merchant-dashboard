@@ -3,6 +3,8 @@
  * Raw API shapes (snake_case from backend) and mapped view shapes.
  */
 
+import type { BillingCycle } from './plan';
+
 /**
  * Subscription status enum matching backend.
  */
@@ -15,8 +17,6 @@ export type SubscriptionStatus =
   | 'paused'
   | 'canceled'
   | 'expired';
-
-export type BillingCycle = 'monthly' | 'quarterly' | 'annually';
 
 export type InvoiceStatus = 'draft' | 'open' | 'paid' | 'void' | 'uncollectible';
 
@@ -236,4 +236,96 @@ export interface SubscriptionFilters {
   order: 'asc' | 'desc';
   page: number;
   perPage: number;
+}
+
+/**
+ * Subscription response from GET /api/v1/billing/subscription
+ */
+export interface SubscriptionResponse {
+  subscription: Subscription | null;
+  has_active_subscription: boolean;
+  plan_is_current_offering?: boolean;
+}
+
+/**
+ * Subscription type with plan that includes prices and features
+ */
+export interface Subscription extends Omit<SubscriptionDetail, 'plan' | 'pending_plan'> {
+  plan: {
+    id: number;
+    code: string;
+    name: Record<string, string>;
+    tier: string;
+    superseded_by_plan_id?: number;
+    prices: Array<{
+      id: number;
+      plan_id: number;
+      billing_cycle: BillingCycle;
+      currency: string;
+      amount_cents: number;
+      is_active: boolean;
+    }>;
+    features: Array<{
+      id: number;
+      plan_id: number;
+      feature_key: string;
+      value_type: 'boolean' | 'quota' | 'limit' | 'unlimited';
+      limit_value: number | null;
+      boolean_value: boolean | null;
+    }>;
+  } | null;
+  pending_plan: {
+    id: number;
+    code: string;
+    name: Record<string, string>;
+  } | null;
+}
+
+/**
+ * Payload for starting a trial
+ */
+export interface StartTrialPayload {
+  plan_id?: number;
+  plan_price_id?: number;
+  billing_cycle?: BillingCycle;
+  success_url: string;
+  cancel_url: string;
+}
+
+/**
+ * Response from trial start (Stripe Checkout Session)
+ */
+export interface StartTrialResponse {
+  url?: string; // Legacy field name
+  checkout_url: string;
+  session_id: string;
+}
+
+/**
+ * Payload for upgrading subscription
+ */
+export interface UpgradeSubscriptionPayload {
+  new_plan_id?: number;
+  plan_code?: string;
+  billing_cycle?: BillingCycle;
+  store_id?: number;
+  prorate?: boolean;
+}
+
+/**
+ * Payload for downgrading subscription
+ */
+export interface DowngradeSubscriptionPayload {
+  new_plan_id?: number;
+  plan_code?: string;
+  billing_cycle?: BillingCycle;
+  store_id?: number;
+  apply_immediately?: boolean;
+}
+
+/**
+ * Payload for changing billing cycle
+ */
+export interface ChangeBillingCyclePayload {
+  billing_cycle: BillingCycle;
 }

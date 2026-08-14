@@ -16,7 +16,6 @@ import { Label } from '@/components/ui/label';
 import { DowngradeConfirmDialog } from '@/components/billing/DowngradeConfirmDialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { BillingCycle } from '@/types/billing/plan';
-import type { PlanFeature } from '@/types/billing/plan';
 import { useToast } from '@/hooks/use-toast';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { startTrial, moveToCurrentPlanVersion } from '@/lib/api/billing';
@@ -26,7 +25,7 @@ import { Info, Sparkles, ArrowRight } from 'lucide-react';
  * Format a feature for display in the legacy plan card.
  * Returns a human-readable label and value.
  */
-function formatFeature(feature: PlanFeature): { label: string; value: string } {
+function formatFeature(feature: any): { label: string; value: string } {
   // Convert feature_key to readable label (e.g., "stores.max" -> "Stores")
   const labelMap: Record<string, string> = {
     'stores.max': 'Stores',
@@ -127,12 +126,12 @@ export function PlansPageClient() {
       setIsProcessing(true);
 
       const selectedPlan = plans.find((p) => p.code === planCode);
-      const currentPlan = plans.find((p) => p.id === subscription.plan_id);
+      const currentPlan = plans.find((p) => p.id === subscription.plan?.id);
 
       console.log('[PlansPageClient] Plan lookup', {
         selectedPlan: selectedPlan ? { id: selectedPlan.id, code: selectedPlan.code } : null,
         currentPlan: currentPlan ? { id: currentPlan.id, code: currentPlan.code } : null,
-        subscriptionPlanId: subscription.plan_id,
+        subscriptionPlanId: subscription.plan?.id,
         availablePlanIds: plans.map(p => p.id),
       });
 
@@ -150,7 +149,7 @@ export function PlansPageClient() {
       // treat as upgrade (safer than blocking the action)
       if (!currentPlan) {
         console.warn('[PlansPageClient] Current plan not in available plans list', {
-          subscriptionPlanId: subscription.plan_id,
+          subscriptionPlanId: subscription.plan?.id,
           availablePlanIds: plans.map(p => p.id),
         });
       }
@@ -196,7 +195,9 @@ export function PlansPageClient() {
           });
           
           // Redirect to Stripe Checkout
-          window.location.href = url;
+          if (url) {
+            window.location.href = url;
+          }
           return;
         } catch (error) {
           // Enhanced error logging for better debugging
@@ -338,7 +339,7 @@ export function PlansPageClient() {
   const isTrialWithoutStripe = subscription?.status === 'trialing' && !subscription?.provider_subscription_id;
 
   // Check if current plan is in the public plans list
-  const currentPlanInPublicList = subscription ? sortedPlans.find(p => p.id === subscription.plan_id) : null;
+  const currentPlanInPublicList = subscription ? sortedPlans.find(p => p.id === subscription.plan?.id) : null;
   const currentPlanIsLegacy = subscription && !currentPlanInPublicList;
 
   return (
@@ -420,7 +421,7 @@ export function PlansPageClient() {
               </h4>
               <div className="flex gap-4 flex-wrap">
                 {subscription.plan.prices
-                  .filter(price => price.is_active)
+                  .filter((price) => price.is_active)
                   .map((price) => (
                     <div key={price.id} className="flex items-baseline gap-1">
                       <span className="text-2xl font-bold">
@@ -441,7 +442,7 @@ export function PlansPageClient() {
       {/* Upgrade Available Prompt - Show if plan has been superseded */}
       {currentPlanIsLegacy && subscription.plan?.superseded_by_plan_id && (() => {
         // Find the new plan version in the public plans list
-        const newPlanVersion = sortedPlans.find(p => p.id === subscription.plan.superseded_by_plan_id);
+        const newPlanVersion = sortedPlans.find(p => p.id === subscription.plan?.superseded_by_plan_id);
         
         if (!newPlanVersion) {
           return null; // New plan not found in public plans
@@ -600,7 +601,7 @@ export function PlansPageClient() {
               plan={plan}
               billingCycle={billingCycle}
               // Only highlight if: not trial AND plan is in public list AND matches subscription
-              isCurrent={!isTrialWithoutStripe && !currentPlanIsLegacy && subscription?.plan_id === plan.id}
+              isCurrent={!isTrialWithoutStripe && !currentPlanIsLegacy && subscription?.plan?.id === plan.id}
               isPopular={index === 1} // Middle plan is popular
               onSelect={handlePlanSelect}
               disabled={isProcessing}
