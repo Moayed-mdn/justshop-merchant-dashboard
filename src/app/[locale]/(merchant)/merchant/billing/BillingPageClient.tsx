@@ -149,8 +149,8 @@ export function BillingPageClient() {
         {entitlementLoading ? (
           <Card>
             <CardHeader>
-              <CardTitle>Usage & Limits</CardTitle>
-              <CardDescription>Loading usage data...</CardDescription>
+              <CardTitle>{t('usage.title')}</CardTitle>
+              <CardDescription>{t('usage.loading')}</CardDescription>
             </CardHeader>
           </Card>
         ) : entitlement && entitlement.features ? (
@@ -162,8 +162,8 @@ export function BillingPageClient() {
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>Usage & Limits</CardTitle>
-              <CardDescription>Unable to load usage data. Please refresh the page.</CardDescription>
+              <CardTitle>{t('usage.title')}</CardTitle>
+              <CardDescription>{t('usage.errorLoading')}</CardDescription>
             </CardHeader>
           </Card>
         )}

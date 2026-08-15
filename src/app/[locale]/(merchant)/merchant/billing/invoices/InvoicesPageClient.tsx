@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { useInvoices } from '@/hooks/billing/useInvoices';
 import { InvoiceTable } from '@/components/billing';
 import {
@@ -18,11 +18,17 @@ import {
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { ROUTES } from '@/config/routes';
+import { useTranslations } from 'next-intl';
 import type { InvoiceStatus } from '@/types/billing/invoice';
 
 export function InvoicesPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const params = useParams();
+  const locale = (params?.locale as string) || 'en';
+  
+  const t = useTranslations('billing.invoices');
+  const tBilling = useTranslations('billing');
 
   const page = Number(searchParams.get('page')) || 1;
   const status = searchParams.get('status') as InvoiceStatus | undefined;
@@ -59,8 +65,8 @@ export function InvoicesPageClient() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold">Invoices</h1>
-          <p className="text-muted-foreground">Loading invoices...</p>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('loading')}</p>
         </div>
       </div>
     );
@@ -73,13 +79,14 @@ export function InvoicesPageClient() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push(ROUTES.merchant.billing.dashboard())}
+          onClick={() => router.push(`/${locale}/merchant/billing`)}
+          aria-label={tBilling('backToBilling') || 'Back to billing'}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">Invoices</h1>
-          <p className="text-muted-foreground">View and download your billing invoices</p>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('subtitle')}</p>
         </div>
       </div>
 
@@ -90,15 +97,22 @@ export function InvoicesPageClient() {
           onValueChange={(value) => handleFilterChange('status', value)}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="All statuses" />
+            <SelectValue>
+              {status === 'paid' ? t('filters.paid') :
+               status === 'open' ? t('filters.open') :
+               status === 'draft' ? t('filters.draft') :
+               status === 'void' ? t('filters.void') :
+               status === 'uncollectible' ? t('filters.uncollectible') :
+               t('filters.allStatuses')}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="paid">Paid</SelectItem>
-            <SelectItem value="open">Open</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="void">Void</SelectItem>
-            <SelectItem value="uncollectible">Uncollectible</SelectItem>
+            <SelectItem value="all">{t('filters.allStatuses')}</SelectItem>
+            <SelectItem value="paid">{t('filters.paid')}</SelectItem>
+            <SelectItem value="open">{t('filters.open')}</SelectItem>
+            <SelectItem value="draft">{t('filters.draft')}</SelectItem>
+            <SelectItem value="void">{t('filters.void')}</SelectItem>
+            <SelectItem value="uncollectible">{t('filters.uncollectible')}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -107,10 +121,12 @@ export function InvoicesPageClient() {
           onValueChange={(value) => handleFilterChange('year', value)}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="All years" />
+            <SelectValue>
+              {year ? year : t('filters.allYears')}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Years</SelectItem>
+            <SelectItem value="all">{t('filters.allYears')}</SelectItem>
             {years.map((y) => (
               <SelectItem key={y} value={y.toString()}>
                 {y}

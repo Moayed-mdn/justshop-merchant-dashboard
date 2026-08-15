@@ -16,19 +16,7 @@ import { useRouter } from '@/lib/navigation';
 import { needsProvisioningFlow } from '@/lib/auth/bootstrap-routing';
 import { cn } from '@/lib/utils';
 import { getStoreRouteParam } from '@/lib/stores/route-param';
-
-/**
- * Maps backend store-status values to human-readable labels and explanations.
- */
-const STORE_STATUS_LABELS: Record<string, { label: string; description: string }> = {
-  pending_setup: { label: 'Pending setup', description: 'Setup has not started yet.' },
-  provisioning: { label: 'Setting up', description: 'Store is being set up and will be available soon.' },
-  active: { label: 'Active', description: 'Store is fully operational.' },
-  disabled: { label: 'Disabled', description: 'This store has been disabled.' },
-  suspended: { label: 'Suspended', description: 'Store access has been temporarily suspended.' },
-  archived: { label: 'Archived', description: 'This store has been archived.' },
-  deleted_pending: { label: 'Deleting', description: 'Store is pending deletion.' },
-};
+import { useTranslations } from 'next-intl';
 
 /**
  * Workspace Store Switcher.
@@ -36,6 +24,7 @@ const STORE_STATUS_LABELS: Record<string, { label: string; description: string }
  */
 export function WorkspaceStoreSwitcher() {
   const router = useRouter();
+  const t = useTranslations('nav');
   const stores = useBootstrapStore((state) => state.stores);
   const activeStore = useBootstrapStore((state) => state.activeStore);
   const bootstrap = useBootstrapStore((state) => state.bootstrap);
@@ -44,6 +33,33 @@ export function WorkspaceStoreSwitcher() {
 
   const isProvisioning = needsProvisioningFlow(bootstrap, provisioning);
   const isDisabled = switchStoreMutation.isPending || isProvisioning;
+
+  // Maps backend store-status values to translation keys
+  const getStoreStatusLabel = (status: string): string => {
+    const statusMap: Record<string, string> = {
+      pending_setup: t('storeStatus.pendingSetup'),
+      provisioning: t('storeStatus.provisioning'),
+      active: t('storeStatus.active'),
+      disabled: t('storeStatus.disabled'),
+      suspended: t('storeStatus.suspended'),
+      archived: t('storeStatus.archived'),
+      deleted_pending: t('storeStatus.deletePending'),
+    };
+    return statusMap[status] || status;
+  };
+
+  const getStoreStatusDescription = (status: string): string => {
+    const descMap: Record<string, string> = {
+      pending_setup: t('storeStatus.pendingSetupDesc'),
+      provisioning: t('storeStatus.provisioningDesc'),
+      active: t('storeStatus.activeDesc'),
+      disabled: t('storeStatus.disabledDesc'),
+      suspended: t('storeStatus.suspendedDesc'),
+      archived: t('storeStatus.archivedDesc'),
+      deleted_pending: t('storeStatus.deletePendingDesc'),
+    };
+    return descMap[status] || '';
+  };
 
   // Use undefined (not empty string) when no active store so Base UI treats
   // the Select as uncontrolled until bootstrap resolves. An empty string value
@@ -70,7 +86,7 @@ export function WorkspaceStoreSwitcher() {
   }
 
   // Get the active store name for display
-  const activeStoreName = activeStore?.name || 'Select store';
+  const activeStoreName = activeStore?.name || t('selectStore');
 
   return (
     <div className="flex items-center gap-2">
@@ -93,7 +109,8 @@ export function WorkspaceStoreSwitcher() {
           {stores.map((store) => {
             const isStoreActive = store.status === 'active' && store.is_active;
             const isCurrentStore = activeStore?.id === store.id;
-            const statusInfo = STORE_STATUS_LABELS[store.status];
+            const statusLabel = getStoreStatusLabel(store.status);
+            const statusDescription = getStoreStatusDescription(store.status);
 
             return (
               <SelectItem
@@ -101,7 +118,7 @@ export function WorkspaceStoreSwitcher() {
                 value={getStoreRouteParam(store)}
                 disabled={!isStoreActive}
                 className={cn(!isStoreActive && 'opacity-50')}
-                title={!isStoreActive && statusInfo ? statusInfo.description : undefined}
+                title={!isStoreActive && statusDescription ? statusDescription : undefined}
               >
                 <div className="flex w-full items-center justify-between gap-4">
                   <div className="flex items-center gap-2 overflow-hidden">
@@ -110,9 +127,9 @@ export function WorkspaceStoreSwitcher() {
                     ) : null}
                     <span className="truncate">{store.name}</span>
                   </div>
-                  {!isStoreActive && statusInfo ? (
+                  {!isStoreActive ? (
                     <Badge variant="outline" className="ml-auto shrink-0 text-[10px] uppercase">
-                      {statusInfo.label}
+                      {statusLabel}
                     </Badge>
                   ) : null}
                 </div>
@@ -125,17 +142,21 @@ export function WorkspaceStoreSwitcher() {
           <SelectItem value="__create_store__" className="text-primary focus:text-primary">
             <div className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              <span>Add store</span>
+              <span>{t('addStore')}</span>
             </div>
           </SelectItem>
         </SelectContent>
       </Select>
 
       {switchStoreMutation.isPending && (
-        <Badge variant="outline" className="animate-pulse text-[10px] uppercase">Switching</Badge>
+        <Badge variant="outline" className="animate-pulse text-[10px] uppercase">
+          {t('switching')}
+        </Badge>
       )}
       {isProvisioning && (
-        <Badge variant="outline" className="animate-pulse text-[10px] uppercase">Setting up</Badge>
+        <Badge variant="outline" className="animate-pulse text-[10px] uppercase">
+          {t('settingUp')}
+        </Badge>
       )}
     </div>
   );

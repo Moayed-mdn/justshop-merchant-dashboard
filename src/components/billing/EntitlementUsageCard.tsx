@@ -31,8 +31,8 @@ export function EntitlementUsageCard({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Usage & Limits</CardTitle>
-          <CardDescription>No entitlement data available</CardDescription>
+          <CardTitle>{t('title')}</CardTitle>
+          <CardDescription>{t('noData')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -59,8 +59,8 @@ export function EntitlementUsageCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Usage & Limits</CardTitle>
-        <CardDescription>Current usage across your subscription</CardDescription>
+        <CardTitle>{t('title')}</CardTitle>
+        <CardDescription>{t('description')}</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -69,7 +69,7 @@ export function EntitlementUsageCard({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Store className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Stores</span>
+              <span className="text-sm font-medium">{t('stores')}</span>
             </div>
             <span className="text-sm tabular-nums">
               {currentStores} / {storesMax !== null ? storesMax : '∞'}
@@ -80,13 +80,13 @@ export function EntitlementUsageCard({
               <Progress value={storePercentage} className="h-2" />
               {storePercentage >= 90 && (
                 <p className="text-xs text-amber-600 dark:text-amber-400">
-                  You&apos;re approaching your store limit
+                  {t('approachingLimit')}
                 </p>
               )}
             </>
           ) : (
             <p className="text-xs text-muted-foreground">
-              Unlimited stores
+              {t('unlimitedStores')}
             </p>
           )}
         </div>
@@ -96,7 +96,7 @@ export function EntitlementUsageCard({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Package className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Products</span>
+              <span className="text-sm font-medium">{t('products')}</span>
             </div>
             <span className="text-sm tabular-nums">
               {currentProducts} / {productsMax !== null ? productsMax : '∞'}
@@ -106,7 +106,7 @@ export function EntitlementUsageCard({
             <Progress value={productPercentage} className="h-2" />
           ) : (
             <p className="text-xs text-muted-foreground">
-              Unlimited products
+              {t('unlimitedProducts')}
             </p>
           )}
         </div>
@@ -114,7 +114,7 @@ export function EntitlementUsageCard({
         {/* Features */}
         {booleanFeatures.length > 0 && (
           <div className="space-y-3">
-            <div className="text-sm font-medium">Features</div>
+            <div className="text-sm font-medium">{t('features')}</div>
             <div className="space-y-2">
               {booleanFeatures.map(({ key, enabled }) => (
                 <div

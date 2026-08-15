@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/button';
 import { ExternalLink, Download } from 'lucide-react';
 import Link from 'next/link';
 import { InvoiceStatusBadge } from './InvoiceStatusBadge';
+import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import type { Invoice } from '@/types/billing/invoice';
 
 interface InvoiceTableProps {
@@ -32,8 +34,12 @@ export function InvoiceTable({
   totalPages,
   onPageChange,
 }: InvoiceTableProps) {
+  const params = useParams();
+  const locale = (params?.locale as string) || 'en';
+  const t = useTranslations('billing.invoices.table');
+
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -41,7 +47,7 @@ export function InvoiceTable({
   };
 
   const formatCurrency = (amountCents: number, currency: string) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currency.toUpperCase(),
     }).format(amountCents / 100);
@@ -51,7 +57,7 @@ export function InvoiceTable({
     return (
       <div className="flex min-h-[200px] items-center justify-center rounded-lg border border-dashed">
         <div className="text-center">
-          <p className="text-sm text-muted-foreground">No invoices found</p>
+          <p className="text-sm text-muted-foreground">{t('noInvoices')}</p>
         </div>
       </div>
     );
@@ -63,11 +69,11 @@ export function InvoiceTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Invoice</TableHead>
-              <TableHead className="text-end">Amount</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-end">Actions</TableHead>
+              <TableHead>{t('date')}</TableHead>
+              <TableHead>{t('invoice')}</TableHead>
+              <TableHead className="text-end">{t('amount')}</TableHead>
+              <TableHead>{t('status')}</TableHead>
+              <TableHead className="text-end">{t('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -91,10 +97,10 @@ export function InvoiceTable({
                 </TableCell>
                 <TableCell className="text-end">
                   <div className="flex justify-end gap-2">
-                    <Link href={`/merchant/billing/invoices/${invoice.id}`}>
+                    <Link href={`/${locale}/merchant/billing/invoices/${invoice.id}`}>
                       <Button variant="ghost" size="sm">
                         <ExternalLink className="h-4 w-4" />
-                        <span className="sr-only">View invoice</span>
+                        <span className="sr-only">{t('viewInvoice')}</span>
                       </Button>
                     </Link>
                     {invoice.invoice_pdf_url && (
@@ -105,7 +111,7 @@ export function InvoiceTable({
                       >
                         <Button variant="ghost" size="sm">
                           <Download className="h-4 w-4" />
-                          <span className="sr-only">Download PDF</span>
+                          <span className="sr-only">{t('downloadPDF')}</span>
                         </Button>
                       </a>
                     )}
@@ -121,7 +127,7 @@ export function InvoiceTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
+            {t('page', { current: currentPage, total: totalPages })}
           </p>
           <div className="flex gap-2">
             <Button
@@ -130,7 +136,7 @@ export function InvoiceTable({
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
-              Previous
+              {t('previous')}
             </Button>
             <Button
               variant="outline"
@@ -138,7 +144,7 @@ export function InvoiceTable({
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
-              Next
+              {t('next')}
             </Button>
           </div>
         </div>

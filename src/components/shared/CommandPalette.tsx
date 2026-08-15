@@ -34,6 +34,7 @@ import {
   Menu,
   LayoutTemplate,
   Truck,
+  CreditCard,
 } from "lucide-react";
 
 interface NavItem {
@@ -149,6 +150,13 @@ export function CommandPalette() {
       href: ROUTES.merchant.customers.list(),
       icon: <Users className="size-4" />,
       keywords: ["customers", "users", "clients"],
+    },
+    {
+      id: "billing",
+      label: t("billing"),
+      href: ROUTES.merchant.billing.dashboard(),
+      icon: <CreditCard className="size-4" />,
+      keywords: ["billing", "subscription", "plan", "payment", "invoice", "pricing"],
     },
     {
       id: "settings",

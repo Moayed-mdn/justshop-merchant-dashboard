@@ -9,7 +9,43 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import type { Plan, BillingCycle } from '@/types/billing/plan';
+
+/**
+ * Get localized text from a translation object
+ */
+function getLocalizedText(obj: { en?: string; ar?: string } | string | null | undefined, locale: string, fallback: string = ''): string {
+  if (!obj) return fallback;
+  if (typeof obj === 'string') return obj;
+  return obj[locale as keyof typeof obj] || obj.en || fallback;
+}
+
+/**
+ * Get localized feature label
+ */
+function getFeatureLabel(featureKey: string, locale: string): string {
+  // Map of feature keys to translation keys
+  const featureTranslations: Record<string, { ar: string; en: string }> = {
+    'stores.max': { en: 'Stores', ar: 'المتاجر' },
+    'products.max': { en: 'Products', ar: 'المنتجات' },
+    'users.max': { en: 'Team Members', ar: 'أعضاء الفريق' },
+    'custom_domain.enabled': { en: 'Custom Domain', ar: 'نطاق مخصص' },
+    'api.access': { en: 'API Access', ar: 'الوصول إلى API' },
+    'webhooks.enabled': { en: 'Webhooks', ar: 'Webhooks' },
+    'support.priority': { en: 'Priority Support', ar: 'دعم ذو أولوية' },
+    'analytics.advanced': { en: 'Advanced Analytics', ar: 'تحليلات متقدمة' },
+  };
+  
+  const translation = featureTranslations[featureKey];
+  if (translation) {
+    return locale === 'ar' ? translation.ar : translation.en;
+  }
+  
+  // Fallback: format the key nicely
+  return featureKey.replace(/_/g, ' ').replace(/\./g, ' - ');
+}
 
 interface PlanCardProps {
   plan: Plan;
@@ -28,6 +64,9 @@ export function PlanCard({
   onSelect,
   disabled = false,
 }: PlanCardProps) {
+  const params = useParams();
+  const locale = (params?.locale as string) || 'en';
+  const t = useTranslations('billing.plans');
   const price = plan.prices.find((p) => p.billing_cycle === billingCycle);
 
   if (!price) {
@@ -72,7 +111,7 @@ export function PlanCard({
       {isPopular && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
           <Badge variant="default" className="whitespace-nowrap">
-            Popular
+            {t('popular')}
           </Badge>
         </div>
       )}
@@ -81,21 +120,21 @@ export function PlanCard({
       <CardHeader>
         <div className="space-y-2">
           <CardTitle className="text-2xl uppercase tracking-wide">
-            {plan.name.en || plan.code}
+            {getLocalizedText(plan.name, locale, plan.code)}
           </CardTitle>
-          {plan.description?.en && <CardDescription>{plan.description.en}</CardDescription>}
+          {plan.description && <CardDescription>{getLocalizedText(plan.description, locale)}</CardDescription>}
         </div>
 
         <div className="flex items-baseline gap-1">
           <span className="text-4xl font-bold">{formatPrice(price.amount_cents)}</span>
           <span className="text-muted-foreground">
-            /{billingCycle === 'annual' ? 'year' : 'month'}
+            {billingCycle === 'annual' ? t('perYear') : t('perMonth')}
           </span>
         </div>
 
         {billingCycle === 'annual' && (
           <div className="text-sm text-muted-foreground">
-            {formatPrice(price.amount_cents / 12)}/month billed annually
+            {formatPrice(price.amount_cents / 12)}{t('perMonth')} {t('billedAnnually')}
           </div>
         )}
       </CardHeader>
@@ -108,7 +147,7 @@ export function PlanCard({
               feature.value_type === 'limit' || feature.value_type === 'quota'
                 ? feature.limit_value
                 : feature.boolean_value
-                  ? 'Included'
+                  ? t('included')
                   : null;
 
             return (
@@ -116,12 +155,12 @@ export function PlanCard({
                 <Check className="h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
                 <div>
                   <div className="text-sm font-medium">
-                    {feature.feature_key.replace(/_/g, ' ').replace(/\./g, ' - ')}
+                    {getFeatureLabel(feature.feature_key, locale)}
                   </div>
                   {displayValue && (
                     <div className="text-xs text-muted-foreground">
                       {typeof displayValue === 'number'
-                        ? `Up to ${displayValue.toLocaleString()}`
+                        ? t('upTo', { count: displayValue.toLocaleString() })
                         : displayValue}
                     </div>
                   )}
@@ -138,7 +177,7 @@ export function PlanCard({
           onClick={handleSelect}
           disabled={isCurrent || disabled}
         >
-          {isCurrent ? 'Current Plan' : `Select ${plan.name.en || plan.code}`}
+          {isCurrent ? t('currentPlan') : t('selectPlan', { plan: getLocalizedText(plan.name, locale, plan.code) })}
         </Button>
       </CardContent>
     </Card>

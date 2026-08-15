@@ -11,7 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { ROUTES } from '@/config/routes';
+import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { formatCurrency, formatDate } from '@/lib/billing/billing-utils';
 
 interface InvoiceDetailPageClientProps {
@@ -19,14 +20,17 @@ interface InvoiceDetailPageClientProps {
 }
 
 export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientProps) {
+  const params = useParams();
+  const locale = (params?.locale as string) || 'en';
+  const t = useTranslations('billing.invoices.detail');
   const { data: invoice, isLoading, error } = useInvoice(Number(invoiceId));
 
   if (isLoading) {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold">Invoice Details</h1>
-          <p className="text-muted-foreground">Loading...</p>
+          <h1 className="text-3xl font-bold">{t('loadingTitle')}</h1>
+          <p className="text-muted-foreground">{t('loadingMessage')}</p>
         </div>
       </div>
     );
@@ -36,13 +40,13 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold">Invoice Not Found</h1>
-          <p className="text-muted-foreground">The requested invoice could not be found.</p>
+          <h1 className="text-3xl font-bold">{t('notFoundTitle')}</h1>
+          <p className="text-muted-foreground">{t('notFoundMessage')}</p>
         </div>
-        <Link href={ROUTES.merchant.billing.invoices.list()}>
+        <Link href={`/${locale}/merchant/billing/invoices`}>
           <Button variant="outline">
             <ArrowLeft className="me-2 h-4 w-4" />
-            Back to Invoices
+            {t('backToInvoices')}
           </Button>
         </Link>
       </div>
@@ -52,10 +56,10 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
   return (
     <div className="space-y-8">
       {/* Back Button */}
-      <Link href={ROUTES.merchant.billing.invoices.list()}>
+      <Link href={`/${locale}/merchant/billing/invoices`}>
         <Button variant="ghost" size="sm">
           <ArrowLeft className="me-2 h-4 w-4" />
-          Back to Invoices
+          {t('backToInvoices')}
         </Button>
       </Link>
 
@@ -63,10 +67,10 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold">
-            Invoice {invoice.invoice_number || `#${invoice.id}`}
+            {t('invoice')} {invoice.invoice_number || `#${invoice.id}`}
           </h1>
           <p className="text-muted-foreground">
-            Issued on{' '}
+            {t('issuedOn')}{' '}
             {invoice.issued_at ? formatDate(invoice.issued_at) : formatDate(invoice.created_at)}
           </p>
         </div>
@@ -76,7 +80,7 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
             <a href={invoice.invoice_pdf_url} target="_blank" rel="noopener noreferrer">
               <Button variant="outline">
                 <Download className="me-2 h-4 w-4" />
-                Download PDF
+                {t('downloadPDF')}
               </Button>
             </a>
           )}
@@ -87,30 +91,30 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Invoice Information</CardTitle>
+            <CardTitle>{t('invoiceInfo')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Invoice Number</span>
+              <span className="text-sm text-muted-foreground">{t('invoiceNumber')}</span>
               <span className="font-mono text-sm font-medium">
                 {invoice.invoice_number || `INV-${invoice.id}`}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Invoice Date</span>
+              <span className="text-sm text-muted-foreground">{t('invoiceDate')}</span>
               <span className="text-sm font-medium">
                 {invoice.issued_at ? formatDate(invoice.issued_at) : formatDate(invoice.created_at)}
               </span>
             </div>
             {invoice.due_at && (
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Due Date</span>
+                <span className="text-sm text-muted-foreground">{t('dueDate')}</span>
                 <span className="text-sm font-medium">{formatDate(invoice.due_at)}</span>
               </div>
             )}
             {invoice.paid_at && (
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Paid Date</span>
+                <span className="text-sm text-muted-foreground">{t('paidDate')}</span>
                 <span className="text-sm font-medium">{formatDate(invoice.paid_at)}</span>
               </div>
             )}
@@ -119,38 +123,38 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
 
         <Card>
           <CardHeader>
-            <CardTitle>Payment Summary</CardTitle>
+            <CardTitle>{t('paymentSummary')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Subtotal</span>
+              <span className="text-sm text-muted-foreground">{t('subtotal')}</span>
               <span className="text-sm font-medium">
                 {formatCurrency(invoice.subtotal_cents, invoice.currency)}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Tax</span>
+              <span className="text-sm text-muted-foreground">{t('tax')}</span>
               <span className="text-sm font-medium">
                 {formatCurrency(invoice.tax_cents, invoice.currency)}
               </span>
             </div>
             {invoice.discount_cents !== 0 && (
               <div className="flex justify-between text-green-600">
-                <span className="text-sm">Discount</span>
+                <span className="text-sm">{t('discount')}</span>
                 <span className="text-sm font-medium">
                   -{formatCurrency(Math.abs(invoice.discount_cents), invoice.currency)}
                 </span>
               </div>
             )}
             <div className="flex justify-between border-t pt-2">
-              <span className="font-medium">Total</span>
+              <span className="font-medium">{t('total')}</span>
               <span className="text-lg font-bold">
                 {formatCurrency(invoice.total_cents, invoice.currency)}
               </span>
             </div>
             {invoice.amount_paid_cents > 0 && (
               <div className="flex justify-between text-green-600">
-                <span className="text-sm">Paid</span>
+                <span className="text-sm">{t('paid')}</span>
                 <span className="text-sm font-medium">
                   {formatCurrency(invoice.amount_paid_cents, invoice.currency)}
                 </span>
@@ -158,7 +162,7 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
             )}
             {invoice.amount_due_cents > 0 && (
               <div className="flex justify-between text-red-600">
-                <span className="text-sm">Due</span>
+                <span className="text-sm">{t('due')}</span>
                 <span className="text-sm font-medium">
                   {formatCurrency(invoice.amount_due_cents, invoice.currency)}
                 </span>
@@ -172,7 +176,7 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
       {invoice.line_items && invoice.line_items.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Line Items</CardTitle>
+            <CardTitle>{t('lineItems')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -181,7 +185,7 @@ export function InvoiceDetailPageClient({ invoiceId }: InvoiceDetailPageClientPr
                   <div>
                     <p className="font-medium">{item.description}</p>
                     <p className="text-sm text-muted-foreground">
-                      Quantity: {item.quantity} ×{' '}
+                      {t('quantity')}: {item.quantity} ×{' '}
                       {formatCurrency(item.unit_amount_cents, item.currency)}
                     </p>
                   </div>

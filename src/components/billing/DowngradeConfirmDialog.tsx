@@ -20,6 +20,8 @@ import { useState } from 'react';
 import type { BillingCycle } from '@/types/billing/plan';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 
 interface DowngradeConfirmDialogProps {
   open: boolean;
@@ -45,6 +47,11 @@ export function DowngradeConfirmDialog({
   const downgradeMutation = useDowngradeSubscription();
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
+  const t = useTranslations('billing.downgrade');
+  const tErrors = useTranslations('billing.errors');
+  const tCommon = useTranslations('common');
+  const params = useParams();
+  const locale = (params?.locale as string) || 'en';
   
   // Get active store from bootstrap
   const activeStore = useBootstrapStore((state) => state.activeStore);
@@ -53,8 +60,8 @@ export function DowngradeConfirmDialog({
     // Validate active store exists
     if (!activeStore) {
       toast({
-        title: 'Error',
-        description: 'No active store found. Please select a store first.',
+        title: tCommon('error'),
+        description: tErrors('noActiveStore'),
         variant: 'destructive',
       });
       return;
@@ -77,7 +84,7 @@ export function DowngradeConfirmDialog({
       console.error('Downgrade failed:', error);
       
       // Extract meaningful error message
-      let errorMessage = 'Failed to schedule downgrade. Please try again.';
+      let errorMessage = t('failedMessage');
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (typeof error === 'object' && error !== null) {
@@ -90,7 +97,7 @@ export function DowngradeConfirmDialog({
       }
       
       toast({
-        title: 'Downgrade Failed',
+        title: t('failed'),
         description: errorMessage,
         variant: 'destructive',
       });
@@ -100,7 +107,7 @@ export function DowngradeConfirmDialog({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(locale === 'ar' ? 'ar-EG' : 'en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -114,16 +121,13 @@ export function DowngradeConfirmDialog({
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-950/20">
             <TrendingDown className="h-6 w-6 text-amber-600 dark:text-amber-400" />
           </div>
-          <DialogTitle className="text-center">Confirm Downgrade</DialogTitle>
+          <DialogTitle className="text-center">{t('confirmTitle')}</DialogTitle>
           <DialogDescription className="text-center">
-            You&apos;re about to downgrade from <strong>{currentPlan}</strong> to{' '}
-            <strong>{targetPlan}</strong>.
-            {periodEndDate && (
-              <>
-                {' '}
-                The change will take effect on <strong>{formatDate(periodEndDate)}</strong>.
-              </>
-            )}
+            {t('confirmDescription', { 
+              currentPlan, 
+              targetPlan,
+              date: periodEndDate ? formatDate(periodEndDate) : ''
+            })}
           </DialogDescription>
         </DialogHeader>
 
@@ -133,12 +137,12 @@ export function DowngradeConfirmDialog({
               <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
               <div className="space-y-1">
                 <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                  What happens when you downgrade:
+                  {t('whatHappens')}
                 </p>
                 <ul className="list-inside list-disc space-y-1 text-sm text-amber-700 dark:text-amber-300">
-                  <li>Reduced storage and feature limits</li>
-                  <li>Access to fewer premium features</li>
-                  <li>Lower priority support</li>
+                  <li>{t('reducedLimits')}</li>
+                  <li>{t('fewerFeatures')}</li>
+                  <li>{t('lowerPriority')}</li>
                 </ul>
               </div>
             </div>
@@ -146,15 +150,16 @@ export function DowngradeConfirmDialog({
 
           <div className="rounded-lg border p-4">
             <p className="text-sm text-muted-foreground">
-              <strong>Note:</strong> You&apos;ll keep full access to your current plan until{' '}
-              {periodEndDate ? formatDate(periodEndDate) : 'the end of your billing period'}.
+              <strong>{t('noteTitle')}</strong> {t('noteMessage', { 
+                date: periodEndDate ? formatDate(periodEndDate) : ''
+              })}
             </p>
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isProcessing}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             variant="default"
@@ -162,8 +167,8 @@ export function DowngradeConfirmDialog({
             disabled={isProcessing || downgradeMutation.isPending}
           >
             {isProcessing || downgradeMutation.isPending
-              ? 'Processing...'
-              : `Downgrade to ${targetPlan}`}
+              ? t('processing')
+              : t('confirmButton', { plan: targetPlan })}
           </Button>
         </DialogFooter>
       </DialogContent>

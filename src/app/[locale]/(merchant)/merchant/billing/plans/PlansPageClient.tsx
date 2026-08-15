@@ -6,7 +6,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { usePlans } from '@/hooks/billing/usePlans';
 import { useSubscription } from '@/hooks/billing/useSubscription';
 import { useUpgradeSubscription } from '@/hooks/billing/useUpgradeSubscription';
@@ -19,46 +19,63 @@ import type { BillingCycle } from '@/types/billing/plan';
 import { useToast } from '@/hooks/use-toast';
 import { useBootstrapStore } from '@/stores/bootstrapStore';
 import { startTrial, moveToCurrentPlanVersion } from '@/lib/api/billing';
-import { Info, Sparkles, ArrowRight } from 'lucide-react';
+import { Info, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 /**
  * Format a feature for display in the legacy plan card.
  * Returns a human-readable label and value.
  */
-function formatFeature(feature: any): { label: string; value: string } {
-  // Convert feature_key to readable label (e.g., "stores.max" -> "Stores")
-  const labelMap: Record<string, string> = {
-    'stores.max': 'Stores',
-    'products.max': 'Products',
-    'users.max': 'Team Members',
-    'custom_domain.enabled': 'Custom Domain',
-    'api.access': 'API Access',
-    'webhooks.enabled': 'Webhooks',
-    'support.priority': 'Priority Support',
-    'analytics.advanced': 'Advanced Analytics',
+function formatFeature(feature: any, t: any): { label: string; value: string } {
+  // Map feature keys to translation keys
+  const featureKeyMap: Record<string, string> = {
+    'stores.max': 'features.stores',
+    'products.max': 'features.products',
+    'users.max': 'features.teamMembers',
+    'custom_domain.enabled': 'features.customDomain',
+    'api.access': 'features.apiAccess',
+    'webhooks.enabled': 'features.webhooks',
+    'support.priority': 'features.prioritySupport',
+    'analytics.advanced': 'features.advancedAnalytics',
   };
   
-  const label = labelMap[feature.feature_key] || feature.feature_key;
+  const translationKey = featureKeyMap[feature.feature_key];
+  const label = translationKey ? t(translationKey) : feature.feature_key;
   
   // Format the value based on type
   let value: string;
   
   if (feature.value_type === 'boolean') {
-    value = feature.boolean_value ? 'Enabled' : 'Disabled';
+    value = feature.boolean_value ? t('features.enabled') : t('features.disabled');
   } else if (feature.value_type === 'unlimited') {
-    value = 'Unlimited';
+    value = t('features.unlimited');
   } else if (feature.value_type === 'limit' && feature.limit_value !== null) {
-    value = `Up to ${feature.limit_value}`;
+    value = t('features.upTo', { count: feature.limit_value });
   } else {
-    value = 'Not specified';
+    value = t('features.notSpecified');
   }
   
   return { label, value };
 }
 
+/**
+ * Get localized plan name or description
+ */
+function getLocalizedText(obj: { en?: string; ar?: string } | string | null | undefined, locale: string, fallback: string = ''): string {
+  if (!obj) return fallback;
+  if (typeof obj === 'string') return obj;
+  return obj[locale as keyof typeof obj] || obj.en || fallback;
+}
+
 export function PlansPageClient() {
   const router = useRouter();
+  const params = useParams();
+  const locale = (params?.locale as string) || 'en';
   const { toast } = useToast();
+  const t = useTranslations('billing.plans');
+  const tBilling = useTranslations('billing');
+  const tErrors = useTranslations('billing.errors');
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('annual');
   const [isProcessing, setIsProcessing] = useState(false);
   
@@ -110,8 +127,8 @@ export function PlansPageClient() {
     if (!activeStore) {
       console.error('[PlansPageClient] No active store found');
       toast({
-        title: 'Error',
-        description: 'No active store found. Please select a store first.',
+        title: tErrors('noActiveStore').split('.')[0],
+        description: tErrors('noActiveStore'),
         variant: 'destructive',
       });
       return;
@@ -138,8 +155,8 @@ export function PlansPageClient() {
       if (!selectedPlan) {
         console.error('[PlansPageClient] Selected plan not found!', { planCode });
         toast({
-          title: 'Error',
-          description: 'Selected plan not found',
+          title: tErrors('planNotFound').split(':')[0],
+          description: tErrors('planNotFound'),
           variant: 'destructive',
         });
         return;
@@ -166,12 +183,12 @@ export function PlansPageClient() {
           // Find the price for the selected plan and billing cycle
           const selectedPlan = plans.find((p) => p.code === planCode);
           if (!selectedPlan) {
-            throw new Error('Plan not found');
+            throw new Error(tErrors('planNotFound'));
           }
 
           const price = selectedPlan.prices.find((p) => p.billing_cycle === cycle);
           if (!price) {
-            throw new Error('Price not found for selected billing cycle');
+            throw new Error(tErrors('priceNotFound'));
           }
 
           const payload = {
@@ -190,8 +207,8 @@ export function PlansPageClient() {
           const { url } = await startTrial(payload);
           
           toast({
-            title: 'Redirecting to checkout',
-            description: 'Setting up your subscription...',
+            title: t('redirectingToCheckout'),
+            description: t('settingUpSubscription'),
           });
           
           // Redirect to Stripe Checkout
@@ -211,7 +228,7 @@ export function PlansPageClient() {
           });
           
           // Extract meaningful error message
-          let errorMessage = 'Failed to start checkout. Please try again.';
+          let errorMessage = tErrors('checkoutFailed');
           if (error instanceof Error) {
             errorMessage = error.message;
           } else if (typeof error === 'object' && error !== null) {
@@ -224,7 +241,7 @@ export function PlansPageClient() {
           }
           
           toast({
-            title: 'Error',
+            title: tErrors('error'),
             description: errorMessage,
             variant: 'destructive',
           });
@@ -253,8 +270,8 @@ export function PlansPageClient() {
         });
 
         toast({
-          title: 'Plan upgraded!',
-          description: `You've been upgraded to ${selectedPlan.name.en}`,
+          title: t('planUpgraded'),
+          description: t('upgradedTo', { plan: getLocalizedText(selectedPlan.name, locale, selectedPlan.code) }),
         });
         
         router.push('/merchant/billing');
@@ -264,8 +281,8 @@ export function PlansPageClient() {
         // Note: If currentPlan is null, we won't reach here (treated as upgrade above)
         setDowngradeDialog({
           open: true,
-          currentPlan: currentPlan!.name.en || currentPlan!.code,
-          targetPlan: selectedPlan.name.en || selectedPlan.code,
+          currentPlan: getLocalizedText(currentPlan!.name, locale, currentPlan!.code),
+          targetPlan: getLocalizedText(selectedPlan.name, locale, selectedPlan.code),
           targetPlanCode: planCode,
           billingCycle: cycle,
           periodEndDate: subscription.current_period_ends_at || undefined,
@@ -275,7 +292,7 @@ export function PlansPageClient() {
       console.error('Plan change failed:', error);
       
       // Extract meaningful error message
-      let errorMessage = 'Failed to change plan. Please try again.';
+      let errorMessage = tErrors('planChangeFailed');
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (typeof error === 'object' && error !== null) {
@@ -288,7 +305,7 @@ export function PlansPageClient() {
       }
       
       toast({
-        title: 'Error',
+        title: tErrors('error'),
         description: errorMessage,
         variant: 'destructive',
       });
@@ -302,8 +319,8 @@ export function PlansPageClient() {
     await refetchSubscription();
     
     toast({
-      title: 'Downgrade scheduled',
-      description: `Your plan will change to ${downgradeDialog.targetPlan} at the end of your billing period. You'll keep full access to your current plan until then.`,
+      title: t('downgradeScheduled'),
+      description: t('downgradeMessage', { plan: downgradeDialog.targetPlan }),
     });
     
     // Navigate to billing page to show the pending downgrade info
@@ -314,8 +331,8 @@ export function PlansPageClient() {
     return (
       <div className="space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">Choose Your Plan</h1>
-          <p className="mt-2 text-lg text-muted-foreground">Loading plans...</p>
+          <h1 className="text-4xl font-bold">{t('title')}</h1>
+          <p className="mt-2 text-lg text-muted-foreground">{t('loadingPlans')}</p>
         </div>
       </div>
     );
@@ -325,8 +342,8 @@ export function PlansPageClient() {
     return (
       <div className="space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">Choose Your Plan</h1>
-          <p className="mt-2 text-lg text-muted-foreground">No plans available</p>
+          <h1 className="text-4xl font-bold">{t('title')}</h1>
+          <p className="mt-2 text-lg text-muted-foreground">{t('noPlans')}</p>
         </div>
       </div>
     );
@@ -345,13 +362,23 @@ export function PlansPageClient() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="text-center">
-        <h1 className="text-4xl font-bold">Choose Your Plan</h1>
-        <p className="mt-2 text-lg text-muted-foreground">
-          {isTrialWithoutStripe 
-            ? 'Start your paid subscription by selecting a plan'
-            : 'Select the plan that fits your business needs'}
-        </p>
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => router.push(`/${locale}/merchant/billing`)}
+          aria-label={tBilling('backToBilling') || 'Back to billing'}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div className="text-center flex-1">
+          <h1 className="text-4xl font-bold">{t('title')}</h1>
+          <p className="mt-2 text-lg text-muted-foreground">
+            {isTrialWithoutStripe 
+              ? t('trialSubtitle')
+              : t('subtitle')}
+          </p>
+        </div>
       </div>
 
       {/* Legacy Plan Card - Show if user is on a plan not in public list */}
@@ -361,17 +388,17 @@ export function PlansPageClient() {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <h3 className="text-2xl font-bold">
-                  {subscription.plan.name?.en || subscription.plan.code}
+                  {getLocalizedText(subscription.plan.name, locale, subscription.plan.code)}
                 </h3>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-200 text-amber-900 dark:bg-amber-900 dark:text-amber-100">
-                  Your Current Plan
+                  {t('yourCurrentPlan')}
                 </span>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                  Legacy
+                  {t('legacy')}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground max-w-2xl">
-                This plan is no longer available to new subscribers. Your current pricing and limits remain unchanged and will continue until you choose to upgrade or downgrade.
+                {t('legacyDescription')}
               </p>
             </div>
           </div>
@@ -380,11 +407,11 @@ export function PlansPageClient() {
           {subscription.plan.features && subscription.plan.features.length > 0 && (
             <div className="mt-4 pt-4 border-t border-amber-200 dark:border-amber-800">
               <h4 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">
-                Your Current Features & Limits
+                {t('yourCurrentFeatures')}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {subscription.plan.features.map((feature) => {
-                  const { label, value } = formatFeature(feature);
+                  const { label, value } = formatFeature(feature, t);
                   return (
                     <div key={feature.id} className="flex items-start gap-2">
                       <svg
@@ -417,7 +444,7 @@ export function PlansPageClient() {
           {subscription.plan.prices && subscription.plan.prices.length > 0 && (
             <div className="mt-4 pt-4 border-t border-amber-200 dark:border-amber-800">
               <h4 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">
-                Your Current Pricing
+                {t('yourCurrentPricing')}
               </h4>
               <div className="flex gap-4 flex-wrap">
                 {subscription.plan.prices
@@ -470,8 +497,8 @@ export function PlansPageClient() {
             await moveToCurrentPlanVersion();
             
             toast({
-              title: 'Plan Updated!',
-              description: `You've been moved to ${newPlanVersion.name?.en || newPlanVersion.code}`,
+              title: t('planUpdated'),
+              description: t('movedToPlan', { plan: getLocalizedText(newPlanVersion.name, locale, newPlanVersion.code) }),
             });
             
             // Refetch subscription data
@@ -483,7 +510,7 @@ export function PlansPageClient() {
           } catch (error) {
             console.error('Move to current version failed:', error);
             
-            let errorMessage = 'Failed to update plan. Please try again.';
+            let errorMessage = tErrors('planUpdateFailed');
             if (error instanceof Error) {
               errorMessage = error.message;
             } else if (typeof error === 'object' && error !== null) {
@@ -496,7 +523,7 @@ export function PlansPageClient() {
             }
             
             toast({
-              title: 'Error',
+              title: tErrors('error'),
               description: errorMessage,
               variant: 'destructive',
             });
@@ -509,22 +536,21 @@ export function PlansPageClient() {
           <Alert className="border-primary bg-primary/5">
             <Sparkles className="h-5 w-5 text-primary" />
             <AlertTitle className="flex items-center gap-2 text-lg font-semibold">
-              New Version Available
+              {t('newVersionAvailable')}
             </AlertTitle>
             <AlertDescription className="mt-2">
               <div className="flex flex-col gap-4">
                 <p className="text-sm text-muted-foreground">
-                  An updated version of your plan is now available with improved features and benefits. 
-                  Check out <span className="font-semibold text-foreground">{newPlanVersion.name?.en || newPlanVersion.code}</span> below to see what's new.
+                  {t('newVersionDescription', { plan: getLocalizedText(newPlanVersion.name, locale, newPlanVersion.code) })}
                 </p>
                 
                 {/* Show key differences if available */}
                 {newPlanVersion.features && subscription.plan.features && (
                   <div className="text-sm">
-                    <p className="font-medium mb-2 text-foreground">What's new in this version:</p>
+                    <p className="font-medium mb-2 text-foreground">{t('whatsNewInVersion')}</p>
                     <ul className="space-y-1 text-muted-foreground">
                       {newPlanVersion.features.slice(0, 3).map((feature) => {
-                        const { label, value } = formatFeature(feature);
+                        const { label, value } = formatFeature(feature, t);
                         return (
                           <li key={feature.id} className="flex items-start gap-2">
                             <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
@@ -533,7 +559,7 @@ export function PlansPageClient() {
                         );
                       })}
                       {newPlanVersion.features.length > 3 && (
-                        <li className="text-xs italic">...and more features</li>
+                        <li className="text-xs italic">{t('andMoreFeatures')}</li>
                       )}
                     </ul>
                   </div>
@@ -547,7 +573,7 @@ export function PlansPageClient() {
                     className="gap-2"
                   >
                     <Info className="h-4 w-4" />
-                    View New Plan
+                    {t('viewNewPlan')}
                   </Button>
                   <Button
                     onClick={handleUpgradeToCurrentVersion}
@@ -557,7 +583,7 @@ export function PlansPageClient() {
                     className="gap-2"
                   >
                     <Sparkles className="h-4 w-4" />
-                    Upgrade Now
+                    {t('upgradeNow')}
                   </Button>
                 </div>
               </div>
@@ -577,7 +603,7 @@ export function PlansPageClient() {
                 : 'hover:bg-muted'
             }`}
           >
-            Monthly
+            {t('monthly')}
           </button>
           <button
             onClick={() => setBillingCycle('annual')}
@@ -587,8 +613,8 @@ export function PlansPageClient() {
                 : 'hover:bg-muted'
             }`}
           >
-            Annual
-            <span className="ms-1 text-xs">(Save 20%)</span>
+            {t('annual')}
+            <span className="ms-1 text-xs">{t('savePercentage')}</span>
           </button>
         </div>
       </div>
