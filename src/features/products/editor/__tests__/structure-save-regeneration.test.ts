@@ -46,6 +46,7 @@ describe('structure save regeneration', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const regenerated = [

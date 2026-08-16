@@ -56,11 +56,10 @@ function toPascalCase(value: string): string {
 function resolveLucideIcon(value: string) {
   const iconName = toPascalCase(value);
   
-  const icons =
-    LucideIcons as Record<
-      string,
-      React.ComponentType<LucideProps>
-    >;
+  const icons = LucideIcons as unknown as Record<
+    string,
+    React.ComponentType<LucideProps>
+  >;
   
   return icons[iconName] ?? null;
 }

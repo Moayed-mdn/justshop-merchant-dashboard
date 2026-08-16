@@ -18,6 +18,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -46,6 +47,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -78,6 +80,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -108,6 +111,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -130,6 +134,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -153,6 +158,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -178,6 +184,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -203,6 +210,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -239,6 +247,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -263,6 +272,7 @@ describe('validateProductStructure', () => {
           media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -285,6 +295,7 @@ describe('validateProductStructure', () => {
         },
       ],
       variants: [],
+      defaultVariantId: null,
     };
 
     const result = validateProductStructure(state);
@@ -295,7 +306,7 @@ describe('validateProductStructure', () => {
   // ── Empty state ───────────────────────────────────────────────────────────
 
   it('passes for empty variants array', () => {
-    const state: ProductStructureState = { options: [], variants: [] };
+    const state: ProductStructureState = { options: [], variants: [], defaultVariantId: null };
     const result = validateProductStructure(state);
     expect(result.isValid).toBe(true);
   });

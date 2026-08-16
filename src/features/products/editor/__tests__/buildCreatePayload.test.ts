@@ -66,6 +66,7 @@ function makeState(
           options:  [{ option_name: 'Color', option_value: 'Blue' }],
         }),
       ],
+      defaultVariantId: null,
     },
     media: { media: [] },
     tags:  [],

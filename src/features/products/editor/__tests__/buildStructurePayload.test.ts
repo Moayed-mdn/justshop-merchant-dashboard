@@ -32,6 +32,7 @@ describe('buildStructurePayload', () => {
           ],
         },
       ],
+      defaultVariantId: null,
     };
 
     const payload = buildStructurePayload({ structure });
@@ -71,6 +72,7 @@ describe('buildStructurePayload', () => {
           ],
         },
       ],
+      defaultVariantId: null,
     };
 
     const payload = buildStructurePayload({ structure });
@@ -103,6 +105,7 @@ describe('buildStructurePayload', () => {
           ],
         },
       ],
+      defaultVariantId: null,
     };
 
     const payload = buildStructurePayload({ structure });
@@ -121,6 +124,7 @@ describe('buildStructurePayload', () => {
           is_active: true, options: [], media: [],
         },
       ],
+      defaultVariantId: null,
     };
 
     const payload = buildStructurePayload({ structure });
@@ -134,6 +138,7 @@ describe('buildStructurePayload', () => {
         { id: 1,    name: 'Color', position: 2, values: [{ id: 10,   value: 'Red' }] },
       ],
       variants: [],
+      defaultVariantId: null,
     };
     const payload = buildStructurePayload({ structure });
     expect(payload.options).toHaveLength(1);
@@ -146,6 +151,7 @@ describe('buildStructurePayload', () => {
         { id: 1, name: 'Color', position: 1, values: [{ id: null, value: '  ' }] },
       ],
       variants: [],
+      defaultVariantId: null,
     };
     const payload = buildStructurePayload({ structure });
     expect(payload.options).toHaveLength(0);
@@ -165,13 +171,14 @@ describe('buildStructurePayload', () => {
           ],
         },
       ],
+      defaultVariantId: null,
     };
     const payload = buildStructurePayload({ structure });
     expect(payload.variants?.[0].options).toEqual({ Color: 'Red' });
   });
 
   it('handles empty variants', () => {
-    const payload = buildStructurePayload({ structure: { options: [], variants: [] } });
+    const payload = buildStructurePayload({ structure: { options: [], variants: [], defaultVariantId: null } });
     expect(payload.variants).toEqual([]);
     expect(payload.options).toEqual([]);
   });

@@ -36,7 +36,6 @@ export function mapThemeListItem(item: ThemeListItem, storeSlug: string): ThemeL
     isActive: item.is_active,
     isPublished: item.is_published,
     sectionsCount: item.sections_count,
-    settings: item.settings, // Include settings for color schemes
     createdAt: item.created_at,
     updatedAt: item.updated_at,
   };
