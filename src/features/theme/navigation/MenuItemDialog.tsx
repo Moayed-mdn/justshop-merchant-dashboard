@@ -139,7 +139,7 @@ export default function MenuItemDialog({
     resource_id: formData.resource_id,
     resource_type: formData.resource_type,
     target: formData.target,
-    settings: formData.settings,
+    settings: formData.settings || {},
     position: formData.position,
     is_active: formData.is_active,
   });
