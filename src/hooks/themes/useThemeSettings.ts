@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api-client';
 import { API_ROUTES } from '@/config/routes';
 import { queryKeys } from '@/lib/queryKeys';
-import type { Theme } from '@/types/theme';
+import type { Theme, ColorScheme } from '@/types/theme';
 import type { ApiError } from '@/types/api';
 
 interface UpdateThemeSettingsPayload {
@@ -20,6 +20,9 @@ interface UpdateThemeSettingsPayload {
       success?: string;
       error?: string;
       warning?: string;
+    };
+    color_schemes?: {
+      [key: string]: ColorScheme;
     };
     fonts?: {
       heading?: string;
