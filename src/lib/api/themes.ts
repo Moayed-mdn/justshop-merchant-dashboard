@@ -71,8 +71,13 @@ export async function updateTheme(
   themeSlug: string,
   payload: UpdateThemePayload,
 ): Promise<Theme> {
+  // Check if this is a settings update (has 'settings' field)
+  const isSettingsUpdate = payload.settings !== undefined;
+  
   const response = await clientApi.put<ApiResponse<Theme>>(
-    API_ROUTES.store(storeSlug).themes().update(themeSlug),
+    isSettingsUpdate
+      ? API_ROUTES.store(storeSlug).themes().updateSettings(themeSlug)
+      : API_ROUTES.store(storeSlug).themes().update(themeSlug),
     payload,
   );
   return response.data;

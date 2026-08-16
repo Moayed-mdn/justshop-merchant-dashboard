@@ -76,7 +76,7 @@ export function mapNavigationMenuItem(
     label: parseNavigationLabel(item.label),
     type: item.type,
     url: item.url,
-    resourceId: item.resource_id,
+    resourceId: item.resource_id != null ? Number(item.resource_id) : null,
     resourceType: item.resource_type,
     target: item.target,
     settings: item.settings,

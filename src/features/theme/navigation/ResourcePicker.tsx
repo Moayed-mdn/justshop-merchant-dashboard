@@ -113,7 +113,10 @@ export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }
   };
 
   // Find selected resource
-  const selectedResource = resourceData?.find((r: any) => r.id === value);
+  const selectedResource = resourceData?.find((r: any) => {
+    // Convert both to numbers for comparison to handle type mismatches
+    return Number(r.id) === Number(value);
+  });
 
   if (isLoading) {
     return (
@@ -141,23 +144,18 @@ export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }
     <div className="space-y-2">
       {/* Combobox Selector */}
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger className="w-full">
-          <Button
-            type="button"
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-          >
-            {selectedResource ? (
-              <span className="truncate">{getDisplayLabel(selectedResource)}</span>
-            ) : (
-              <span className="text-muted-foreground">
-                {t('selectPlaceholder', { type: t(`type.${type}`) })}
-              </span>
-            )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
+        <PopoverTrigger
+          type="button"
+          className="inline-flex w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {selectedResource ? (
+            <span className="truncate">{getDisplayLabel(selectedResource)}</span>
+          ) : (
+            <span className="text-muted-foreground">
+              {t('selectPlaceholder', { type: t(`type.${type}`) })}
+            </span>
+          )}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
           <Command>

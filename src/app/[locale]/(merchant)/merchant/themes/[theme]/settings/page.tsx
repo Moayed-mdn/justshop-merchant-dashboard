@@ -225,6 +225,7 @@ export default function ThemeSettingsPage() {
           buttons: buttonSettings,
           colors: colorSettings,
           typography: typographySettings,
+          color_schemes: colorSchemes,
         },
       });
       toast.success(t('saved'));
