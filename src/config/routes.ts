@@ -425,6 +425,7 @@ export const API_ROUTES = {
     stripeConnect: () => ({
       status:  () => `/api/v1/merchant/stores/${storeSlug}/stripe-connect/status`,
       onboard: () => `/api/v1/merchant/stores/${storeSlug}/stripe-connect/onboard`,
+      dashboardLink: () => `/api/v1/merchant/stores/${storeSlug}/stripe-connect/dashboard-link`,
     }),
   }),
 } as const;

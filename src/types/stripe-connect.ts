@@ -35,3 +35,9 @@ export interface StripeConnectOnboardResponse {
   /** Same meaning as StripeConnectStatus.can_receive_payments, different field name. */
   is_onboarded: boolean;
 }
+
+/** Raw API shape — POST /stripe-connect/dashboard-link */
+export interface StripeDashboardLinkResponse {
+  /** Stripe Express Dashboard login URL. Single-use, expires quickly — never cache it. */
+  url: string;
+}

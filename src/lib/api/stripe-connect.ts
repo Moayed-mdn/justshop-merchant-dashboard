@@ -10,6 +10,7 @@ import { API_ROUTES } from '@/config/routes';
 import type {
   StripeConnectStatus,
   StripeConnectOnboardResponse,
+  StripeDashboardLinkResponse,
 } from '@/types/stripe-connect';
 
 /**
@@ -37,6 +38,23 @@ export async function createStripeConnectOnboarding(
 ): Promise<StripeConnectOnboardResponse> {
   const response = await clientApi.post<ApiResponse<StripeConnectOnboardResponse>>(
     API_ROUTES.store(storeSlug).stripeConnect().onboard()
+  );
+  return response.data;
+}
+
+/**
+ * Generate a fresh Stripe Express Dashboard login link for a store.
+ *
+ * Works as soon as the store has a Stripe account, even mid-onboarding —
+ * the Express Dashboard itself walks the merchant through anything still
+ * outstanding. The URL is single-use and expires quickly: call this again
+ * right before each redirect, never reuse a previously fetched value.
+ */
+export async function getStripeDashboardLink(
+  storeSlug: string
+): Promise<StripeDashboardLinkResponse> {
+  const response = await clientApi.post<ApiResponse<StripeDashboardLinkResponse>>(
+    API_ROUTES.store(storeSlug).stripeConnect().dashboardLink()
   );
   return response.data;
 }

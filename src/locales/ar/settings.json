@@ -46,7 +46,10 @@
     "payoutsPending": "التحويلات إلى حسابك البنكي ما زالت قيد المراجعة من Stripe. هذا لا يؤثر على قدرتك على البيع.",
     "subscriptionRequired": "تحتاج اشتراكًا نشطًا قبل ربط Stripe.",
     "goToBilling": "الذهاب للفوترة",
-    "connectFailed": "حدث خطأ أثناء الربط مع Stripe. يرجى المحاولة مرة أخرى."
+    "connectFailed": "حدث خطأ أثناء الربط مع Stripe. يرجى المحاولة مرة أخرى.",
+    "viewDashboardButton": "عرض لوحة تحكم Stripe",
+    "openingDashboard": "جارٍ الفتح...",
+    "dashboardLinkFailed": "تعذّر فتح لوحة تحكم Stripe. يرجى المحاولة مرة أخرى."
   },
   "stripeConnectReturn": {
     "verifyingTitle": "جارٍ التحقق من الإعداد",

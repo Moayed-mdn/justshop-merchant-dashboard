@@ -46,7 +46,10 @@
     "payoutsPending": "Payouts to your bank account are still under review by Stripe. This doesn't affect your ability to sell.",
     "subscriptionRequired": "You need an active subscription plan before connecting Stripe.",
     "goToBilling": "Go to Billing",
-    "connectFailed": "Something went wrong while connecting to Stripe. Please try again."
+    "connectFailed": "Something went wrong while connecting to Stripe. Please try again.",
+    "viewDashboardButton": "View Stripe Dashboard",
+    "openingDashboard": "Opening...",
+    "dashboardLinkFailed": "Couldn't open your Stripe dashboard. Please try again."
   },
   "stripeConnectReturn": {
     "verifyingTitle": "Verifying Setup",

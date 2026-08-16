@@ -10,9 +10,10 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Landmark, ExternalLink, Clock } from 'lucide-react';
+import { Landmark, ExternalLink, Clock, LayoutDashboard } from 'lucide-react';
 import { useStripeConnectStatus } from '@/hooks/stripe-connect/useStripeConnectStatus';
 import { useCreateStripeConnectOnboarding } from '@/hooks/stripe-connect/useCreateStripeConnectOnboarding';
+import { useStripeDashboardLink } from '@/hooks/stripe-connect/useStripeDashboardLink';
 import { formatApiErrorMessage } from '@/lib/api/error-message';
 import type { ApiError } from '@/types/api';
 import Link from 'next/link';
@@ -27,8 +28,10 @@ export function StripeConnectSettingsCard({ storeSlug }: StripeConnectSettingsCa
   const t = useTranslations('settings.stripeConnectCard');
   const { data: status, isLoading } = useStripeConnectStatus(storeSlug);
   const createOnboarding = useCreateStripeConnectOnboarding(storeSlug);
+  const openDashboard = useStripeDashboardLink(storeSlug);
   const [subscriptionRequired, setSubscriptionRequired] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [dashboardError, setDashboardError] = useState<string | null>(null);
 
   const handleConnect = async () => {
     setSubscriptionRequired(false);
@@ -47,6 +50,20 @@ export function StripeConnectSettingsCard({ storeSlug }: StripeConnectSettingsCa
           formatApiErrorMessage(apiError, { fallbackMessage: t('connectFailed') })
         );
       }
+    }
+  };
+
+  const handleOpenDashboard = async () => {
+    setDashboardError(null);
+    try {
+      // Same rule as onboarding: fresh link every click, never reused —
+      // Stripe login links are single-use and expire quickly.
+      const { url } = await openDashboard.mutateAsync();
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      setDashboardError(
+        formatApiErrorMessage(error as ApiError, { fallbackMessage: t('dashboardLinkFailed') })
+      );
     }
   };
 
@@ -97,10 +114,19 @@ export function StripeConnectSettingsCard({ storeSlug }: StripeConnectSettingsCa
         {hasAccount && !canReceivePayments && (
           <div className="rounded-lg border p-4 space-y-3">
             <p className="text-sm text-muted-foreground">{t('incompleteMessage')}</p>
-            <Button onClick={handleConnect} disabled={createOnboarding.isPending} variant="outline">
-              <ExternalLink className="me-2 h-4 w-4" />
-              {createOnboarding.isPending ? t('connecting') : t('continueSetupButton')}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={handleConnect} disabled={createOnboarding.isPending} variant="outline">
+                <ExternalLink className="me-2 h-4 w-4" />
+                {createOnboarding.isPending ? t('connecting') : t('continueSetupButton')}
+              </Button>
+              {/* Express Dashboard works even mid-onboarding — it shows the
+                  merchant exactly what's still outstanding, so this is a
+                  valid alternate path, not just for fully-active accounts. */}
+              <Button onClick={handleOpenDashboard} disabled={openDashboard.isPending} variant="ghost">
+                <LayoutDashboard className="me-2 h-4 w-4" />
+                {openDashboard.isPending ? t('openingDashboard') : t('viewDashboardButton')}
+              </Button>
+            </div>
           </div>
         )}
 
@@ -113,7 +139,15 @@ export function StripeConnectSettingsCard({ storeSlug }: StripeConnectSettingsCa
                 <span>{t('payoutsPending')}</span>
               </div>
             )}
+            <Button onClick={handleOpenDashboard} disabled={openDashboard.isPending}>
+              <LayoutDashboard className="me-2 h-4 w-4" />
+              {openDashboard.isPending ? t('openingDashboard') : t('viewDashboardButton')}
+            </Button>
           </div>
+        )}
+
+        {dashboardError && (
+          <p className="text-sm text-destructive">{dashboardError}</p>
         )}
 
         {subscriptionRequired && (
