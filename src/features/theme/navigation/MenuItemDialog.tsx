@@ -113,9 +113,9 @@ export default function MenuItemDialog({
         url: item.url ?? '',
         target: item.target,
         position: item.position,
-        resource_id: item.resourceId,
-        resource_type: item.resourceType,
-        settings: item.settings,
+        resource_id: item.resourceId ?? null,
+        resource_type: item.resourceType ?? null,
+        settings: item.settings ?? null,
         is_active: item.isActive,
       });
     } else {

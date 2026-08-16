@@ -52,6 +52,12 @@ export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }
   const locale = useLocale();
   const t = useTranslations('theme.navigation.resourcePicker');
   const [open, setOpen] = useState(false);
+  const [value, setValue] = useState<number | null>(selectedId);
+
+  // Sync internal value with prop
+  useEffect(() => {
+    setValue(selectedId);
+  }, [selectedId]);
 
   // Fetch resources based on type (no search param - fetch all)
   const { data: pages, isLoading: loadingPages } = useNavigationPages(storeSlug);
@@ -84,6 +90,7 @@ export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }
       ? resource.name
       : resource.name;
 
+    setValue(resource.id);
     onSelect({
       id: resource.id,
       label: label,
@@ -106,7 +113,7 @@ export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }
   };
 
   // Find selected resource
-  const selectedResource = resourceData?.find((r: any) => r.id === selectedId);
+  const selectedResource = resourceData?.find((r: any) => r.id === value);
 
   if (isLoading) {
     return (
@@ -162,7 +169,7 @@ export default function ResourcePicker({ storeSlug, type, selectedId, onSelect }
               <CommandGroup>
                 {resourceData.map((resource: any) => {
                   const displayLabel = getDisplayLabel(resource);
-                  const isSelected = resource.id === selectedId;
+                  const isSelected = resource.id === value;
                   
                   return (
                     <CommandItem
