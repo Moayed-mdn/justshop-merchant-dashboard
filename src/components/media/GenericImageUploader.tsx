@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from 'react';
 import { Upload, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { IconOrImage } from '@/components/media/IconOrImage';
 import { uploadImage, deleteImage } from '@/lib/api/media';
 import type { MediaContext } from '@/types/media';
 
@@ -20,6 +21,19 @@ interface GenericImageUploaderProps {
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 const DEFAULT_MAX_SIZE_MB = 5;
 
+/**
+ * Check if a value is likely a Lucide icon name (not a URL or path)
+ */
+function isLikelyIconName(value: string): boolean {
+  return (
+    !value.startsWith('http') &&
+    !value.startsWith('/') &&
+    !value.startsWith('storage/') &&
+    !value.startsWith('media/') &&
+    !/\.(svg|png|jpe?g|gif|webp|avif)(\?.*)?$/i.test(value)
+  );
+}
+
 export function GenericImageUploader({
   value,
   onChange,
@@ -35,10 +49,12 @@ export function GenericImageUploader({
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Compute preview URL
+  // Compute preview URL - handle icon names gracefully
   const previewUrl = value
     ? value.startsWith('http')
       ? value // External URL
+      : isLikelyIconName(value)
+      ? null // Don't try to load icon names as images
       : `${process.env.NEXT_PUBLIC_API_URL || ''}/storage/${value}` // Local path
     : null;
 
@@ -243,18 +259,34 @@ export function GenericImageUploader({
       )}
 
       {/* Preview Area */}
-      {previewUrl && (
+      {(previewUrl || (value && isLikelyIconName(value))) && (
         <div className="relative">
-          <div className="relative border-2 border-gray-200 rounded-lg overflow-hidden">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-full h-48 object-cover"
-              onError={(e) => {
-                // Hide broken image
-                e.currentTarget.style.display = 'none';
-              }}
-            />
+          <div className="relative border-2 border-gray-200 rounded-lg overflow-hidden bg-muted/30">
+            {previewUrl ? (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-full h-48 object-cover"
+                onError={(e) => {
+                  // Hide broken image
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            ) : (
+              /* Icon preview */
+              <div className="w-full h-48 flex items-center justify-center bg-primary/5">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <IconOrImage 
+                      value={value} 
+                      className="h-8 w-8" 
+                      alt=""
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">Icon: <span className="font-mono">{value}</span></p>
+                </div>
+              </div>
+            )}
             {!disabled && (
               <Button
                 type="button"

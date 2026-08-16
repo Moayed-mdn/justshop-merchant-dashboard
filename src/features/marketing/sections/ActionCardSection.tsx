@@ -2,6 +2,7 @@ import { Link } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import SectionContainer from '@/features/marketing/layouts/SectionContainer'
 import SectionHeading from '@/features/marketing/components/SectionHeading'
+import { IconOrImage } from '@/components/media/IconOrImage'
 import type { ActionCardItem } from '@/features/marketing/types'
 
 interface ActionCardSectionProps {
@@ -59,11 +60,16 @@ export default function ActionCardSection({
               <div
                 className={cn(
                   'flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10',
-                  'text-lg text-primary transition-colors duration-200 group-hover:bg-primary/15',
+                  'text-primary transition-colors duration-200 group-hover:bg-primary/15',
                 )}
                 aria-hidden="true"
               >
-                <span>{item.icon}</span>
+                <IconOrImage 
+                  value={item.icon} 
+                  className="h-5 w-5" 
+                  imageClassName="h-5 w-5 object-contain"
+                  alt=""
+                />
               </div>
 
               {item.eyebrow && (

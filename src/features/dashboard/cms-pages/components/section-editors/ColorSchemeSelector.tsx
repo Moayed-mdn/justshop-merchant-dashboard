@@ -30,61 +30,19 @@ export function ColorSchemeSelector({
   const t = useTranslations('cmsPages');
   const { watch, setValue } = useFormContext();
   const activeStore = useBootstrapStore((state) => state.activeStore);
-
-  // Fetch themes to get color schemes
   const activeStoreSlug = activeStore ? getStoreRouteParam(activeStore) : null;
-  const { data: themesData } = useThemes(activeStoreSlug!, {
-    page: 1,
-    perPage: 100,
-  });
 
-  // Get the active theme
-  const activeTheme = themesData?.data.find((theme) => theme.isActive);
-  const themeSettings = activeTheme as unknown as { 
-    settings?: { 
-      color_schemes?: Record<string, ColorScheme> 
-    } 
-  };
+  // Fetch only the published theme (is_active + is_published)
+  // Backend now properly filters by status parameter
+  const { data: themesData } = useThemes(
+    activeStoreSlug ?? '',
+    { page: 1, perPage: 1, status: 'published' },
+    { enabled: !!activeStoreSlug }
+  );
 
-  // Get available color schemes
-  const colorSchemes = themeSettings?.settings?.color_schemes || {
-    default: {
-      name: 'Default',
-      background: '#FFFFFF',
-      text: '#1F2937',
-      button_background: '#3B82F6',
-      button_text: '#FFFFFF',
-      secondary_background: '#F3F4F6',
-      border: '#E5E7EB',
-    },
-    brand: {
-      name: 'Brand',
-      background: '#3B82F6',
-      text: '#FFFFFF',
-      button_background: '#FFFFFF',
-      button_text: '#3B82F6',
-      secondary_background: '#2563EB',
-      border: 'rgba(255, 255, 255, 0.2)',
-    },
-    dark: {
-      name: 'Dark',
-      background: '#1F2937',
-      text: '#FFFFFF',
-      button_background: '#F59E0B',
-      button_text: '#000000',
-      secondary_background: '#374151',
-      border: '#4B5563',
-    },
-    light: {
-      name: 'Light',
-      background: '#F9FAFB',
-      text: '#1F2937',
-      button_background: '#3B82F6',
-      button_text: '#FFFFFF',
-      secondary_background: '#FFFFFF',
-      border: '#E5E7EB',
-    },
-  };
+  // Get the published theme (should be the only one returned)
+  const activeTheme = themesData?.data[0];
+  const colorSchemes = (activeTheme?.settings?.color_schemes ?? {}) as Record<string, ColorScheme>;
 
   const currentValue = watch(fieldPath as any) || 'default';
 

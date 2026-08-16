@@ -65,10 +65,19 @@ function transformPayloadForBackend(payload: CreateMarketingPagePayload | Update
     sort_order: payload.sort_order,
     is_homepage: payload.is_homepage,
     seo: payload.seo,
-    sections: payload.sections.map((section) => ({
+    // `section.sort_order` never actually exists on MarketingPageSection —
+    // it's never populated by the mapper (see mapMarketingPageDetail) or the
+    // form schema, so `(section as any).sort_order` was always `undefined`
+    // and got silently dropped from the JSON body. That meant every section
+    // was saved with no explicit order, so reordering sections via the
+    // move up/down buttons in SectionsBuilder was thrown away on save even
+    // though it looked correct in the UI right up until you reloaded the
+    // page. The array position IS the intended order (that's what move()
+    // from useFieldArray mutates), so we send that as sort_order instead.
+    sections: payload.sections.map((section, index) => ({
       section_type: section.type,
       identifier: section.identifier,
-      sort_order: (section as any).sort_order,
+      sort_order: index,
       title: section.title,
       subtitle: section.subtitle,
       content: section.content,

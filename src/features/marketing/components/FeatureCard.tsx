@@ -8,11 +8,12 @@
 //   - Server Component — purely presentational
 //   - no data fetching, no translation calls
 //   - all content via typed props
-//   - icon is a string (emoji or icon name) — parent resolves rendering
+//   - icon can be: Lucide icon name, image URL, or emoji
 //   - hover state uses CSS transition only, no JS
 // =============================================================================
 
 import { cn } from '@/lib/utils'
+import { IconOrImage } from '@/components/media/IconOrImage'
 import type { FeatureItem } from '@/features/marketing/types'
 
 type FeatureCardProps = Pick<FeatureItem, 'icon' | 'title' | 'description'> & {
@@ -42,7 +43,12 @@ export default function FeatureCard({
         )}
         aria-hidden="true"
       >
-        <span className="text-xl leading-none">{icon}</span>
+        <IconOrImage 
+          value={icon} 
+          className="h-6 w-6" 
+          imageClassName="h-6 w-6 object-contain"
+          alt=""
+        />
       </div>
 
       {/* Content */}

@@ -75,15 +75,20 @@ export function ImageUrlOrUpload({
         </button>
       </div>
 
-      {/* URL mode */}
+      {/* URL mode - supports URLs OR icon names */}
       {mode === 'url' && (
-        <Input
-          type="url"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          disabled={disabled}
-        />
+        <>
+          <Input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            disabled={disabled}
+          />
+          <p className="text-xs text-muted-foreground">
+            Enter a URL, icon name (e.g., shield-check, users), or path
+          </p>
+        </>
       )}
 
       {/* Upload mode */}

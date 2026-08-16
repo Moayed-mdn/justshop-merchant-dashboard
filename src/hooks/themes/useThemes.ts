@@ -25,6 +25,7 @@ const DEFAULT_FILTERS: ThemeFilters = {
 export function useThemes(
   storeSlug: string,
   filters: ThemeFilters = DEFAULT_FILTERS,
+  queryOptions?: { refetchOnMount?: boolean | 'always'; staleTime?: number; enabled?: boolean }
 ) {
   return useQuery<
     PaginatedResponse<ThemeListItem>,
@@ -35,7 +36,9 @@ export function useThemes(
       filters as unknown as Record<string, unknown>,
     ),
     queryFn: () => getThemes(storeSlug, filters),
-    staleTime: QUERY_CONFIG.staleTime,
+    staleTime: queryOptions?.staleTime ?? QUERY_CONFIG.staleTime,
+    refetchOnMount: queryOptions?.refetchOnMount,
+    enabled: queryOptions?.enabled ?? !!storeSlug,
     select: selectPaginatedList((theme) => mapThemeListItem(theme, storeSlug)),
   });
 }

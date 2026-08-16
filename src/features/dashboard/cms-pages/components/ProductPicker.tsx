@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useProducts } from '@/hooks/products/useProducts';
+import { useDebounce } from '@/lib/hooks/useDebounce';
 
 interface ProductPickerProps {
   storeSlug: string;
@@ -21,10 +22,14 @@ interface ProductPickerProps {
 
 export function ProductPicker({ storeSlug, selectedIds, onChange }: ProductPickerProps) {
   const [search, setSearch] = useState('');
+  // Every other search box in this app (Products, Orders, Users...) debounces
+  // at 300ms before it hits the query key — this one didn't, so it fired a
+  // fresh /products request on every single keystroke.
+  const debouncedSearch = useDebounce(search, 300);
   const { data, isLoading } = useProducts(storeSlug, {
     page: 1,
     perPage: 50,
-    search,
+    search: debouncedSearch,
     status: 'all',
   });
 

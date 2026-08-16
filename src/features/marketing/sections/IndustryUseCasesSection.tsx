@@ -1,5 +1,6 @@
 import SectionContainer from '@/features/marketing/layouts/SectionContainer'
 import SectionHeading from '@/features/marketing/components/SectionHeading'
+import { IconOrImage } from '@/components/media/IconOrImage'
 import type { IndustryUseCaseItem } from '@/features/marketing/types'
 
 interface IndustryUseCasesSectionProps {
@@ -26,8 +27,13 @@ export default function IndustryUseCasesSection({
               key={index}
               className="flex flex-col rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/50"
             >
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
-                {useCase.icon}
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <IconOrImage 
+                  value={useCase.icon} 
+                  className="h-6 w-6" 
+                  imageClassName="h-6 w-6 object-contain"
+                  alt=""
+                />
               </div>
               <h3 className="mb-3 text-xl font-bold text-foreground">
                 {useCase.industry}
